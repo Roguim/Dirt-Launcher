@@ -1,15 +1,14 @@
 package net.dirtcraft.dirtlauncher;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Events.ButtonClick;
 
 public class Main extends Application {
 
-    public Button button;
+    String s = "sample.fxml";
 
     public static void main(String[] args) {
         launch(args);
@@ -17,26 +16,22 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+
+        /*Controller controller = new Controller();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        loader.setController(controller);
+        Parent root = loader.load();*/
+
+        //FXMLLoader loader = new FXMLLoader(Main.class.getResource("../../../../resources/sample.fxml"));
+        System.out.println("Test = " + getClass().getResource(s));
+        Parent root = FXMLLoader.load(getClass().getResource(s));
+
         primaryStage.setTitle("Dirt Launcher");
 
-        button = new Button();
-        button.setText("This is a button");
-
-        button.setOnAction(new ButtonClick(this));
-
-        StackPane layout = new StackPane();
-        layout.getChildren().add(button);
-
-        Scene scene = new Scene(layout, 300, 400);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
-
-        /*
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();*/
     }
 
 }
