@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
 
 public class Main extends Application {
 
@@ -30,7 +31,6 @@ public class Main extends Application {
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
     }
 
 }

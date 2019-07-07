@@ -18,7 +18,9 @@ repositories {
 apply plugin: 'javafx-gradle-plugin'
 
 dependencies {
-    
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile 'com.google.http-client:google-http-client:1.23.0'
+    compile 'com.google.http-client:google-http-client-gson:1.23.0'
 }
 
 
