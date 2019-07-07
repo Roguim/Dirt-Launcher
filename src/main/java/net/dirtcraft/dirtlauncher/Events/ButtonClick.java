@@ -1,8 +1,8 @@
-package sample.Events;
+package net.dirtcraft.dirtlauncher.Events;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import sample.Main;
+import net.dirtcraft.dirtlauncher.Main;
 
 public class ButtonClick implements EventHandler<ActionEvent> {
 
