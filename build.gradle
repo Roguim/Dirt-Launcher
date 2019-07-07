@@ -29,3 +29,12 @@ jfx {
     // minimal requirement for jfxNative-task
     vendor = 'DirtCraft'
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/java"]
+            includes = ["**/*.fxml", "**/*.gif"]
+        }
+    }
+}

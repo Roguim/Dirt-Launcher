@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    String s = "sample.fxml";
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -24,8 +22,9 @@ public class Main extends Application {
         Parent root = loader.load();*/
 
         //FXMLLoader loader = new FXMLLoader(Main.class.getResource("../../../../resources/sample.fxml"));
-        System.out.println("Test = " + getClass().getResource(s));
-        Parent root = FXMLLoader.load(getClass().getResource(s));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/sample.fxml"));
+
+        primaryStage.setFullScreen(true);
 
         primaryStage.setTitle("Dirt Launcher");
 
