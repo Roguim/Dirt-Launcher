@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
-   <children>
-      <BorderPane prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <left>
-            <ListView fx:id="listView" onMouseClicked="#buttonClicked" BorderPane.alignment="CENTER_LEFT">
-               <padding>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="bodybg" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
+    <children>
+        <BorderPane prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <left>
+                <ListView fx:id="listView" onMouseClicked="#buttonClicked" prefHeight="400.0" prefWidth="300.0" styleClass="sidebar" stylesheets="@sidebar.css" BorderPane.alignment="CENTER_LEFT">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <BorderPane.margin>
                   <Insets top="100.0" />
-               </padding>
-            </ListView>
-         </left>
-      </BorderPane>
-      <Pane prefHeight="100.0" style="-fx-background-color: firebrick;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               </BorderPane.margin>
+                </ListView>
+            </left>
+        </BorderPane>
+      <HBox fx:id="topPane" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: firebrick;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Text fill="WHITE" layoutX="126.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirt Launcher™" textAlignment="CENTER" wrappingWidth="348.66552734375">
+            <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                <font>
-                  <Font name="System Bold" size="26.0" />
+                  <Font size="36.0" />
                </font>
+               <HBox.margin>
+                  <Insets top="25.0" />
+               </HBox.margin>
             </Text>
          </children>
-      </Pane>
-   </children>
+         <cursor>
+            <Cursor fx:constant="DISAPPEAR" />
+         </cursor>
+      </HBox>
+    </children>
 </AnchorPane>
