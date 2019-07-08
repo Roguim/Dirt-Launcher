@@ -13,8 +13,12 @@ public class PackList {
         this.packs = packs;
     }
 
-    public List<Pack> getPacks() { return packs; }
+    public List<Pack> getPacks() {
+        return packs;
+    }
 
-    public void setPacks(List<Pack> packs) { this.packs = packs; }
+    public void setPacks(List<Pack> packs) {
+        this.packs = packs;
+    }
 
 }

@@ -43,28 +43,92 @@ public class Pack {
         this.optionalMods = optionalMods;
     }
 
-    public String getName() { return name; }
-    public String getVersion() { return version; }
-    public PackType getPackType() { return packType; }
-    public String getLink() { return link; }
-    public String getSplash() { return splash; }
-    public String getLogo() { return logo; }
-    public String getGameVersion() { return gameVersion; }
-    public int getRequiredRam() { return requiredRam; }
-    public int getRecommendedRam() { return recommendedRam; }
-    public String getForgeVersion() { return forgeVersion; }
-    public List<OptionalMod> getOptionalMods() { return optionalMods; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
-    public void setVersion(String version) { this.version = version; }
-    public void setPackType(PackType packType) { this.packType = packType; }
-    public void setLink(String link) { this.link = link; }
-    public void setSplash(String string) { this.splash = splash; }
-    public void setLogo(String logo) { this.logo = logo; }
-    public void setGameVersion(String gameVersion) { this.gameVersion = gameVersion; }
-    public void setRequiredRam(int requiredRam) { this.requiredRam = requiredRam; }
-    public void setRecommendedRam(int recommendedRam) { this.recommendedRam = recommendedRam; }
-    public void setForgeVersion(String forgeVersion) { this.forgeVersion = forgeVersion; }
-    public void setOptionalMods(List<OptionalMod> optionalMods) { this.optionalMods = optionalMods; }
+    public String getVersion() {
+        return version;
+    }
+
+    public PackType getPackType() {
+        return packType;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getSplash() {
+        return splash;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public String getGameVersion() {
+        return gameVersion;
+    }
+
+    public int getRequiredRam() {
+        return requiredRam;
+    }
+
+    public int getRecommendedRam() {
+        return recommendedRam;
+    }
+
+    public String getForgeVersion() {
+        return forgeVersion;
+    }
+
+    public List<OptionalMod> getOptionalMods() {
+        return optionalMods;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setPackType(PackType packType) {
+        this.packType = packType;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setSplash(String string) {
+        this.splash = splash;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public void setGameVersion(String gameVersion) {
+        this.gameVersion = gameVersion;
+    }
+
+    public void setRequiredRam(int requiredRam) {
+        this.requiredRam = requiredRam;
+    }
+
+    public void setRecommendedRam(int recommendedRam) {
+        this.recommendedRam = recommendedRam;
+    }
+
+    public void setForgeVersion(String forgeVersion) {
+        this.forgeVersion = forgeVersion;
+    }
+
+    public void setOptionalMods(List<OptionalMod> optionalMods) {
+        this.optionalMods = optionalMods;
+    }
 
 }

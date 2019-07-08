@@ -20,14 +20,36 @@ public class OptionalMod {
         this.description = description;
     }
 
-    public String getName() { return name; }
-    public String getVersion() { return version; }
-    public String getLink() { return link; }
-    public String getDescription() { return description; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
-    public void setVersion(String version) { this.version = version; }
-    public void setLink(String link) { this.link = link; }
-    public void setDescription(String description) { this.description = description; }
+    public String getVersion() {
+        return version;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }

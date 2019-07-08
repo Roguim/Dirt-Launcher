@@ -25,7 +25,12 @@ public class PackRegistry {
         }
     }
 
-    public PackList getPackList() { return packList; }
-    public void setPackList(PackList packList ) { this.packList = packList; }
+    public PackList getPackList() {
+        return packList;
+    }
+
+    public void setPackList(PackList packList) {
+        this.packList = packList;
+    }
 
 }
