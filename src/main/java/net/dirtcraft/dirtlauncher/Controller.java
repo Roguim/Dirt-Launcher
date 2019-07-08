@@ -33,10 +33,8 @@ public class Controller {
                     "Pixelmon Reforged\nPlays: N/A\nDownloads: N/A",
                     "DirtCraft's DirtBOT\nCreated By: TechDweebGaming & juliann");
 
-            listView.applyCss();
-
-            listView.getItems().addAll(list);
             //listView.getItems().addAll(list);
+            listView.setItems(list);
             hasClicked = true;
         }
 

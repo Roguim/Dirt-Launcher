@@ -8,11 +8,8 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.net.URL;
 
 public class Main extends Application {
-
-    public static URL url;
 
     public static void main(String[] args) {
         launch(args);
@@ -23,7 +20,6 @@ public class Main extends Application {
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        url = getClass().getResource("resources/backgroundimage.png");
         Parent root = FXMLLoader.load(getClass().getResource("resources/sample.fxml"));
 
         primaryStage.setTitle("Dirt Launcher");
@@ -37,8 +33,6 @@ public class Main extends Application {
     }
 
     public static ListView setListView(ListView listView) {
-
-
         return listView;
     }
 
