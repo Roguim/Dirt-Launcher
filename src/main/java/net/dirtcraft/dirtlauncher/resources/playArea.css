@@ -50,12 +50,15 @@
     -fx-background-insets: 0;
 }
 
-#errorText {
+#messageBox {
     -fx-background-color: rgba( 0% , 0% , 0%, 0.75 );
     -fx-font-size: 14 ;
     -fx-font-weight: bold ;
-   -fx-text-fill:black;
+    -fx-text-fill:black;
     -fx-text-alignment: center ;
+    -fx-padding: 7;
+    -fx-background-insets: 2;
+    -fx-background-radius: 5 5 5 5;
 }
 
 .errorMessage {

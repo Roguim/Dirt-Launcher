@@ -38,9 +38,8 @@
          </cursor>
       </HBox>
           <ListView fx:id="packList" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="packlist" stylesheets="@sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
-      <FlowPane alignment="CENTER" layoutX="300.0" layoutY="496.0" orientation="VERTICAL" prefHeight="215.0" prefWidth="511.0" styleClass="login" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+      <FlowPane alignment="TOP_CENTER" layoutX="300.0" layoutY="496.0" orientation="VERTICAL" prefHeight="110.0" prefWidth="511.0" styleClass="login" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <TextFlow id="messageBox" fx:id="messageBox" prefHeight="70.0" prefWidth="265.0" styleClass="messageBox" />
             <Pane id="launchBox" fx:id="launchBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" stylesheets="@playArea.css">
                <children>
                   <GridPane alignment="CENTER" layoutX="8.0" prefHeight="73.0" prefWidth="250.0" styleClass="login" stylesheets="@playArea.css">
@@ -84,6 +83,11 @@
                   <String fx:value="login" />
                </styleClass>
             </Pane>
+         </children>
+      </FlowPane>
+      <FlowPane alignment="BOTTOM_CENTER" layoutX="300.0" layoutY="283.0" prefHeight="200.0" prefWidth="511.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <TextFlow id="messageBox" fx:id="messageBox" prefHeight="70.0" prefWidth="265.0" styleClass="messageBox" />
          </children>
       </FlowPane>
     </children>
