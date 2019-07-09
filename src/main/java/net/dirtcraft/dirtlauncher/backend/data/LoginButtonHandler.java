@@ -24,8 +24,7 @@ public class LoginButtonHandler {
         Account userAccount = null;
         String user = usernameField.getText();
         String pass = passwordField.getText();
-        System.out.println(user);
-        System.out.println(pass);
+
         try {
             userAccount = Verification.login(user, pass);
         } catch (InvalidCredentialsException e){
@@ -33,5 +32,7 @@ public class LoginButtonHandler {
         } catch (IllegalArgumentException e){
             System.out.println("o shit no credentialz\n"+e);
         }
+
+        //TODO do stuff with the userAccount
     }
 }

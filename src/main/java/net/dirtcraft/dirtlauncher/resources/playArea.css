@@ -49,3 +49,15 @@
 .login{
     -fx-background-insets: 0;
 }
+
+#errorText {
+    -fx-background-color: rgba( 0% , 0% , 0%, 0.75 );
+    -fx-font-size: 14 ;
+    -fx-font-weight: bold ;
+   -fx-text-fill:black;
+    -fx-text-alignment: center ;
+}
+
+.errorMessage {
+   -fx-text-fill:white;
+}

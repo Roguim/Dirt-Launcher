@@ -4,10 +4,7 @@ package net.dirtcraft.dirtlauncher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -34,6 +31,9 @@ public class Controller {
     @FXML
     private Button playButton;
 
+    @FXML
+    private DialogPane errorText;
+
     public static Controller getInstance() {
         return instance;
     }
@@ -51,6 +51,10 @@ public class Controller {
         packList.setItems(packs);
 
         webView.getEngine().load("https://dirtcraft.net/");
+
+        Text text = new Text();
+        text.setText("Error YO");
+        errorText.setContent(text);
 
     }
 
