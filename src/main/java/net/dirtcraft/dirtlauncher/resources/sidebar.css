@@ -4,6 +4,7 @@
 }
 
 .packlist.list-cell:filled {
+    -fx-cell-size: 50;
     -fx-background-color: firebrick;
     -fx-padding: 2px 10px ;
     -fx-background-insets: 2px 10px;
@@ -18,7 +19,13 @@
 .packlist.list-cell:filled:hover {
      -fx-scale-y: 1.05;
      -fx-scale-x: 1.05;
-     -fx-background-color: #3a3a3a;
+     -fx-background-color: #303030;
+}
+
+.packlist.list-cell:filled:selected {
+     -fx-scale-y: 1.05;
+     -fx-scale-x: 1.05;
+     -fx-background-color: #181818;
 }
 
 .packlist.tooltip{
