@@ -47,6 +47,7 @@ public class Controller {
     private void initialize() {
 
         instance = this;
+        messageBox.setOpacity(0);
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
@@ -94,5 +95,9 @@ public class Controller {
 
     public TextField getUsernameField() {
         return usernameField;
+    }
+
+    public TextFlow getMessageBox() {
+        return messageBox;
     }
 }
