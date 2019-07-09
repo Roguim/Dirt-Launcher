@@ -33,7 +33,6 @@ public class Controller {
         fetch = new Fetch();
 
         listView.setItems(fetch.getPacks());
-        listView.setPrefHeight(500D);
     }
 
     @FXML
