@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.awt.*;
-import java.io.File;
 
 public class Main extends Application {
 
@@ -25,10 +24,10 @@ public class Main extends Application {
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        Parent root = FXMLLoader.load(getClass().getResource("resources" + File.separator + "sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/sample.fxml"));
 
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("resources" + File.separator + "icon.png")));
+        primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("resources/icon.png")));
 
         Scene scene = new Scene(root, screenSize.width, screenSize.height);
         //scene.getStylesheets().add("resources/sidebar.css");

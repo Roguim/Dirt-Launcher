@@ -25,7 +25,7 @@ public class Verification {
 
         List<NameEntry> names = mojangClient.getNameHistoryByUUID(uuid);
 
-        Account account = new Account(names.get(names.size() - 1).getName(), password, uuid, client.validate(session));
+        Account account = new Account(session, mojangClient, names.get(names.size() - 1).getName(), password, uuid, client.validate(session));
 
         System.out.println("USERNAME: " + account.getUsername());
         System.out.println("PASSWORD: " + account.getPassword());
