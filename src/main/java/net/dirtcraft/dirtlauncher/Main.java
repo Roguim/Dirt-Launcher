@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -31,7 +32,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, screenSize.width, screenSize.height);
         //scene.getStylesheets().add("sidebar.css")
-
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("resources/icon.png")));
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.DECORATED);
