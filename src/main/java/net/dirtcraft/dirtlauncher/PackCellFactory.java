@@ -22,13 +22,6 @@ public class PackCellFactory extends ListCell<Pack> {
         } else {
             getStyleClass().add("packlist");
             String name = pack.getName();
-            String hover = String.join("\n", Arrays.asList(
-                    "ModPack Name: " + pack.getName(),
-                    "ModPack Version: " + pack.getVersion(),
-                    "Minecraft Version: " + pack.getGameVersion(),
-                    "Forge Version: " + pack.getForgeVersion(),
-                    "Minimum Ram: " + pack.getRequiredRam() + "GB",
-                    "Recommended Ram: " + pack.getRecommendedRam() + "GB"));
 
             setText(name);
             setAlignment(Pos.CENTER);
@@ -38,7 +31,16 @@ public class PackCellFactory extends ListCell<Pack> {
 
             setOnMouseClicked(useless -> System.out.println(name));
 
-            setTooltip(new Tooltip(hover));
+            Tooltip tooltip = new Tooltip();
+            tooltip.getStyleClass().add("packlist");
+            tooltip.setText(String.join("\n", Arrays.asList(
+                    "ModPack Name: " + pack.getName(),
+                    "ModPack Version: " + pack.getVersion(),
+                    "Minecraft Version: " + pack.getGameVersion(),
+                    "Forge Version: " + pack.getForgeVersion(),
+                    "Minimum Ram: " + pack.getRequiredRam() + "GB",
+                    "Recommended Ram: " + pack.getRecommendedRam() + "GB")));
+            setTooltip(tooltip);
         }
     }
 
