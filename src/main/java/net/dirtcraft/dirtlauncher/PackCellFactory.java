@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher;
 
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Paint;
@@ -41,6 +42,7 @@ public class PackCellFactory extends ListCell<Pack> {
                     "Minimum Ram: " + pack.getRequiredRam() + "GB",
                     "Recommended Ram: " + pack.getRecommendedRam() + "GB")));
             setTooltip(tooltip);
+            setCursor(Cursor.HAND);
         }
     }
 
