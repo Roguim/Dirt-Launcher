@@ -22,6 +22,9 @@
 # Other #
 .DS_Store
 .idea
+out/*
+.idea/*
+build/*
 
 build
 
