@@ -5,7 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.dirtcraft.dirtlauncher.Controller;
+import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
+import net.dirtcraft.dirtlauncher.backend.objects.Account;
 
 import javax.swing.*;
 
@@ -23,8 +26,12 @@ public class LoginButtonHandler {
         }
         String user = usernameField.getText();
         String pass = passwordField.getText();
-
-        System.out.println(user);
-        System.out.println(pass);
+        try {
+            Account userAccount = Verification.login(user, pass);
+        } catch (InvalidCredentialsException e){
+            System.out.println("o shit u been hacked!\n"+e);
+        } catch (IllegalArgumentException e){
+            System.out.println("o shit no credentialz\n"+e);
+        }
     }
 }
