@@ -2,26 +2,25 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@sidebar.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
     <children>
-        <BorderPane prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <left>
-                <ListView fx:id="listView" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" stylesheets="@sidebar.css" BorderPane.alignment="CENTER_LEFT">
-               <BorderPane.margin>
-                  <Insets top="100.0" />
-               </BorderPane.margin>
-                </ListView>
-            </left>
-        </BorderPane>
-      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #77212E;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <WebView fx:id="webView" layoutX="301.0" layoutY="100.0" minHeight="-1.0" minWidth="-1.0" prefHeight="621.0" prefWidth="511.0" stylesheets="@sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #77212E;" styleClass="packlist" stylesheets="@sidebar.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text fx:id="headerText" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
                <font>
@@ -36,6 +35,40 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
-      <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+          <ListView fx:id="packList" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="packlist" stylesheets="@sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
+      <FlowPane alignment="CENTER" layoutX="300.0" layoutY="496.0" prefHeight="125.0" prefWidth="511.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Pane id="launchBox" fx:id="launchBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" styleClass="playArea" stylesheets="@playArea.css">
+               <children>
+                  <GridPane alignment="CENTER" layoutX="8.0" prefHeight="73.0" prefWidth="250.0" stylesheets="@playArea.css">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="191.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="59.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane prefHeight="90.0" prefWidth="336.0" stylesheets="@playArea.css" GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <PasswordField id="passwordField" fx:id="passwordField" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="194.0" promptText="password" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" />
+                              <TextField id="usernameField" fx:id="usernameField" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="194.0" promptText="username" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER" />
+                           </children>
+                        </GridPane>
+                        <Button id="playButton" fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="59.0" prefWidth="60.0" text="Play" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                     </children>
+                  </GridPane>
+               </children>
+            </Pane>
+         </children>
+      </FlowPane>
     </children>
 </AnchorPane>

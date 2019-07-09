@@ -1,3 +1,7 @@
+.packlist{
+    -fx-opacity: 1;
+}
+
 .packlist.list-view {
     -fx-padding: 5px ;
     -fx-background-color: #9B1B30 ;
@@ -16,22 +20,38 @@
     -fx-background-color: transparent ;
 }
 
-.packlist.list-cell:filled:hover {
+.packlist.list-cell:filled:hover, .packlist.list-cell:filled:selected{
      -fx-scale-y: 1.05;
      -fx-scale-x: 1.05;
+}
+
+.packlist.list-cell:filled:hover {
      -fx-background-color: #303030;
 }
 
 .packlist.list-cell:filled:selected {
-     -fx-scale-y: 1.05;
-     -fx-scale-x: 1.05;
      -fx-background-color: #615550;
      -fx-text-fill: #FFFAFA;
 }
 
-.packlist.tooltip{
+.packlist.list-cell:filled:pressed {
+     -fx-background-color: #000000;
+}
+
+.tooltip, .packlist.tooltip{
     -fx-background-color: #404040;
     -fx-text-fill: #DCDCDC;
     -fx-opacity: 0.8;
     -fx-background-radius: 5.0;
+    -fx-font-size: 11 ;
+    /* -fx-line-spacing: -5 ; Bugged*/
+}
+.login{
+  -fx-border-radius: 10 10 0 0;
+  -fx-background-radius: 10 10 0 0;
+}
+#user{
+    -fx-background-radius: 5 ;
+}
+#playbutton{
 }

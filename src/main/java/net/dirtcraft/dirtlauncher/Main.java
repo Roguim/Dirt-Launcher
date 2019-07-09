@@ -31,7 +31,7 @@ public class Main extends Application {
         primaryStage.setTitle("Dirt Launcher");
 
         Scene scene = new Scene(root, screenSize.width, screenSize.height);
-        //scene.getStylesheets().add("sidebar.css")
+        //scene.getStylesheets().add("resources/sidebar.css");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("resources/icon.png")));
 
         primaryStage.setScene(scene);

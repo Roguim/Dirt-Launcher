@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher;
+package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
