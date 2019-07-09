@@ -11,6 +11,8 @@ import java.awt.*;
 
 public class Main extends Application {
 
+    private Stage stage;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -33,8 +35,15 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.DECORATED);
-        
+
+
+
         primaryStage.show();
+
+        stage = primaryStage;
     }
 
+    public Stage getStage() {
+        return stage;
+    }
 }

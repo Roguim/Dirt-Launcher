@@ -8,12 +8,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="bodybg" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
     <children>
         <BorderPane prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <left>
-                <ListView fx:id="listView" onMouseClicked="#buttonClicked" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" stylesheets="@sidebar.css" BorderPane.alignment="CENTER_LEFT">
+                <ListView fx:id="listView" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" stylesheets="@sidebar.css" BorderPane.alignment="CENTER_LEFT">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -38,5 +39,6 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
+      <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
     </children>
 </AnchorPane>
