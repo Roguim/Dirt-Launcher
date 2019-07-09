@@ -3,37 +3,66 @@ package net.dirtcraft.dirtlauncher.backend.data;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import net.dirtcraft.dirtlauncher.backend.objects.PackList;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.backend.JsonUtils.OptionalMod;
+import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PackRegistry {
 
-    private PackList packList;
-
-    //private final String JSON_URL = "";
     public static final String JSON_URL = "http://164.132.201.67/launcher/packs.json";
 
-    public PackRegistry() {
-        try {
-            System.out.println("Making Request");
-            HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
-            System.out.println("Factory Made");
-            HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(JSON_URL));
-            System.out.println("Data fetched");
-            request.execute().parseAs(PackList.class);
-            System.out.println("Data parsed");
-            System.out.println(packList.getPacks().size());
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static List<Pack> getPacks() {
+        JsonElement jsonElement = new JsonParser().parse(getStringFromURL());
+
+        List<Pack> packs = new ArrayList<>();
+        for (JsonElement element : jsonElement.getAsJsonArray()) {
+            packs.add(new Pack(element.getAsJsonObject()));
         }
+
+        for (Pack pack : packs) {
+            System.out.println("Name: " + pack.getName());
+            System.out.println("Version: " + pack.getVersion());
+            System.out.println("Pack Type: " + pack.getPackType());
+            System.out.println("Link: " + pack.getLink());
+            System.out.println("Splash: " + pack.getSplash());
+            System.out.println("Logo: " + pack.getLogo());
+            System.out.println("Game Version: " + pack.getGameVersion());
+            System.out.println("Required Ram: " + pack.getRequiredRam());
+            System.out.println("Recommended Ram: " + pack.getRecommendedRam());
+            System.out.println("Forge Version: " + pack.getForgeVersion());
+            for (OptionalMod optionalMod : pack.getOptionalMods()) {
+                System.out.println("[Optional Mod] - Name: " + optionalMod.getName());
+                System.out.println("[Optional Mod] - Version: " + optionalMod.getVersion());
+                System.out.println("[Optional Mod] - Link: " + optionalMod.getLink());
+                System.out.println("[Optional Mod] - Description: " + optionalMod.getDescription());
+            }
+        }
+
+        return packs;
+
     }
 
-    public PackList getPackList() {
-        return packList;
+    private static String getStringFromURL() {
+        String string = null;
+        try {
+            HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
+            HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(JSON_URL));
+            HttpResponse response = request.execute();
+            string = response.parseAsString();
+            response.disconnect();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return string;
     }
 
-    public void setPackList(PackList packList) {
-        this.packList = packList;
-    }
+
 
 }
