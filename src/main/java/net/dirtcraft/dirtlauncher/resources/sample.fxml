@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -82,6 +83,16 @@
                   <String fx:value="login" />
                </styleClass>
             </Pane>
+         </children>
+      </FlowPane>
+      <FlowPane id="errorPlane" fx:id="errorplane" alignment="BOTTOM_CENTER" layoutX="300.0" layoutY="311.0" prefHeight="200.0" prefWidth="511.0" styleClass="errorBox" stylesheets="@playArea.css" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <DialogPane id="errorDialog" fx:id="errorText" contentText="sdgsdgsgd" disable="true" headerText="sggs" stylesheets="@playArea.css">
+               <styleClass>
+                  <String fx:value="errorBox" />
+                  <String fx:value="errorMessage" />
+               </styleClass>
+            </DialogPane>
          </children>
       </FlowPane>
     </children>
