@@ -13,6 +13,7 @@ import javafx.scene.text.TextFlow;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controller;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
@@ -69,17 +70,16 @@ public class LoginButtonHandler {
         text.setFill(Color.WHITE);
         text.setTextOrigin(VPos.CENTER);
 
-        if (account != null) text.setText("Successfully logged into " + account.getUsername() + "'s account");
+        if (account != null && result == LoginResult.SUCCESS) {
+            text.setText("Successfully logged into " + account.getUsername() + "'s account");
+        }
         else {
             ShakeTransition animation = new ShakeTransition(messageBox);
             animation.playFromStart();
 
             switch (result) {
-                case SUCCESS:
-                    text.setText("Successfully logged into");
-                    break;
                 case USER_MIGRATED:
-                    text.setText("An account with this username has already been migrated!");
+                    text.setText("Please use your E-Mail to log in!");
                     break;
                 case ILLEGAL_ARGUMENT:
                     text.setText("Your username or password contains invalid arguments!");
@@ -89,25 +89,29 @@ public class LoginButtonHandler {
                     text.setText("Your E-Mail or password is invalid!");
                     break;
             }
+
         }
 
-        //text.setText(message.replace("where", "were"));
-
-        messageBox.setTextAlignment(TextAlignment.CENTER);
+        if (messageBox.getTextAlignment() != TextAlignment.CENTER) messageBox.setTextAlignment(TextAlignment.CENTER);
         messageBox.getChildren().clear();
         messageBox.getChildren().add(text);
 
-        uiCallback = new Thread(() -> {
+
+        uiCallback = getThread(result);
+
+        uiCallback.start();
+
+    }
+
+    private static Thread getThread(LoginResult result) {
+        return new Thread(() -> {
             Platform.runLater(() -> messageBox.setOpacity(1));
             try {
-                Thread.sleep(5000);
+                Thread.sleep((result == LoginResult.SUCCESS ? 2 : 5) * 1000);
                 Platform.runLater(() -> messageBox.setOpacity(0));
+                if (result == LoginResult.SUCCESS) Platform.runLater(() -> Main.getInstance().getStage().close());
                 Platform.runLater(()-> uiCallback = null);
-            } catch (InterruptedException ex) {
-                //we interupted this boi so who cares
-            }
-
+            } catch (InterruptedException ex) {}
         });
-        uiCallback.start();
     }
 }

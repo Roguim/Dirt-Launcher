@@ -12,6 +12,7 @@ import java.awt.*;
 
 public class Main extends Application {
 
+    private static Main instance;
     private Stage stage;
 
 
@@ -21,6 +22,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        instance = this;
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -29,7 +31,7 @@ public class Main extends Application {
         primaryStage.setTitle("Dirt Launcher");
         primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("resources/icon.png")));
 
-        Scene scene = new Scene(root, screenSize.width, screenSize.height);
+        Scene scene = new Scene(root, screenSize.getWidth() / 1.15, screenSize.getHeight() / 1.35);
         //scene.getStylesheets().add("resources/sidebar.css");
 
         primaryStage.setScene(scene);
@@ -44,5 +46,9 @@ public class Main extends Application {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }
