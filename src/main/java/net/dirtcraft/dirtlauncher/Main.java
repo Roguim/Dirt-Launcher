@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.awt.*;
 
@@ -27,10 +28,12 @@ public class Main extends Application {
         primaryStage.setTitle("Dirt Launcher");
 
         Scene scene = new Scene(root, screenSize.width, screenSize.height);
-        //scene.getStylesheets().add("sidebar.css");
+        //scene.getStylesheets().add("sidebar.css")
 
 
         primaryStage.setScene(scene);
+        primaryStage.initStyle(StageStyle.DECORATED);
+        
         primaryStage.show();
     }
 

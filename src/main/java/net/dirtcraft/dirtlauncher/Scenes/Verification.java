@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Verification {
 
     public static Account login(String email, String password) throws InvalidCredentialsException {
-        if (email == null || password == null) throw new InvalidCredentialsException("Dude! You forgot to put in your password!");
+        if (email == null || password == null) throw new InvalidCredentialsException("Dude! You forgot to put in your email or password!");
 
         YggdrasilClient client = new YggdrasilClient();
 
