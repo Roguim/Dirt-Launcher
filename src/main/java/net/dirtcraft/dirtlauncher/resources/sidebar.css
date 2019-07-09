@@ -1,6 +1,6 @@
 .list-view {
     -fx-padding: 5px ;
-    -fx-background-color: gray ;
+    -fx-background-color: lightslategray ;
 }
 .packlist.list-cell:filled {
     -fx-background-color: firebrick;

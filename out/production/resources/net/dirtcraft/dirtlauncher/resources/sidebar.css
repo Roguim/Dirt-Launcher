@@ -1,16 +1,20 @@
 .list-view {
     -fx-padding: 5px ;
-    -fx-background-color: gray ;
+    -fx-background-color: lightslategray ;
+}
+.packlist.list-cell:filled {
+    -fx-background-color: firebrick;
+    -fx-padding: 2px 10px ;
+    -fx-background-insets: 2px 10px;
+    -fx-background-radius: 5
 }
 
-.list-cell {
-    -fx-padding: 0px ;
-    -fx-background-color: transparent, -fx-background ;
-    -fx-background-insets: 0px, 0px ;
-}
-
-.list-cell:empty {
-    -fx-padding: 10px ;
+.packlist.list-cell:empty {
     -fx-background-color: transparent ;
-    -fx-background-insets: 0 ;
 }
+
+.packlist.list-cell:filled:hover {
+     -fx-scale-y: 1.05;
+     -fx-scale-x: 1.05;
+     -fx-background-color: #3a3a3a;
+ }
