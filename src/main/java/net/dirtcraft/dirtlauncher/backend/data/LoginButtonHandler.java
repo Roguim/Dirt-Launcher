@@ -93,8 +93,9 @@ public class LoginButtonHandler {
         }
 
         if (messageBox.getTextAlignment() != TextAlignment.CENTER) messageBox.setTextAlignment(TextAlignment.CENTER);
-        messageBox.getChildren().clear();
-        messageBox.getChildren().add(text);
+
+        if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
+        messageBox.getChildren().setAll(text);
 
 
         uiCallback = getThread(result);
@@ -105,12 +106,16 @@ public class LoginButtonHandler {
 
     private static Thread getThread(LoginResult result) {
         return new Thread(() -> {
-            Platform.runLater(() -> messageBox.setOpacity(1));
+            Platform.runLater(() -> {
+                if (messageBox.getOpacity() != 1) messageBox.setOpacity(1);
+            });
             try {
                 Thread.sleep((result == LoginResult.SUCCESS ? 2 : 5) * 1000);
-                Platform.runLater(() -> messageBox.setOpacity(0));
-                if (result == LoginResult.SUCCESS) Platform.runLater(() -> Main.getInstance().getStage().close());
-                Platform.runLater(()-> uiCallback = null);
+                Platform.runLater(() -> {
+                    if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
+                    if (result == LoginResult.SUCCESS) Main.getInstance().getStage().hide();
+                    if (uiCallback != null) uiCallback = null;
+                });
             } catch (InterruptedException ex) {}
         });
     }
