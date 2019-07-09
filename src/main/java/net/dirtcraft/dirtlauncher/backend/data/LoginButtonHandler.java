@@ -17,6 +17,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
+import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
@@ -46,11 +47,11 @@ public class LoginButtonHandler {
 
         try {
             userAccount = Verification.login(email, password);
-        } catch (InvalidCredentialsException e) {
-            displayLoginError("Please enter a valid email / password.");
-        } catch (IllegalArgumentException e){
-            displayLoginError("Your email or password was invalid.");
+        } catch (InvalidCredentialsException | IllegalArgumentException | UserMigratedException e){
+            displayLoginError(e.getMessage());
+            return null;
         }
+        displayLoginError("Error: Success!");
 
         //TODO do stuff with the userAccount
 
