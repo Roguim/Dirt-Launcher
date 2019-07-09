@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -9,8 +8,6 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
-
-import javax.swing.*;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
@@ -24,10 +21,13 @@ public class LoginButtonHandler {
             passwordField = Controller.getInstance().getPasswordField();
             playButton = Controller.getInstance().getPlayButton();
         }
+        Account userAccount = null;
         String user = usernameField.getText();
         String pass = passwordField.getText();
+        System.out.println(user);
+        System.out.println(pass);
         try {
-            Account userAccount = Verification.login(user, pass);
+            userAccount = Verification.login(user, pass);
         } catch (InvalidCredentialsException e){
             System.out.println("o shit u been hacked!\n"+e);
         } catch (IllegalArgumentException e){
