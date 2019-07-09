@@ -86,7 +86,10 @@ public class Controller {
     @FXML
     private void onKeyTyped(KeyEvent event) {
         if (!PackCellFactory.hasPackSelected) return;
-        if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) playButton.setDisable(false);
+        if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
+            playButton.setDisable(false);
+            playButton.setOnAction(action -> LoginButtonHandler.onClick());
+        }
         else playButton.setDisable(true);
     }
 
