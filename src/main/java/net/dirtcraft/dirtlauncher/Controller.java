@@ -61,7 +61,6 @@ public class Controller {
         packList.setItems(packs);
 
         webView.getEngine().load("https://dirtcraft.net/");
-        webView.setStyle("overflow-x: hidden; overflow-y: hidden;");
 
     }
 
