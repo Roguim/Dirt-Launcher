@@ -24,7 +24,7 @@
                 </ListView>
             </left>
         </BorderPane>
-      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #9E1030;" AnchorPane.rightAnchor="300.0">
+      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #9E1030;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text fx:id="headerText" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
                <font>
