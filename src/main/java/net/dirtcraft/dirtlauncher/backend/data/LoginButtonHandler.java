@@ -14,24 +14,27 @@ public class LoginButtonHandler {
     private static PasswordField passwordField;
     private static Button playButton;
 
-    public static void onClick() {
+    public static Account onClick() {
         if (!initialized){
             usernameField = Controller.getInstance().getUsernameField();
             passwordField = Controller.getInstance().getPasswordField();
             playButton = Controller.getInstance().getPlayButton();
         }
         Account userAccount = null;
-        String user = usernameField.getText();
-        String pass = passwordField.getText();
+
+        String email = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
 
         try {
-            userAccount = Verification.login(user, pass);
-        } catch (InvalidCredentialsException e){
+            userAccount = Verification.login(email, password);
+        } catch (InvalidCredentialsException e) {
             System.out.println("o shit u been hacked!\n"+e);
         } catch (IllegalArgumentException e){
             System.out.println("o shit no credentialz\n"+e);
         }
 
         //TODO do stuff with the userAccount
+
+        return userAccount;
     }
 }

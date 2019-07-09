@@ -62,11 +62,11 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <PasswordField id="passwordField" fx:id="passwordField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="194.0" promptText="Password" styleClass="login" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+                              <PasswordField id="passwordField" fx:id="passwordField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" prefHeight="30.0" prefWidth="194.0" promptText="Password" styleClass="login" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
                                  <cursor>
                                     <Cursor fx:constant="TEXT" />
                                  </cursor></PasswordField>
-                              <TextField id="usernameField" fx:id="usernameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onTabPressed" prefHeight="30.0" prefWidth="194.0" promptText="E-Mail/Username" styleClass="login" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
+                              <TextField id="usernameField" fx:id="usernameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" prefHeight="30.0" prefWidth="194.0" promptText="E-Mail/Username" styleClass="login" stylesheets="@playArea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
                                  <cursor>
                                     <Cursor fx:constant="TEXT" />
                                  </cursor></TextField>

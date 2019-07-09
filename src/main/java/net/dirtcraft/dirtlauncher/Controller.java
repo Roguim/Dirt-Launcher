@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher;
 
 
-import com.google.common.base.Strings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,13 +10,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
+import net.dirtcraft.dirtlauncher.backend.JsonUtils.PackRegistry;
+import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
 import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
-import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
 
 public class Controller {
     private static Controller instance;
@@ -73,10 +72,16 @@ public class Controller {
     private void onEnterPressed(KeyEvent event) {
         if (event.getCode() != KeyCode.ENTER) return;
         if (playButton.isDisabled()) return;
-        if (Strings.isNullOrEmpty(usernameField.getText().trim()) || Strings.isNullOrEmpty(passwordField.getText().trim())) return;
 
         LoginButtonHandler.onClick();
 
+    }
+
+    @FXML
+    private void onKeyTyped(KeyEvent event) {
+        if (!PackCellFactory.hasPackSelected) return;
+        if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) playButton.setDisable(false);
+        else playButton.setDisable(true);
     }
 
     public Button getPlayButton() {

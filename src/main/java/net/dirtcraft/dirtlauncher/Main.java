@@ -17,8 +17,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        //new PackRegistry();
-        //Verification.login(null, null);
     }
 
     @Override
