@@ -1,6 +1,6 @@
 .packlist.list-view {
     -fx-padding: 5px ;
-    -fx-background-color: 9B1B30 ;
+    -fx-background-color: #9B1B30 ;
 }
 
 .packlist.list-cell:filled {
