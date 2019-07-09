@@ -1,26 +1,23 @@
 package net.dirtcraft.dirtlauncher.backend.data;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-import javafx.util.Duration;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
+import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
+
+import javax.annotation.Nullable;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
@@ -31,6 +28,7 @@ public class LoginButtonHandler {
     private static TextFlow messageBox;
     private static Pane launchBox;
 
+    @Nullable
     public static Account onClick() {
         if (!initialized){
             usernameField = Controller.getInstance().getUsernameField();
@@ -40,36 +38,60 @@ public class LoginButtonHandler {
             launchBox = Controller.getInstance().getLaunchBox();
             uiCallback = null;
         }
-        Account userAccount = null;
+        Account account = null;
 
         String email = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
         try {
-            userAccount = Verification.login(email, password);
-        } catch (InvalidCredentialsException | IllegalArgumentException | UserMigratedException e){
-            displayLoginError(e.getMessage());
-            return null;
+            account = Verification.login(email, password);
+            displayLoginError(account, LoginResult.SUCCESS);
+            //} catch (Exception e){
+        } catch (InvalidCredentialsException e) {
+                displayLoginError(account, LoginResult.INVALID_CREDENTIALS);
+        } catch (IllegalArgumentException e) {
+            displayLoginError(account, LoginResult.ILLEGAL_ARGUMENT);
+        } catch (UserMigratedException e) {
+            displayLoginError(account, LoginResult.USER_MIGRATED);
         }
-        displayLoginError("Error: Success!");
 
-        //TODO do stuff with the userAccount
+        //TODO - do stuff with the userAccount
 
-        return userAccount;
+        return account;
     }
 
-    public static void displayLoginError(String exception){
-        ShakeTransition anim = new ShakeTransition(messageBox);
-        anim.playFromStart();
-
+    private static void displayLoginError(Account account, LoginResult result){
 
         if (uiCallback != null) uiCallback.interrupt();
 
         Text text = new Text();
         text.getStyleClass().add("errorMessage");
-        text.setFill(Paint.valueOf("WHITE"));
+        text.setFill(Color.WHITE);
         text.setTextOrigin(VPos.CENTER);
-        text.setText(exception);
+
+        if (account != null) text.setText("Successfully logged into " + account.getUsername() + "'s account");
+        else {
+            ShakeTransition animation = new ShakeTransition(messageBox);
+            animation.playFromStart();
+
+            switch (result) {
+                case SUCCESS:
+                    text.setText("Successfully logged into");
+                    break;
+                case USER_MIGRATED:
+                    text.setText("An account with this username has already been migrated!");
+                    break;
+                case ILLEGAL_ARGUMENT:
+                    text.setText("Your username or password contains invalid arguments!");
+                    break;
+                default:
+                case INVALID_CREDENTIALS:
+                    text.setText("Your E-Mail or password is invalid!");
+                    break;
+            }
+        }
+
+        //text.setText(message.replace("where", "were"));
 
         messageBox.setTextAlignment(TextAlignment.CENTER);
         messageBox.getChildren().clear();

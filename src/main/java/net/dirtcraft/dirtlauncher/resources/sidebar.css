@@ -26,16 +26,17 @@
 }
 
 .packlist.list-cell:filled:hover {
-     -fx-background-color: #303030;
+     -fx-background-color: #696969;
 }
 
 .packlist.list-cell:filled:selected {
-     -fx-background-color: #615550;
-     -fx-text-fill: #FFFAFA;
+     -fx-background-color: #FFF0F5;
+     -fx-text-fill: black;
 }
 
 .packlist.list-cell:filled:pressed {
-     -fx-background-color: #000000;
+     -fx-background-color: #303030;
+     -fx-text-fill: #FFF0F5;
 }
 
 .tooltip, .packlist.tooltip{
@@ -43,6 +44,6 @@
     -fx-text-fill: #DCDCDC;
     -fx-opacity: 0.8;
     -fx-background-radius: 5.0;
-    -fx-font-size: 11 ;
+    -fx-font-size: 14;
     /* -fx-line-spacing: -5 ; Bugged*/
 }

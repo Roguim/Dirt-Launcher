@@ -38,7 +38,7 @@ class ShakeTransition extends Transition {
      * @param node The node to affect
      */
     public ShakeTransition(final Node node) {
-        this.node=node;
+        this.node = node;
         statusProperty().addListener((ov, t, newStatus) -> {
             switch(newStatus) {
                 case RUNNING:
