@@ -35,6 +35,7 @@ public class Controller {
 
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
+        listView.getStyleClass().add("packlist");
         listView.setCellFactory(useless -> new PackCellFactory());
         listView.setItems(packs);
 

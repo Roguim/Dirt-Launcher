@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Paint;
@@ -17,17 +18,24 @@ public class PackCellFactory extends ListCell<Pack> {
         super.updateItem(pack, empty);
 
         if (empty || pack.getName() == null) {
+            getStyleClass().add("packlist");
             setText(null);
         } else {
+            getStyleClass().add("packlist");
             String name = pack.getName();
             String version = pack.getVersion();
-            setStyle("-fx-background-color: firebrick; -fx-padding: 1px; -fx-background-insets: 1px;");
             setText(name);
             setAlignment(Pos.CENTER);
             setTextAlignment(TextAlignment.CENTER);
             setTextFill(Paint.valueOf("WHITE"));
             setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
+
+            Label label = new Label(version);
+            label.
+            setGraphic(label);
+
             setOnMouseClicked(useless->System.out.println(name));
+
             setTooltip(new Tooltip(version));
         }
     }

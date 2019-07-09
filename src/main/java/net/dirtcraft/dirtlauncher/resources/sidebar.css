@@ -2,10 +2,19 @@
     -fx-padding: 5px ;
     -fx-background-color: gray ;
 }
-.list-cell {
-    -fx-padding: 1px ;
+.packlist.list-cell:filled {
+    -fx-background-color: firebrick;
+    -fx-padding: 2px 10px ;
+    -fx-background-insets: 2px 10px;
+    -fx-background-radius: 5
 }
 
-.list-cell:empty {
-    -fx-padding: 1px ;
+.packlist.list-cell:empty {
+    -fx-background-color: transparent ;
 }
+
+.packlist.list-cell:filled:hover {
+     -fx-scale-y: 1.05;
+     -fx-scale-x: 1.05;
+     -fx-background-color: #3a3a3a;
+ }
