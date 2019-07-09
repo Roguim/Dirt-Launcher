@@ -17,21 +17,13 @@ import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
 import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
 
 public class Controller {
+    private static Controller instance;
 
     @FXML
     private ListView<Pack> packList;
 
     @FXML
-    private HBox topPane;
-
-    @FXML
     private WebView webView;
-
-    @FXML
-    private Text headerText;
-
-    @FXML
-    private Pane launchBox;
 
     @FXML
     private TextField usernameField;
@@ -42,10 +34,15 @@ public class Controller {
     @FXML
     private Button playButton;
 
+    public static Controller getInstance() {
+        return instance;
+    }
+
     @FXML
     private void initialize() {
 
-
+        instance = this;
+        playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
         packs.addAll(PackRegistry.getPacks());
@@ -57,4 +54,15 @@ public class Controller {
 
     }
 
+    public Button getPlayButton() {
+        return playButton;
+    }
+
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+
+    public TextField getUsernameField() {
+        return usernameField;
+    }
 }

@@ -2,12 +2,14 @@ package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class PackCellFactory extends ListCell<Pack> {
             setTextFill(Paint.valueOf("WHITE"));
             setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
 
-            setOnMouseClicked(useless -> System.out.println(name));
+            setOnMouseClicked(useless -> onClick(pack));
 
             Tooltip tooltip = new Tooltip();
             tooltip.getStyleClass().add("packlist");
@@ -44,6 +46,12 @@ public class PackCellFactory extends ListCell<Pack> {
             setTooltip(tooltip);
             setCursor(Cursor.HAND);
         }
+    }
+
+    private void onClick(Pack pack){
+        Button playButton = Controller.getInstance().getPlayButton();
+        playButton.setDisable(false);
+        playButton.setOnAction(v->LoginButtonHandler.onClick(v));
     }
 
 }

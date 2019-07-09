@@ -13,10 +13,14 @@
 #playButton{
     -fx-border-radius: 00 15 15 00;
     -fx-background-radius: 00 15 15 00;
-    -fx-background-color: #aaaaaa;
     -fx-opacity: 1;
     -fx-font-size: 14 ;
     -fx-font-weight: bold ;
+    -fx-background-color: #BBBB44;
+}
+
+#playButton:disabled{
+    -fx-background-color: #aaaaaa;
 }
 
 #playButton:pressed{
