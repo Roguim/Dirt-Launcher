@@ -24,7 +24,7 @@
                 </ListView>
             </left>
         </BorderPane>
-      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #9E1030;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #77212E;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text fx:id="headerText" fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
                <font>
@@ -33,13 +33,10 @@
                <HBox.margin>
                   <Insets />
                </HBox.margin>
-               <cursor>
-                  <Cursor fx:constant="NONE" />
-               </cursor>
             </Text>
          </children>
          <cursor>
-            <Cursor fx:constant="NONE" />
+            <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
       <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

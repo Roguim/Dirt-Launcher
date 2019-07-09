@@ -25,11 +25,13 @@
 .packlist.list-cell:filled:selected {
      -fx-scale-y: 1.05;
      -fx-scale-x: 1.05;
-     -fx-background-color: #181818;
+     -fx-background-color: #615550;
+     -fx-text-fill: #FFFAFA;
 }
 
 .packlist.tooltip{
-    -fx-background-color: linear-gradient(firebrick,black);
+    -fx-background-color: #404040;
+    -fx-text-fill: #DCDCDC;
     -fx-opacity: 0.8;
     -fx-background-radius: 5.0;
 }
