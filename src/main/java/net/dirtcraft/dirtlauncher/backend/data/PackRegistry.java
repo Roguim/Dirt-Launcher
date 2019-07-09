@@ -7,6 +7,8 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import javafx.collections.ObservableList;
+import javafx.scene.layout.HBox;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 
@@ -17,16 +19,17 @@ import java.util.List;
 public class PackRegistry {
 
     public static final String JSON_URL = "http://164.132.201.67/launcher/packs.json";
+    private static List<Pack> packs = null;
 
-    public static List<Pack> getPacks() {
+    private static void loadPacks() {
         JsonElement jsonElement = new JsonParser().parse(getStringFromURL());
 
-        List<Pack> packs = new ArrayList<>();
+        List<Pack> packList = new ArrayList<>();
         for (JsonElement element : jsonElement.getAsJsonArray()) {
-            packs.add(new Pack(element.getAsJsonObject()));
+            packList.add(new Pack(element.getAsJsonObject()));
         }
 
-        for (Pack pack : packs) {
+        for (Pack pack : packList) {
             System.out.println("Name: " + pack.getName());
             System.out.println("Version: " + pack.getVersion());
             System.out.println("Pack Type: " + pack.getPackType());
@@ -45,8 +48,20 @@ public class PackRegistry {
             }
         }
 
-        return packs;
+        packs = packList;
 
+    }
+    /*
+    public static <T extends List> T getPacks(T genericList){
+        if (packs == null) loadPacks();
+        packs.forEach(pack->genericList.add(pack));
+        return genericList;
+    }
+    */
+
+    public static List<Pack> getPacks(){
+        if (packs == null) loadPacks();
+        return packs;
     }
 
     private static String getStringFromURL() {

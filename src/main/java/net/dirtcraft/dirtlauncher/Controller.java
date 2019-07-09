@@ -1,12 +1,16 @@
 package net.dirtcraft.dirtlauncher;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 import net.dirtcraft.dirtlauncher.backend.Utils.Fetch;
+import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
 
 public class Controller {
 
@@ -14,7 +18,7 @@ public class Controller {
 
 
     @FXML
-    private ListView listView;
+    private ListView<Pack> listView;
 
     @FXML
     private HBox topPane;
@@ -32,7 +36,10 @@ public class Controller {
     private void initialize() {
         fetch = new Fetch();
 
-        listView.setItems(fetch.getPacks());
+        ObservableList<Pack> packs = FXCollections.observableArrayList();
+        packs.addAll(PackRegistry.getPacks());
+        listView.setCellFactory(useless->new PackCellFactory());
+        listView.setItems(packs);
     }
 
     @FXML
