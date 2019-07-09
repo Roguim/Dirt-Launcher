@@ -1,14 +1,21 @@
 package net.dirtcraft.dirtlauncher.backend.data;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
@@ -21,6 +28,7 @@ public class LoginButtonHandler {
     private static Button playButton;
     private static Thread uiCallback;
     private static TextFlow messageBox;
+    private static Pane launchBox;
 
     public static Account onClick() {
         if (!initialized){
@@ -28,6 +36,7 @@ public class LoginButtonHandler {
             passwordField = Controller.getInstance().getPasswordField();
             playButton = Controller.getInstance().getPlayButton();
             messageBox = Controller.getInstance().getMessageBox();
+            launchBox = Controller.getInstance().getLaunchBox();
             uiCallback = null;
         }
         Account userAccount = null;
@@ -49,6 +58,10 @@ public class LoginButtonHandler {
     }
 
     public static void displayLoginError(String exception){
+        ShakeTransition anim = new ShakeTransition(messageBox);
+        anim.playFromStart();
+
+
         if (uiCallback != null) uiCallback.interrupt();
 
         Text text = new Text();

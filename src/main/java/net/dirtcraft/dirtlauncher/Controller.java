@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
@@ -38,6 +39,9 @@ public class Controller {
 
     @FXML
     private TextFlow messageBox;
+
+    @FXML
+    private Pane launchBox;
 
     public static Controller getInstance() {
         return instance;
@@ -99,5 +103,9 @@ public class Controller {
 
     public TextFlow getMessageBox() {
         return messageBox;
+    }
+
+    public Pane getLaunchBox() {
+        return launchBox;
     }
 }
