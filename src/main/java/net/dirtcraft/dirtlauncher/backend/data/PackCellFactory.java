@@ -52,7 +52,7 @@ public class PackCellFactory extends ListCell<Pack> {
     }
 
     private void onClick() {
-        hasPackSelected = true;
+        if (!hasPackSelected) hasPackSelected = true;
 
         Controller controller = Controller.getInstance();
         if (Utility.isEmptyOrNull(controller.getUsernameField().getText().trim(), controller.getPasswordField().getText().trim())) return;

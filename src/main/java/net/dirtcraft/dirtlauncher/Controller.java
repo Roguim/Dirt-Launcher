@@ -56,6 +56,7 @@ public class Controller {
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
 
+        webView.setStyle("overflow-x: hidden; overflow-y: hidden;");
         webView.getEngine().load("https://dirtcraft.net/");
 
     }
