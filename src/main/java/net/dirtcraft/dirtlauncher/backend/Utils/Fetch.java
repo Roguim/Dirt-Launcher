@@ -4,6 +4,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
 import org.apache.commons.text.WordUtils;
 
@@ -16,11 +23,27 @@ import java.net.URL;
 
 public class Fetch {
 
-    public ObservableList<String> getPacks() {
-        ObservableList<String> packs = FXCollections.observableArrayList();
+    public ObservableList<HBox> getPacks() {
+        ObservableList<HBox> packs = FXCollections.observableArrayList();
 
         final JsonObject json = getJsonObjFromString(getStringFromURL(getFinalURL(PackRegistry.JSON_URL)));
-        json.get("Pack Names").getAsJsonArray().forEach(element -> packs.add(WordUtils.capitalizeFully(element.getAsString())));
+        json.get("Pack Names").getAsJsonArray().forEach(element -> {
+            String packName = WordUtils.capitalizeFully(element.getAsString());
+            Text label = new Text(packName);
+            label.setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
+            label.setTextAlignment(TextAlignment.CENTER);
+            label.setFill(Paint.valueOf("WHITE"));
+
+            HBox hBox = new HBox();
+            hBox.setStyle("-fx-background-color: firebrick; -fx-padding: 0px;");
+            hBox.setPrefHeight(30);
+            hBox.setAlignment(Pos.CENTER);
+            hBox.getChildren().add(label);
+            hBox.setOnMouseClicked((t)->System.out.println(packName));
+
+
+            packs.add(hBox);
+        });
         /*for (Pack pack : packRegistry.getPackList().getPacks()) {
             packs.add(pack.getName());
         }*/

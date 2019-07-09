@@ -2,15 +2,10 @@
     -fx-padding: 5px ;
     -fx-background-color: gray ;
 }
-
 .list-cell {
-    -fx-padding: 0px ;
-    -fx-background-color: transparent, -fx-background ;
-    -fx-background-insets: 0px, 0px ;
+    -fx-padding: 1px ;
 }
 
 .list-cell:empty {
-    -fx-padding: 10px ;
-    -fx-background-color: transparent ;
-    -fx-background-insets: 0 ;
+    -fx-padding: 1px ;
 }
