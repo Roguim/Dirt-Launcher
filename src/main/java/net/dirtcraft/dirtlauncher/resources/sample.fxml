@@ -87,7 +87,7 @@
       </FlowPane>
       <FlowPane alignment="BOTTOM_CENTER" layoutX="300.0" layoutY="283.0" prefHeight="200.0" prefWidth="511.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <TextFlow id="messageBox" fx:id="messageBox" prefHeight="70.0" prefWidth="265.0" styleClass="messageBox" />
+            <TextFlow id="messageBox" fx:id="messageBox" prefHeight="0.0" prefWidth="265.0" styleClass="messageBox" stylesheets="@playArea.css" />
          </children>
       </FlowPane>
     </children>
