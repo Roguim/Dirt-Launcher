@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 import net.dirtcraft.dirtlauncher.backend.data.PackRegistry;
@@ -22,7 +23,11 @@ public class Controller {
     private WebView webView;
 
     @FXML
+    private Text headerText;
+
+    @FXML
     private void initialize() {
+
 
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
