@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.backend.data;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -15,7 +14,7 @@ public class LoginButtonHandler {
     private static PasswordField passwordField;
     private static Button playButton;
 
-    public static void onClick(ActionEvent event){
+    public static void onClick() {
         if (!initialized){
             usernameField = Controller.getInstance().getUsernameField();
             passwordField = Controller.getInstance().getPasswordField();
