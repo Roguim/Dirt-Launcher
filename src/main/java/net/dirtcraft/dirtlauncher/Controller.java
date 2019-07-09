@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
@@ -37,7 +38,7 @@ public class Controller {
     private Button playButton;
 
     @FXML
-    private GridPane loginBox;
+    private TextFlow messageBox;
 
     public static Controller getInstance() {
         return instance;
