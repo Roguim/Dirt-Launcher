@@ -41,3 +41,7 @@
     -fx-background-color: #9B1B30 ;
     -fx-opacity: 0.9;
 }
+
+.login{
+    -fx-background-insets: 0;
+}
