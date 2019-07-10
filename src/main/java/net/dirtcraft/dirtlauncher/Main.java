@@ -26,13 +26,13 @@ public class Main extends Application {
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        Parent root = FXMLLoader.load(getClass().getResource("resources/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
 
         root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
         root.getStylesheets().add("https://fonts.gstatic.com/s/bevan/v10/4iCj6KZ0a9NXjG8dWCvZtUSI.woff2");
 
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("resources/icon.png")));
+        primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("/icon.png")));
 
         Scene scene = new Scene(root, screenSize.getWidth() / 1.15, screenSize.getHeight() / 1.35);
         //scene.getStylesheets().add("resources/sidebar.css");

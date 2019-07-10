@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -47,6 +48,9 @@ public class Controller {
     @FXML
     private Text headerText;
 
+    @FXML
+    private FlowPane inputPane;
+
     public static Controller getInstance() {
         return instance;
     }
@@ -56,7 +60,7 @@ public class Controller {
 
         instance = this;
 
-
+        inputPane.setPickOnBounds(false);
         messageBox.setOpacity(0);
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
@@ -66,6 +70,7 @@ public class Controller {
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
 
+        webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/sample.fxml").toString());
         webView.getEngine().load("https://dirtcraft.net/");
 
     }
