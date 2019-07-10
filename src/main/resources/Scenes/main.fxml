@@ -37,7 +37,7 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
-          <ListView id="PackList" fx:id="packList" layoutY="100.0" prefHeight="552.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="PackList" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
+          <ListView id="PackList" fx:id="packList" focusTraversable="false" layoutY="100.0" prefHeight="552.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="PackList" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
       <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Pane id="LoginBar" fx:id="loginBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css">
