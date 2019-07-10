@@ -21,7 +21,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
     <children>
-      <WebView fx:id="webView" layoutX="301.0" layoutY="100.0" minHeight="-1.0" minWidth="-1.0" prefHeight="621.0" prefWidth="511.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <WebView fx:id="webView" layoutX="300.0" layoutY="100.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text id="Title" fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-translate-y: -5;" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">

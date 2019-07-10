@@ -29,9 +29,6 @@ public class Main extends Application {
 
         Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "main.fxml"));
 
-        root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
-        root.getStylesheets().add("https://fonts.gstatic.com/s/bevan/v10/4iCj6KZ0a9NXjG8dWCvZtUSI.woff2");
-
         primaryStage.setTitle("Dirt Launcher");
         primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS, "main.png"));
 
@@ -39,8 +36,6 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.DECORATED);
-
-
 
         primaryStage.show();
 

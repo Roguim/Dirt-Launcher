@@ -77,6 +77,8 @@ public class Controller {
 
         webEngine.load("https://dirtcraft.net/");
 
+
+
     }
 
     @FXML
