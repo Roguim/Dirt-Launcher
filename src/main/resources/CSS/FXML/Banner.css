@@ -2,6 +2,14 @@
 @import url('https://fonts.googleapis.com/css?family=Bevan')
 /*@import url('https://fontlibrary.org/face/minecraft')*/
 
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../Fonts/OpenSans-Bold.ttf");
+}
+
 .body {
   -fx-background-color: linear-gradient(to bottom, #ae2929, #595959);
 /*-fx-border-radius: 30;
@@ -10,8 +18,8 @@
 -fx-border-style: dotted;*/
 }
 
-.text {
+#Title {
   /*-fx-font-family: 'Oleo Script';*/
-  -fx-font-family: 'Bevan';
+  -fx-font-family: 'Open Sans';
   -fx-font-size: 34;
 }
