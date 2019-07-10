@@ -60,7 +60,7 @@
     -fx-cell-size: 50;
     -fx-background-color: firebrick;
     -fx-padding: 2px 10px ;
-    -fx-background-insets: 2px 10px;
+    -fx-background-insets: 2px 7px;
     -fx-background-radius: 5 ;
     -fx-content-display: right ;
 }
