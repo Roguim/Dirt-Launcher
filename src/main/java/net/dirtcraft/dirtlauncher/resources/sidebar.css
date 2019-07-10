@@ -4,7 +4,8 @@
 
 .packlist.list-view {
     -fx-padding: 5px ;
-    -fx-background-color: #9B1B30 ;
+    -fx-background-color: #292929;
+    /* -fx-opacity: 0.8; */
 }
 
 .packlist.list-cell:filled {
@@ -26,7 +27,7 @@
 }
 
 .packlist.list-cell:filled:hover {
-     -fx-background-color: #696969;
+     -fx-background-color: #661313;
 }
 
 .packlist.list-cell:filled:selected {
