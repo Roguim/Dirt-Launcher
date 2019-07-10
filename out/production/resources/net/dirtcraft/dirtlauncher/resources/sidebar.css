@@ -5,7 +5,7 @@
 .packlist.list-view {
     -fx-padding: 5px ;
     /*-fx-background-color: #2c2f33;*/
-    -fx-background-color: linear-gradient(to top, #595959, #191919);
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
     /*-fx-background-color: #292929;
     /* -fx-opacity: 0.8; */
 }
