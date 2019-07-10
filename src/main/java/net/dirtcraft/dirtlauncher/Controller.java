@@ -12,9 +12,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.Config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.Config.Internal;
@@ -71,8 +71,11 @@ public class Controller {
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
 
-        webView.getEngine().setUserStyleSheetLocation(Utility.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
-        webView.getEngine().load("https://dirtcraft.net/");
+        WebEngine webEngine = webView.getEngine();
+
+        webEngine.setUserStyleSheetLocation(Utility.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
+
+        webEngine.load("https://dirtcraft.net/");
 
     }
 

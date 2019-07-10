@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PackRegistry {
 
-    public static final String JSON_URL = "http://164.132.201.67/launcher/packs.json";
+    private static final String JSON_URL = "http://164.132.201.67/launcher/packs.json";
 
     public static List<Pack> getPacks() {
         JsonElement json = new JsonParser().parse(getStringFromURL());
