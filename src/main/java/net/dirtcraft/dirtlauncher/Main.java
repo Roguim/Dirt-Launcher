@@ -27,7 +27,7 @@ public class Main extends Application {
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "Main.fxml"));
+        Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "main.fxml"));
 
         root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
         root.getStylesheets().add("https://fonts.gstatic.com/s/bevan/v10/4iCj6KZ0a9NXjG8dWCvZtUSI.woff2");
