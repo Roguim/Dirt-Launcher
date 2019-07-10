@@ -5,13 +5,6 @@
     src: url("../Fonts/MinecrafterAlt.ttf");
 }
 
-@font-face {
-    font-family: "Minecraft";
-    font-style: normal;
-    font-weight: 400;
-    src: url("../Fonts/Minecraft.ttf");
-}
-
 .body {
   /*-fx-background-color: linear-gradient(to bottom, #ae2929 0%, #595959 100%);*/
   -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
