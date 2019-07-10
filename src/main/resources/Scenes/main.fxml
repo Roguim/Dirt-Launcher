@@ -37,7 +37,7 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
-          <ListView id="PackList" fx:id="packList" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="PackList" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
+          <ListView id="PackList" fx:id="packList" layoutY="100.0" prefHeight="552.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="PackList" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
       <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Pane id="LoginBar" fx:id="loginBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css">
@@ -120,5 +120,30 @@
                </styleClass></TextFlow>
          </children>
       </FlowPane>
+      <Pane id="SettingsBar" layoutY="662.0" prefHeight="60.0" prefWidth="300.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+         <children>
+            <Button id="AddPackButton" fx:id="addPackButton" layoutX="55.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="240.0" stylesheets="@../CSS/FXML/Sidebar.css" text="Add new pack" textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="SettingsBar" />
+                  <String fx:value="AddPackButton" />
+               </styleClass>
+               <font>
+                  <Font name="Alef Regular" size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" stylesheets="@../CSS/FXML/Sidebar.css">
+               <styleClass>
+                  <String fx:value="SettingsBar" />
+                  <String fx:value="SettingsButton" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+      </Pane>
     </children>
 </AnchorPane>

@@ -3,6 +3,52 @@
     -fx-background-insets: 0;
 }
 
+#SettingsBar{
+    -fx-background-color: linear-gradient(to top, #121212, #191919);
+}
+
+.AddPackButton{
+    -fx-text-fill: FFFFFF;
+    -fx-cell-size: 50;
+    -fx-background-color: firebrick;
+    -fx-padding: 2px 10px ;
+    -fx-background-insets: 2px 10px;
+    -fx-background-radius: 5 ;
+    -fx-content-display: right ;
+}
+
+.AddPackButton:hover, .PackList.list-cell:filled:selected{
+     -fx-scale-y: 1.05;
+     -fx-scale-x: 1.05;
+}
+
+.AddPackButton:hover {
+     -fx-background-color: #661313;
+}
+
+.AddPackButton:selected {
+     -fx-background-color: #FFF0F5;
+     -fx-text-fill: black;
+}
+
+.AddPackButton:pressed {
+     -fx-background-color: #303030;
+     -fx-text-fill: #FFF0F5;
+}
+
+.SettingsButton{
+    -fx-cell-size: 50;
+    -fx-text-alignment: center;
+    -fx-font-size: 20;
+    -fx-font-family: 'System Bold';
+    -fx-font-weight: lighter ;
+    -fx-background-color: firebrick;
+    -fx-padding: 2px 10px ;
+    -fx-background-insets: 2px 2px;
+    -fx-background-radius: 5 ;
+    -fx-content-display: right ;
+}
+
 .PackList.list-view {
     -fx-padding: 5px ;
     /*-fx-background-color: #2c2f33;*/
