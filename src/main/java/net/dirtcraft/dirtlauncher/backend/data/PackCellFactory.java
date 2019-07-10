@@ -23,10 +23,10 @@ public class PackCellFactory extends ListCell<Pack> {
         super.updateItem(pack, empty);
 
         if (empty || pack.getName() == null) {
-            getStyleClass().add("packlist");
+            getStyleClass().add("PackList");
             setText(null);
         } else {
-            getStyleClass().add("packlist");
+            getStyleClass().add("PackList");
             String name = pack.getName();
 
             setText(name);
@@ -38,7 +38,7 @@ public class PackCellFactory extends ListCell<Pack> {
             setOnMouseClicked(event -> onClick());
 
             Tooltip tooltip = new Tooltip();
-            tooltip.getStyleClass().add("packlist");
+            tooltip.getStyleClass().add("PackList");
             tooltip.setText(String.join("\n", Arrays.asList(
                     "ModPack Name: " + pack.getName(),
                     "ModPack Version: " + pack.getVersion(),

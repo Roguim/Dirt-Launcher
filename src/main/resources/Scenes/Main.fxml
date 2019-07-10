@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
+    <children>
+      <WebView fx:id="webView" layoutX="301.0" layoutY="100.0" minHeight="-1.0" minWidth="-1.0" prefHeight="621.0" prefWidth="511.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <stylesheets>
+            <URL value="@../CSS/FXML/Webview.css" />
+            <URL value="@../CSS/HTML/webEngine.css" />
+         </stylesheets></WebView>
+      <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Text id="Title" fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <font>
+                  <Font name="Courier" size="6.0" />
+               </font>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Text>
+         </children>
+         <cursor>
+            <Cursor fx:constant="DISAPPEAR" />
+         </cursor>
+      </HBox>
+          <ListView id="PackList" fx:id="packList" layoutY="100.0" prefHeight="400.0" prefWidth="300.0" style="-fx-pref-height: 500;" styleClass="PackList" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0" />
+      <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Pane id="LoginBar" fx:id="loginBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css">
+               <children>
+                  <GridPane id="LoginGridPaneMain" alignment="CENTER" layoutX="8.0" prefHeight="73.0" prefWidth="250.0" stylesheets="@../CSS/FXML/Playarea.css">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="191.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="59.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane id="LoginGridPaneText" stylesheets="@../CSS/FXML/Playarea.css" GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <PasswordField id="PasswordField" fx:id="passwordField" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="Password" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+                                 <cursor>
+                                    <Cursor fx:constant="TEXT" />
+                                 </cursor>
+                                 <styleClass>
+                                    <String fx:value="LoginArea" />
+                                    <String fx:value="LoginBar" />
+                                    <String fx:value="LoginInput" />
+                                 </styleClass>
+                              </PasswordField>
+                              <TextField id="UsernameField" fx:id="usernameField" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="E-Mail/Username" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
+                                 <cursor>
+                                    <Cursor fx:constant="TEXT" />
+                                 </cursor>
+                                 <styleClass>
+                                    <String fx:value="LoginArea" />
+                                    <String fx:value="LoginBar" />
+                                    <String fx:value="LoginInput" />
+                                 </styleClass>
+                              </TextField>
+                           </children>
+                           <styleClass>
+                              <String fx:value="LoginArea" />
+                              <String fx:value="LoginBar" />
+                           </styleClass>
+                        </GridPane>
+                        <Button id="PlayButton" fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <styleClass>
+                              <String fx:value="LoginArea" />
+                              <String fx:value="LoginBar" />
+                              <String fx:value="LoginInput" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                     <styleClass>
+                        <String fx:value="LoginArea" />
+                        <String fx:value="LoginBar" />
+                     </styleClass>
+                  </GridPane>
+               </children>
+               <styleClass>
+                  <String fx:value="LoginArea" />
+                  <String fx:value="LoginBar" />
+               </styleClass>
+            </Pane>
+         </children>
+      </FlowPane>
+      <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" mouseTransparent="true" prefHeight="490.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextFlow id="NotificationField" fx:id="notificationBox" centerShape="false" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css" textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="NotificationBox" />
+                  <String fx:value="NotificationField" />
+               </styleClass></TextFlow>
+         </children>
+      </FlowPane>
+    </children>
+</AnchorPane>

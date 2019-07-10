@@ -35,8 +35,8 @@ public class LoginButtonHandler {
             usernameField = Controller.getInstance().getUsernameField();
             passwordField = Controller.getInstance().getPasswordField();
             playButton = Controller.getInstance().getPlayButton();
-            messageBox = Controller.getInstance().getMessageBox();
-            launchBox = Controller.getInstance().getLaunchBox();
+            messageBox = Controller.getInstance().getNotificationBox();
+            launchBox = Controller.getInstance().getLoginBox();
             uiCallback = null;
         }
         Account account = null;
@@ -66,7 +66,7 @@ public class LoginButtonHandler {
         if (uiCallback != null) uiCallback.interrupt();
 
         Text text = new Text();
-        text.getStyleClass().add("errorMessage");
+        text.getStyleClass().add("NotificationText");
         text.setFill(Color.WHITE);
 
         /* Help! Text isn't being aligned correctly */

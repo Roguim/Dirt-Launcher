@@ -1,16 +1,16 @@
-#passwordField{
+#PasswordField{
     -fx-border-radius: 0 0 0 15;
     -fx-background-radius: 0 0 0 15;
     -fx-opacity: 1;
 }
 
-#usernameField{
+#UsernameField{
     -fx-border-radius: 15 0 00;
     -fx-background-radius: 15 0 0 0;
     -fx-opacity: 1;
 }
 
-#playButton{
+#PlayButton{
     -fx-border-radius: 00 15 15 00;
     -fx-background-radius: 00 15 15 00;
     -fx-opacity: 1;
@@ -19,11 +19,11 @@
     -fx-background-color: #BBBB44;
 }
 
-#playButton:disabled{
+#PlayButton:disabled{
     -fx-background-color: #aaaaaa;
 }
 
-#playButton:pressed{
+#PlayButton:pressed{
     -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 3, 2, 1, 1 );
     -fx-background-insets: 0;
     -fx-border-radius: 00 15 15 00;
@@ -32,25 +32,25 @@
     -fx-opacity: 1;
 }
 
-#playButton:focused{
+#PlayButton:focused{
     -fx-background-insets: 0;
     -fx-background-radius: 00 15 15 00;
     -fx-padding: 0;
     -fx-opacity: 1;
 }
 
-#launchBox{
+#LoginBar{
     -fx-border-radius: 20 20 20 20;
     -fx-background-radius: 22 22 22 22;
     -fx-background-color: #9B1B30 ;
     -fx-opacity: 0.9;
 }
 
-.login{
+.LoginArea{
     -fx-background-insets: 0;
 }
 
-#messageBox {
+#NotificationBox {
     -fx-background-color: rgba( 0% , 0% , 0%, 0.75 );
     -fx-font-size: 14 ;
     -fx-font-weight: bold ;
@@ -61,6 +61,6 @@
     -fx-background-radius: 5 5 5 5;
 }
 
-.errorMessage {
+.NotificationBox {
    -fx-text-fill:white;
 }

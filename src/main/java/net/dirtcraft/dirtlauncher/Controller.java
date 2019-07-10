@@ -12,7 +12,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
@@ -40,16 +39,13 @@ public class Controller {
     private Button playButton;
 
     @FXML
-    private TextFlow messageBox;
+    private TextFlow notificationBox;
 
     @FXML
-    private Pane launchBox;
+    private FlowPane loginArea;
 
     @FXML
-    private Text headerText;
-
-    @FXML
-    private FlowPane inputPane;
+    private Pane loginBox;
 
     public static Controller getInstance() {
         return instance;
@@ -60,17 +56,17 @@ public class Controller {
 
         instance = this;
 
-        inputPane.setPickOnBounds(false);
-        messageBox.setOpacity(0);
+        loginArea.setPickOnBounds(false);
+        notificationBox.setOpacity(0);
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
         packs.addAll(PackRegistry.getPacks());
-        packList.getStyleClass().add("packlist");
+        packList.getStyleClass().add("PackList");
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
 
-        webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/sample.fxml").toString());
+        webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/CSS/HTML/webEngine.css").toString());
         webView.getEngine().load("https://dirtcraft.net/");
 
     }
@@ -115,11 +111,11 @@ public class Controller {
         return usernameField;
     }
 
-    public TextFlow getMessageBox() {
-        return messageBox;
+    public TextFlow getNotificationBox() {
+        return notificationBox;
     }
 
-    public Pane getLaunchBox() {
-        return launchBox;
+    public Pane getLoginBox() {
+        return loginBox;
     }
 }
