@@ -65,8 +65,8 @@ public class Controller {
         notificationBox.setOpacity(0);
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
-        packs.addAll(PackRegistry.getPacks());
-        //packs.addAll(PackRegistry.getPacks());
+        packs.setAll(PackRegistry.getPacks());
+
         packList.getStyleClass().add(CssClasses.PACKLIST);
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
