@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import javafx.scene.image.Image;
 import net.dirtcraft.dirtlauncher.Main;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -25,7 +24,7 @@ public class Utility {
 
     public static URL getResourceURL(String... directory){
         Main main = Main.getInstance();
-        String path = File.separator + String.join(File.separator , directory);
+        String path = "/" + String.join("/" , directory);
         return main.getClass().getResource(path);
     }
 

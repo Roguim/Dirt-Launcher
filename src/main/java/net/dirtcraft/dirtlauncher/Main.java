@@ -33,7 +33,7 @@ public class Main extends Application {
         root.getStylesheets().add("https://fonts.gstatic.com/s/bevan/v10/4iCj6KZ0a9NXjG8dWCvZtUSI.woff2");
 
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS,"main.png"));
+        primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS, "main.png"));
 
         Scene scene = new Scene(root, screenSize.getWidth() / 1.15, screenSize.getHeight() / 1.35);
 
