@@ -99,7 +99,7 @@
 }
 
 .list-view .scroll-bar:vertical {
-    -fx-padding: 0px;
+    -fx-padding: -7px;
     -fx-scale-x: 0;
     -fx-scale-y: 0;
     -fx-opacity: 0;
