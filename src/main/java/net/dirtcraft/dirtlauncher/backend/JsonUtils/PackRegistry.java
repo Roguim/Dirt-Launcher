@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class PackRegistry {
@@ -24,9 +25,12 @@ public class PackRegistry {
             packs.add(new Pack(element.getAsJsonObject()));
         }
 
+        packs.sort(Comparator.comparing(Pack::getName));
+
         for (Pack pack : packs) {
             System.out.println("Name: " + pack.getName());
             System.out.println("Version: " + pack.getVersion());
+            System.out.println("Code: " + pack.getCode());
             System.out.println("Pack Type: " + pack.getPackType());
             System.out.println("Link: " + pack.getLink());
             System.out.println("Splash: " + pack.getSplash());

@@ -66,7 +66,7 @@ public class Controller {
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
-        packs.addAll(PackRegistry.getPacks());
+        //packs.addAll(PackRegistry.getPacks());
         packList.getStyleClass().add(CssClasses.PACKLIST);
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);

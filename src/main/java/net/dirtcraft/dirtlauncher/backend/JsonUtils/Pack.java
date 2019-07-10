@@ -12,6 +12,7 @@ public class Pack {
 
     private String name;
     private String version;
+    private String code;
     private PackType packType;
     private String link;
     private String splash;
@@ -25,6 +26,7 @@ public class Pack {
     public Pack(JsonObject json) {
         this.name = json.get("name").getAsString();
         this.version = json.get("version").getAsString();
+        this.code = json.get("code").getAsString();
         this.packType = json.get("packType").getAsString().equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
@@ -127,5 +129,13 @@ public class Pack {
 
     public void setOptionalMods(List<OptionalMod> optionalMods) {
         this.optionalMods = optionalMods;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
