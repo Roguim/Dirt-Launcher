@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.application.Platform;
 import javafx.geometry.VPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -24,16 +25,22 @@ public class LoginButtonHandler {
     private static PasswordField passwordField;
     private static Thread uiCallback;
     private static TextFlow messageBox;
+    private static Button playButton;
+    private static PackAction packAction;
+
+    private static void Initialize(){
+        usernameField = Controller.getInstance().getUsernameField();
+        passwordField = Controller.getInstance().getPasswordField();
+        messageBox = Controller.getInstance().getNotificationBox();
+        playButton = Controller.getInstance().getPlayButton();
+        initialized = true;
+        uiCallback = null;
+        packAction = null;
+    }
 
     @Nullable
     public static Account onClick() {
-        if (!initialized){
-            usernameField = Controller.getInstance().getUsernameField();
-            passwordField = Controller.getInstance().getPasswordField();
-            messageBox = Controller.getInstance().getNotificationBox();
-            initialized = true;
-            uiCallback = null;
-        }
+        if (!initialized) Initialize();
         Account account = null;
 
         String email = usernameField.getText().trim();
@@ -101,6 +108,12 @@ public class LoginButtonHandler {
 
         uiCallback.start();
 
+    }
+
+    public static void setAction(PackAction action){
+        if (!initialized) Initialize();
+        packAction = action;
+        playButton.setText(action.toString());
     }
 
     private static Thread getThread(LoginResult result) {
