@@ -51,7 +51,7 @@ jfx {
 sourceSets {
     main {
         resources {
-            srcDirs = ["src/main/resources/"]
+            srcDirs = ["src/main/resources"]
             includes = ["**/*.fxml", "**/*.gif", "**/*.css", "**/*.png", "**/*.ttf"]
         }
     }
