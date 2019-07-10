@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.Utils;
+package net.dirtcraft.dirtlauncher.backend.utils;
 
 import net.cydhra.nidhogg.MojangClient;
 import net.cydhra.nidhogg.YggdrasilAgent;

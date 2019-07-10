@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.Utils;
+package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.common.base.Strings;
 import javafx.scene.image.Image;

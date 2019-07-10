@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.Config;
+package net.dirtcraft.dirtlauncher.backend.config;
 
 public class Internal {
     public final static String CSS_FXML = "CSS/FXML";

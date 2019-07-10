@@ -16,11 +16,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import net.dirtcraft.dirtlauncher.backend.Config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.Config.Internal;
-import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
-import net.dirtcraft.dirtlauncher.backend.JsonUtils.PackRegistry;
-import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
+import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
+import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
 

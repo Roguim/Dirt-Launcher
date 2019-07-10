@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.JsonUtils;
+package net.dirtcraft.dirtlauncher.backend.jsonutils;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;

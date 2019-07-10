@@ -10,9 +10,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controller;
-import net.dirtcraft.dirtlauncher.backend.Config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
-import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
+import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
+import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 
 import java.util.Arrays;
 

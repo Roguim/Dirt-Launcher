@@ -6,8 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.backend.Config.Internal;
-import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 
 import java.awt.*;
 
@@ -18,6 +19,9 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        // Ensure that the application folders are created
+        Paths.getInstallDirectory().mkdirs();
+        // Launch the application
         launch(args);
     }
 

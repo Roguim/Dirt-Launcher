@@ -12,7 +12,7 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.Utils.Verification;
+import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
 
