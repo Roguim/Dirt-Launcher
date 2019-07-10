@@ -3,10 +3,10 @@
 /*@import url('https://fontlibrary.org/face/minecraft')*/
   
 @font-face {
-    font-family: "Minecraft";
+    font-family: "Minecrafter Alt";
     font-style: normal;
     font-weight: 400;
-    src: url("../Fonts/MinecraftRegularb.ttf");
+    src: url("../Fonts/MinecrafterAltRegular.ttf");
 }
 	  
 @font-face {
@@ -17,7 +17,8 @@
 }
 
 .body {
-  -fx-background-color: linear-gradient(to bottom, #ae2929, #595959);
+  /*-fx-background-color: linear-gradient(to bottom, #ae2929 0%, #595959 100%);*/
+  -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
 /*-fx-border-radius: 30;
 -fx-border-width: 3;
 -fx-border-color: #dcdcdc;
@@ -26,6 +27,6 @@
 
 #Title {
   /*-fx-font-family: 'Oleo Script';*/
-  -fx-font-family: 'Minecraft';
+  -fx-font-family: 'Minecrafter Alt';
   -fx-font-size: 34;
 }
