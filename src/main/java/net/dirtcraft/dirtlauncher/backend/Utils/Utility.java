@@ -16,7 +16,7 @@ public class Utility {
         return getResourceURL(directory).toString();
     }
 
-    public static InputStream getResourceStream(String... directory){
+    private static InputStream getResourceStream(String... directory){
         Main main = Main.getInstance();
         String path = "/" + String.join("/", directory);
         return main.getClass().getResourceAsStream(path);

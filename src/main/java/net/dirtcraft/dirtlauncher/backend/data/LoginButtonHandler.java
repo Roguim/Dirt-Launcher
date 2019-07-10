@@ -2,10 +2,8 @@ package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.application.Platform;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -24,19 +22,16 @@ public class LoginButtonHandler {
     private static boolean initialized = false;
     private static TextField usernameField;
     private static PasswordField passwordField;
-    private static Button playButton;
     private static Thread uiCallback;
     private static TextFlow messageBox;
-    private static Pane launchBox;
 
     @Nullable
     public static Account onClick() {
         if (!initialized){
             usernameField = Controller.getInstance().getUsernameField();
             passwordField = Controller.getInstance().getPasswordField();
-            playButton = Controller.getInstance().getPlayButton();
             messageBox = Controller.getInstance().getNotificationBox();
-            launchBox = Controller.getInstance().getLoginBox();
+            initialized = true;
             uiCallback = null;
         }
         Account account = null;
@@ -120,7 +115,7 @@ public class LoginButtonHandler {
                     if (result == LoginResult.SUCCESS) Main.getInstance().getStage().close();
                     if (uiCallback != null) uiCallback = null;
                 });
-            } catch (InterruptedException ex) {}
+            } catch (InterruptedException ignored) {}
         });
     }
 }
