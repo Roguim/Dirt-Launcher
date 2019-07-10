@@ -48,11 +48,9 @@ jfx {
     vendor = 'DirtCraft'
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs = ["src/main/resources/"]
-            includes = ["**/*.fxml", "**/*.gif", "**/*.css", "**/*.png", "**/*.ttf"]
-        }
+sourceSets.main {
+    resources {
+        srcDirs = ["src/main/resources"]
+        includes = ["**/*.*"]
     }
 }
