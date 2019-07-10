@@ -7,9 +7,11 @@ public enum  PackAction {
 
     @Override
     public String toString() {
-        if (this == INSTALL) return "Install";
-        if (this == UPDATE) return "Update";
-        if (this == PLAY) return "Play";
-        return null;
+        switch (this){
+            case PLAY: return "Play";
+            case UPDATE: return "Update";
+            case INSTALL:
+            default: return "Install";
+        }
     }
 }
