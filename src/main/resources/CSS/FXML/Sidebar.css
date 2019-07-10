@@ -1,5 +1,6 @@
 .PackList{
     -fx-opacity: 1;
+    -fx-background-insets: 0;
 }
 
 .PackList.list-view {

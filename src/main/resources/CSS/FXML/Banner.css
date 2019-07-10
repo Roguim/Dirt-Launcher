@@ -6,16 +6,10 @@
 }
 
 .body {
-  /*-fx-background-color: linear-gradient(to bottom, #ae2929 0%, #595959 100%);*/
   -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
-/*-fx-border-radius: 30;
--fx-border-width: 3;
--fx-border-color: #dcdcdc;
--fx-border-style: dotted;*/
 }
 
 #Title {
-  /*-fx-font-family: 'Oleo Script';*/
   -fx-font-family: 'Minecrafter Alt';
   -fx-font-size: 34;
 }
