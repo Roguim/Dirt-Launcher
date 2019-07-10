@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controller;
+import net.dirtcraft.dirtlauncher.backend.Config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
 
@@ -23,10 +24,10 @@ public class PackCellFactory extends ListCell<Pack> {
         super.updateItem(pack, empty);
 
         if (empty || pack.getName() == null) {
-            getStyleClass().add("PackList");
+            getStyleClass().add(CssClasses.PACKLIST);
             setText(null);
         } else {
-            getStyleClass().add("PackList");
+            getStyleClass().add(CssClasses.PACKLIST);
             String name = pack.getName();
 
             setText(name);
@@ -38,7 +39,7 @@ public class PackCellFactory extends ListCell<Pack> {
             setOnMouseClicked(event -> onClick());
 
             Tooltip tooltip = new Tooltip();
-            tooltip.getStyleClass().add("PackList");
+            tooltip.getStyleClass().add(CssClasses.PACKLIST);
             tooltip.setText(String.join("\n", Arrays.asList(
                     "ModPack Name: " + pack.getName(),
                     "ModPack Version: " + pack.getVersion(),

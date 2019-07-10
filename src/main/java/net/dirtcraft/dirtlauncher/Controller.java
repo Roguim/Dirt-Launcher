@@ -14,6 +14,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
+import net.dirtcraft.dirtlauncher.backend.Config.CssClasses;
+import net.dirtcraft.dirtlauncher.backend.Config.Internal;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
@@ -62,11 +64,11 @@ public class Controller {
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
         packs.addAll(PackRegistry.getPacks());
-        packList.getStyleClass().add("PackList");
+        packList.getStyleClass().add(CssClasses.PACKLIST);
         packList.setCellFactory(useless -> new PackCellFactory());
         packList.setItems(packs);
 
-        webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/CSS/HTML/webEngine.css").toString());
+        webView.getEngine().setUserStyleSheetLocation(Utility.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
         webView.getEngine().load("https://dirtcraft.net/");
 
     }

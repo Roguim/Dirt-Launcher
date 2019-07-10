@@ -4,9 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.backend.Config.Internal;
+import net.dirtcraft.dirtlauncher.backend.Utils.Utility;
 
 import java.awt.*;
 
@@ -26,13 +27,13 @@ public class Main extends Application {
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/Scenes/main.fxml"));
+        Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "main.fxml"));
 
         root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
         root.getStylesheets().add("https://fonts.gstatic.com/s/bevan/v10/4iCj6KZ0a9NXjG8dWCvZtUSI.woff2");
 
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(new Image(getClass().getResourceAsStream("/Icons/main.png")));
+        primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS,"main.png"));
 
         Scene scene = new Scene(root, screenSize.getWidth() / 1.15, screenSize.getHeight() / 1.35);
 
