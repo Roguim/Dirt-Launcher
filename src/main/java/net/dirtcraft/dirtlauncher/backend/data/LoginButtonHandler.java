@@ -68,7 +68,11 @@ public class LoginButtonHandler {
         Text text = new Text();
         text.getStyleClass().add("errorMessage");
         text.setFill(Color.WHITE);
+
+        /* Help! Text isn't being aligned correctly */
         text.setTextOrigin(VPos.CENTER);
+        text.setTextAlignment(TextAlignment.CENTER);
+        /* Help! Text isn't being aligned correctly */
 
         if (account != null && result == LoginResult.SUCCESS) {
             text.setText("Successfully logged into " + account.getUsername() + "'s account");
@@ -113,7 +117,7 @@ public class LoginButtonHandler {
                 Thread.sleep((result == LoginResult.SUCCESS ? 2 : 5) * 1000);
                 Platform.runLater(() -> {
                     if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
-                    if (result == LoginResult.SUCCESS) Main.getInstance().getStage().hide();
+                    if (result == LoginResult.SUCCESS) Main.getInstance().getStage().close();
                     if (uiCallback != null) uiCallback = null;
                 });
             } catch (InterruptedException ex) {}

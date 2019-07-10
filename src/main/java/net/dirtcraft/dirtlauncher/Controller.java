@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.JsonUtils.Pack;
@@ -43,6 +44,9 @@ public class Controller {
     @FXML
     private Pane launchBox;
 
+    @FXML
+    private Text headerText;
+
     public static Controller getInstance() {
         return instance;
     }
@@ -51,6 +55,8 @@ public class Controller {
     private void initialize() {
 
         instance = this;
+
+
         messageBox.setOpacity(0);
         playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();

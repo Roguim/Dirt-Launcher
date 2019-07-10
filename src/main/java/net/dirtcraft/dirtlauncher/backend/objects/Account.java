@@ -38,4 +38,12 @@ public class Account {
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
+
+    public MojangClient getMojangClient() {
+        return mojangClient;
+    }
+
+    public Session getSession() {
+        return session;
+    }
 }
