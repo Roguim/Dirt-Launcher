@@ -26,7 +26,7 @@
          <children>
             <Text fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
                <font>
-                  <Font name="Courier" size="36.0" />
+                  <Font name="Courier" size="6.0" />
                </font>
                <HBox.margin>
                   <Insets />
