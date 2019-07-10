@@ -1,19 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Oleo+Script')
-@import url('https://fonts.googleapis.com/css?family=Bevan')
-/*@import url('https://fontlibrary.org/face/minecraft')*/
-  
 @font-face {
     font-family: "Minecrafter Alt";
     font-style: normal;
     font-weight: 400;
-    src: url("../Fonts/MinecrafterAltRegular.ttf");
+    src: url("../Fonts/MinecrafterAlt.ttf");
 }
-	  
+
 @font-face {
-    font-family: "Open Sans";
+    font-family: "Minecraft";
     font-style: normal;
     font-weight: 400;
-    src: url("../Fonts/OpenSans-Bold.ttf");
+    src: url("../Fonts/Minecraft.ttf");
 }
 
 .body {
