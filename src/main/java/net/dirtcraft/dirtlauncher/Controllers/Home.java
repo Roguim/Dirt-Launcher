@@ -96,8 +96,7 @@ public class Home {
         settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
         settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
         settingsButton3.setOnMouseClicked(e -> {
-            DiscordPresence.setStatus("testing 123 dirt");
-            System.out.println("BUTTON 3 clicked");
+            DiscordPresence.setDetails("Pressed button 3");
         });
         //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 

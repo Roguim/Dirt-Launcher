@@ -73,6 +73,7 @@ public class PackCellFactory extends ListCell<Pack> {
 
     private void onClick(Pack pack) {
         if (!hasPackSelected) hasPackSelected = true;
+        DiscordPresence.setDetails("Selecting " + pack.getName());
 
         Home home = Home.getInstance();
         Button playButton = home.getPlayButton();
