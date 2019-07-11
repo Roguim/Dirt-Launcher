@@ -43,7 +43,7 @@ public class LoginButtonHandler {
     }
 
     @Nullable
-    public static void onClick(ActionEvent event) {
+    public static void onClick() {
         if (!initialized) Initialize();
         switch (packAction){
             case PLAY: launchPack(); return;

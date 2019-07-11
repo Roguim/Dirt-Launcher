@@ -67,7 +67,7 @@ public class PackCellFactory extends ListCell<Pack> {
         if (Utility.isEmptyOrNull(controller.getUsernameField().getText().trim(), controller.getPasswordField().getText().trim())) return;
 
         playButton.setDisable(false);
-        playButton.setOnAction(LoginButtonHandler::onClick);
+        playButton.setOnAction(e->LoginButtonHandler.onClick());
     }
 
 }
