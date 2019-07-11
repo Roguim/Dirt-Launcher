@@ -1,6 +1,6 @@
-package net.dirtcraft.dirtlauncher.backend.data;
+package net.dirtcraft.dirtlauncher.backend.objects;
 
-public enum  PackAction {
+public enum PackAction {
     INSTALL,
     UPDATE,
     PLAY;

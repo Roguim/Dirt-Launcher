@@ -7,19 +7,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.Controllers.Install;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
+import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
@@ -80,6 +86,7 @@ public class LoginButtonHandler {
     public static void installPack(){
         System.out.println("Installed the game");
 
+        launchInstallScene();
         /*
         INSTALL PACK STUFF HERE
          */
@@ -132,7 +139,7 @@ public class LoginButtonHandler {
                 text.setText("Your E-Mail or password is invalid!");
                 break;
             default:
-                text.setText("Your ModPack installation is corrupted!");
+                text.setText("Your " + modPack.getName() + " installation is corrupted!");
                 break;
         }
 
@@ -167,19 +174,48 @@ public class LoginButtonHandler {
                     if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
                     if (uiCallback != null) uiCallback = null;
                 });
-            } catch (InterruptedException ignored) {
-            }
+            } catch (InterruptedException ignored) { }
         });
     }
 
     private static void launchInstallScene() {
         try {
             Stage stage = new Stage();
-            stage.setTitle("Install");
+            stage.setTitle("Installing " + modPack.getName() + "...");
             Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "popup.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+
+
+            stage.initOwner(Main.getInstance().getStage());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+
+            stage.getIcons().setAll(Utility.getImage(Internal.ICONS, "install.png"));
+
+            stage.setScene(new Scene(root, Utility.screenDimension.getWidth() / 3, Utility.screenDimension.getHeight() / 4));
+            stage.setResizable(false);
+
             stage.show();
+
+            //TODO: @SHINY TEXT STUFF
+            TextFlow textFlow = Install.getInstance().getTextFlow();
+            Text text = new Text("Loading...");
+
+            text.getStyleClass().add("NotificationText");
+            text.setFill(Color.WHITE);
+            text.setTextOrigin(VPos.CENTER);
+            text.setTextAlignment(TextAlignment.CENTER);
+
+            textFlow.setOpacity(1);
+            textFlow.getChildren().setAll(text);
+
+            //TODO: @TECHDG
+            //This is the bar in the middle
+            ProgressBar loadingBar = Install.getInstance().getLoadingBar();
+
+            //This is the bar on the bottom which tracks the overrall progress
+            ProgressBar bottomBar = Install.getInstance().getBottomBar();
+
+
         } catch (IOException exception) {
             exception.printStackTrace();
         }
