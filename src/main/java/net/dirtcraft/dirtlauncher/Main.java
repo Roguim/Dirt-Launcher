@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
@@ -41,6 +42,8 @@ public class Main extends Application {
         primaryStage.show();
 
         stage = primaryStage;
+
+        DiscordPresence.initPresence();
     }
 
     public Stage getStage() {

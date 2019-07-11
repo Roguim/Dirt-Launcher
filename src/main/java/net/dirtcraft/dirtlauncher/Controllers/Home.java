@@ -23,6 +23,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
@@ -94,6 +95,10 @@ public class Home {
         // DEBUG BUTTONS
         settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
         settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
+        settingsButton3.setOnMouseClicked(e -> {
+            DiscordPresence.setStatus("testing 123 dirt");
+            System.out.println("BUTTON 3 clicked");
+        });
         //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 
         ImageView settingsImage = new ImageView();

@@ -16,6 +16,7 @@ import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
+import net.dirtcraft.dirtlauncher.backend.objects.PackType;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
@@ -27,46 +28,47 @@ public class PackCellFactory extends ListCell<Pack> {
     protected void updateItem(Pack pack, boolean empty) {
         super.updateItem(pack, empty);
 
+        getStyleClass().add(CssClasses.PACKLIST);
+
         if (empty || pack.getName() == null) {
-            getStyleClass().add(CssClasses.PACKLIST);
             setText(null);
-        } else {
-
-            setCursor(Cursor.HAND);
-
-            getStyleClass().add(CssClasses.PACKLIST);
-
-            setText(pack.getName());
-            setAlignment(Pos.CENTER);
-            setTextAlignment(TextAlignment.CENTER);
-            setTextFill(Paint.valueOf("WHITE"));
-            setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
-
-            setOnMouseClicked(event -> onClick(pack));
-
-            Tooltip tooltip = new Tooltip();
-            tooltip.setTextAlignment(TextAlignment.LEFT);
-            tooltip.getStyleClass().add(CssClasses.PACKLIST);
-
-            tooltip.setText(String.join("\n", Arrays.asList(
-                    "ModPack Name: " + pack.getName(),
-                    "ModPack Version: " + pack.getVersion(),
-                    "Minecraft Version: " + pack.getGameVersion(),
-                    "Forge Version: " + pack.getForgeVersion(),
-                    "Minimum Ram: " + pack.getRequiredRam() + "GB",
-                    "Recommended Ram: " + pack.getRecommendedRam() + "GB")));
-
-            Image image = new Image(MiscUtils.getResourceStream(
-                    Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+","") + ".png"),
-                    128, 128, false, true);
-            ImageView imageView = new ImageView(image);
-
-            tooltip.setGraphic(imageView);
-            tooltip.setGraphicTextGap(50);
-
-            setTooltip(tooltip);
-
+            return;
         }
+
+        setCursor(Cursor.HAND);
+
+        setText(pack.getName());
+        setAlignment(Pos.CENTER);
+        setTextAlignment(TextAlignment.CENTER);
+        setTextFill(Paint.valueOf("WHITE"));
+        setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
+
+        setOnMouseClicked(event -> onClick(pack));
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.setTextAlignment(TextAlignment.LEFT);
+        tooltip.getStyleClass().add(CssClasses.PACKLIST);
+
+        tooltip.setText(String.join("\n", Arrays.asList(
+                "ModPack Name: " + pack.getName(),
+                "ModPack Version: " + pack.getVersion(),
+                "Minecraft Version: " + pack.getGameVersion(),
+                "Forge Version: " + pack.getForgeVersion(),
+                "Minimum Ram: " + pack.getRequiredRam() + " GB",
+                "Recommended Ram: " + pack.getRecommendedRam() + " GB",
+                "Direct Connect IP: " + (pack.getPackType() != PackType.PIXELMON ? pack.getCode().toUpperCase() + ".DIRTCRAFT" : "PIXELMON") + ".GG")));
+
+        Image image = new Image(MiscUtils.getResourceStream(
+                Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+", "") + ".png"),
+                128, 128, false, true);
+
+        ImageView imageView = new ImageView(image);
+        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+
+        tooltip.setGraphic(imageView);
+        tooltip.setGraphicTextGap(50);
+
+        setTooltip(tooltip);
     }
 
     private void onClick(Pack pack) {
@@ -80,11 +82,10 @@ public class PackCellFactory extends ListCell<Pack> {
         else LoginButtonHandler.setAction(PackAction.PLAY, pack);
 
 
-
         if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
 
         playButton.setDisable(false);
-        playButton.setOnAction(e->LoginButtonHandler.onClick());
+        playButton.setOnAction(e -> LoginButtonHandler.onClick());
     }
 
 }
