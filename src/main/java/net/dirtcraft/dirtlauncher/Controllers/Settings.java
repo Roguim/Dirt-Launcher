@@ -8,6 +8,7 @@ import javafx.scene.control.ToolBar;
 public class Settings {
     private Double settingsXOffset;
     private Double settingsYOffset;
+
     @FXML
     private Button closeButton;
 

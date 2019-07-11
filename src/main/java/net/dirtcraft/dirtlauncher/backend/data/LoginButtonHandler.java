@@ -52,23 +52,27 @@ public class LoginButtonHandler {
         packAction = null;
     }
 
-    @Nullable
     public static void onClick() {
         if (!initialized) Initialize();
-        switch (packAction){
-            case PLAY: launchPack(); return;
-            case UPDATE: updatePack(); return;
-            case INSTALL: installPack(); return;
-            default: displayNotification(null);
+        Account account = login();
+        if (account == null) return;
+        else switch (packAction) {
+            case INSTALL:
+                installPack();
+                return;
+            case UPDATE:
+                updatePack();
+                return;
+            case PLAY:
+                launchPack(account);
+                return;
+            default:
+                displayError(null);
+                return;
         }
     }
 
-    public static void launchPack() {
-        Account account = login();
-        if (account == null) {
-            displayNotification(null);
-            return;
-        }
+    public static void launchPack(Account account) {
 
         /*
         LAUNCH PACK STUFF HERE
@@ -102,19 +106,18 @@ public class LoginButtonHandler {
 
         try {
             account = Verification.login(email, password);
-            displayNotification(LoginResult.SUCCESS);
         } catch (InvalidCredentialsException e) {
-            displayNotification(LoginResult.INVALID_CREDENTIALS);
+            displayError(LoginResult.INVALID_CREDENTIALS);
         } catch (IllegalArgumentException e) {
-            displayNotification(LoginResult.ILLEGAL_ARGUMENT);
+            displayError(LoginResult.ILLEGAL_ARGUMENT);
         } catch (UserMigratedException e) {
-            displayNotification(LoginResult.USER_MIGRATED);
+            displayError(LoginResult.USER_MIGRATED);
         }
 
         return account;
     }
 
-    private static void displayNotification(LoginResult result) {
+    private static void displayError(LoginResult result) {
 
         if (uiCallback != null) uiCallback.interrupt();
 
@@ -128,7 +131,8 @@ public class LoginButtonHandler {
         ShakeTransition animation = new ShakeTransition(messageBox);
         animation.playFromStart();
 
-        switch (result) {
+        if (result == null) text.setText("Your " + modPack.getName() + " installation is corrupted!");
+        else switch (result) {
             case USER_MIGRATED:
                 text.setText("Please use your E-Mail to log in!");
                 break;
@@ -138,9 +142,7 @@ public class LoginButtonHandler {
             case INVALID_CREDENTIALS:
                 text.setText("Your E-Mail or password is invalid!");
                 break;
-            default:
-                text.setText("Your " + modPack.getName() + " installation is corrupted!");
-                break;
+
         }
 
 
