@@ -1,10 +1,12 @@
 package net.dirtcraft.dirtlauncher.backend.data;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -13,6 +15,7 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controller;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
@@ -27,6 +30,7 @@ public class LoginButtonHandler {
     private static TextFlow messageBox;
     private static Button playButton;
     private static PackAction packAction;
+    private static Pack modPack;
 
     private static void Initialize(){
         usernameField = Controller.getInstance().getUsernameField();
@@ -39,8 +43,17 @@ public class LoginButtonHandler {
     }
 
     @Nullable
-    public static Account onClick() {
+    public static void onClick(ActionEvent event) {
         if (!initialized) Initialize();
+        switch (packAction){
+            case PLAY: launchPack(); return;
+            case UPDATE: updatePack(); return;
+            case INSTALL: installPack(); return;
+            default:displayNotification(null, LoginResult.ILLEGAL_ARGUMENT);
+        }
+    }
+
+    public static void launchPack() {
         Account account = null;
 
         String email = usernameField.getText().trim();
@@ -48,22 +61,25 @@ public class LoginButtonHandler {
 
         try {
             account = Verification.login(email, password);
-            displayLoginError(account, LoginResult.SUCCESS);
-            //} catch (Exception e){
+            displayNotification(account, LoginResult.SUCCESS);
         } catch (InvalidCredentialsException e) {
-                displayLoginError(account, LoginResult.INVALID_CREDENTIALS);
+            displayNotification(account, LoginResult.INVALID_CREDENTIALS);
         } catch (IllegalArgumentException e) {
-            displayLoginError(account, LoginResult.ILLEGAL_ARGUMENT);
+            displayNotification(account, LoginResult.ILLEGAL_ARGUMENT);
         } catch (UserMigratedException e) {
-            displayLoginError(account, LoginResult.USER_MIGRATED);
+            displayNotification(account, LoginResult.USER_MIGRATED);
         }
-
-        //TODO - do stuff with the userAccount
-
-        return account;
     }
 
-    private static void displayLoginError(Account account, LoginResult result){
+    public static void updatePack(){
+        System.out.println("Updated the game");
+    }
+
+    public static void installPack(){
+        System.out.println("Installed the game");
+    }
+
+    private static void displayNotification(Account account, LoginResult result){
 
         if (uiCallback != null) uiCallback.interrupt();
 
@@ -110,8 +126,9 @@ public class LoginButtonHandler {
 
     }
 
-    public static void setAction(PackAction action){
+    public static void setAction(PackAction action, Pack pack){
         if (!initialized) Initialize();
+        modPack = pack;
         packAction = action;
         playButton.setText(action.toString());
     }

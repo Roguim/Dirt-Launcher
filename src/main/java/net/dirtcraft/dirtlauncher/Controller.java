@@ -95,8 +95,7 @@ public class Controller {
         if (event.getCode() != KeyCode.ENTER) return;
         if (playButton.isDisabled()) return;
 
-        LoginButtonHandler.onClick();
-
+        playButton.fire();
     }
 
     @FXML
@@ -104,7 +103,7 @@ public class Controller {
         if (!PackCellFactory.hasPackSelected) return;
         if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
-            playButton.setOnAction(action -> LoginButtonHandler.onClick());
+            playButton.setOnAction(e ->playButton.fire());
         }
         else playButton.setDisable(true);
     }

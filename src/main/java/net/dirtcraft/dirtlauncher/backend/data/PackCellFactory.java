@@ -58,16 +58,16 @@ public class PackCellFactory extends ListCell<Pack> {
         Controller controller = Controller.getInstance();
         Button playButton = controller.getPlayButton();
 
-        if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL);
-        else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE);
-        else LoginButtonHandler.setAction(PackAction.PLAY);
+        if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL, pack);
+        else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE, pack);
+        else LoginButtonHandler.setAction(PackAction.PLAY, pack);
 
 
 
         if (Utility.isEmptyOrNull(controller.getUsernameField().getText().trim(), controller.getPasswordField().getText().trim())) return;
 
         playButton.setDisable(false);
-        playButton.setOnAction(action -> LoginButtonHandler.onClick());
+        playButton.setOnAction(LoginButtonHandler::onClick);
     }
 
 }
