@@ -184,7 +184,7 @@ public class LoginButtonHandler {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "popup.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "install.fxml"));
 
 
             stage.initOwner(Main.getInstance().getStage());
@@ -205,7 +205,7 @@ public class LoginButtonHandler {
             notification.setTextAlignment(TextAlignment.CENTER);
             notificationArea.getChildren().add(notification);
 
-            notification.setText("updateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdate");
+            notification.setText("/*TODO: @Tech */\nInstantiating Classes...");
 
             TextFlow textFlow = Install.getInstance().getTextFlow();
             Text text = new Text("Loading...");

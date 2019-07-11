@@ -17,6 +17,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+
         // Ensure that the application folders are created
         Paths.getInstallDirectory().mkdirs();
         // Launch the application

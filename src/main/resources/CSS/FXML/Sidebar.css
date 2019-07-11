@@ -92,6 +92,13 @@
     -fx-opacity: 0.8;
     -fx-background-radius: 5.0;
     -fx-font-size: 14;
+
+    -fx-content-display: right;
+
+    /* NOT AVAILABLE IN JAVA 8 */
+    /*-fx-show-duration: 1s;*/
+    /*-fx-show-delay: 1ms;*/
+
     /* -fx-line-spacing: -5 ; Bugged*/
 }
 
