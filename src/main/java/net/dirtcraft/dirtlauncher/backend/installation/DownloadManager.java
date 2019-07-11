@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.installation;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import javafx.scene.text.Text;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
@@ -43,8 +44,8 @@ public class DownloadManager {
         int completedSteps = 0;
         if(installMinecraft) totalSteps += 2;
         if(installAssets) totalSteps++;
-        if(installForge) totalSteps ++;
-        if(installPack) totalSteps++;
+        if(installForge) totalSteps += 2;
+        if(installPack) totalSteps += 3;
         setTotalProgressPercent(completedSteps, totalSteps);
 
         if(installMinecraft) {
@@ -53,23 +54,28 @@ public class DownloadManager {
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installAssets) {
-            setProgressText("Test");
+            setProgressText("TEST COMPLETE");
         }
     }
 
     public static void setProgressText(String text) {
-        ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText(text);
+        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText(text));
     }
 
     public static void setProgressPercent(int completed, int total) {
-        Install.getInstance().getLoadingBar().setProgress(Math.ceil(completed / total));
+        Platform.runLater(() -> Install.getInstance().getLoadingBar().setProgress(((double)completed) / total));
+        System.out.println("Progress: " + completed + " | " + total + " | " + (((double)completed) / total));
     }
 
     public static void setTotalProgressPercent(int completed, int total) {
-        Install.getInstance().getBottomBar().setProgress(Math.ceil(completed / total));
+        Platform.runLater(() -> Install.getInstance().getBottomBar().setProgress(((double)completed) / total));
+        System.out.println("Total Progress: " + completed + " | " + total + " | " + (((double)completed) / total));
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+        new Thread(() -> {
+
+        }).start();
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Paths.getVersionsDirectory() + File.separator + versionManifest.get("id").getAsString());
         FileUtils.deleteDirectory(versionFolder);
@@ -92,7 +98,7 @@ public class DownloadManager {
         librariesFolder.mkdirs();
         File nativesFolder = new File(versionFolder.getPath() + File.separator + "natives");
         nativesFolder.mkdirs();
-        String librarysLaunchCode = "";
+        String librariesLaunchCode = "";
 
         libraryLoop:
         for(JsonElement libraryElement : versionManifest.getAsJsonArray("libraries")) {
@@ -150,6 +156,8 @@ public class DownloadManager {
                 new File(librariesFolder + File.separator + StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
                 String filePath = librariesFolder.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
                 FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
+                librariesLaunchCode += filePath;
+                librariesLaunchCode += ";";
             }
             // Download any natives
             if(libraryDownloads.has("classifiers")) {
@@ -172,8 +180,9 @@ public class DownloadManager {
         // Populate Versions Manifest
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
+        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(librariesLaunchCode, ";"));
         JsonObject versionsManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory()));
-        versionManifest.getAsJsonArray("versions").add(versionJsonObject);
+        versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getVersionsDirectory()).getPath()), versionsManifest);
     }
 
