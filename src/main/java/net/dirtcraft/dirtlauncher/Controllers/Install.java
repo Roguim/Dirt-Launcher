@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.Controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
-import jfxtras.styles.jmetro8.JMetro;
+import javafx.scene.text.TextFlow;
 
 public class Install {
 
@@ -13,24 +13,37 @@ public class Install {
     private AnchorPane anchorPane;
 
     @FXML
-    private ProgressBar progressBar;
+    private TextFlow textFlow;
+
+    @FXML
+    private ProgressBar loadingBar;
+
+    @FXML
+    private ProgressBar bottomBar;
 
     @FXML
     private void initialize() {
         instance = this;
 
-        JMetro jMetro = new JMetro(JMetro.Style.DARK);
-        jMetro.applyTheme(progressBar);
-
-        progressBar.setProgress(50);
-
     }
 
-    public ProgressBar getProgressBar() {
-        return progressBar;
+    public AnchorPane getAnchorPane() {
+        return anchorPane;
     }
 
-    public Install getInstance() {
+    public TextFlow getTextFlow() {
+        return textFlow;
+    }
+
+    public ProgressBar getLoadingBar() {
+        return loadingBar;
+    }
+
+    public ProgressBar getBottomBar() {
+        return bottomBar;
+    }
+
+    public static Install getInstance() {
         return instance;
     }
 

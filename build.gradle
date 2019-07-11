@@ -36,7 +36,7 @@ dependencies {
     provided 'com.google.guava:guava:28.0-jre'
     provided 'org.apache.commons:commons-lang3:3.9'
     provided 'commons-io:commons-io:2.6'
-    provided 'org.jfxtras:jmetro:5.3'
+    //provided 'org.jfxtras:jmetro:5.3'
 }
 
 jar {

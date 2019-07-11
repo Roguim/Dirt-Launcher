@@ -4,10 +4,14 @@ import com.google.common.base.Strings;
 import javafx.scene.image.Image;
 import net.dirtcraft.dirtlauncher.Main;
 
+import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
 
 public class Utility {
+
+    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+
     public static Image getImage(String... directory){
         return new Image(getResourceStream(directory));
     }
