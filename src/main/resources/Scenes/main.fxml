@@ -19,9 +19,9 @@
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
     <children>
-      <WebView fx:id="webView" layoutX="300.0" layoutY="100.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <WebView fx:id="webView" layoutX="300.0" layoutY="94.0" minHeight="-1.0" minWidth="-1.0" prefHeight="516.0" prefWidth="545.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text id="Title" fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-translate-y: -5;" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
@@ -87,7 +87,7 @@
                               <String fx:value="LoginBar" />
                            </styleClass>
                         </GridPane>
-                        <Button id="PlayButton" fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                        <Button id="PlayButton" fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -96,6 +96,9 @@
                               <String fx:value="LoginBar" />
                               <String fx:value="LoginInput" />
                            </styleClass>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
                         </Button>
                      </children>
                      <styleClass>
@@ -111,7 +114,7 @@
             </Pane>
          </children>
       </FlowPane>
-      <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" mouseTransparent="true" prefHeight="490.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" layoutY="25.0" mouseTransparent="true" prefHeight="465.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <TextFlow id="NotificationField" fx:id="notificationBox" centerShape="false" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css" textAlignment="CENTER">
                <styleClass>
@@ -120,21 +123,47 @@
                </styleClass></TextFlow>
          </children>
       </FlowPane>
-      <Pane id="SettingsBar" layoutY="662.0" prefHeight="60.0" prefWidth="300.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+      <Pane id="SettingsBarExt" layoutX="774.0" layoutY="10.0" prefHeight="30.0" prefWidth="95.0" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="AddPackButton" fx:id="addPackButton" layoutX="55.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="240.0" stylesheets="@../CSS/FXML/Sidebar.css" text="Add new pack" textAlignment="CENTER">
+            <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
-                  <String fx:value="AddPackButton" />
+                  <String fx:value="SettingsButton" />
+                  <String fx:value="SettingsButtonSmall" />
                </styleClass>
-               <font>
-                  <Font name="Alef Regular" size="20.0" />
-               </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton3" contentDisplay="GRAPHIC_ONLY" layoutX="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+               <styleClass>
+                  <String fx:value="SettingsBar" />
+                  <String fx:value="SettingsButton" />
+                  <String fx:value="SettingsButtonSmall" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button id="SettingsButton" fx:id="settingsButton2" contentDisplay="GRAPHIC_ONLY" layoutX="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+               <styleClass>
+                  <String fx:value="SettingsBar" />
+                  <String fx:value="SettingsButton" />
+                  <String fx:value="SettingsButtonSmall" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+         <styleClass>
+            <String fx:value="SettingsBar" />
+            <String fx:value="SettingsBarExt" />
+         </styleClass>
+      </Pane>
+      <Pane id="SettingsBar" layoutX="764.0" prefHeight="45.0" prefWidth="45.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />

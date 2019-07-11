@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,8 @@ public class Pack {
         this.name = json.get("name").getAsString();
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
-        this.packType = json.get("packType").getAsString().equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
+        final String packType = json.get("packType").getAsString().trim();
+        this.packType =  packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : (packType.equalsIgnoreCase("PIXELMON") ? PackType.PIXELMON : PackType.CUSTOM);
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
         this.logo = json.get("logo").getAsString();

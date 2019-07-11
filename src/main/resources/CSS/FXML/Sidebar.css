@@ -3,49 +3,41 @@
 }
 
 #SettingsBar{
-    -fx-background-color: linear-gradient(to top, #121212, #191919);
+    -fx-background-color: #303030;
+    -fx-border-radius: 0 0 0 10;
+    -fx-background-radius: 0 0 0 20;
 }
-
-.AddPackButton{
+.SettingsBarExt{
+    -fx-background-color: #303030;
+    -fx-border-radius: 0 0 0 10;
+    -fx-background-radius: 0 0 0 10;
+}
+.SettingsButton{
     -fx-text-fill: FFFFFF;
     -fx-cell-size: 50;
     -fx-background-color: firebrick;
-    -fx-padding: 2px 10px ;
-    -fx-background-insets: 2px 10px;
-    -fx-background-radius: 5 ;
+    -fx-padding: 0px 0px ;
+    -fx-background-insets: 0px 0px;
+    -fx-background-radius: 0 0 0 15 ;
     -fx-content-display: right ;
 }
 
-.AddPackButton:hover, .PackList.list-cell:filled:selected{
-     -fx-scale-y: 1.05;
-     -fx-scale-x: 1.05;
+.SettingsButtonSmall{
+    -fx-background-radius: 0 0 5 5 ;
 }
 
-.AddPackButton:hover {
+.SettingsButton:hover, .SettingsButton:selected{
+     -fx-scale-y: 1.075;
+     -fx-scale-x: 1.075;
+}
+
+.SettingsButton:hover {
      -fx-background-color: #661313;
 }
 
-.AddPackButton:selected {
+.SettingsButton:pressed {
      -fx-background-color: #FFF0F5;
      -fx-text-fill: black;
-}
-
-.AddPackButton:pressed {
-     -fx-background-color: #303030;
-     -fx-text-fill: #FFF0F5;
-}
-
-.SettingsButton{
-    -fx-cell-size: 50;
-    -fx-text-alignment: center;
-    -fx-font-size: 20;
-    -fx-font-family: 'System Bold';
-    -fx-font-weight: lighter ;
-    -fx-background-color: firebrick;
-    -fx-padding: 2px 10px ;
-    -fx-background-insets: 2px 2px;
-    -fx-background-radius: 5 ;
-    -fx-content-display: right ;
 }
 
 .PackList.list-view {
@@ -81,6 +73,12 @@
 .PackList.list-cell:filled:selected {
      -fx-background-color: #FFF0F5;
      -fx-text-fill: black;
+
+     /* BORDER WIP */ /*
+     -fx-border-color: #D92121;
+     -fx-border-style: solid;
+     -fx-border-radius: 5 ;
+     -fx-padding: 2px 10px ;*/
 }
 
 .PackList.list-cell:filled:pressed {

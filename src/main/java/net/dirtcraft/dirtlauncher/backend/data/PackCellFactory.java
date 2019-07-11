@@ -9,9 +9,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import net.dirtcraft.dirtlauncher.Controller;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
+import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class PackCellFactory extends ListCell<Pack> {
             setTextFill(Paint.valueOf("WHITE"));
             setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
 
-            setOnMouseClicked(event -> onClick());
+            setOnMouseClicked(event -> onClick(pack));
 
             Tooltip tooltip = new Tooltip();
             tooltip.getStyleClass().add(CssClasses.PACKLIST);
@@ -52,15 +53,22 @@ public class PackCellFactory extends ListCell<Pack> {
         }
     }
 
-    private void onClick() {
+    private void onClick(Pack pack) {
         if (!hasPackSelected) hasPackSelected = true;
 
-        Controller controller = Controller.getInstance();
-        if (Utility.isEmptyOrNull(controller.getUsernameField().getText().trim(), controller.getPasswordField().getText().trim())) return;
+        Home home = Home.getInstance();
+        Button playButton = home.getPlayButton();
 
-        Button playButton = controller.getPlayButton();
+        if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL, pack);
+        else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE, pack);
+        else LoginButtonHandler.setAction(PackAction.PLAY, pack);
+
+
+
+        if (Utility.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
+
         playButton.setDisable(false);
-        playButton.setOnAction(action -> LoginButtonHandler.onClick());
+        playButton.setOnAction(e->LoginButtonHandler.onClick());
     }
 
 }

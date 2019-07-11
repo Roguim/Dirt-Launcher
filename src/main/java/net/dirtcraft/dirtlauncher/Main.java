@@ -10,8 +10,6 @@ import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 
-import java.awt.*;
-
 public class Main extends Application {
 
     private static Main instance;
@@ -29,18 +27,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
 
-        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
         Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "main.fxml"));
 
         primaryStage.setTitle("Dirt Launcher");
         primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS, "main.png"));
 
-        Scene scene = new Scene(root, screenSize.getWidth() / 1.15, screenSize.getHeight() / 1.35);
+        Scene scene = new Scene(root, Utility.screenDimension.getWidth() / 1.15, Utility.screenDimension.getHeight() / 1.35);
 
-        primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.DECORATED);
 
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         stage = primaryStage;
