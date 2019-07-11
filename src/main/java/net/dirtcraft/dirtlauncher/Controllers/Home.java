@@ -7,7 +7,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -20,13 +23,14 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
+import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
+import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
-import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -91,6 +95,10 @@ public class Home {
         // DEBUG BUTTONS
         settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
         settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
+        settingsButton3.setOnMouseClicked(e -> {
+            DiscordPresence.setStatus("testing 123 dirt");
+            System.out.println("BUTTON 3 clicked");
+        });
         //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 
         ImageView settingsImage = new ImageView();
@@ -171,6 +179,10 @@ public class Home {
             playButton.setOnAction(e ->LoginButtonHandler.onClick());
         }
         else playButton.setDisable(true);
+    }
+
+    public ListView<Pack> getPackList() {
+        return packList;
     }
 
     public Button getPlayButton() {

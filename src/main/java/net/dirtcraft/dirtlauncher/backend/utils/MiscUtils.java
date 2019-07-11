@@ -12,7 +12,7 @@ public class MiscUtils {
 
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public static Image getImage(String... directory){
+    public static Image getImage(String... directory) {
         return new Image(getResourceStream(directory));
     }
 
@@ -20,7 +20,7 @@ public class MiscUtils {
         return getResourceURL(directory).toString();
     }
 
-    private static InputStream getResourceStream(String... directory){
+    public static InputStream getResourceStream(String... directory){
         Main main = Main.getInstance();
         String path = "/" + String.join("/", directory);
         return main.getClass().getResourceAsStream(path);

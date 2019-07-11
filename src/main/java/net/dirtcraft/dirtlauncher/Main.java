@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -22,6 +23,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+
         // Ensure that the application folders are created
         Paths.getInstallDirectory().mkdirs();
         Paths.getInstancesDirectory().mkdirs();
@@ -75,6 +77,8 @@ public class Main extends Application {
         primaryStage.show();
 
         stage = primaryStage;
+
+        DiscordPresence.initPresence();
     }
 
     public Stage getStage() {
