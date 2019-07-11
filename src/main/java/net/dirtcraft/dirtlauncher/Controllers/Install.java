@@ -23,7 +23,7 @@ public class Install {
         jMetro.applyTheme(progressBar);
 
         progressBar.setProgress(50);
-        
+
     }
 
     public ProgressBar getProgressBar() {

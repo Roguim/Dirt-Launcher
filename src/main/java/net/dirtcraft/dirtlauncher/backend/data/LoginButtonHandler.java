@@ -5,12 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.event.ActionEvent;
-import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -20,10 +17,7 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.Controller;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
-import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
 import net.dirtcraft.dirtlauncher.backend.utils.Utility;
@@ -43,10 +37,10 @@ public class LoginButtonHandler {
     private static Pack modPack;
 
     private static void Initialize(){
-        usernameField = Controller.getInstance().getUsernameField();
-        passwordField = Controller.getInstance().getPasswordField();
-        messageBox = Controller.getInstance().getNotificationBox();
-        playButton = Controller.getInstance().getPlayButton();
+        usernameField = Home.getInstance().getUsernameField();
+        passwordField = Home.getInstance().getPasswordField();
+        messageBox = Home.getInstance().getNotificationBox();
+        playButton = Home.getInstance().getPlayButton();
         initialized = true;
         uiCallback = null;
         packAction = null;
