@@ -36,7 +36,7 @@ public class PackCellFactory extends ListCell<Pack> {
             setTextFill(Paint.valueOf("WHITE"));
             setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
 
-            setOnMouseClicked(event -> onClick());
+            setOnMouseClicked(event -> onClick(pack));
 
             Tooltip tooltip = new Tooltip();
             tooltip.getStyleClass().add(CssClasses.PACKLIST);
@@ -52,15 +52,22 @@ public class PackCellFactory extends ListCell<Pack> {
         }
     }
 
-    private void onClick() {
+    private void onClick(Pack pack) {
         if (!hasPackSelected) hasPackSelected = true;
 
         Home home = Home.getInstance();
+        Button playButton = home.getPlayButton();
+
+        if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL, pack);
+        else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE, pack);
+        else LoginButtonHandler.setAction(PackAction.PLAY, pack);
+
+
+
         if (Utility.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
 
-        Button playButton = home.getPlayButton();
         playButton.setDisable(false);
-        playButton.setOnAction(action -> LoginButtonHandler.onClick());
+        playButton.setOnAction(e->LoginButtonHandler.onClick());
     }
 
 }

@@ -95,7 +95,6 @@ public class Home {
         if (playButton.isDisabled()) return;
 
         LoginButtonHandler.onClick();
-
     }
 
     @FXML
@@ -103,7 +102,7 @@ public class Home {
         if (!PackCellFactory.hasPackSelected) return;
         if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
-            playButton.setOnAction(action -> LoginButtonHandler.onClick());
+            playButton.setOnAction(e ->LoginButtonHandler.onClick());
         }
         else playButton.setDisable(true);
     }
