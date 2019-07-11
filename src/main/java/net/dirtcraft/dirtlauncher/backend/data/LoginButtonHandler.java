@@ -53,11 +53,41 @@ public class LoginButtonHandler {
             case PLAY: launchPack(); return;
             case UPDATE: updatePack(); return;
             case INSTALL: installPack(); return;
-            default:displayNotification(null, LoginResult.ILLEGAL_ARGUMENT);
+            default: displayNotification(null);
         }
     }
 
     public static void launchPack() {
+        Account account = login();
+        if (account == null) {
+            displayNotification(null);
+            return;
+        }
+
+        /*
+        LAUNCH PACK STUFF HERE
+         */
+    }
+
+    public static void updatePack(){
+        System.out.println("Updated the game");
+
+        /*
+        UPDATE PACK STUFF HERE
+         */
+    }
+
+    public static void installPack(){
+        System.out.println("Installed the game");
+
+        /*
+        INSTALL PACK STUFF HERE
+         */
+
+    }
+
+    @Nullable
+    private static Account login() {
         Account account = null;
 
         String email = usernameField.getText().trim();
@@ -65,31 +95,19 @@ public class LoginButtonHandler {
 
         try {
             account = Verification.login(email, password);
-            displayNotification(account, LoginResult.SUCCESS);
+            displayNotification(LoginResult.SUCCESS);
         } catch (InvalidCredentialsException e) {
-            displayNotification(account, LoginResult.INVALID_CREDENTIALS);
+            displayNotification(LoginResult.INVALID_CREDENTIALS);
         } catch (IllegalArgumentException e) {
-            displayNotification(account, LoginResult.ILLEGAL_ARGUMENT);
+            displayNotification(LoginResult.ILLEGAL_ARGUMENT);
         } catch (UserMigratedException e) {
-            displayNotification(account, LoginResult.USER_MIGRATED);
+            displayNotification(LoginResult.USER_MIGRATED);
         }
 
-        //TODO EVERYTHING @TECHDG
+        return account;
     }
 
-    public static void updatePack(){
-        System.out.println("Updated the game");
-
-        //TODO EVERYTHING @TECHDG
-    }
-
-    public static void installPack(){
-        System.out.println("Installed the game");
-
-        //TODO EVERYTHING @TECHDG
-    }
-
-    private static void displayNotification(Account account, LoginResult result){
+    private static void displayNotification(LoginResult result) {
 
         if (uiCallback != null) uiCallback.interrupt();
 
@@ -97,32 +115,27 @@ public class LoginButtonHandler {
         text.getStyleClass().add("NotificationText");
         text.setFill(Color.WHITE);
 
-        /* Help! Text isn't being aligned correctly */
         text.setTextOrigin(VPos.CENTER);
         text.setTextAlignment(TextAlignment.CENTER);
-        /* Help! Text isn't being aligned correctly */
 
-        if (account != null && result == LoginResult.SUCCESS) {
-            text.setText("Successfully logged into " + account.getUsername() + "'s account");
+        ShakeTransition animation = new ShakeTransition(messageBox);
+        animation.playFromStart();
+
+        switch (result) {
+            case USER_MIGRATED:
+                text.setText("Please use your E-Mail to log in!");
+                break;
+            case ILLEGAL_ARGUMENT:
+                text.setText("Your username or password contains invalid arguments!");
+                break;
+            case INVALID_CREDENTIALS:
+                text.setText("Your E-Mail or password is invalid!");
+                break;
+            default:
+                text.setText("Your ModPack installation is corrupted!");
+                break;
         }
-        else {
-            ShakeTransition animation = new ShakeTransition(messageBox);
-            animation.playFromStart();
 
-            switch (result) {
-                case USER_MIGRATED:
-                    text.setText("Please use your E-Mail to log in!");
-                    break;
-                case ILLEGAL_ARGUMENT:
-                    text.setText("Your username or password contains invalid arguments!");
-                    break;
-                default:
-                case INVALID_CREDENTIALS:
-                    text.setText("Your E-Mail or password is invalid!");
-                    break;
-            }
-
-        }
 
         if (messageBox.getTextAlignment() != TextAlignment.CENTER) messageBox.setTextAlignment(TextAlignment.CENTER);
 
@@ -130,7 +143,7 @@ public class LoginButtonHandler {
         messageBox.getChildren().setAll(text);
 
 
-        uiCallback = getThread(result);
+        uiCallback = getThread();
 
         uiCallback.start();
 
@@ -143,33 +156,32 @@ public class LoginButtonHandler {
         playButton.setText(action.toString());
     }
 
-    private static Thread getThread(LoginResult result) {
+    private static Thread getThread() {
         return new Thread(() -> {
             Platform.runLater(() -> {
                 if (messageBox.getOpacity() != 1) messageBox.setOpacity(1);
             });
             try {
-                Thread.sleep((result == LoginResult.SUCCESS ? 2 : 5) * 1000);
+                Thread.sleep(5000);
                 Platform.runLater(() -> {
                     if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
-                    if (result == LoginResult.SUCCESS) {
-                        /* DO STUFF ONCE LOGGED IN HERE */
-                        //Main.getInstance().getStage().close();
-                        try {
-                            Stage stage = new Stage();
-                            stage.setTitle("Install");
-                            Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "popup.fxml"));
-                            Scene scene = new Scene(root);
-                            stage.setScene(scene);
-                            stage.show();
-
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-                    }
                     if (uiCallback != null) uiCallback = null;
                 });
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         });
+    }
+
+    private static void launchInstallScene() {
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Install");
+            Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "popup.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 }
