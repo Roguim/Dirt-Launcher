@@ -73,14 +73,20 @@ public class LoginButtonHandler {
         } catch (UserMigratedException e) {
             displayNotification(account, LoginResult.USER_MIGRATED);
         }
+
+        //TODO EVERYTHING @TECHDG
     }
 
     public static void updatePack(){
         System.out.println("Updated the game");
+
+        //TODO EVERYTHING @TECHDG
     }
 
     public static void installPack(){
         System.out.println("Installed the game");
+
+        //TODO EVERYTHING @TECHDG
     }
 
     private static void displayNotification(Account account, LoginResult result){
