@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.data;
+package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -13,7 +13,7 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
-import net.dirtcraft.dirtlauncher.backend.utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
 
@@ -65,7 +65,7 @@ public class PackCellFactory extends ListCell<Pack> {
 
 
 
-        if (Utility.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
+        if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
 
         playButton.setDisable(false);
         playButton.setOnAction(e->LoginButtonHandler.onClick());

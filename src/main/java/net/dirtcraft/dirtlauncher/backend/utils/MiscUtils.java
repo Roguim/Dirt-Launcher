@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
 
-public class Utility {
+public class MiscUtils {
 
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 

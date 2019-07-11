@@ -3,17 +3,14 @@ package net.dirtcraft.dirtlauncher.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -27,9 +24,9 @@ import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
-import net.dirtcraft.dirtlauncher.backend.utils.Utility;
-import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
-import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
+import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -99,7 +96,7 @@ public class Home {
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);
         settingsImage.setFitWidth(50);
-        settingsImage.setImage(Utility.getImage(Internal.ICONS, "settings.png"));
+        settingsImage.setImage(MiscUtils.getImage(Internal.ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(e->getSettings());
         loginArea.setPickOnBounds(false);
@@ -114,7 +111,7 @@ public class Home {
 
         WebEngine webEngine = webView.getEngine();
 
-        webEngine.setUserStyleSheetLocation(Utility.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
+        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
 
         webEngine.load("https://dirtcraft.net/");
 
@@ -124,7 +121,7 @@ public class Home {
 
     private void getSettings(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Utility.getResourceURL(Internal.SCENES, "settings.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(MiscUtils.getResourceURL(Internal.SCENES, "settings.fxml"));
             Parent root = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -169,7 +166,7 @@ public class Home {
     @FXML
     private void onKeyTyped(KeyEvent event) {
         if (!PackCellFactory.hasPackSelected) return;
-        if (!Utility.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
+        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
             playButton.setOnAction(e ->LoginButtonHandler.onClick());
         }

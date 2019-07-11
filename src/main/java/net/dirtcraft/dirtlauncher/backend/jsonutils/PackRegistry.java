@@ -50,20 +50,6 @@ public class PackRegistry {
         return packs;
 
     }
-    /*
-    public static <T extends List> T getPacks(T genericList){
-        if (packs == null) loadPacks();
-        packs.forEach(pack->genericList.add(pack));
-        return genericList;
-    }
-    */
-
-    /*
-    public static List<Pack> getPacks(){
-        //if (packs == null) loadPacks();
-        while (packs == null) loadPacks();
-        return packs;
-    }*/
 
     private static String getStringFromURL() {
         String string = null;

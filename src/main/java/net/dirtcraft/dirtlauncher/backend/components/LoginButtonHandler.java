@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.data;
+package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +26,7 @@ import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
-import net.dirtcraft.dirtlauncher.backend.utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
 import javax.annotation.Nullable;
@@ -184,16 +184,16 @@ public class LoginButtonHandler {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
-            Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "popup.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "popup.fxml"));
 
 
             stage.initOwner(Main.getInstance().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.DECORATED);
 
-            stage.getIcons().setAll(Utility.getImage(Internal.ICONS, "install.png"));
+            stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "install.png"));
 
-            stage.setScene(new Scene(root, Utility.screenDimension.getWidth() / 3, Utility.screenDimension.getHeight() / 4));
+            stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
             stage.setResizable(false);
 
             stage.show();

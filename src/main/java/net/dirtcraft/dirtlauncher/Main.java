@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
-import net.dirtcraft.dirtlauncher.backend.utils.Utility;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 public class Main extends Application {
 
@@ -27,12 +27,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
 
-        Parent root = FXMLLoader.load(Utility.getResourceURL(Internal.SCENES, "main.fxml"));
+        Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "main.fxml"));
 
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(Utility.getImage(Internal.ICONS, "main.png"));
+        primaryStage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "main.png"));
 
-        Scene scene = new Scene(root, Utility.screenDimension.getWidth() / 1.15, Utility.screenDimension.getHeight() / 1.35);
+        Scene scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
 
         primaryStage.initStyle(StageStyle.DECORATED);
 

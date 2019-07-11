@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.data;
+package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
