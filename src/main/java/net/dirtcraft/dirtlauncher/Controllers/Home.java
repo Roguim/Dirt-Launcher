@@ -3,16 +3,26 @@ package net.dirtcraft.dirtlauncher.Controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
@@ -21,7 +31,14 @@ import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 public class Home {
+    private double settingsXOffset;
+    private double settingsYOffset;
+
+    private Stage settingsMenu;
 
     private static Home instance;
 
@@ -52,14 +69,27 @@ public class Home {
     @FXML
     private Text headerText;
 
+    @FXML
+    private Button settingsButton;
+
     public static Home getInstance() {
         return instance;
+    }
+
+    public Stage getSettingsMenu() {
+        return settingsMenu;
     }
 
     @FXML
     private void initialize() {
         instance = this;
 
+        ImageView settingsImage = new ImageView();
+        settingsImage.setFitHeight(50);
+        settingsImage.setFitWidth(50);
+        settingsImage.setImage(Utility.getImage(Internal.ICONS, "settings.png"));
+        settingsButton.setGraphic(settingsImage);
+        settingsButton.setOnMouseClicked(e->getSettings());
         loginArea.setPickOnBounds(false);
         notificationBox.setOpacity(0);
         playButton.setDisable(true);
@@ -77,6 +107,33 @@ public class Home {
         webEngine.load("https://dirtcraft.net/");
 
 
+
+    }
+
+    private void getSettings(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Utility.getResourceURL(Internal.SCENES, "settings.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setTitle("Dirtlauncher Settings");
+            stage.setScene(new Scene(root));
+
+            root.setOnMousePressed(event -> {
+                settingsXOffset = event.getSceneX();
+                settingsYOffset = event.getSceneY();
+            });
+            root.setOnMouseDragged(event -> {
+                stage.setX(event.getScreenX() - settingsXOffset);
+                stage.setY(event.getScreenY() - settingsYOffset);
+            });
+
+            settingsMenu = stage;
+            stage.show();
+        } catch (IOException e){
+            System.out.println(String.join(Arrays.toString(e.getStackTrace())));
+        }
 
     }
 
