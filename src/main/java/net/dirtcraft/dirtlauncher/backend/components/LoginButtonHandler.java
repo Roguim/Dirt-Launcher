@@ -90,14 +90,16 @@ public class LoginButtonHandler {
     }
 
     public static void installPack() {
-        try {
-            System.out.println("Installing the pack");
+        System.out.println("Installing the pack");
 
-            launchInstallScene();
-            DownloadManager.completePackSetup(modPack, Arrays.asList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        launchInstallScene();
+        new Thread(() -> {
+            try {
+                DownloadManager.completePackSetup(modPack, Arrays.asList());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Nullable
