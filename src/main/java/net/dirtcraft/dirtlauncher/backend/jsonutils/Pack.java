@@ -145,6 +145,7 @@ public class Pack {
     }
 
     private void downloadGameVersion() throws IOException {
+        System.out.println("Installing Pack");
         // Prepare the version folder
         getGameVersionFolder().mkdirs();
         // Fetch the version JSON
@@ -163,6 +164,7 @@ public class Pack {
         JsonObject assetsManifest = JsonFetcher.getJsonFromUrl(versionManifest.getAsJsonObject("assetIndex").get("url").getAsString());
         // Save it to a file
         System.out.println("2");
+        new File(assetsFolder.getPath() + File.separator + "indexes").mkdirs();
         FileWriter assetsManifestFile = new FileWriter(assetsFolder.getPath() + File.separator + "indexes" + File.separator + versionManifest.getAsJsonObject("assetIndex").get("id").getAsString() + ".json");
         assetsManifestFile.write(assetsManifest.toString());
         assetsManifestFile.close();
@@ -171,7 +173,7 @@ public class Pack {
         assetsManifest.getAsJsonObject("objects").keySet().parallelStream().forEach(assetKey -> {
             try {
                 System.out.println("4");
-                String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject("assetKey").get("hash").getAsString();
+                String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
                 String outputFilePath = assetsFolder.getPath() + File.separator + "objects" + File.separator + hash.substring(0, 2);
                 new File(outputFilePath).mkdirs();
                 FileUtils.copyURLToFile(new URL("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash), new File(outputFilePath));
