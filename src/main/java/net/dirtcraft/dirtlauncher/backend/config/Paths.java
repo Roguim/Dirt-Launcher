@@ -21,4 +21,24 @@ public class Paths {
             return new File(System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support" + fileEnding);
         }
     }
+
+    public static File getInstancesDirectory() {
+        return new File(getInstallDirectory().getPath() + File.separator + "instances");
+    }
+
+    public static File getVersionsDirectory() {
+        return new File(getInstallDirectory().getPath() + File.separator + "versions");
+    }
+
+    public static File getAssetsDirectory() {
+        return new File(getInstallDirectory().getPath() + File.separator + "assets");
+    }
+
+    public static File getForgeDirectory() {
+        return new File(getInstallDirectory().getPath() + File.separator + "forge");
+    }
+
+    public static File getDirectoryManifest(File directory) {
+        return new File(directory.getPath() + File.separator + "manifest.json");
+    }
 }

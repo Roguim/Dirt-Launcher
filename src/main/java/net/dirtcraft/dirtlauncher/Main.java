@@ -1,5 +1,7 @@
 package net.dirtcraft.dirtlauncher;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,7 +10,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+
+import java.io.File;
 
 public class Main extends Application {
 
@@ -19,6 +24,36 @@ public class Main extends Application {
     public static void main(String[] args) {
         // Ensure that the application folders are created
         Paths.getInstallDirectory().mkdirs();
+        Paths.getInstancesDirectory().mkdirs();
+        Paths.getVersionsDirectory().mkdirs();
+        Paths.getAssetsDirectory().mkdirs();
+        Paths.getForgeDirectory().mkdirs();
+        // Ensure that all required manifests are created
+        if(!Paths.getDirectoryManifest(Paths.getInstallDirectory()).exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.addProperty("version", "0.0.0");
+            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getInstallDirectory()), emptyManifest);
+        }
+        if(!Paths.getDirectoryManifest(Paths.getInstancesDirectory()).exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.add("packs", new JsonArray());
+            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory()), emptyManifest);
+        }
+        if(!Paths.getDirectoryManifest(Paths.getVersionsDirectory()).exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.add("versions", new JsonArray());
+            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory()), emptyManifest);
+        }
+        if(!Paths.getDirectoryManifest(Paths.getAssetsDirectory()).exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.add("assets", new JsonArray());
+            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory()), emptyManifest);
+        }
+        if(!Paths.getDirectoryManifest(Paths.getForgeDirectory()).exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.add("forgeVersions", new JsonArray());
+            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getForgeDirectory()), emptyManifest);
+        }
         // Launch the application
         launch(args);
     }

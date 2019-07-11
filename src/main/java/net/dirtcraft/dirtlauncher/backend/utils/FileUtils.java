@@ -1,5 +1,8 @@
 package net.dirtcraft.dirtlauncher.backend.utils;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.security.MessageDigest;
@@ -23,4 +26,23 @@ public class FileUtils {
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
         return null;
     }
+
+    public static JsonObject parseJsonFromFile(File file) {
+        try (FileReader reader = new FileReader(file)) {
+            JsonParser parser = new JsonParser();
+            return parser.parse(reader).getAsJsonObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void writeJsonToFile(File file, JsonObject jsonObject) {
+        try (FileWriter writer = new FileWriter(file, false)) {
+            writer.write(jsonObject.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
