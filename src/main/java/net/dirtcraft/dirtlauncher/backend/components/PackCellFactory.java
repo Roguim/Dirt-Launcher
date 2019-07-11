@@ -14,7 +14,7 @@ import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.objects.PackType;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;

@@ -28,7 +28,7 @@ import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
@@ -95,9 +95,7 @@ public class Home {
         // DEBUG BUTTONS
         settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
         settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
-        settingsButton3.setOnMouseClicked(e -> {
-            DiscordPresence.setDetails("Pressed button 3");
-        });
+        settingsButton3.setOnMouseClicked(e -> DiscordPresence.setDetails("Pressed Button 3"));
         //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 
         ImageView settingsImage = new ImageView();
@@ -122,7 +120,9 @@ public class Home {
 
         webEngine.load("https://dirtcraft.net/");
 
-
+        DiscordPresence.initPresence();
+        DiscordPresence.setDetails("Selecting a ModPack...");
+        DiscordPresence.setState("dirtcraft.net/launcher");
 
     }
 

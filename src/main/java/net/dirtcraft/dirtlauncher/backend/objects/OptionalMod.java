@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.jsonutils;
+package net.dirtcraft.dirtlauncher.backend.objects;
 
 import com.google.gson.JsonObject;
 

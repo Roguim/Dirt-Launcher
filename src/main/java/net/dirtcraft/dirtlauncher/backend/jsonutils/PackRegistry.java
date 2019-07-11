@@ -7,6 +7,8 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 
 import java.io.IOException;
 import java.util.ArrayList;
