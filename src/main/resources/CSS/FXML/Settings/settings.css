@@ -1,0 +1,11 @@
+.body, .toolbar{
+    -fx-background-image: url('../../../Backgrounds/carbon.jpg') ;
+}
+.inner{
+    -fx-background-image: url('../../../Backgrounds/metal2.jpg') ;
+	-fx-opacity: 0.5;
+}
+
+.button{
+	-fx-background-color: #161616;
+}

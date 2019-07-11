@@ -24,7 +24,7 @@
             <ProgressBar fx:id="loadingBar" focusTraversable="false" maxHeight="10.0" minHeight="10.0" minWidth="300.0" prefHeight="10.0" prefWidth="300.0" progress="0.0" style="-fx-accent: #44D62c;" stylesheets="@../CSS/FXML/Install/Loadingbar.css" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <FlowPane alignment="TOP_CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                <children>
-                  <TextFlow id="NotificationMessage" fx:id="notificationText" prefHeight="14.0" prefWidth="300.0" styleClass="NotificationMessage" />
+                  <TextFlow id="NotificationMessage" fx:id="notificationText" prefHeight="0.0" prefWidth="300.0" styleClass="NotificationMessage" />
                </children>
             </FlowPane>
             <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
