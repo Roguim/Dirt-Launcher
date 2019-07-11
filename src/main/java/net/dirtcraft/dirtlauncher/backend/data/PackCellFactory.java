@@ -9,7 +9,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import net.dirtcraft.dirtlauncher.Controller;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.Utility;
@@ -55,10 +55,10 @@ public class PackCellFactory extends ListCell<Pack> {
     private void onClick() {
         if (!hasPackSelected) hasPackSelected = true;
 
-        Controller controller = Controller.getInstance();
-        if (Utility.isEmptyOrNull(controller.getUsernameField().getText().trim(), controller.getPasswordField().getText().trim())) return;
+        Home home = Home.getInstance();
+        if (Utility.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
 
-        Button playButton = controller.getPlayButton();
+        Button playButton = home.getPlayButton();
         playButton.setDisable(false);
         playButton.setOnAction(action -> LoginButtonHandler.onClick());
     }

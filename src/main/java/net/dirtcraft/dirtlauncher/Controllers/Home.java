@@ -1,13 +1,10 @@
-package net.dirtcraft.dirtlauncher;
+package net.dirtcraft.dirtlauncher.Controllers;
 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
@@ -24,8 +21,9 @@ import net.dirtcraft.dirtlauncher.backend.utils.Utility;
 import net.dirtcraft.dirtlauncher.backend.data.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.data.PackCellFactory;
 
-public class Controller {
-    private static Controller instance;
+public class Home {
+
+    private static Home instance;
 
     @FXML
     private ListView<Pack> packList;
@@ -54,13 +52,14 @@ public class Controller {
     @FXML
     private Text headerText;
 
-    public static Controller getInstance() {
+    public static Home getInstance() {
         return instance;
     }
 
     @FXML
     private void initialize() {
         instance = this;
+
         loginArea.setPickOnBounds(false);
         notificationBox.setOpacity(0);
         playButton.setDisable(true);
