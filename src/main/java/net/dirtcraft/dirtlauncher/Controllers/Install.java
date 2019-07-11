@@ -16,6 +16,9 @@ public class Install {
     private TextFlow textFlow;
 
     @FXML
+    private TextFlow notificationText;
+
+    @FXML
     private ProgressBar loadingBar;
 
     @FXML
@@ -47,4 +50,7 @@ public class Install {
         return instance;
     }
 
+    public TextFlow getNotificationText() {
+        return notificationText;
+    }
 }

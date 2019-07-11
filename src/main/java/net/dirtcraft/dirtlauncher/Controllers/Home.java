@@ -72,6 +72,13 @@ public class Home {
     @FXML
     private Button settingsButton;
 
+    @FXML
+    private Button settingsButton1;
+    @FXML
+    private Button settingsButton2;
+    @FXML
+    private Button settingsButton3;
+
     public static Home getInstance() {
         return instance;
     }
@@ -83,6 +90,11 @@ public class Home {
     @FXML
     private void initialize() {
         instance = this;
+
+        // DEBUG BUTTONS
+        settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
+        settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
+        //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);

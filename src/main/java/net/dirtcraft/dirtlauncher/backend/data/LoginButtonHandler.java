@@ -198,7 +198,15 @@ public class LoginButtonHandler {
 
             stage.show();
 
-            //TODO: @SHINY TEXT STUFF
+            TextFlow notificationArea = Install.getInstance().getNotificationText();
+            Text notification = new Text("Beginning download!");
+            notification.setFill(Color.WHITE);
+            notification.setTextOrigin(VPos.CENTER);
+            notification.setTextAlignment(TextAlignment.CENTER);
+            notificationArea.getChildren().add(notification);
+
+            notification.setText("updateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdateupdate");
+
             TextFlow textFlow = Install.getInstance().getTextFlow();
             Text text = new Text("Loading...");
 

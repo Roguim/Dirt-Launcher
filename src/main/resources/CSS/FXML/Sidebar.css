@@ -7,7 +7,11 @@
     -fx-border-radius: 0 0 0 10;
     -fx-background-radius: 0 0 0 20;
 }
-
+.SettingsBarExt{
+    -fx-background-color: #303030;
+    -fx-border-radius: 0 0 0 10;
+    -fx-background-radius: 0 0 0 10;
+}
 .SettingsButton{
     -fx-text-fill: FFFFFF;
     -fx-cell-size: 50;
@@ -16,6 +20,10 @@
     -fx-background-insets: 0px 0px;
     -fx-background-radius: 0 0 0 15 ;
     -fx-content-display: right ;
+}
+
+.SettingsButtonSmall{
+    -fx-background-radius: 0 0 5 5 ;
 }
 
 .SettingsButton:hover, .SettingsButton:selected{
