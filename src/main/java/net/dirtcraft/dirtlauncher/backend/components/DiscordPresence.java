@@ -6,40 +6,67 @@ import club.minnced.discord.rpc.DiscordRichPresence;
 
 public class DiscordPresence {
 
+    private static final String applicationId = "598965613767032833";
+
+    private static DiscordRPC rpc = DiscordRPC.INSTANCE;
+
     private static DiscordRichPresence presence;
+    private static DiscordEventHandlers handlers;
 
-    public static DiscordRichPresence getPresence() {
-        if (presence == null) initPresence();
-        return initPresence();
+    public static void setState(String state) {
+        getPresence().state = state;
+        System.out.println("Discord Rich Presence STATE set to \"" + state + "\"");
+        refreshPresence();
     }
 
-    public static void setStatus(String status) {
-        getPresence().details = status;
+    public static void setDetails(String details) {
+        getPresence().details = details;
+        System.out.println("Discord Rich Presence DETAILS set to \"" + details + "\"");
+        refreshPresence();
     }
 
+    private static void refreshPresence() {
+        rpc.Discord_UpdatePresence(getPresence());
+    }
 
-    public static DiscordRichPresence initPresence() {
-        DiscordRPC lib = DiscordRPC.INSTANCE;
-        String applicationId = "598965613767032833";
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) ->
-                System.out.println("Detected Discord Account: @" + user.username + "#" + user.discriminator);
+    public static void initPresence() {
+        rpc.Discord_Initialize(applicationId, getHandlers(), true, null);
 
-        lib.Discord_Initialize(applicationId, handlers, true, null);
+        refreshPresence();
+
+        shutdownHook();
+    }
+
+    private static DiscordRichPresence getPresence() {
+        if (presence != null) return presence;
         DiscordRichPresence presence = new DiscordRichPresence();
-        presence.startTimestamp = System.currentTimeMillis() / 1000; // epoch second
-        presence.details = "Testing RPC";
-        lib.Discord_UpdatePresence(presence);
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                lib.Discord_RunCallbacks();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {}
-            }
-        }, "RPC-Callback-Handler").start();
+        presence.startTimestamp = System.currentTimeMillis() / 1000;
+        presence.largeImageKey = "dirticon_crisp";
+        rpc.Discord_UpdatePresence(presence);
+
+        DiscordPresence.presence = presence;
 
         return presence;
+    }
+
+    private static DiscordEventHandlers getHandlers() {
+        if (handlers != null) return handlers;
+        DiscordEventHandlers handlers = new DiscordEventHandlers();
+        handlers.ready = (user) -> System.out.println("Detected Discord Account: @" + user.username + "#" + user.discriminator);
+
+        rpc.Discord_UpdateHandlers(handlers);
+        DiscordPresence.handlers = handlers;
+
+        return handlers;
+    }
+
+    private static void shutdownHook() {
+        Thread thread = new Thread(() -> {
+            rpc.Discord_ClearPresence();
+            rpc.Discord_Shutdown();
+        }, "Discord-RPC-Shutdown");
+        thread.setDaemon(true);
+        Runtime.getRuntime().addShutdownHook(thread);
     }
 
 }

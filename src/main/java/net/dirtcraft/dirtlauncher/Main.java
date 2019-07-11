@@ -14,8 +14,6 @@ import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
-import java.io.File;
-
 public class Main extends Application {
 
     private static Main instance;
@@ -79,6 +77,8 @@ public class Main extends Application {
         stage = primaryStage;
 
         DiscordPresence.initPresence();
+        DiscordPresence.setDetails("Selecting a ModPack...");
+        DiscordPresence.setState("dirtcraft.net/launcher");
     }
 
     public Stage getStage() {
