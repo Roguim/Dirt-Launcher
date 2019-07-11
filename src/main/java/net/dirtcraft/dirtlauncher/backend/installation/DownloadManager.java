@@ -46,6 +46,15 @@ public class DownloadManager {
         if(installForge) totalSteps ++;
         if(installPack) totalSteps++;
         setTotalProgressPercent(completedSteps, totalSteps);
+
+        if(installMinecraft) {
+            installMinecraft(versionManifest, completedSteps, totalSteps);
+            completedSteps += 2;
+            setTotalProgressPercent(completedSteps, totalSteps);
+        }
+        if(installAssets) {
+            setProgressText("Test");
+        }
     }
 
     public static void setProgressText(String text) {
@@ -60,7 +69,7 @@ public class DownloadManager {
         Install.getInstance().getBottomBar().setProgress(Math.ceil(completed / total));
     }
 
-    public static String installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+    public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Paths.getVersionsDirectory() + File.separator + versionManifest.get("id").getAsString());
         FileUtils.deleteDirectory(versionFolder);
@@ -159,7 +168,13 @@ public class DownloadManager {
             completedLibraries++;
             setProgressPercent(completedLibraries, totalLibraries);
         }
-        return librarysLaunchCode;
+
+        // Populate Versions Manifest
+        JsonObject versionJsonObject = new JsonObject();
+        versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
+        JsonObject versionsManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory()));
+        versionManifest.getAsJsonArray("versions").add(versionJsonObject);
+        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getVersionsDirectory()).getPath()), versionsManifest);
     }
 
 }

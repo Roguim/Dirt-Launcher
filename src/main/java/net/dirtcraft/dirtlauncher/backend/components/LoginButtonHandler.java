@@ -22,6 +22,7 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.installation.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
@@ -31,6 +32,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
@@ -87,14 +89,15 @@ public class LoginButtonHandler {
          */
     }
 
-    public static void installPack(){
-        System.out.println("Installed the game");
+    public static void installPack() {
+        try {
+            System.out.println("Installing the pack");
 
-        launchInstallScene();
-        /*
-        INSTALL PACK STUFF HERE
-         */
-
+            launchInstallScene();
+            DownloadManager.completePackSetup(modPack, Arrays.asList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable
