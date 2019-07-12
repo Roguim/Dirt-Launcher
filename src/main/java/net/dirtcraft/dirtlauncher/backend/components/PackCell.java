@@ -1,15 +1,10 @@
 package net.dirtcraft.dirtlauncher.backend.components;
 
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
@@ -21,28 +16,20 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
 
-public class PackCellFactory extends ListCell<Pack> {
+public class PackCell extends Button {
 
     public static boolean hasPackSelected = false;
 
-    protected void updateItem(Pack pack, boolean empty) {
-        super.updateItem(pack, empty);
+    public PackCell(Pack pack){
 
-        getStyleClass().add(CssClasses.PACKLIST);
-
-        if (empty || pack.getName() == null) {
-            setText(null);
-            return;
-        }
+        getStyleClass().add(CssClasses.PACK_CELL);
 
         setCursor(Cursor.HAND);
 
         setText(pack.getName());
-        setAlignment(Pos.CENTER);
-        setTextAlignment(TextAlignment.CENTER);
-        setTextFill(Paint.valueOf("WHITE"));
-        setFont(Font.font("System Bold", FontWeight.LIGHT, 20));
-
+        setMinSize(278, 50);
+        setPrefSize(278, 50);
+        setMaxSize(278, 50);
         setOnMouseClicked(event -> onClick(pack));
 
         Tooltip tooltip = new Tooltip();
@@ -71,11 +58,12 @@ public class PackCellFactory extends ListCell<Pack> {
         setTooltip(tooltip);
 
         System.out.println("Added the ModPack " + pack.getName() + " to the List View");
+
     }
 
     private void onClick(Pack pack) {
         if (!hasPackSelected) hasPackSelected = true;
-        DiscordPresence.setDetails("Selecting " + pack.getName());
+        DiscordPresence.setDetails("Playing " + pack.getName());
 
         Home home = Home.getInstance();
         Button playButton = home.getPlayButton();
@@ -90,5 +78,4 @@ public class PackCellFactory extends ListCell<Pack> {
         playButton.setDisable(false);
         playButton.setOnAction(e -> LoginButtonHandler.onClick());
     }
-
 }

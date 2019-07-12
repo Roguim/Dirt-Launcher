@@ -13,9 +13,6 @@ public class Install {
     private AnchorPane anchorPane;
 
     @FXML
-    private TextFlow textFlow;
-
-    @FXML
     private TextFlow notificationText;
 
     @FXML
@@ -32,10 +29,6 @@ public class Install {
 
     public AnchorPane getAnchorPane() {
         return anchorPane;
-    }
-
-    public TextFlow getTextFlow() {
-        return textFlow;
     }
 
     public ProgressBar getLoadingBar() {

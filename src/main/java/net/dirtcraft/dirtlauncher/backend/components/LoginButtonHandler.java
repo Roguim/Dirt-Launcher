@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
@@ -200,6 +201,7 @@ public class LoginButtonHandler {
 
             stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
             stage.setResizable(false);
+            stage.setOnCloseRequest(Event::consume);
 
             stage.show();
 
@@ -211,17 +213,6 @@ public class LoginButtonHandler {
             notificationArea.getChildren().add(notification);
 
             notification.setText("Preparing to install...");
-
-            TextFlow textFlow = Install.getInstance().getTextFlow();
-            Text text = new Text("Loading...");
-
-            text.getStyleClass().add("NotificationText");
-            text.setFill(Color.WHITE);
-            text.setTextOrigin(VPos.CENTER);
-            text.setTextAlignment(TextAlignment.CENTER);
-
-            textFlow.setOpacity(1);
-            textFlow.getChildren().setAll(text);
 
             //TODO: @TECHDG
             //This is the bar in the middle
