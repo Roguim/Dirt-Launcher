@@ -62,8 +62,8 @@
 }
 
 .PackCellSelected {
-     -fx-background-color: #FFF0F5;
-     -fx-text-fill: black;
+     -fx-background-color: #FFF0F5 !important ;
+     -fx-text-fill: black !important ;
 
      /* BORDER WIP */ /*
      -fx-border-color: #D92121;
