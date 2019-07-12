@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
@@ -21,7 +22,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
     <children>
-      <WebView fx:id="webView" focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text id="Title" fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-translate-y: -5;" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
@@ -37,6 +37,16 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
+      <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" layoutY="25.0" mouseTransparent="true" prefHeight="465.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextFlow id="NotificationField" fx:id="notificationBox" centerShape="false" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css" textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="NotificationBox" />
+                  <String fx:value="NotificationField" />
+               </styleClass></TextFlow>
+         </children>
+      </FlowPane>
+      <WebView fx:id="webView" focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Pane id="LoginBar" fx:id="loginBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css">
@@ -113,15 +123,6 @@
             </Pane>
          </children>
       </FlowPane>
-      <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" layoutY="25.0" mouseTransparent="true" prefHeight="465.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <TextFlow id="NotificationField" fx:id="notificationBox" centerShape="false" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css" textAlignment="CENTER">
-               <styleClass>
-                  <String fx:value="NotificationBox" />
-                  <String fx:value="NotificationField" />
-               </styleClass></TextFlow>
-         </children>
-      </FlowPane>
       <Pane id="SettingsBarExt" layoutX="774.0" layoutY="10.0" prefHeight="30.0" prefWidth="95.0" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
          <children>
             <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
@@ -173,9 +174,9 @@
             </Button>
          </children>
       </Pane>
-      <ScrollPane fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" layoutY="100.0" pannable="true" prefHeight="500.0" prefWidth="300.0" styleClass="PackListScroll" stylesheets="@../CSS/FXML/Sidebar.css" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
+      <ScrollPane fx:id="packListScroll" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" layoutY="100.0" pannable="true" prefHeight="500.0" prefWidth="300.0" styleClass="PackListScroll" stylesheets="@../CSS/FXML/Sidebar.css" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
          <content>
-            <FlowPane fx:id="packList" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="663.0" prefWidth="298.0" styleClass="PackList">
+            <VBox fx:id="packList" alignment="TOP_CENTER" prefHeight="663.0" prefWidth="298.0" styleClass="PackList">
                <children>
                   <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
                   <Button layoutX="20.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
@@ -186,8 +187,13 @@
                   <Button layoutX="20.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
                   <Button layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
                   <Button layoutX="20.0" layoutY="430.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button layoutX="20.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
                </children>
-            </FlowPane>
+            </VBox>
          </content>
       </ScrollPane>
     </children>

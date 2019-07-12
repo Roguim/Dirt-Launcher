@@ -4,12 +4,15 @@
 .PackListScroll, .PackListScroll > .viewport {
    -fx-background-color: transparent;
 }
+.PackListScroll {
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
+}
 .PackList {
-   -fx-background-color: transparent;
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
 }
 .PackList{
     -fx-opacity: 1;
-    -fx-vgap: 3;
+    -fx-spacing: 3;
 }
 
 #SettingsBar{
@@ -36,7 +39,6 @@
 	-fx-text-alignment: center;
 	-fx-text-fill: #ffffff;
 	-fx-font-family: "System Bold";
-	-fx-font-weight: light;
 	-fx-font-size: 20;
     -fx-background-radius: 5 5 5 5 ;
 }

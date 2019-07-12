@@ -4,14 +4,18 @@ package net.dirtcraft.dirtlauncher.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
@@ -30,7 +34,7 @@ public class Home {
     private static Home instance;
 
     @FXML
-    private FlowPane packList;
+    private VBox packList;
 
     @FXML
     private WebView webView;
@@ -55,6 +59,9 @@ public class Home {
 
     @FXML
     private Text headerText;
+
+    @FXML
+    private ScrollPane packListScroll;
 
     @FXML
     private Button settingsButton;
@@ -93,6 +100,7 @@ public class Home {
         packs.setAll(PackRegistry.getPacks());
 
         packList.getStyleClass().add(CssClasses.PACKLIST);
+        packList.getChildren().clear();
         packs.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
 
         WebEngine webEngine = webView.getEngine();
@@ -132,7 +140,7 @@ public class Home {
         else playButton.setDisable(true);
     }
 
-    public FlowPane getPackList() {
+    public VBox getPackList() {
         return packList;
     }
 
