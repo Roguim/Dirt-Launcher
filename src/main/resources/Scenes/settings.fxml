@@ -1,53 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="inner" stylesheets="@../CSS/FXML/Settings/settings.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Settings">
    <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <top>
-            <FlowPane alignment="BOTTOM_CENTER" styleClass="title" stylesheets="@../CSS/FXML/Settings/settings.css" BorderPane.alignment="CENTER">
+      <FlowPane alignment="CENTER" columnHalignment="CENTER" layoutX="201.0" layoutY="317.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="600.0" styleClass="RamSettings" stylesheets="@../CSS/FXML/Settings/settings.css" vgap="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Text fx:id="settingsTtitle" fill="RED" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Settings" textAlignment="CENTER" underline="true">
+               <font>
+                  <Font size="60.0" />
+               </font>
+            </Text>
+         </children>
+      </FlowPane>
+      <ScrollPane fx:id="scrollBox" fitToWidth="true" hbarPolicy="NEVER" layoutY="125.0" pannable="true" prefHeight="275.0" prefWidth="600.0" styleClass="SettingsScrollbox" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0">
+         <content>
+            <FlowPane fx:id="scrollContent" alignment="TOP_CENTER" columnHalignment="CENTER" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="0.0" prefWidth="588.0">
                <children>
-                  <Text fill="RED" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Settings" textAlignment="CENTER" underline="true">
-                     <font>
-                        <Font size="60.0" />
-                     </font>
-                  </Text>
-               </children>
-            </FlowPane>
-         </top>
-         <center>
-            <GridPane BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <FlowPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                  <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0" stylesheets="@../CSS/FXML/Settings/settings.css" GridPane.columnSpan="2">
+                  <Pane fx:id="ramBox" prefHeight="81.0" prefWidth="200.0">
                      <children>
-                        <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ram" text="RAM Allocation" underline="true">
+                        <Text fx:id="ramTitle" fill="WHITE" fontSmoothingType="LCD" layoutX="23.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Header" text="RAM Allocation" underline="true">
                            <font>
                               <Font name="System Font" size="24.0" />
                            </font>
                         </Text>
+                        <Slider fx:id="ramSlider" layoutX="30.0" layoutY="43.0" styleClass="Slider" />
+                        <Text fx:id="ramLabel" fill="WHITE" fontSmoothingType="LCD" layoutX="57.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Value" text="2024/100000gb" wrappingWidth="85.6240005493164" />
                      </children>
-                  </FlowPane>
+                  </Pane>
                </children>
-            </GridPane>
-         </center>
-      </BorderPane>
+            </FlowPane>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Oleo+Script')
 @import url('https://fonts.googleapis.com/css?family=Cairo')
-
+/*///////////////////////////////////////////
+// Makes the scrollbox background editable //
+///////////////////////////////////////////*/
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
 .body, .toolbar{
     -fx-background-image: url('../../../Backgrounds/carbon.jpg') ;
 }
@@ -18,8 +23,16 @@
   -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
   -fx-alignment: center;
 }
-
-.ram {
+.RamSettings .Header{
+  -fx-font-family: 'Cairo';
+	
+}
+.RamSettings .Value {
+  -fx-text-fill: #FFFFFF;
   -fx-font-family: 'Cairo';
   -fx-font-weight: bold;
+  -fx-text-alignment: center;
+}
+.SettingsScrollbox{
+    -fx-background-image: url('../../../Backgrounds/metaldarker.png') ;
 }
