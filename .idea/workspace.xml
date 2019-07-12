@@ -398,7 +398,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.DirtLauncher [jfxJar]">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.dirtcraft.dirtlauncher.Main" />
       <module name="dirtlauncher.main" />

@@ -1,11 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Oleo+Script')
+@import url('https://fonts.googleapis.com/css?family=Cairo')
+
 .body, .toolbar{
     -fx-background-image: url('../../../Backgrounds/carbon.jpg') ;
 }
-.inner{
+.inner {
     -fx-background-image: url('../../../Backgrounds/metaldarkerer.png') ;
 	-fx-opacity: 1;
 }
 
-.button{
+.button {
 	-fx-background-color: #161616;
+}
+
+.title {
+  -fx-font-family: 'Oleo Script';
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+  -fx-alignment: center;
+}
+
+.ram {
+  -fx-font-family: 'Cairo';
+  -fx-font-weight: bold;
 }
