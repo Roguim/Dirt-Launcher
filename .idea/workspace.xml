@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9ed9baa7-56f8-4d5a-8541-fcb8c85e0f0f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d87bd8cf-628e-4fa8-a58e-3aa756cae0d7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/4.10.3/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" beforeDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
+    <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="CodeInsightWorkspaceSettings">
-    <option name="optimizeImportsOnTheFly" value="true" />
-  </component>
-  <component name="DarkyenusTimeTracker">
-    <option name="totalTimeSeconds" value="86620" />
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
@@ -68,69 +63,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/PackCellFactory.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="72" column="85" selection-start-line="72" selection-start-column="85" selection-end-line="72" selection-end-column="85" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="37" selection-start-line="37" selection-end-line="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="73" column="21" selection-start-line="73" selection-start-column="21" selection-end-line="73" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Install.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-124">
-              <caret line="29" selection-start-line="29" selection-end-line="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/stoneblock.png">
-          <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/ShakeTransition.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="915">
-              <caret line="61" column="50" selection-start-line="61" selection-start-column="50" selection-end-line="61" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Settings/settings.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1950">
-              <caret line="130" column="106" selection-start-line="130" selection-start-column="106" selection-end-line="130" selection-end-column="106" />
+            <state relative-caret-position="267">
+              <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -138,17 +74,43 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/LoginButtonHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-500">
-              <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
+            <state relative-caret-position="240">
+              <caret line="190" column="9" selection-start-line="190" selection-start-column="9" selection-end-line="190" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Sidebar.css">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Settings.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1425">
-              <caret line="95" column="31" selection-start-line="95" selection-start-column="31" selection-end-line="95" selection-end-column="31" />
+            <state relative-caret-position="32">
+              <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="512">
+              <caret line="154" column="51" selection-start-line="154" selection-start-column="51" selection-end-line="154" selection-end-column="51" />
+              <folding>
+                <element signature="e#2168#2169#0" expanded="true" />
+                <element signature="e#2199#2200#0" expanded="true" />
+                <element signature="e#2237#2238#0" expanded="true" />
+                <element signature="e#2272#2273#0" expanded="true" />
+                <element signature="e#5765#5766#0" expanded="true" />
+                <element signature="e#5796#5797#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/DiscordPresence.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="32">
+              <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -158,30 +120,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaFXApplication" />
+        <option value="Singleton" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>webview</find>
-      <find>class</find>
-      <find>login</find>
-      <find>log in</find>
-      <find>opaci</find>
-      <find>scroll</find>
-      <find>radius</find>
-      <find>install</find>
-      <find>getthread</find>
-      <find>initialize</find>
-      <find>uicallback</find>
-      <find>displayno</find>
-      <find>hover</find>
-      <find>packlist</find>
-      <find>tooltip</find>
-      <find>stage</find>
-      <find>getsettin</find>
+      <find>scr</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -190,120 +137,146 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/WebViewUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/font.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sample.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/Account.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/banner.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/webview.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sidebar.css" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Banner.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Utility.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/HTML/webEngine.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/JsonUtils/Pack.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/JsonUtils/PackRegistry.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controller.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Controller.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/Scenes/main.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackAction.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/PackAction.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/PackType.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/Pack.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/Utility.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Install.css" />
-        <option value="$PROJECT_DIR$/src/main/resources/Scenes/popup.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Install.css" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Bottombar.css" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Loadingbar.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/LoginButtonHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Install.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/Internal.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/MiscUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/TooltipUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/Paths.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Sidebar.css" />
-        <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/DiscordPresence.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/Pack.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/LoginButtonHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Main.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/installation/DownloadManager.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Settings.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/Scenes/settings.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/ShakeTransition.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Settings/settings.css" />
-        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/PackCellFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Elements/DefaultScreen.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/MoneyFormatCell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/PackCell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/v/Controller.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Fetch.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackRegistry.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/PackCellFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sample.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/loginButtonHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/playArea.css" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sidebar.css" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Config.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Utility.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/ShakeTransition.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/JsonUtils/OptionalMod.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/JsonUtils/PackRegistry.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Config/Internal.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Banner.css" />
+        <option value="$PROJECT_DIR$/src/main/resources/CSS/HTML/webEngine.css" />
+        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Playarea.css" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Config/CssClasses.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/Pack.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackAction.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/InstallHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackCellFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controller.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/CSS/FXML/Sidebar.css" />
+        <option value="$PROJECT_DIR$/src/main/resources/Scenes/main.fxml" />
+        <option value="$PROJECT_DIR$/src/main/resources/Scenes/popup.fxml" />
+        <option value="$PROJECT_DIR$/src/main/resources/Scenes/settings.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/ResizeHelper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Install.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/PlayButton.java" />
+        <option value="$PROJECT_DIR$/out/production/resources/Scenes/main.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/LoginButtonHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Settings.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="y" value="22" />
-    <option name="width" value="1280" />
-    <option name="height" value="722" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="227" />
+    <option name="y" value="-24" />
+    <option name="width" value="1142" />
+    <option name="height" value="667" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
               <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="jsonutils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="objects" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="dirtlauncher" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
@@ -312,41 +285,31 @@
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="CSS" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="CSS" type="462c0819:PsiDirectoryNode" />
-              <item name="FXML" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="CSS" type="462c0819:PsiDirectoryNode" />
               <item name="FXML" type="462c0819:PsiDirectoryNode" />
-              <item name="Settings" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
@@ -354,7 +317,7 @@
             </path>
             <path>
               <item name="dirtlauncher" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DirtLauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="dirtlauncher" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
@@ -364,19 +327,31 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="project.structure.last.edited" value="Facets" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="project.structure.side.proportion" value="0.3761392" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="net.dirtcraft.dirtlauncher.backend.data" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Shiny\IdeaProjects\dirtlauncher\src\main\java\net\dirtcraft\dirtlauncher\resources" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/resources/CSS/FXML/Install" />
+      <recent name="C:\Users\Shiny\IdeaProjects\dirtlauncher\src\main\resources" />
+      <recent name="C:\Users\Shiny\IdeaProjects\dirtlauncher\src\main" />
+      <recent name="C:\Users\Shiny\IdeaProjects\dirtlauncher\src\main\java" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -391,21 +366,60 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.DirtLauncher [jfxJar]">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.dirtcraft.dirtlauncher.Main" />
       <module name="dirtlauncher.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="net.dirtcraft.dirtlauncher.Controllers.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DirtLauncher [jfxJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.dirtcraft.dirtlauncher.Main" />
+      <module name="dirtlauncher.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dirtlauncher [assemble]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="assemble" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="dirtlauncher [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="dirtlauncher [jfxJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -424,7 +438,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="DirtLauncher [jfxRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="dirtlauncher [jfxRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -443,25 +457,19 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="net.dirtcraft.dirtlauncher.Main" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
-      <module name="dirtlauncher.main" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" value="net.dirtcraft.dirtlauncher.Main" />
-      <option name="WORKING_DIRECTORY" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Gradle.dirtlauncher [build]" />
+      <item itemvalue="Gradle.dirtlauncher [assemble]" />
+      <item itemvalue="Gradle.dirtlauncher [jfxRun]" />
+      <item itemvalue="Gradle.dirtlauncher [jfxJar]" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
-        <item itemvalue="Gradle.DirtLauncher [jfxRun]" />
-        <item itemvalue="Kotlin.net.dirtcraft.dirtlauncher.Main" />
-        <item itemvalue="Gradle.DirtLauncher [jfxJar]" />
+        <item itemvalue="Gradle.dirtlauncher [jfxRun]" />
+        <item itemvalue="Gradle.dirtlauncher [jfxJar]" />
+        <item itemvalue="Gradle.dirtlauncher [build]" />
+        <item itemvalue="Gradle.dirtlauncher [assemble]" />
       </list>
     </recent_temporary>
   </component>
@@ -470,368 +478,673 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9ed9baa7-56f8-4d5a-8541-fcb8c85e0f0f" name="Default Changelist" comment="" />
-      <created>1562710487221</created>
+      <changelist id="d87bd8cf-628e-4fa8-a58e-3aa756cae0d7" name="Default Changelist" comment="" />
+      <created>1562553022553</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1562710487221</updated>
+      <updated>1562553022553</updated>
     </task>
+    <task id="LOCAL-00003" summary=".">
+      <created>1562647175598</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1562647175598</updated>
+    </task>
+    <task id="LOCAL-00004" summary=".">
+      <created>1562647345275</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1562647345275</updated>
+    </task>
+    <task id="LOCAL-00005" summary="STYYYLLE">
+      <created>1562656409246</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1562656409246</updated>
+    </task>
+    <task id="LOCAL-00006" summary="STYYYLLE">
+      <created>1562659461988</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1562659461989</updated>
+    </task>
+    <task id="LOCAL-00007" summary="STYYYLLE">
+      <created>1562659589896</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1562659589896</updated>
+    </task>
+    <task id="LOCAL-00008" summary="STYYYLLE">
+      <created>1562661447238</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1562661447238</updated>
+    </task>
+    <task id="LOCAL-00009" summary="STYYYLLE">
+      <created>1562661795078</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1562661795078</updated>
+    </task>
+    <task id="LOCAL-00010" summary="STYYYLLE">
+      <created>1562662084206</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1562662084206</updated>
+    </task>
+    <task id="LOCAL-00011" summary="ignore all the things">
+      <created>1562664372292</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1562664372292</updated>
+    </task>
+    <task id="LOCAL-00012" summary="more tweaks to css">
+      <created>1562685102329</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1562685102329</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixed the button slightly decreasing in size">
+      <created>1562685467182</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1562685467182</updated>
+    </task>
+    <task id="LOCAL-00014" summary="adding login stuff">
+      <created>1562687372067</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1562687372067</updated>
+    </task>
+    <task id="LOCAL-00015" summary="more login">
+      <created>1562687638354</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1562687638354</updated>
+    </task>
+    <task id="LOCAL-00016" summary="more login">
+      <created>1562688575653</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1562688575653</updated>
+    </task>
+    <task id="LOCAL-00017" summary="more login">
+      <created>1562692061702</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1562692061702</updated>
+    </task>
+    <task id="LOCAL-00018" summary="changed notification box type">
+      <created>1562694869642</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1562694869642</updated>
+    </task>
+    <task id="LOCAL-00019" summary="changed notification box type">
+      <created>1562698919801</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1562698919801</updated>
+    </task>
+    <task id="LOCAL-00020" summary="changed notification box type">
+      <created>1562698995471</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1562698995471</updated>
+    </task>
+    <task id="LOCAL-00021" summary="more changes">
+      <created>1562701237171</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1562701237171</updated>
+    </task>
+    <task id="LOCAL-00022" summary="shake">
+      <created>1562703166371</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1562703166371</updated>
+    </task>
+    <task id="LOCAL-00023" summary="shake">
+      <created>1562703665092</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1562703665092</updated>
+    </task>
+    <task id="LOCAL-00024" summary="moved some files around to make it more tidy. Attempted to fix the scrolling but ultimately failed. Big OOF">
+      <created>1562758567425</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1562758567425</updated>
+    </task>
+    <task id="LOCAL-00025" summary="More organization. &#10;Fixed the webview (No scrollbar!)">
+      <created>1562763978931</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1562763978931</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Tidied up the code some more.">
+      <created>1562768304034</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1562768304034</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Tidied up the code some more.">
+      <created>1562768867422</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1562768867422</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Adding Font Example (Change when we find a good one!)">
+      <created>1562780478793</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1562780478793</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Adding Font Example (Change when we find a good one!)">
+      <created>1562781217126</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1562781217126</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Adding Font Example (Change when we find a good one!)">
+      <created>1562782111643</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1562782111643</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Adding Font Example (Change when we find a good one!)">
+      <created>1562783853675</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1562783853675</updated>
+    </task>
+    <task id="LOCAL-00032" summary="font">
+      <created>1562783878338</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1562783878338</updated>
+    </task>
+    <task id="LOCAL-00033" summary="m kills the JVM">
+      <created>1562787413714</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1562787413714</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fixed issue except for exactly 4 pixels">
+      <created>1562789093708</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1562789093708</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fixed issue except for exactly 4 pixels">
+      <created>1562789496619</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1562789496619</updated>
+    </task>
+    <task id="LOCAL-00036" summary="allow scrollwheel scrolling without rendering the scrollbar still">
+      <created>1562790356570</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1562790356570</updated>
+    </task>
+    <task id="LOCAL-00037" summary="adding settings stuff, currently WIP">
+      <created>1562794548218</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1562794548218</updated>
+    </task>
+    <task id="LOCAL-00038" summary="fix">
+      <created>1562794852250</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1562794852250</updated>
+    </task>
+    <task id="LOCAL-00039" summary="made buttons more thicc">
+      <created>1562798304546</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1562798304546</updated>
+    </task>
+    <task id="LOCAL-00040" summary="install button">
+      <created>1562800122882</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1562800122882</updated>
+    </task>
+    <task id="LOCAL-00041" summary="install button">
+      <created>1562801830603</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1562801830603</updated>
+    </task>
+    <task id="LOCAL-00042" summary="install button">
+      <created>1562802196175</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1562802196175</updated>
+    </task>
+    <task id="LOCAL-00043" summary="install button">
+      <created>1562805528902</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1562805528902</updated>
+    </task>
+    <task id="LOCAL-00044" summary="install button">
+      <created>1562805865703</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1562805865703</updated>
+    </task>
+    <task id="LOCAL-00045" summary="install button">
+      <created>1562808746736</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1562808746736</updated>
+    </task>
+    <task id="LOCAL-00046" summary="adding very basic setting template">
+      <created>1562832229076</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1562832229076</updated>
+    </task>
+    <task id="LOCAL-00047" summary="done did the message thing">
+      <created>1562838684038</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1562838684038</updated>
+    </task>
+    <task id="LOCAL-00048" summary="stuff">
+      <created>1562844166886</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1562844166887</updated>
+    </task>
+    <task id="LOCAL-00049" summary="stuff">
+      <created>1562845013335</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1562845013335</updated>
+    </task>
+    <task id="LOCAL-00050" summary="stuff">
+      <created>1562898804705</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1562898804706</updated>
+    </task>
+    <task id="LOCAL-00051" summary="settings tweaks">
+      <created>1562902960705</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1562902960705</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
-  <component name="TodoView" selected-index="3">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1280" height="722" extended-state="0" />
-    <editor active="true" />
+    <frame x="54" y="-8" width="1874" height="1096" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49674267" visible="true" weight="0.30775446" />
-      <window_info id="Structure" order="1" sideWeight="0.50325733" side_tool="true" weight="0.28109854" />
-      <window_info id="Designer" order="2" />
-      <window_info id="UI Designer" order="3" />
-      <window_info id="Favorites" order="4" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1926803" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32899022" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.29478827" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39967373" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4967707" visible="true" weight="0.24085365" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994618" weight="0.39187816" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32899022" />
-      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32952693" />
-      <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="Build" order="11" weight="0.32899022" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32952693" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49784714" weight="0.3106599" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32917964" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="9" sideWeight="0.50322926" side_tool="true" visible="true" weight="0.24085365" />
+      <window_info anchor="bottom" id="Build" order="10" weight="0.32917964" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49838537" weight="0.32418698" />
+      <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32791877" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.24959612" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Maven" order="4" />
-      <window_info active="true" anchor="right" id="Gradle" order="5" visible="true" weight="0.32956383" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="sbt" order="7" />
+      <window_info anchor="right" id="Gradle" order="5" visible="true" weight="0.15500538" />
+      <window_info anchor="right" id="Theme Preview" order="6" />
+      <window_info anchor="right" id="Capture Analysis" order="7" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="right" id="GfmBrowser" order="9" />
     </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49674267" visible="true" weight="0.30775446" />
-      <window_info id="Structure" order="1" sideWeight="0.50325733" side_tool="true" weight="0.28109854" />
-      <window_info id="Designer" order="2" />
-      <window_info id="UI Designer" order="3" />
-      <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32899022" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.29641694" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39967373" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32899022" />
-      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32952693" />
-      <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="Build" order="11" weight="0.32899022" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32952693" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.24959612" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Maven" order="4" />
-      <window_info anchor="right" id="Gradle" order="5" weight="0.32956383" />
-      <window_info anchor="right" id="Palette&#9;" order="6" />
-      <window_info anchor="right" id="sbt" order="7" />
-    </layout-to-restore>
   </component>
-  <component name="antWorkspaceConfiguration">
-    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
-    <option name="FILTER_TARGETS" value="false" />
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.css" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add more CSS and some matching icons we can use i guess" />
+    <MESSAGE value="more tweaks to css" />
+    <MESSAGE value="fixed the button slightly decreasing in size" />
+    <MESSAGE value="adding login stuff" />
+    <MESSAGE value="more login" />
+    <MESSAGE value="changed notification box type" />
+    <MESSAGE value="more changes" />
+    <MESSAGE value="shake" />
+    <MESSAGE value="moved some files around to make it more tidy. Attempted to fix the scrolling but ultimately failed. Big OOF" />
+    <MESSAGE value="More organization. &#10;Fixed the webview (No scrollbar!)" />
+    <MESSAGE value="Tidied up the code some more." />
+    <MESSAGE value="Adding Font Example (Change when we find a good one!)" />
+    <MESSAGE value="font" />
+    <MESSAGE value="m kills the JVM" />
+    <MESSAGE value="fixed issue except for exactly 4 pixels" />
+    <MESSAGE value="allow scrollwheel scrolling without rendering the scrollbar still" />
+    <MESSAGE value="adding settings stuff, currently WIP" />
+    <MESSAGE value="fix" />
+    <MESSAGE value="made buttons more thicc" />
+    <MESSAGE value="install button" />
+    <MESSAGE value="adding very basic setting menu" />
+    <MESSAGE value="adding very basic setting template" />
+    <MESSAGE value="done did the message thing" />
+    <MESSAGE value="stuff" />
+    <MESSAGE value="settings tweaks" />
+    <option name="LAST_COMMIT_MESSAGE" value="settings tweaks" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackCellFactory.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/LoginButtonHandler.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Scenes/install.fxml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Elements/DefaultScreen.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_211/javafx-src.zip!/javafx/scene/control/ListCell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="479" column="16" selection-start-line="479" selection-start-column="16" selection-end-line="479" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/v/Controller.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/v/Fetch.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/PackCell.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Fetch.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Scenes/Verification.java" />
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="26" column="7" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackRegistry.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sample.fxml" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/playArea.css" />
+    <entry file="file://$PROJECT_DIR$/out/production/resources/net/dirtcraft/dirtlauncher/resources/sidebar.css" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/resources/sidebar.css" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/Utils/Config.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/Verification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="11" column="22" lean-forward="true" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/PackType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/LoginResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/ShakeTransition.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/Account.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1035#1036#0" expanded="true" />
+            <element signature="e#1070#1071#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/OptionalMod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
       <provider selected="true" editor-type-id="text-editor" />
-      <provider editor-type-id="JavaFX-Scene-Builder" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/Utility.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_211/javafx-src.zip!/javafx/fxml/FXMLLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="3205" column="20" selection-start-line="3205" selection-start-column="12" selection-end-line="3205" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/HTML/webEngine.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Banner.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="7" column="7" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/PackRegistry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Playarea.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="30" column="34" lean-forward="true" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/CssClasses.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/FileUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
+        <state relative-caret-position="64">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/Internal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="60" selection-start-line="5" selection-start-column="60" selection-end-line="5" selection-end-column="60" />
+        <state relative-caret-position="80">
+          <caret line="5" column="43" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="43" />
         </state>
       </provider>
     </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/javafx-src.zip!/javafx/scene/Scene.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/LoginButtonAction.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/Pack.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="2555" selection-start-line="2555" selection-end-line="2555" />
+        <state relative-caret-position="-3">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/CssClasses.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="31" selection-start-line="3" selection-start-column="31" selection-end-line="3" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/TooltipUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/config/Paths.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="39" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/club.minnced/java-discord-rpc/2.0.2/c40b53ffb8d4b61650eb404e7fece8a7e4d88db7/java-discord-rpc-2.0.2-sources.jar!/club/minnced/discord/rpc/DiscordRPC.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="92" column="9" selection-start-line="92" selection-start-column="9" selection-end-line="92" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/Verification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/utils/MiscUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="69" selection-start-line="22" selection-start-column="69" selection-end-line="22" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/InstallHandler.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controller.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackCellFactory.java" />
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="39" column="40" lean-forward="true" selection-start-line="39" selection-start-column="40" selection-end-line="39" selection-end-column="40" />
+        <state relative-caret-position="340">
+          <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/Pack.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/PackAction.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Sidebar.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        <state relative-caret-position="80">
+          <caret line="5" column="34" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/objects/OptionalMod.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/Scenes/main.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+        <state relative-caret-position="336">
+          <caret line="21" column="203" lean-forward="true" selection-start-line="21" selection-start-column="203" selection-end-line="21" selection-end-column="263" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/DiscordPresence.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/Scenes/popup.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Bottombar.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="2" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Install.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="31" selection-start-line="1" selection-start-column="31" selection-end-line="1" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Install/Loadingbar.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/HTML/webEngine.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Banner.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Playarea.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/JsonFetcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="25" column="56" selection-start-line="25" selection-start-column="56" selection-end-line="25" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/installation/DownloadManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="56" column="17" selection-start-line="56" selection-start-column="17" selection-end-line="56" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/jsonutils/PackRegistry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="29" column="8" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/direwolf20.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbcontinuum.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbinfinityevolved.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbinteractions.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbrevelation.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbskyadventures.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbskyodyssey.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/ftbultimatereloaded.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/omnifactory.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/projectozone2.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/pixelmonreforged.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/projectozone3.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/skyfactory3.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/skyfactory4.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Settings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="9" selection-start-line="7" selection-start-column="9" selection-end-line="7" selection-end-column="9" />
+        <state relative-caret-position="80">
+          <caret line="5" column="248" selection-start-line="5" selection-start-column="248" selection-end-line="5" selection-end-column="248" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/Scenes/settings.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="3" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
-        </state>
-      </provider>
       <provider editor-type-id="JavaFX-Scene-Builder" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/Images/Packs/stoneblock.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/ShakeTransition.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="915">
-          <caret line="61" column="50" selection-start-line="61" selection-start-column="50" selection-end-line="61" selection-end-column="50" />
+        <state relative-caret-position="128">
+          <caret line="8" column="273" selection-start-line="8" selection-start-column="273" selection-end-line="8" selection-end-column="273" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/FXResizeHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/data/LoginButtonHandler.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/PlayButton.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="130" column="106" selection-start-line="130" selection-start-column="106" selection-end-line="130" selection-end-column="106" />
+        <state relative-caret-position="64">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#225#226#0" expanded="true" />
+            <element signature="e#253#254#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Sidebar.css">
+    <entry file="file://$PROJECT_DIR$/out/production/resources/Scenes/main.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1425">
-          <caret line="95" column="31" selection-start-line="95" selection-start-column="31" selection-end-line="95" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/CSS/FXML/Settings/settings.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
+        <state relative-caret-position="1424">
+          <caret line="89" column="31" selection-start-line="89" selection-start-column="31" selection-end-line="89" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Install.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-124">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        <state relative-caret-position="624">
+          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/LoginButtonHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/DiscordPresence.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-500">
-          <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/PackCellFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="72" column="85" selection-start-line="72" selection-start-column="85" selection-end-line="72" selection-end-column="85" />
+        <state relative-caret-position="32">
+          <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="73" column="21" selection-start-line="73" selection-start-column="21" selection-end-line="73" selection-end-column="21" />
+        <state relative-caret-position="267">
+          <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/backend/components/LoginButtonHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="37" selection-start-line="37" selection-end-line="37" />
+        <state relative-caret-position="240">
+          <caret line="190" column="9" selection-start-line="190" selection-start-column="9" selection-end-line="190" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Settings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/dirtcraft/dirtlauncher/Controllers/Home.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="154" column="51" selection-start-line="154" selection-start-column="51" selection-end-line="154" selection-end-column="51" />
+          <folding>
+            <element signature="e#2168#2169#0" expanded="true" />
+            <element signature="e#2199#2200#0" expanded="true" />
+            <element signature="e#2237#2238#0" expanded="true" />
+            <element signature="e#2272#2273#0" expanded="true" />
+            <element signature="e#5765#5766#0" expanded="true" />
+            <element signature="e#5796#5797#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -841,10 +1154,11 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>unnamed</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.3761392" />
               </list>
             </option>
           </splitter-proportions>
@@ -856,7 +1170,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.3761392" />
               </list>
             </option>
           </splitter-proportions>
@@ -875,7 +1189,6 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>1.8</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -887,10 +1200,12 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
+          <last-edited>main|dirtlauncher</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.3761392" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
@@ -910,21 +1225,11 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
+          <last-edited>Gradle: com.google.code.findbugs:jsr305:1.3.9</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
+                <option value="0.3761392" />
               </list>
             </option>
           </splitter-proportions>
