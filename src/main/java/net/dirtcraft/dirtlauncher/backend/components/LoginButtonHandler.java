@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
@@ -200,6 +201,7 @@ public class LoginButtonHandler {
 
             stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
             stage.setResizable(false);
+            stage.setOnCloseRequest(Event::consume);
 
             stage.show();
 
