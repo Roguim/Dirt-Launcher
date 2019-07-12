@@ -61,6 +61,12 @@ public class DownloadManager {
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installForge) {
+            setProgressPercent(0, 1);
+            installForge(versionManifest, completedSteps, totalSteps);
+            completedSteps++;
+            setTotalProgressPercent(completedSteps, totalSteps);
+        }
+        if(installPack) {
             setProgressText("TEST COMPLETE");
         }
     }
@@ -218,6 +224,10 @@ public class DownloadManager {
         JsonObject assetsFolderManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory()));
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
         FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getAssetsDirectory()).getPath()), assetsFolderManifest);
+    }
+
+    public static void installForge(JsonObject versionManifest, int completedSteps, int toatlSteps) {
+
     }
 
 }
