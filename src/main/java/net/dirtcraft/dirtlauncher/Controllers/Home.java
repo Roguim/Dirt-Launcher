@@ -23,17 +23,17 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class Home {
     private double settingsXOffset;
@@ -128,12 +128,17 @@ public class Home {
 
     private void getSettings(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MiscUtils.getResourceURL(Internal.SCENES, "settings.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "settings.fxml"));
+            root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
+            root.getStylesheets().add("https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIhTpumxdt0.woff2");
+
+
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Dirtlauncher Settings");
+            stage.initOwner(Main.getInstance().getStage());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.UTILITY);
+
+            stage.setTitle("Dirt Launcher Settings");
             stage.setScene(new Scene(root));
 
             root.setOnMousePressed(event -> {
@@ -146,9 +151,10 @@ public class Home {
             });
 
             settingsMenu = stage;
+
             stage.show();
         } catch (IOException e){
-            System.out.println(String.join(Arrays.toString(e.getStackTrace())));
+            e.printStackTrace();
         }
 
     }

@@ -17,7 +17,7 @@ public class Settings {
 
     @FXML
     private void initialize() {
-        closeButton.setOnMouseClicked(e->Home.getInstance().getSettingsMenu().close());
+        //closeButton.setOnMouseClicked(e -> Home.getInstance().getSettingsMenu().close());
     }
 
     public Double getSettingsXOffset(){
