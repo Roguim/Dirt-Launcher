@@ -1,0 +1,15 @@
+@font-face {
+    font-family: "Minecrafter Alt";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../Fonts/MinecrafterAlt.ttf");
+}
+
+.body {
+  -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
+}
+
+#Title {
+  -fx-font-family: 'Minecrafter Alt';
+  -fx-font-size: 34;
+}
