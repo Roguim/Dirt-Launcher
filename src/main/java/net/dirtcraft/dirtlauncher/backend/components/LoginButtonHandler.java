@@ -82,15 +82,18 @@ public class LoginButtonHandler {
     }
 
     public static void updatePack(){
-        System.out.println("Updated the game");
-
+        if (Internal.VERBOSE) {
+            System.out.println("Updated the game");
+        }
         /*
         UPDATE PACK STUFF HERE
          */
     }
 
     public static void installPack() {
-        System.out.println("Installing the pack");
+        if (Internal.VERBOSE) {
+            System.out.println("Installing the pack");
+        }
 
         launchInstallScene();
         new Thread(() -> {

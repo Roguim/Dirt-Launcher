@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.backend.components;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
 
 public class DiscordPresence {
 
@@ -15,13 +16,17 @@ public class DiscordPresence {
 
     public static void setState(String state) {
         getPresence().state = state;
-        System.out.println("Discord Rich Presence STATE set to \"" + state + "\"");
+        if (Internal.VERBOSE) {
+            System.out.println("Discord Rich Presence STATE set to \"" + state + "\"");
+        }
         refreshPresence();
     }
 
     public static void setDetails(String details) {
         getPresence().details = details;
-        System.out.println("Discord Rich Presence DETAILS set to \"" + details + "\"");
+        if (Internal.VERBOSE) {
+            System.out.println("Discord Rich Presence DETAILS set to \"" + details + "\"");
+        }
         refreshPresence();
     }
 
@@ -52,7 +57,10 @@ public class DiscordPresence {
     private static DiscordEventHandlers getHandlers() {
         if (handlers != null) return handlers;
         DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> System.out.println("Detected Discord Account: @" + user.username + "#" + user.discriminator);
+
+        if (Internal.VERBOSE) {
+            handlers.ready = (user) -> System.out.println("Detected Discord Account: @" + user.username + "#" + user.discriminator);
+        }
 
         rpc.Discord_UpdateHandlers(handlers);
         DiscordPresence.handlers = handlers;

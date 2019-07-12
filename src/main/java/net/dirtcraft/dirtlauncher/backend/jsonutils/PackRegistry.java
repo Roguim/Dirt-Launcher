@@ -7,6 +7,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 
@@ -28,24 +29,25 @@ public class PackRegistry {
         }
 
         packs.sort(Comparator.comparing(Pack::getName));
-
-        for (Pack pack : packs) {
-            System.out.println("Name: " + pack.getName());
-            System.out.println("Version: " + pack.getVersion());
-            System.out.println("Code: " + pack.getCode());
-            System.out.println("Pack Type: " + pack.getPackType());
-            System.out.println("Link: " + pack.getLink());
-            System.out.println("Splash: " + pack.getSplash());
-            System.out.println("Logo: " + pack.getLogo());
-            System.out.println("Game Version: " + pack.getGameVersion());
-            System.out.println("Required Ram: " + pack.getRequiredRam());
-            System.out.println("Recommended Ram: " + pack.getRecommendedRam());
-            System.out.println("Forge Version: " + pack.getForgeVersion());
-            for (OptionalMod optionalMod : pack.getOptionalMods()) {
-                System.out.println("[Optional Mod] - Name: " + optionalMod.getName());
-                System.out.println("[Optional Mod] - Version: " + optionalMod.getVersion());
-                System.out.println("[Optional Mod] - Link: " + optionalMod.getLink());
-                System.out.println("[Optional Mod] - Description: " + optionalMod.getDescription());
+        if (Internal.VERBOSE) {
+            for (Pack pack : packs) {
+                System.out.println("Name: " + pack.getName());
+                System.out.println("Version: " + pack.getVersion());
+                System.out.println("Code: " + pack.getCode());
+                System.out.println("Pack Type: " + pack.getPackType());
+                System.out.println("Link: " + pack.getLink());
+                System.out.println("Splash: " + pack.getSplash());
+                System.out.println("Logo: " + pack.getLogo());
+                System.out.println("Game Version: " + pack.getGameVersion());
+                System.out.println("Required Ram: " + pack.getRequiredRam());
+                System.out.println("Recommended Ram: " + pack.getRecommendedRam());
+                System.out.println("Forge Version: " + pack.getForgeVersion());
+                for (OptionalMod optionalMod : pack.getOptionalMods()) {
+                    System.out.println("[Optional Mod] - Name: " + optionalMod.getName());
+                    System.out.println("[Optional Mod] - Version: " + optionalMod.getVersion());
+                    System.out.println("[Optional Mod] - Link: " + optionalMod.getLink());
+                    System.out.println("[Optional Mod] - Description: " + optionalMod.getDescription());
+                }
             }
         }
 
