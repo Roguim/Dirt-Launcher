@@ -2,10 +2,14 @@ package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
@@ -79,7 +83,7 @@ public class FileUtils {
         jar.close();
     }
 
-    public static JsonObject extractForgeJar(String jarFile, String destDir) throws IOException {
+    public static JsonObject extractForgeJar(File jarFile, String destDir) throws IOException {
         JsonObject output = new JsonObject();
         JarFile jar = new JarFile(jarFile);
         Enumeration enumEntries = jar.entries();
@@ -105,4 +109,40 @@ public class FileUtils {
         }
         return output;
     }
+
+    public static void unpackPackXZ(File packXZFile) throws IOException {
+        //JarOutputStream outputStream = new JarOutputStream(new FileOutputStream(StringUtils.substringBeforeLast(packXZFile.getPath(), ".pack.gz")));
+
+        // XZ -> Pack
+        InputStream fileIn = Files.newInputStream(packXZFile.toPath());
+        BufferedInputStream bufferedIn = new BufferedInputStream(fileIn);
+        OutputStream packOutputStream = Files.newOutputStream(Paths.get(packXZFile.getPath().replace(".pack.xz", ".pack")));
+        XZCompressorInputStream xzIn = new XZCompressorInputStream(bufferedIn);
+        final byte[] buffer = new byte[8192];
+        int n = 0;
+        while (-1 != (n = xzIn.read(buffer))) {
+            packOutputStream.write(buffer, 0, n);
+        }
+        packOutputStream.close();
+        xzIn.close();
+        bufferedIn.close();
+        fileIn.close();
+
+        // Pack -> .jar
+        InputStream packFileIn = Files.newInputStream(Paths.get(packXZFile.getPath().replace(".pack.xz", ".pack")));
+        BufferedInputStream packBufferedIn = new BufferedInputStream(packFileIn);
+        OutputStream jarOutputStream = Files.newOutputStream(Paths.get(packXZFile.getPath().replace(".jar.pack.xz", ".jar")));
+        Pack200CompressorInputStream packIn = new Pack200CompressorInputStream(packBufferedIn);
+        final byte[] buffer2 = new byte[8192];
+        int m = 0;
+        while (-1 != (m = packIn.read(buffer2))) {
+            jarOutputStream.write(buffer2, 0, m);
+        }
+
+        jarOutputStream.close();
+        packIn.close();
+        packBufferedIn.close();
+        packFileIn.close();
+    }
+
 }

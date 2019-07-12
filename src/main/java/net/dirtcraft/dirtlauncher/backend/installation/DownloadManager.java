@@ -44,7 +44,7 @@ public class DownloadManager {
         int completedSteps = 0;
         if(installMinecraft) totalSteps += 2;
         if(installAssets) totalSteps++;
-        if(installForge) totalSteps += 2;
+        if(installForge) totalSteps += 3;
         if(installPack) totalSteps += 3;
         setTotalProgressPercent(completedSteps, totalSteps);
 
@@ -62,8 +62,8 @@ public class DownloadManager {
         }
         if(installForge) {
             setProgressPercent(0, 1);
-            installForge(versionManifest, completedSteps, totalSteps);
-            completedSteps++;
+            installForge(pack, completedSteps, totalSteps);
+            completedSteps += 3;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installPack) {
@@ -226,8 +226,72 @@ public class DownloadManager {
         FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getAssetsDirectory()).getPath()), assetsFolderManifest);
     }
 
-    public static void installForge(JsonObject versionManifest, int completedSteps, int toatlSteps) {
+    public static void installForge(Pack pack, int completedSteps, int totalSteps) throws IOException {
+        setProgressText("Downloading Forge Installer");
+        File forgeFolder = new File(Paths.getForgeDirectory() + File.separator + pack.getForgeVersion());
+        FileUtils.deleteDirectory(forgeFolder);
+        forgeFolder.mkdirs();
 
+        // Download Forge Installer
+        File forgeInstaller = new File(forgeFolder.getPath() + File.separator + "installer.jar");
+        FileUtils.copyURLToFile("https://files.minecraftforge.net/maven/net/minecraftforge/forge/" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "/forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-installer.jar", forgeInstaller);
+
+        // Extract Forge Installer & Write forge JSON manifest
+        setProgressText("Extracting Forge Installer");
+        setTotalProgressPercent(completedSteps + 1, totalSteps);
+        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder.getPath());
+        forgeInstaller.delete();
+        setProgressPercent(1, 2);
+        FileUtils.writeJsonToFile(new File(forgeFolder.getPath() + File.separator + pack.getForgeVersion() + ".json"), forgeVersionManifest);
+
+        // Download forge libraries
+        setProgressText("Downloading Forge Libraries");
+        setTotalProgressPercent(completedSteps + 2, totalSteps);
+        setProgressPercent(0, 1);
+        int completedLibraries = 0;
+        int totalLibraries = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries").size() - 1;
+        String librariesLaunchCode = "";
+
+        libraryLoop:
+        for(JsonElement libraryElement : forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries")) {
+            JsonObject library = libraryElement.getAsJsonObject();
+            String[] libraryMaven = library.get("name").getAsString().split(":");
+            // We already got forge
+            if(libraryMaven[1].equals("forge")) {
+                completedLibraries++;
+                setProgressPercent(completedLibraries, totalLibraries);
+                continue;
+            }
+            File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
+            libraryPath.mkdirs();
+            String url = "https://libraries.minecraft.net/";
+            if(library.has("url")) {
+                url = library.get("url").getAsString();
+            }
+            url += libraryMaven[0].replace(".", "/") + "/" + libraryMaven[1] + "/" + libraryMaven[2] + "/" + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
+
+            String fileName = libraryPath + File.separator + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
+            // Typesafe does some weird crap
+            if(libraryMaven[0].contains("typesafe")) {
+                url += ".pack.xz";
+                fileName += ".pack.xz";
+            }
+
+            File libraryFile = new File(fileName);
+            FileUtils.copyURLToFile(url, libraryFile);
+            if(libraryFile.getName().contains(".pack.xz")) {
+                FileUtils.unpackPackXZ(libraryFile);
+            }
+            librariesLaunchCode += StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";";
+            completedLibraries++;
+            setProgressPercent(completedLibraries, totalLibraries);
+        }
+
+        JsonObject forgeManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory()));
+        JsonObject versionJsonObject = new JsonObject();
+        versionJsonObject.addProperty("version", pack.getForgeVersion());
+        versionJsonObject.addProperty(StringUtils.substringBeforeLast("classpathLibraries", forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode), ";");
+        forgeManifest.getAsJsonArray("forgeVersions").add(versionJsonObject);
+        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getForgeDirectory()).getPath()), forgeManifest);
     }
-
 }

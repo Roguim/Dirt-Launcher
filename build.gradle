@@ -40,6 +40,8 @@ dependencies {
     provided 'commons-io:commons-io:2.6'
     provided 'club.minnced:java-discord-rpc:2.0.2'
     //provided 'org.jfxtras:jmetro:5.3'
+    provided 'org.tukaani:xz:1.8'
+    provided 'org.apache.commons:commons-compress:1.18'
 }
 
 jar {
