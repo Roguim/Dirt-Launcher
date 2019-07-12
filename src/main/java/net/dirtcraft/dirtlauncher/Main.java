@@ -38,11 +38,6 @@ public class Main extends Application {
             emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
             FileUtils.writeJsonToFile(Paths.getConfiguration(), emptyManifest);
         }
-        if(!Paths.getDirectoryManifest(Paths.getInstallDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.addProperty("version", "0.0.0");
-            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getInstallDirectory()), emptyManifest);
-        }
         if(!Paths.getDirectoryManifest(Paths.getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("packs", new JsonArray());
