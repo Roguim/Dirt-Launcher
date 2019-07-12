@@ -212,17 +212,6 @@ public class LoginButtonHandler {
 
             notification.setText("Preparing to install...");
 
-            TextFlow textFlow = Install.getInstance().getTextFlow();
-            Text text = new Text("Loading...");
-
-            text.getStyleClass().add("NotificationText");
-            text.setFill(Color.WHITE);
-            text.setTextOrigin(VPos.CENTER);
-            text.setTextAlignment(TextAlignment.CENTER);
-
-            textFlow.setOpacity(1);
-            textFlow.getChildren().setAll(text);
-
             //TODO: @TECHDG
             //This is the bar in the middle
             ProgressBar loadingBar = Install.getInstance().getLoadingBar();
