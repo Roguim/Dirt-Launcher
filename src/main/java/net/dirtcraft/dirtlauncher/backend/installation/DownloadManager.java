@@ -28,7 +28,7 @@ public class DownloadManager {
         boolean installPack = true;
 
         for(JsonElement jsonElement : FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory())).getAsJsonArray("versions")) {
-            if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getVersion())) installMinecraft = false;
+            if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion())) installMinecraft = false;
         }
         for(JsonElement jsonElement : FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory())).getAsJsonArray("assets")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(versionManifest.get("assets").getAsString())) installAssets = false;
@@ -49,11 +49,18 @@ public class DownloadManager {
         setTotalProgressPercent(completedSteps, totalSteps);
 
         if(installMinecraft) {
+            setProgressPercent(0, 1);
             installMinecraft(versionManifest, completedSteps, totalSteps);
             completedSteps += 2;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installAssets) {
+            setProgressPercent(0, 1);
+            installAssets(versionManifest, completedSteps, totalSteps);
+            completedSteps++;
+            setTotalProgressPercent(completedSteps, totalSteps);
+        }
+        if(installForge) {
             setProgressText("TEST COMPLETE");
         }
     }
@@ -64,18 +71,13 @@ public class DownloadManager {
 
     public static void setProgressPercent(int completed, int total) {
         Platform.runLater(() -> Install.getInstance().getLoadingBar().setProgress(((double)completed) / total));
-        System.out.println("Progress: " + completed + " | " + total + " | " + (((double)completed) / total));
     }
 
     public static void setTotalProgressPercent(int completed, int total) {
         Platform.runLater(() -> Install.getInstance().getBottomBar().setProgress(((double)completed) / total));
-        System.out.println("Total Progress: " + completed + " | " + total + " | " + (((double)completed) / total));
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
-        new Thread(() -> {
-
-        }).start();
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Paths.getVersionsDirectory() + File.separator + versionManifest.get("id").getAsString());
         FileUtils.deleteDirectory(versionFolder);
@@ -184,6 +186,38 @@ public class DownloadManager {
         JsonObject versionsManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory()));
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getVersionsDirectory()).getPath()), versionsManifest);
+    }
+
+    public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+        setProgressText("Downloading Assets");
+        File assetsFolder = new File(Paths.getAssetsDirectory() + File.separator + versionManifest.get("assets").getAsString());
+        FileUtils.deleteDirectory(assetsFolder);
+        assetsFolder.mkdirs();
+
+        // Write assets JSON manifest
+        JsonObject assetsManifest = JsonFetcher.getJsonFromUrl(versionManifest.getAsJsonObject("assetIndex").get("url").getAsString());
+        new File(assetsFolder.getPath() + File.separator + "indexes").mkdirs();
+        FileUtils.writeJsonToFile(new File(assetsFolder.getPath() + File.separator + "indexes" + File.separator + versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
+
+        // Download assets
+        int completedAssets = 0;
+        int totalAssets = assetsManifest.getAsJsonObject("objects").keySet().size();
+        setProgressPercent(completedAssets, totalAssets);
+        for(String assetKey : assetsManifest.getAsJsonObject("objects").keySet()) {
+            String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
+            File specificAssetFolder = new File(assetsFolder.getPath() + File.separator + "objects" + File.separator + hash.substring(0, 2));
+            specificAssetFolder.mkdirs();
+            FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(specificAssetFolder.getPath() + File.separator + hash));
+            completedAssets++;
+            setProgressPercent(completedAssets, totalAssets);
+        }
+
+        // Populate Assets Manifest
+        JsonObject assetsVersionJsonObject = new JsonObject();
+        assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
+        JsonObject assetsFolderManifest = FileUtils.parseJsonFromFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory()));
+        assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
+        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getAssetsDirectory()).getPath()), assetsFolderManifest);
     }
 
 }

@@ -210,7 +210,7 @@ public class LoginButtonHandler {
             notification.setTextAlignment(TextAlignment.CENTER);
             notificationArea.getChildren().add(notification);
 
-            notification.setText("/*TODO: @Tech */\nInstantiating Classes...");
+            notification.setText("Preparing to install...");
 
             TextFlow textFlow = Install.getInstance().getTextFlow();
             Text text = new Text("Loading...");
