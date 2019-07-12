@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Settings;
+import net.dirtcraft.dirtlauncher.Controllers.Update;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -77,6 +78,9 @@ public class Main extends Application {
         Settings.loadSettings();
 
         stage.show();
+
+        if (Update.hasUpdate()) Update.showStage();
+
     }
 
     public Stage getStage() {

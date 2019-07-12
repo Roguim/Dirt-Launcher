@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Russo+One')
+
+.background {
+  -fx-background-image: url('../../Backgrounds/carbon.jpg') ;
+}
+
+.text {
+  -fx-font-family: 'Russo One';
+}
