@@ -73,6 +73,8 @@ public class Home {
     @FXML
     private Button settingsButton3;
 
+    private PackCell activeCell = null;
+
     public static Home getInstance() {
         return instance;
     }
@@ -162,5 +164,13 @@ public class Home {
 
     public Pane getLoginBox() {
         return loginBox;
+    }
+
+    public PackCell getActiveCell() {
+        return activeCell;
+    }
+
+    public void setActiveCell(PackCell activeCell) {
+        this.activeCell = activeCell;
     }
 }

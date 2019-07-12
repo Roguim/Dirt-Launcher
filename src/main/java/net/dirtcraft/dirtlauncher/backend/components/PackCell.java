@@ -18,10 +18,9 @@ import java.util.Arrays;
 
 public class PackCell extends Button {
 
-    public static boolean hasPackSelected = false;
-
+    private Pack pack;
     public PackCell(Pack pack){
-
+        this.pack = pack;
         getStyleClass().add(CssClasses.PACK_CELL);
 
         setCursor(Cursor.HAND);
@@ -61,8 +60,19 @@ public class PackCell extends Button {
 
     }
 
+    public void deactivate(){
+        getStyleClass().remove(CssClasses.PACK_CELL_SELECTED);
+    }
+
+    public Pack getPack(){
+        return pack;
+    }
+
     private void onClick(Pack pack) {
-        if (!hasPackSelected) hasPackSelected = true;
+        PackCell oldCell = Home.getInstance().getActiveCell();
+        if (oldCell!= null) oldCell.deactivate();
+        getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
+        Home.getInstance().setActiveCell(this);
         DiscordPresence.setDetails("Playing " + pack.getName());
 
         Home home = Home.getInstance();
