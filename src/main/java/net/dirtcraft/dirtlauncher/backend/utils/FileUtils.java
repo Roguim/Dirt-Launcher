@@ -78,4 +78,31 @@ public class FileUtils {
         }
         jar.close();
     }
+
+    public static JsonObject extractForgeJar(String jarFile, String destDir) throws IOException {
+        JsonObject output = new JsonObject();
+        JarFile jar = new JarFile(jarFile);
+        Enumeration enumEntries = jar.entries();
+        while(enumEntries.hasMoreElements()) {
+            JarEntry file = (JarEntry) enumEntries.nextElement();
+            if(file.getName().contains(".jar")) {
+                File f = new File(destDir + File.separator + file.getName());
+                InputStream is = jar.getInputStream(file);
+                FileOutputStream fos = new FileOutputStream(f);
+                while(is.available() > 0) {
+                    fos.write(is.read());
+                }
+                fos.close();
+                is.close();
+            } else if(file.getName().contains(".json")) {
+                InputStream is = jar.getInputStream(file);
+                InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                JsonParser jsonParser = new JsonParser();
+                output = (JsonObject) jsonParser.parse(isr);
+                isr.close();
+                is.close();
+            }
+        }
+        return output;
+    }
 }
