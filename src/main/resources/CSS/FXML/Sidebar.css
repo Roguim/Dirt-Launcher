@@ -1,5 +1,15 @@
+/*///////////////////////////////////////////
+// Makes the scrollbox background editable //
+///////////////////////////////////////////*/
+.PackListScroll, .PackListScroll > .viewport {
+   -fx-background-color: transparent;
+}
+.PackList {
+   -fx-background-color: transparent;
+}
 .PackList{
     -fx-opacity: 1;
+    -fx-vgap: 3;
 }
 
 #SettingsBar{
@@ -12,9 +22,9 @@
     -fx-border-radius: 0 0 0 10;
     -fx-background-radius: 0 0 0 10;
 }
-.SettingsButton{
+
+.PackCell, .SettingsButton{
     -fx-text-fill: FFFFFF;
-    -fx-cell-size: 50;
     -fx-background-color: firebrick;
     -fx-padding: 0px 0px ;
     -fx-background-insets: 0px 0px;
@@ -22,20 +32,29 @@
     -fx-content-display: right ;
 }
 
+.PackCell{
+	-fx-text-alignment: center;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "System Bold";
+	-fx-font-weight: light;
+	-fx-font-size: 20;
+    -fx-background-radius: 5 5 5 5 ;
+}
+
 .SettingsButtonSmall{
     -fx-background-radius: 0 0 5 5 ;
 }
 
-.SettingsButton:hover, .SettingsButton:selected{
+.PackCell:hover, .PackCell:selected, .SettingsButton:hover, .SettingsButton:selected{
      -fx-scale-y: 1.075;
      -fx-scale-x: 1.075;
 }
 
-.SettingsButton:hover {
+.PackCell:hover, .SettingsButton:hover {
      -fx-background-color: #661313;
 }
 
-.SettingsButton:pressed {
+.PackCell:pressed, .SettingsButton:pressed {
      -fx-background-color: #FFF0F5;
      -fx-text-fill: black;
 }

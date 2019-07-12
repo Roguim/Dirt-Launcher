@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -19,7 +18,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
-import net.dirtcraft.dirtlauncher.backend.components.PackCellFactory;
+import net.dirtcraft.dirtlauncher.backend.components.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
@@ -31,7 +30,7 @@ public class Home {
     private static Home instance;
 
     @FXML
-    private ListView<Pack> packList;
+    private FlowPane packList;
 
     @FXML
     private WebView webView;
@@ -94,8 +93,7 @@ public class Home {
         packs.setAll(PackRegistry.getPacks());
 
         packList.getStyleClass().add(CssClasses.PACKLIST);
-        packList.setCellFactory(cell -> new PackCellFactory());
-        packList.setItems(packs);
+        packs.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
 
         WebEngine webEngine = webView.getEngine();
 
@@ -126,7 +124,7 @@ public class Home {
 
     @FXML
     private void onKeyTyped(KeyEvent event) {
-        if (!PackCellFactory.hasPackSelected) return;
+        //if (!PackCellFactory.hasPackSelected) return;
         if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
             playButton.setOnAction(e -> LoginButtonHandler.onClick());
@@ -134,7 +132,7 @@ public class Home {
         else playButton.setDisable(true);
     }
 
-    public ListView<Pack> getPackList() {
+    public FlowPane getPackList() {
         return packList;
     }
 
