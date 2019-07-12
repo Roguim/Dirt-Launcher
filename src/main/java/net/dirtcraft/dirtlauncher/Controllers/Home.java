@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
 
+import com.google.gson.JsonObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,14 +19,18 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.components.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
 public class Home {
 
@@ -79,7 +84,25 @@ public class Home {
         settingsImage.setFitWidth(50);
         settingsImage.setImage(MiscUtils.getImage(Internal.ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
-        settingsButton.setOnMouseClicked(event -> Settings.getInstance().getStage().show());
+        settingsButton.setOnMouseClicked(event -> {
+            Stage stage = Settings.getInstance().getStage();
+            stage.show();
+            stage.setOnCloseRequest(e -> {
+
+                JsonObject config = FileUtils.parseJsonFromFile(Paths.getConfiguration());
+
+                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMinimumRam().getText())) config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
+                else config.addProperty("minimum-ram", Integer.valueOf(Settings.getInstance().getMinimumRam().getText()));
+
+                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMaximumRam().getText())) config.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
+                else config.addProperty("maximum-ram", Integer.valueOf(Settings.getInstance().getMaximumRam().getText()));
+
+                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getJavaArguments().getText())) config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
+                else config.addProperty("java-arguments", Settings.getInstance().getJavaArguments().getText());
+
+                FileUtils.writeJsonToFile(Paths.getConfiguration(), config);
+            });
+        });
         loginArea.setPickOnBounds(false);
         notificationBox.setOpacity(0);
         playButton.setDisable(true);

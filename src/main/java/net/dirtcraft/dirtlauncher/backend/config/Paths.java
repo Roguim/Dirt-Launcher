@@ -41,4 +41,8 @@ public class Paths {
     public static File getDirectoryManifest(File directory) {
         return new File(directory.getPath() + File.separator + "manifest.json");
     }
+
+    public static File getConfiguration() {
+        return new File(getInstallDirectory().getPath() + File.separator + "configuration.json");
+    }
 }

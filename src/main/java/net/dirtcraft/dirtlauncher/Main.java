@@ -14,6 +14,7 @@ import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
 public class Main extends Application {
 
@@ -30,6 +31,13 @@ public class Main extends Application {
         Paths.getAssetsDirectory().mkdirs();
         Paths.getForgeDirectory().mkdirs();
         // Ensure that all required manifests are created
+        if (!Paths.getConfiguration().exists()) {
+            JsonObject emptyManifest = new JsonObject();
+            emptyManifest.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
+            emptyManifest.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
+            emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
+            FileUtils.writeJsonToFile(Paths.getConfiguration(), emptyManifest);
+        }
         if(!Paths.getDirectoryManifest(Paths.getInstallDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.addProperty("version", "0.0.0");
