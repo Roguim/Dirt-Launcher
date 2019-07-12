@@ -6,15 +6,17 @@
    -fx-background-color: transparent;
 }
 .PackListScroll {
-    -fx-background-color: linear-gradient(to top, #191919, #595959);
     /*-fx-padding: 5px ;*/
     /*-fx-background-color: #2c2f33;*/
-    -fx-background-color: linear-gradient(to top, #191919, #595959);
     /*-fx-background-color: #292929;
     /* -fx-opacity: 0.8; */
 }
-.PackList{
+.BackgroundBottom{
     -fx-background-color: linear-gradient(to top, #191919, #595959);
+	
+}
+
+.PackList{
     -fx-opacity: 1;
     -fx-spacing: 3;
 }
