@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.Controllers.Settings;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -71,9 +72,11 @@ public class Main extends Application {
         primaryStage.initStyle(StageStyle.DECORATED);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
-
         stage = primaryStage;
+
+        Settings.loadSettings();
+
+        stage.show();
     }
 
     public Stage getStage() {

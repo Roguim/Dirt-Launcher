@@ -21,7 +21,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
     <children>
-      <WebView fx:id="webView" layoutX="300.0" layoutY="94.0" minHeight="-1.0" minWidth="-1.0" prefHeight="516.0" prefWidth="545.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <WebView fx:id="webView" focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text id="Title" fx:id="headerText" fill="#f8f4ff" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-translate-y: -5;" styleClass="text" text="Dirt Launcher" textAlignment="CENTER" HBox.hgrow="NEVER">
@@ -52,7 +52,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <GridPane id="LoginGridPaneText" stylesheets="@../CSS/FXML/Playarea.css" GridPane.rowIndex="1">
+                        <GridPane id="LoginGridPaneText" fx:id="authGridPane" alignment="CENTER" stylesheets="@../CSS/FXML/Playarea.css" GridPane.rowIndex="1">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
@@ -61,7 +61,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <PasswordField id="PasswordField" fx:id="passwordField" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="Password" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+                              <PasswordField id="PasswordField" fx:id="passwordField" focusTraversable="false" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="Password" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
                                  <cursor>
                                     <Cursor fx:constant="TEXT" />
                                  </cursor>
@@ -71,7 +71,7 @@
                                     <String fx:value="LoginInput" />
                                  </styleClass>
                               </PasswordField>
-                              <TextField id="UsernameField" fx:id="usernameField" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="E-Mail/Username" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
+                              <TextField id="UsernameField" fx:id="usernameField" focusTraversable="false" onKeyPressed="#onTabPressed" onKeyTyped="#onKeyTyped" promptText="E-Mail/Username" stylesheets="@../CSS/FXML/Playarea.css" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
                                  <cursor>
                                     <Cursor fx:constant="TEXT" />
                                  </cursor>
@@ -87,7 +87,7 @@
                               <String fx:value="LoginBar" />
                            </styleClass>
                         </GridPane>
-                        <Button id="PlayButton" fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                        <Button id="PlayButton" fx:id="playButton" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -125,7 +125,7 @@
       </FlowPane>
       <Pane id="SettingsBarExt" layoutX="774.0" layoutY="10.0" prefHeight="30.0" prefWidth="95.0" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />
@@ -135,7 +135,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="SettingsButton" fx:id="settingsButton3" contentDisplay="GRAPHIC_ONLY" layoutX="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton3" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />
@@ -145,7 +145,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="SettingsButton" fx:id="settingsButton2" contentDisplay="GRAPHIC_ONLY" layoutX="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton2" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />
@@ -163,7 +163,7 @@
       </Pane>
       <Pane id="SettingsBar" layoutX="764.0" prefHeight="45.0" prefWidth="45.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />
