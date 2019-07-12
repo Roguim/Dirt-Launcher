@@ -59,7 +59,7 @@ public class PackCellFactory extends ListCell<Pack> {
                 "Direct Connect IP: " + (pack.getPackType() != PackType.PIXELMON ? pack.getCode().toUpperCase() + ".DIRTCRAFT" : "PIXELMON") + ".GG")));
 
         Image image = new Image(MiscUtils.getResourceStream(
-                Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+", "") + ".png"),
+                Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+", "-") + ".png"),
                 128, 128, false, true);
 
         ImageView imageView = new ImageView(image);
@@ -69,6 +69,8 @@ public class PackCellFactory extends ListCell<Pack> {
         tooltip.setGraphicTextGap(50);
 
         setTooltip(tooltip);
+
+        System.out.println("Added the ModPack " + pack.getName() + " to the List View");
     }
 
     private void onClick(Pack pack) {
