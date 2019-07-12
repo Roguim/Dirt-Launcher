@@ -1,15 +1,22 @@
 /*///////////////////////////////////////////
 // Makes the scrollbox background editable //
 ///////////////////////////////////////////*/
+
 .PackListScroll, .PackListScroll > .viewport {
    -fx-background-color: transparent;
 }
-.PackList {
-   -fx-background-color: transparent;
+.PackListScroll {
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
+    /*-fx-padding: 5px ;*/
+    /*-fx-background-color: #2c2f33;*/
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
+    /*-fx-background-color: #292929;
+    /* -fx-opacity: 0.8; */
 }
 .PackList{
+    -fx-background-color: linear-gradient(to top, #191919, #595959);
     -fx-opacity: 1;
-    -fx-vgap: 3;
+    -fx-spacing: 3;
 }
 
 #SettingsBar{
@@ -36,62 +43,27 @@
 	-fx-text-alignment: center;
 	-fx-text-fill: #ffffff;
 	-fx-font-family: "System Bold";
-	-fx-font-weight: light;
 	-fx-font-size: 20;
     -fx-background-radius: 5 5 5 5 ;
-}
-
-.SettingsButtonSmall{
-    -fx-background-radius: 0 0 5 5 ;
-}
-
-.PackCell:hover, .PackCell:selected, .SettingsButton:hover, .SettingsButton:selected{
-     -fx-scale-y: 1.075;
-     -fx-scale-x: 1.075;
 }
 
 .PackCell:hover, .SettingsButton:hover {
      -fx-background-color: #661313;
 }
 
-.PackCell:pressed, .SettingsButton:pressed {
-     -fx-background-color: #FFF0F5;
-     -fx-text-fill: black;
+.PackCell:hover, .PackCell:selected, .PackCellSelected, .SettingsButton:hover, .SettingsButton:selected{
+     -fx-scale-y: 1.075;
+     -fx-scale-x: 1.075;
 }
 
-.PackList.list-view {
-    -fx-padding: 5px ;
-    /*-fx-background-color: #2c2f33;*/
-    -fx-background-color: linear-gradient(to top, #191919, #595959);
-    /*-fx-background-color: #292929;
-    /* -fx-opacity: 0.8; */
+.PackCell:pressed{
+     -fx-background-color: #303030;
+     -fx-text-fill: #FFF0F5;
 }
 
-.PackList.list-cell:filled {
-    -fx-cell-size: 50;
-    -fx-background-color: firebrick;
-    -fx-padding: 2px 10px ;
-    -fx-background-insets: 2px 7px;
-    -fx-background-radius: 5 ;
-    -fx-content-display: right ;
-}
-
-.PackList.list-cell:empty {
-    -fx-background-color: transparent ;
-}
-
-.PackList.list-cell:filled:hover, .PackList.list-cell:filled:selected{
-     -fx-scale-y: 1.05;
-     -fx-scale-x: 1.05;
-}
-
-.PackList.list-cell:filled:hover {
-     -fx-background-color: #661313;
-}
-
-.PackList.list-cell:filled:selected {
-     -fx-background-color: #FFF0F5;
-     -fx-text-fill: black;
+.PackCellSelected {
+     -fx-background-color: #FFF0F5 !important ;
+     -fx-text-fill: black !important ;
 
      /* BORDER WIP */ /*
      -fx-border-color: #D92121;
@@ -100,9 +72,13 @@
      -fx-padding: 2px 10px ;*/
 }
 
-.PackList.list-cell:filled:pressed {
-     -fx-background-color: #303030;
-     -fx-text-fill: #FFF0F5;
+.SettingsButtonSmall{
+    -fx-background-radius: 0 0 5 5 ;
+}
+
+.SettingsButton:pressed {
+     -fx-background-color: #FFF0F5;
+     -fx-text-fill: black;
 }
 
 .tooltip, .PackList.tooltip{
@@ -119,11 +95,4 @@
     /*-fx-show-delay: 1ms;*/
 
     /* -fx-line-spacing: -5 ; Bugged*/
-}
-
-.list-view .scroll-bar:vertical {
-    -fx-padding: -7px;
-    -fx-scale-x: 0;
-    -fx-scale-y: 0;
-    -fx-opacity: 0;
 }

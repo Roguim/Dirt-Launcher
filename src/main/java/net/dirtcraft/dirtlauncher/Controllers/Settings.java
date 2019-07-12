@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
+import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
@@ -45,7 +48,24 @@ public class Settings {
         minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
         maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
 
-        //javaArguments.setPromptText("-Dfml.readTimeout=180 -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M  -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions");
+        JsonObject config = FileUtils.parseJsonFromFile(Paths.getConfiguration());
+
+        minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
+        maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
+        javaArguments.setText(config.get("java-arguments").getAsString());
+
+    }
+
+    public TextField getMinimumRam() {
+        return minimumRam;
+    }
+
+    public TextField getMaximumRam() {
+        return maximumRam;
+    }
+
+    public TextField getJavaArguments() {
+        return javaArguments;
     }
 
     public static Settings getInstance() {
@@ -105,7 +125,6 @@ public class Settings {
 
             stage.setTitle("Dirt Launcher Settings");
             stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
-            //Scene scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 2.75, MiscUtils.screenDimension.getHeight() / 3.8);
             Scene scene = new Scene(root, 600, 300);
             stage.setScene(scene);
             stage.setResizable(false);

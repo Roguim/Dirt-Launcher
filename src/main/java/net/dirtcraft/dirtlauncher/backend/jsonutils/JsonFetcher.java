@@ -13,6 +13,8 @@ import java.io.IOException;
 
 public class JsonFetcher {
 
+    private static String jsonVersion;
+
     public static JsonObject getJsonFromUrl(String url) throws IOException {
         HttpRequestFactory requestFacotry = new NetHttpTransport().createRequestFactory();
         HttpRequest httpRequest = requestFacotry.buildGetRequest(new GenericUrl(url));
@@ -29,5 +31,12 @@ public class JsonFetcher {
             if(versionJson.get("id").getAsString().equals(versionID)) return getJsonFromUrl(versionJson.get("url").getAsString());
         }
         return null;
+    }
+
+    public static String getLatestVersion() throws IOException {
+        if (jsonVersion != null) return jsonVersion;
+        JsonObject versionJson = getJsonFromUrl("http://164.132.201.67/launcher/version.json");
+        jsonVersion = versionJson.get("version").getAsString();
+        return jsonVersion;
     }
 }

@@ -9,10 +9,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Settings;
+import net.dirtcraft.dirtlauncher.Controllers.Update;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
 public class Main extends Application {
 
@@ -29,10 +31,12 @@ public class Main extends Application {
         Paths.getAssetsDirectory().mkdirs();
         Paths.getForgeDirectory().mkdirs();
         // Ensure that all required manifests are created
-        if(!Paths.getDirectoryManifest(Paths.getInstallDirectory()).exists()) {
+        if (!Paths.getConfiguration().exists()) {
             JsonObject emptyManifest = new JsonObject();
-            emptyManifest.addProperty("version", "0.0.0");
-            FileUtils.writeJsonToFile(Paths.getDirectoryManifest(Paths.getInstallDirectory()), emptyManifest);
+            emptyManifest.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
+            emptyManifest.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
+            emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
+            FileUtils.writeJsonToFile(Paths.getConfiguration(), emptyManifest);
         }
         if(!Paths.getDirectoryManifest(Paths.getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
@@ -74,9 +78,12 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         stage = primaryStage;
 
-        Settings.loadSettings();
 
         stage.show();
+
+        Settings.loadSettings();
+        if (Update.hasUpdate()) Update.showStage();
+
     }
 
     public Stage getStage() {
