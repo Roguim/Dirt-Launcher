@@ -36,8 +36,6 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import java.io.IOException;
 
 public class Home {
-    private double settingsXOffset;
-    private double settingsYOffset;
 
     private Stage settingsMenu;
 
@@ -140,15 +138,6 @@ public class Home {
 
             stage.setTitle("Dirt Launcher Settings");
             stage.setScene(new Scene(root));
-
-            root.setOnMousePressed(event -> {
-                settingsXOffset = event.getSceneX();
-                settingsYOffset = event.getSceneY();
-            });
-            root.setOnMouseDragged(event -> {
-                stage.setX(event.getScreenX() - settingsXOffset);
-                stage.setY(event.getScreenY() - settingsYOffset);
-            });
 
             settingsMenu = stage;
 
