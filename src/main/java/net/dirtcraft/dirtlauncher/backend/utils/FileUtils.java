@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
@@ -96,7 +97,7 @@ public class FileUtils {
                 is.close();
             } else if(file.getName().contains(".json")) {
                 InputStream is = jar.getInputStream(file);
-                InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
                 JsonParser jsonParser = new JsonParser();
                 output = (JsonObject) jsonParser.parse(isr);
                 isr.close();

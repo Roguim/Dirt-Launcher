@@ -4,7 +4,6 @@ package net.dirtcraft.dirtlauncher.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
@@ -12,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -66,13 +64,6 @@ public class Home {
     @FXML
     private Button settingsButton;
 
-    @FXML
-    private Button settingsButton1;
-    @FXML
-    private Button settingsButton2;
-    @FXML
-    private Button settingsButton3;
-
     private PackCell activeCell = null;
 
     public static Home getInstance() {
@@ -82,12 +73,6 @@ public class Home {
     @FXML
     private void initialize() {
         instance = this;
-
-        // DEBUG BUTTONS
-        settingsButton1.setOnMouseClicked(e->LoginButtonHandler.updatePack());
-        settingsButton2.setOnMouseClicked(e->LoginButtonHandler.installPack());
-        settingsButton3.setOnMouseClicked(e -> DiscordPresence.setDetails("Pressed Button 3"));
-        //settingsButton3.setOnMouseClicked(e->LoginButtonHandler.installPack());
 
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);

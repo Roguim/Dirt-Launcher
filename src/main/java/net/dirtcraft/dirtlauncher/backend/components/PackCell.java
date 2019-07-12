@@ -24,6 +24,7 @@ public class PackCell extends Button {
         getStyleClass().add(CssClasses.PACK_CELL);
 
         setCursor(Cursor.HAND);
+        setFocusTraversable(false);
 
         setText(pack.getName());
         setMinSize(278, 50);
@@ -55,8 +56,6 @@ public class PackCell extends Button {
         tooltip.setGraphicTextGap(50);
 
         setTooltip(tooltip);
-
-        System.out.println("Added the ModPack " + pack.getName() + " to the List View");
 
     }
 

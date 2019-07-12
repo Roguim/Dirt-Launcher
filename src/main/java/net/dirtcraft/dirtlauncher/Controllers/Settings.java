@@ -105,7 +105,6 @@ public class Settings {
 
             stage.setTitle("Dirt Launcher Settings");
             stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
-            //Scene scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 2.75, MiscUtils.screenDimension.getHeight() / 3.8);
             Scene scene = new Scene(root, 600, 300);
             stage.setScene(scene);
             stage.setResizable(false);

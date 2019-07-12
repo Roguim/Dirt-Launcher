@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -24,9 +23,9 @@ import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.installation.DownloadManager;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
@@ -213,13 +212,6 @@ public class LoginButtonHandler {
             notificationArea.getChildren().add(notification);
 
             notification.setText("Preparing to install...");
-
-            //TODO: @TECHDG
-            //This is the bar in the middle
-            ProgressBar loadingBar = Install.getInstance().getLoadingBar();
-
-            //This is the bar on the bottom which tracks the overrall progress
-            ProgressBar bottomBar = Install.getInstance().getBottomBar();
 
 
         } catch (IOException exception) {

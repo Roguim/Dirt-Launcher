@@ -1,6 +1,10 @@
 package net.dirtcraft.dirtlauncher.backend.config;
 
 public class Internal {
+
+    public static final String LAUNCHER_VERSION = "1.0.0";
+
+
     public final static String CSS_FXML = "CSS/FXML";
     public final static String CSS_HTML = "CSS/HTML";
     public static final String PACK_IMAGES = "Images/Packs";

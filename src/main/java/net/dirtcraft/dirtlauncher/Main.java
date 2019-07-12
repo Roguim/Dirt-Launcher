@@ -75,10 +75,10 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         stage = primaryStage;
 
-        Settings.loadSettings();
 
         stage.show();
 
+        Settings.loadSettings();
         if (Update.hasUpdate()) Update.showStage();
 
     }

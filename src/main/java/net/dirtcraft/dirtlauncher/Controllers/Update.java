@@ -12,13 +12,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
-import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -87,10 +84,7 @@ public class Update {
     }
 
     public static boolean hasUpdate() throws IOException {
-        String currentVersion = FileUtils.parseJsonFromFile(new File(Paths.getInstallDirectory().getPath() + File.separator + "manifest.json")).get("version").getAsString();
-        if (currentVersion == null) return true;
-        String latestVersion = JsonFetcher.getLatestVersion();
-        return !latestVersion.equals(currentVersion);
+        return !JsonFetcher.getLatestVersion().equalsIgnoreCase(Internal.LAUNCHER_VERSION);
     }
 
 }

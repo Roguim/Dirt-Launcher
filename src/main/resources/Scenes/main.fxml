@@ -123,44 +123,6 @@
             </Pane>
          </children>
       </FlowPane>
-      <Pane id="SettingsBarExt" layoutX="774.0" layoutY="10.0" prefHeight="30.0" prefWidth="95.0" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
-               <styleClass>
-                  <String fx:value="SettingsBar" />
-                  <String fx:value="SettingsButton" />
-                  <String fx:value="SettingsButtonSmall" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button id="SettingsButton" fx:id="settingsButton3" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
-               <styleClass>
-                  <String fx:value="SettingsBar" />
-                  <String fx:value="SettingsButton" />
-                  <String fx:value="SettingsButtonSmall" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button id="SettingsButton" fx:id="settingsButton2" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
-               <styleClass>
-                  <String fx:value="SettingsBar" />
-                  <String fx:value="SettingsButton" />
-                  <String fx:value="SettingsButtonSmall" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-         </children>
-         <styleClass>
-            <String fx:value="SettingsBar" />
-            <String fx:value="SettingsBarExt" />
-         </styleClass>
-      </Pane>
       <Pane id="SettingsBar" layoutX="764.0" prefHeight="45.0" prefWidth="45.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
@@ -178,20 +140,20 @@
          <content>
             <VBox fx:id="packList" alignment="TOP_CENTER" prefHeight="663.0" prefWidth="298.0" styleClass="PackList">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="60.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="110.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="250.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="430.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="60.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="110.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="250.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="430.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
+                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
                </children>
             </VBox>
          </content>
