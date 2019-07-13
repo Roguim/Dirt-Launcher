@@ -24,7 +24,7 @@ public class LaunchGame {
         // Mojang Tricks
         launchCommand += "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
         // Natives path
-        launchCommand += "-Djava.library.path=" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives ";
+        launchCommand += "-Djava.library.path=\"" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives\" ";
         // Classpath
         launchCommand += "-cp \"";
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
