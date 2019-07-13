@@ -129,6 +129,7 @@ public class DownloadManager {
         for(JsonElement libraryElement : versionManifest.getAsJsonArray("libraries")) {
             JsonObject library = libraryElement.getAsJsonObject();
             // Check if the library has conditions
+            /*
             if(library.has("rules")) {
                 for(JsonElement rule : library.getAsJsonArray("rules")) {
                     switch(rule.getAsJsonObject().get("action").getAsString()) {
@@ -174,6 +175,7 @@ public class DownloadManager {
                     }
                 }
             }
+            */
             // The library is not conditional. Continue with the download.
             JsonObject libraryDownloads = library.getAsJsonObject("downloads");
             // Download any standard libraries
