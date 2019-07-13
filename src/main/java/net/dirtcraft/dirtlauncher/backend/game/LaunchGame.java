@@ -40,8 +40,6 @@ public class LaunchGame {
 
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
-        // Dimensions
-        command.append("--width 960 --height 540 ");
         // Username
         command.append("--username " + account.getUsername() + " ");
         // Version

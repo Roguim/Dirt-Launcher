@@ -345,10 +345,16 @@ public class DownloadManager {
                     File modsFolder = new File(modpackFolder.getPath() + File.separator + "mods");
 
                     for(JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
+                        //JsonObject mod = modElement.getAsJsonObject();
+                        //CurseProject project = CurseProject.fromID(mod.get("projectID").getAsString());
+                        //FileUtils.copyURLToFile(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString(), new File(modsFolder.getPath() + File.separator + project.fileWithID(mod.get("fileID").getAsInt()).downloadInfo().getFileName()));
+                        //System.out.print(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString());
+                        //completedMods++;
+                        //setProgressPercent(completedMods, totalMods);
+
                         JsonObject mod = modElement.getAsJsonObject();
-                        CurseProject project = CurseProject.fromID(mod.get("projectID").getAsString());
-                        FileUtils.copyURLToFile(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString(), new File(modsFolder.getPath() + File.separator + project.fileWithID(mod.get("fileID").getAsInt()).downloadInfo().getFileName()));
-                        System.out.print(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString());
+                        JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
+                        FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString(), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
                         completedMods++;
                         setProgressPercent(completedMods, totalMods);
                     }
@@ -361,7 +367,7 @@ public class DownloadManager {
                     packJson.addProperty("forgeVersion", pack.getForgeVersion());
                     instanceManifest.getAsJsonArray("packs").add(packJson);
                     FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
-                } catch (CurseException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
         }
