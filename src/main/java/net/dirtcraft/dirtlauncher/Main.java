@@ -23,7 +23,8 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-
+        System.out.println(Directory.getInstallDirectory());
+        System.out.println(Directory.getConfiguration());
         // Ensure that the application folders are created
         Directory.getInstallDirectory().mkdirs();
         Directory.getInstancesDirectory().mkdirs();

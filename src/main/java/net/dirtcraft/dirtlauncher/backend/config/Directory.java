@@ -42,10 +42,9 @@ public class Directory {
     }
 
     public static File getDirectoryManifest(File directory) {
-        return Paths.get(directory.getPath(), "manifest.json").toFile();
+        return new File(directory.getPath(), "manifest.json");
     }
-
     public static File getConfiguration() {
-        return Paths.get(getInstallDirectory().getPath(), "configuration.json").toFile();
+        return new File(getInstallDirectory().getPath(), "configuration.json");
     }
 }
