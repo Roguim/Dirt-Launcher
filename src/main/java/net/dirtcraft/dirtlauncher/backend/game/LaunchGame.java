@@ -26,7 +26,7 @@ public class LaunchGame {
         // Natives path
         launchCommand += "-Djava.library.path=" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives ";
         // Classpath
-        launchCommand += "-cp ";
+        launchCommand += "-cp \"";
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 launchCommand += jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";";
@@ -35,7 +35,7 @@ public class LaunchGame {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
                 launchCommand += jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";";
         }
-        launchCommand += new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + " ";
+        launchCommand += new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ";
 
         //Loader class
         launchCommand += "net.minecraft.launchwrapper.Launch ";
@@ -46,10 +46,10 @@ public class LaunchGame {
         // Version
         launchCommand += "--version " + pack.getForgeVersion() + " ";
         // Game Dir
-        launchCommand += "--gameDir " + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + " ";
+        launchCommand += "--gameDir \"" + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ";
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        launchCommand += "--assetsDir " + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + " ";
+        launchCommand += "--assetsDir \"" + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + " \"";
         // Assets Index
         launchCommand += "--assetsIndex " + assetsVersion + " ";
         // UUID

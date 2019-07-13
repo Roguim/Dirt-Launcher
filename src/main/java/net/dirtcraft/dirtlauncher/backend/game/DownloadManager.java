@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 public class DownloadManager {
-    
+
     public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods) throws IOException  {
         JsonObject versionManifest = JsonFetcher.getVersionManifestJson(pack.getGameVersion());
 
