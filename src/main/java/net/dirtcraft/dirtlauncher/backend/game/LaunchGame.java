@@ -8,6 +8,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class LaunchGame {
 
@@ -17,7 +18,7 @@ public class LaunchGame {
         String launchCommand = "java ";
 
         // RAM
-        launchCommand += "-Xms" + config.get("minimum-ram").getAsString() + " M -Xmx" + config.get("maximum-ram").getAsString() + "M ";
+        launchCommand += "-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ";
         // Config Java Arguments
         launchCommand += config.get("java-arguments").getAsString() + " ";
         // Mojang Tricks
@@ -41,14 +42,14 @@ public class LaunchGame {
         // Dimensions
         launchCommand += "--width 960 --height 540 ";
         // Username
-        launchCommand += "--username " + account.getUsername();
+        launchCommand += "--username " + account.getUsername() + " ";
         // Version
-        launchCommand += "--version " + pack.getForgeVersion();
+        launchCommand += "--version " + pack.getForgeVersion() + " ";
         // Game Dir
-        launchCommand += "--gameDir " + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName()).getPath() + " ";
+        launchCommand += "--gameDir " + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + " ";
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        launchCommand += "--assetsDir " + new File(Paths.getAssetsDirectory().getPath() + assetsVersion).toPath() + " ";
+        launchCommand += "--assetsDir " + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + " ";
         // Assets Index
         launchCommand += "--assetsIndex " + assetsVersion + " ";
         // UUID
@@ -63,6 +64,13 @@ public class LaunchGame {
         launchCommand += "--versionType Forge";
 
         System.out.println(launchCommand);
+        try {
+            Process game = Runtime.getRuntime().exec(launchCommand);
+            System.out.println("Game Launched.");
+            System.out.println(game.isAlive());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

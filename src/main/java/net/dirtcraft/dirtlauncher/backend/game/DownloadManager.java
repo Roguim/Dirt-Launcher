@@ -83,7 +83,9 @@ public class DownloadManager {
          */
 
         Platform.runLater(() -> Install.getInstance().getButtonPane().setVisible(true));
-        setProgressText("TEST COMPLETE");
+        setTotalProgressPercent(1, 1);
+        setProgressPercent(1, 1);
+        setProgressText("Successfully Installed " + pack.getName() + "!");
     }
 
     public static void setProgressText(String text) {
@@ -96,10 +98,6 @@ public class DownloadManager {
 
     public static void setTotalProgressPercent(int completed, int total) {
         Platform.runLater(() -> Install.getInstance().getBottomBar().setProgress(((double)completed) / total));
-    }
-
-    public static void closePopup() {
-        //Platform.runLater(() -> Install.getInstance().getScene().close());
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
@@ -321,7 +319,7 @@ public class DownloadManager {
             case CURSE:
                 try {
                     setProgressText("Downloading ModPack Manifest");
-                    File modpackFolder = new File(Paths.getInstancesDirectory() + File.separator + pack.getName());
+                    File modpackFolder = new File(Paths.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
                     FileUtils.deleteDirectory(modpackFolder);
                     modpackFolder.mkdirs();
 

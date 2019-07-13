@@ -104,7 +104,7 @@ public class LoginButtonHandler {
     }
 
     @Nullable
-    private static Account login() {
+    public static Account login() {
         Account account = null;
 
         String email = usernameField.getText().trim();

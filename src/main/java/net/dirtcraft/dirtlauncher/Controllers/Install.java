@@ -8,6 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 
 import javax.annotation.Nullable;
 
@@ -48,8 +50,7 @@ public class Install {
         Stage stage = getStage();
         if (stage != null) stage.close();
 
-        //TODO: @TECHDG
-        //DO STUFF WHEN PLAY BUTTON CLICKED HERE
+        LoginButtonHandler.launchPack(LoginButtonHandler.login());
     }
 
     public void setStage(Stage stage) {
