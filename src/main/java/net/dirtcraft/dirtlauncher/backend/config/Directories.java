@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.chrono.ChronoLocalDate;
 import java.util.Date;
 
-public class Directory {
+public class Directories {
 
     public static File getInstallDirectory() {
         final Path fileEnding = Paths.get("DirtCraft", "DirtLauncher");
