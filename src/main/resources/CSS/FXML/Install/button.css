@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Russo+One')
+
+.button {
+  -fx-font-family: 'Russo One';
+  -fx-background-color: #44d62c;
+}

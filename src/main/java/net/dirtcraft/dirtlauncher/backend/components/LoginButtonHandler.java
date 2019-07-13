@@ -33,7 +33,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
@@ -96,7 +96,7 @@ public class LoginButtonHandler {
         launchInstallScene();
         new Thread(() -> {
             try {
-                DownloadManager.completePackSetup(modPack, Arrays.asList());
+                DownloadManager.completePackSetup(modPack, Collections.emptyList());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -191,6 +191,7 @@ public class LoginButtonHandler {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "install.fxml"));
+            root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
 
             stage.initOwner(Main.getInstance().getStage());
@@ -213,6 +214,8 @@ public class LoginButtonHandler {
             notificationArea.getChildren().add(notification);
 
             notification.setText("Preparing to install...");
+
+            Install.getInstance().setStage(stage);
 
 
         } catch (IOException exception) {
