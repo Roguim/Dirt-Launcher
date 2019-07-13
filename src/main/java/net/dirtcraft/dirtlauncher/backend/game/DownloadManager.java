@@ -129,7 +129,6 @@ public class DownloadManager {
         for(JsonElement libraryElement : versionManifest.getAsJsonArray("libraries")) {
             JsonObject library = libraryElement.getAsJsonObject();
             // Check if the library has conditions
-            /*
             if(library.has("rules")) {
                 for(JsonElement rule : library.getAsJsonArray("rules")) {
                     switch(rule.getAsJsonObject().get("action").getAsString()) {
@@ -137,22 +136,21 @@ public class DownloadManager {
                             if(!rule.getAsJsonObject().has("os")) break;
                             switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
                                 case "windows":
-                                    if(!SystemUtils.IS_OS_WINDOWS) {
+                                    if(SystemUtils.IS_OS_WINDOWS == false) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
                                 case "osx":
-                                    if(!SystemUtils.IS_OS_MAC_OSX) {
+                                    if(SystemUtils.IS_OS_MAC_OSX == false) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
                                 case "linux":
-                                    if(!SystemUtils.IS_OS_LINUX) {
+                                    if(SystemUtils.IS_OS_LINUX == false) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
                             }
-                            break;
                         case "disallow":
                             if(!rule.getAsJsonObject().has("os")) break;
                             switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
@@ -175,7 +173,6 @@ public class DownloadManager {
                     }
                 }
             }
-            */
             // The library is not conditional. Continue with the download.
             JsonObject libraryDownloads = library.getAsJsonObject("downloads");
             // Download any standard libraries
