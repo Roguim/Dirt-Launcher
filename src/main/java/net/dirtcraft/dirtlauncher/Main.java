@@ -11,7 +11,7 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Settings;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.Directory;
+import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
@@ -26,42 +26,42 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        System.setProperty("log4j.saveDirectory", Directory.getLog().toString());
+        System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
         // Ensure that the application folders are created
-        Directory.getInstallDirectory().mkdirs();
-        Directory.getInstancesDirectory().mkdirs();
-        Directory.getVersionsDirectory().mkdirs();
-        Directory.getAssetsDirectory().mkdirs();
-        Directory.getForgeDirectory().mkdirs();
+        Directories.getInstallDirectory().mkdirs();
+        Directories.getInstancesDirectory().mkdirs();
+        Directories.getVersionsDirectory().mkdirs();
+        Directories.getAssetsDirectory().mkdirs();
+        Directories.getForgeDirectory().mkdirs();
         // Ensure that all required manifests are created
-        if (!Directory.getConfiguration().exists()) {
+        if (!Directories.getConfiguration().exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
             emptyManifest.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
             emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
-            FileUtils.writeJsonToFile(Directory.getConfiguration(), emptyManifest);
+            FileUtils.writeJsonToFile(Directories.getConfiguration(), emptyManifest);
         }
-        if(!Directory.getDirectoryManifest(Directory.getInstancesDirectory()).exists()) {
+        if(!Directories.getDirectoryManifest(Directories.getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("packs", new JsonArray());
-            FileUtils.writeJsonToFile(Directory.getDirectoryManifest(Directory.getInstancesDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()), emptyManifest);
         }
-        if(!Directory.getDirectoryManifest(Directory.getVersionsDirectory()).exists()) {
+        if(!Directories.getDirectoryManifest(Directories.getVersionsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("versions", new JsonArray());
-            FileUtils.writeJsonToFile(Directory.getDirectoryManifest(Directory.getVersionsDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getVersionsDirectory()), emptyManifest);
         }
-        if(!Directory.getDirectoryManifest(Directory.getAssetsDirectory()).exists()) {
+        if(!Directories.getDirectoryManifest(Directories.getAssetsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("assets", new JsonArray());
-            FileUtils.writeJsonToFile(Directory.getDirectoryManifest(Directory.getAssetsDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getAssetsDirectory()), emptyManifest);
         }
-        if(!Directory.getDirectoryManifest(Directory.getForgeDirectory()).exists()) {
+        if(!Directories.getDirectoryManifest(Directories.getForgeDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("forgeVersions", new JsonArray());
-            FileUtils.writeJsonToFile(Directory.getDirectoryManifest(Directory.getForgeDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getForgeDirectory()), emptyManifest);
         }
         // Launch the application
         launch(args);
