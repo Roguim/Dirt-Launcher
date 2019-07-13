@@ -117,11 +117,11 @@ public class Home {
 
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
 
-        webEngine.load("https://dirtcraft.net/");
+        webEngine.load("https://dirtcraft.net/launcher/");
 
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
-        DiscordPresence.setState("dirtcraft.net/launcher");
+        DiscordPresence.setState("www.dirtcraft.net");
 
     }
 
