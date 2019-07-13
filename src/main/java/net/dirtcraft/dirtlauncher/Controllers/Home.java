@@ -25,7 +25,7 @@ import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.backend.components.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -89,7 +89,7 @@ public class Home {
             stage.show();
             stage.setOnCloseRequest(e -> {
 
-                JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
+                JsonObject config = FileUtils.readJsonFromFile(Directory.getConfiguration());
 
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMinimumRam().getText())) config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
                 else config.addProperty("minimum-ram", Integer.valueOf(Settings.getInstance().getMinimumRam().getText()));
@@ -100,7 +100,7 @@ public class Home {
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getJavaArguments().getText())) config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
                 else config.addProperty("java-arguments", Settings.getInstance().getJavaArguments().getText());
 
-                FileUtils.writeJsonToFile(Paths.getConfiguration(), config);
+                FileUtils.writeJsonToFile(Directory.getConfiguration(), config);
             });
         });
         loginArea.setPickOnBounds(false);

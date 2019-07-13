@@ -8,7 +8,7 @@ import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -32,16 +32,16 @@ public class DownloadManager {
         boolean installForge = true;
         boolean installPack = true;
 
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory())).getAsJsonArray("versions")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getVersionsDirectory())).getAsJsonArray("versions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion())) installMinecraft = false;
         }
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory())).getAsJsonArray("assets")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getAssetsDirectory())).getAsJsonArray("assets")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(versionManifest.get("assets").getAsString())) installAssets = false;
         }
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion())) installForge = false;
         }
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getVersion())) installPack = false;
         }
 
@@ -102,7 +102,7 @@ public class DownloadManager {
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
-        File versionFolder = new File(Paths.getVersionsDirectory() + File.separator + versionManifest.get("id").getAsString());
+        File versionFolder = new File(Directory.getVersionsDirectory() + File.separator + versionManifest.get("id").getAsString());
         FileUtils.deleteDirectory(versionFolder);
         versionFolder.mkdirs();
 
@@ -206,14 +206,14 @@ public class DownloadManager {
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
         versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(librariesLaunchCode, ";"));
-        JsonObject versionsManifest = FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory()));
+        JsonObject versionsManifest = FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getVersionsDirectory()));
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
-        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getVersionsDirectory()).getPath()), versionsManifest);
+        FileUtils.writeJsonToFile(new File(Directory.getDirectoryManifest(Directory.getVersionsDirectory()).getPath()), versionsManifest);
     }
 
     public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Downloading Assets");
-        File assetsFolder = new File(Paths.getAssetsDirectory() + File.separator + versionManifest.get("assets").getAsString());
+        File assetsFolder = new File(Directory.getAssetsDirectory() + File.separator + versionManifest.get("assets").getAsString());
         FileUtils.deleteDirectory(assetsFolder);
         assetsFolder.mkdirs();
 
@@ -238,14 +238,14 @@ public class DownloadManager {
         // Populate Assets Manifest
         JsonObject assetsVersionJsonObject = new JsonObject();
         assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
-        JsonObject assetsFolderManifest = FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getAssetsDirectory()));
+        JsonObject assetsFolderManifest = FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getAssetsDirectory()));
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
-        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getAssetsDirectory()).getPath()), assetsFolderManifest);
+        FileUtils.writeJsonToFile(new File(Directory.getDirectoryManifest(Directory.getAssetsDirectory()).getPath()), assetsFolderManifest);
     }
 
     public static void installForge(Pack pack, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Downloading Forge Installer");
-        File forgeFolder = new File(Paths.getForgeDirectory() + File.separator + pack.getForgeVersion());
+        File forgeFolder = new File(Directory.getForgeDirectory() + File.separator + pack.getForgeVersion());
         FileUtils.deleteDirectory(forgeFolder);
         forgeFolder.mkdirs();
 
@@ -306,12 +306,12 @@ public class DownloadManager {
             setProgressPercent(completedLibraries, totalLibraries);
         }
 
-        JsonObject forgeManifest = FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory()));
+        JsonObject forgeManifest = FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getForgeDirectory()));
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", pack.getForgeVersion());
         versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode, ";"));
         forgeManifest.getAsJsonArray("forgeVersions").add(versionJsonObject);
-        FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getForgeDirectory()).getPath()), forgeManifest);
+        FileUtils.writeJsonToFile(new File(Directory.getDirectoryManifest(Directory.getForgeDirectory()).getPath()), forgeManifest);
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
@@ -319,7 +319,7 @@ public class DownloadManager {
             case CURSE:
                 try {
                     setProgressText("Downloading ModPack Manifest");
-                    File modpackFolder = new File(Paths.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
+                    File modpackFolder = new File(Directory.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
                     FileUtils.deleteDirectory(modpackFolder);
                     modpackFolder.mkdirs();
 
@@ -354,14 +354,14 @@ public class DownloadManager {
                         setProgressPercent(completedMods, totalMods);
                     }
 
-                    JsonObject instanceManifest = FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory()));
+                    JsonObject instanceManifest = FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getInstancesDirectory()));
                     JsonObject packJson = new JsonObject();
                     packJson.addProperty("name", pack.getName());
                     packJson.addProperty("version", pack.getVersion());
                     packJson.addProperty("gameVersion", pack.getGameVersion());
                     packJson.addProperty("forgeVersion", pack.getForgeVersion());
                     instanceManifest.getAsJsonArray("packs").add(packJson);
-                    FileUtils.writeJsonToFile(new File(Paths.getDirectoryManifest(Paths.getInstancesDirectory()).getPath()), instanceManifest);
+                    FileUtils.writeJsonToFile(new File(Directory.getDirectoryManifest(Directory.getInstancesDirectory()).getPath()), instanceManifest);
                 } catch (CurseException e) {
                     e.printStackTrace();
                 }

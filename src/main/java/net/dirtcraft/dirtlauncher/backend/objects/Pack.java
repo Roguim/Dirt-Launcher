@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.objects;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 
 import java.io.File;
@@ -114,18 +114,18 @@ public class Pack {
     public void setCode(String code) { this.code = code; }
 
     public File getInstanceDirectory() {
-        return new File(Paths.getInstallDirectory().getPath() + File.separator + "instances" + File.separator + name);
+        return new File(Directory.getInstallDirectory().getPath() + File.separator + "instances" + File.separator + name);
     }
 
     public boolean isInstalled() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName())) return true;
         }
         return false;
     }
 
     public boolean isOutdated() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
         }
         return true;

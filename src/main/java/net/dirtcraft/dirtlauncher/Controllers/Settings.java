@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
@@ -48,7 +48,7 @@ public class Settings {
         minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
         maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
 
-        JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
+        JsonObject config = FileUtils.readJsonFromFile(Directory.getConfiguration());
 
         minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
         maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));

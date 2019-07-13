@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class LaunchGame {
 
     public static void launchPack(Pack pack, Account account) {
-        JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
+        JsonObject config = FileUtils.readJsonFromFile(Directory.getConfiguration());
 
         StringBuilder command = new StringBuilder();
         command.append("java ");
@@ -25,18 +25,18 @@ public class LaunchGame {
         // Mojang Tricks
         command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
         // Natives path
-        command.append("-Djava.library.path=\"" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives\" ");
+        command.append("-Djava.library.path=\"" + Directory.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives\" ");
         // Classpath
         command.append("-cp \"");
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory())).getAsJsonArray("versions")) {
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Directory.getDirectoryManifest(Directory.getVersionsDirectory())).getAsJsonArray("versions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        command.append(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
+        command.append(new File(Directory.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
 
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
@@ -47,10 +47,10 @@ public class LaunchGame {
         // Version
         command.append("--version " + pack.getForgeVersion() + " ");
         // Game Dir
-        command.append("--gameDir \"" + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
+        command.append("--gameDir \"" + new File(Directory.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
         // Assets Dir
-        String assetsVersion = FileUtils.readJsonFromFile(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        command.append("--assetsDir \"" + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
+        String assetsVersion = FileUtils.readJsonFromFile(new File(Directory.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
+        command.append("--assetsDir \"" + new File(Directory.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
         // Assets Index
         command.append("--assetsIndex " + assetsVersion + " ");
         // UUID
