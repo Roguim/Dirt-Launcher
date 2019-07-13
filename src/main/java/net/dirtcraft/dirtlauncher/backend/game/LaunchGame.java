@@ -6,6 +6,7 @@ import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,9 +63,13 @@ public class LaunchGame {
         // Version Type
         command.append("--versionType Forge");
 
-        System.out.println(command.toString());
+        String launchCommand = command.toString();
+
+        if(SystemUtils.IS_OS_UNIX) launchCommand.replace(";", ":");
+
+        System.out.println(launchCommand);
         try {
-            Runtime.getRuntime().exec(command.toString(), null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
+            Runtime.getRuntime().exec(launchCommand, null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
             System.out.println("Game Launched.");
         } catch (IOException e) {
             e.printStackTrace();
