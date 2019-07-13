@@ -140,17 +140,21 @@ public class DownloadManager {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "osx":
                                     if(!SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "linux":
                                     if(!SystemUtils.IS_OS_LINUX) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                             }
+                            break;
                         case "disallow":
                             if(!rule.getAsJsonObject().has("os")) break;
                             switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
@@ -159,17 +163,21 @@ public class DownloadManager {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "osx":
                                     if(SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "linux":
                                     if(SystemUtils.IS_OS_LINUX) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                             }
+                            break;
                     }
                 }
             }
