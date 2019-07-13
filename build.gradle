@@ -44,11 +44,17 @@ dependencies {
     provided 'org.apache.commons:commons-compress:1.18'
     provided "com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"
     provided 'net.lingala.zip4j:zip4j:2.1.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
+    provided group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.0'
+    provided group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
 }
 
-jar {
+jar {  
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
+        )
+    }
     from configurations.provided.asFileTree.files.collect {zipTree(it)}
 }
 
