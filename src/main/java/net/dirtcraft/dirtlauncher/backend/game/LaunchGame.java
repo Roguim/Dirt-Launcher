@@ -70,9 +70,6 @@ public class LaunchGame {
         System.out.println(launchCommand);
         try {
             Runtime.getRuntime().exec(launchCommand, null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
-            //new ProcessBuilder(launchCommand)
-            //        .directory(new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")))
-            //        .start();
             System.out.println("Game Launched.");
             System.exit(0);
         } catch (IOException e) {
