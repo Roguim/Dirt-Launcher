@@ -17,7 +17,7 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
-        command.append("java ");
+        command.append("cmd /c start java ");
 
         // RAM
         command.append("-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ");
@@ -69,10 +69,10 @@ public class LaunchGame {
 
         System.out.println(launchCommand);
         try {
-            Runtime.getRuntime().exec(launchCommand, null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
-            //new ProcessBuilder(launchCommand)
-            //        .directory(new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")))
-            //        .start();
+            Process process = Runtime.getRuntime().exec(launchCommand, null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
+            new ProcessBuilder(launchCommand)
+                    .directory(new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")))
+                    .start();
             System.out.println("Game Launched.");
         } catch (IOException e) {
             e.printStackTrace();

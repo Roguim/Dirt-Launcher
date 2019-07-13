@@ -136,17 +136,17 @@ public class DownloadManager {
                             if(!rule.getAsJsonObject().has("os")) break;
                             switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
                                 case "windows":
-                                    if(SystemUtils.IS_OS_WINDOWS == false) {
+                                    if(!SystemUtils.IS_OS_WINDOWS) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
                                 case "osx":
-                                    if(SystemUtils.IS_OS_MAC_OSX == false) {
+                                    if(!SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
                                 case "linux":
-                                    if(SystemUtils.IS_OS_LINUX == false) {
+                                    if(!SystemUtils.IS_OS_LINUX) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
@@ -160,7 +160,7 @@ public class DownloadManager {
                                         continue libraryLoop;
                                     }
                                 case "osx":
-                                    if(SystemUtils.IS_OS_MAC_OSX) {
+                                    if(SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
@@ -187,7 +187,7 @@ public class DownloadManager {
             if(libraryDownloads.has("classifiers")) {
                 String nativesType = "";
                 if(SystemUtils.IS_OS_WINDOWS) nativesType = "natives-windows";
-                if(SystemUtils.IS_OS_MAC_OSX) nativesType = "natives-osx";
+                if(SystemUtils.IS_OS_MAC) nativesType = "natives-osx";
                 if(SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
                 if(libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
                     System.out.println("Native Found! " + libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType).get("url").getAsString());
