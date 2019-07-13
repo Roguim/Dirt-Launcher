@@ -65,7 +65,7 @@ public class LaunchGame {
 
         String launchCommand = command.toString();
 
-        if(SystemUtils.IS_OS_UNIX) launchCommand.replace(";", ":");
+        if (SystemUtils.IS_OS_UNIX) launchCommand = launchCommand.replace(";", ":");
 
         System.out.println(launchCommand);
         try {
