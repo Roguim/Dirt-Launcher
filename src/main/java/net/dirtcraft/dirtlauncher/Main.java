@@ -15,16 +15,20 @@ import net.dirtcraft.dirtlauncher.backend.config.Directory;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
 
+    private static Logger logger;
     private static Main instance;
     private Stage stage;
 
 
     public static void main(String[] args) {
-        System.out.println(Directory.getInstallDirectory());
-        System.out.println(Directory.getConfiguration());
+        System.setProperty("log4j.saveDirectory", Directory.getLog().toString());
+        logger = LogManager.getLogger(Main.class);
+        logger.info("Logger logging, App starting.");
         // Ensure that the application folders are created
         Directory.getInstallDirectory().mkdirs();
         Directory.getInstancesDirectory().mkdirs();
@@ -85,6 +89,11 @@ public class Main extends Application {
         Settings.loadSettings();
         if (Update.hasUpdate()) Update.showStage();
 
+    }
+
+    @Override
+    public void stop(){
+        LogManager.shutdown();
     }
 
     public Stage getStage() {

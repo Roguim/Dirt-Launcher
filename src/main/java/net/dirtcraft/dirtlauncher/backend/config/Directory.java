@@ -5,6 +5,10 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.chrono.ChronoLocalDate;
+import java.util.Date;
 
 public class Directory {
 
@@ -23,6 +27,10 @@ public class Directory {
         else {
             return Paths.get(System.getProperty("user.home")).resolve(fileEnding).toFile();
         }
+    }
+
+    public static Path getLogDirectory() {
+        return Paths.get(getInstallDirectory().getPath(),"logs");
     }
 
     public static File getInstancesDirectory() {
@@ -46,5 +54,12 @@ public class Directory {
     }
     public static File getConfiguration() {
         return new File(getInstallDirectory().getPath(), "configuration.json");
+    }
+
+    public static File getLog(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+        Date date = new Date();
+        String fname = dateFormat.format(date);
+        return new File(getLogDirectory().toFile(), fname+".log");
     }
 }
