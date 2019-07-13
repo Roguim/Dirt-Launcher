@@ -191,6 +191,7 @@ public class DownloadManager {
                 if(SystemUtils.IS_OS_MAC_OSX) nativesType = "natives-osx";
                 if(SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
                 if(libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
+                    System.out.println("Native Found! " + libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType).get("url").getAsString());
                     JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
                     File outputFile = new File(nativesFolder + File.separator + nativeJson.get("sha1").getAsString());
                     FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
