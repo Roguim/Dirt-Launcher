@@ -43,8 +43,8 @@ public class Install {
 
     @FXML
     private void onButtonClick(MouseEvent event) {
-        if (buttonPane.isDisabled()) return;
-        buttonPane.setDisable(true);
+        if (!buttonPane.isVisible()) return;
+        buttonPane.setVisible(false);
         Stage stage = getStage();
         if (stage != null) stage.close();
 

@@ -82,7 +82,7 @@ public class DownloadManager {
 
          */
 
-        Install.getInstance().getButtonPane().setDisable(false);
+        Platform.runLater(() -> Install.getInstance().getButtonPane().setVisible(true));
         setProgressText("TEST COMPLETE");
     }
 

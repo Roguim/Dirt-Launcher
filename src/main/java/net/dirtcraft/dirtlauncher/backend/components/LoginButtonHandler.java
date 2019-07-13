@@ -193,6 +193,7 @@ public class LoginButtonHandler {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "install.fxml"));
+            root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
 
             stage.initOwner(Main.getInstance().getStage());
