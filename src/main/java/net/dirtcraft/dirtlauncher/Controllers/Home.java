@@ -31,6 +31,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
+import net.dirtcraft.dirtlauncher.backend.components.PlayButton;
 
 public class Home {
 
@@ -49,7 +50,7 @@ public class Home {
     private PasswordField passwordField;
 
     @FXML
-    private Button playButton;
+    private PlayButton playButton;
 
     @FXML
     private TextFlow notificationBox;
@@ -78,7 +79,6 @@ public class Home {
     @FXML
     private void initialize() {
         instance = this;
-
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);
         settingsImage.setFitWidth(50);
