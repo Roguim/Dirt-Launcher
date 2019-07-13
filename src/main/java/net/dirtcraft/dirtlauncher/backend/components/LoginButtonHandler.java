@@ -216,6 +216,8 @@ public class LoginButtonHandler {
 
             notification.setText("Preparing to install...");
 
+            Install.getInstance().setStage(stage);
+
 
         } catch (IOException exception) {
             exception.printStackTrace();
