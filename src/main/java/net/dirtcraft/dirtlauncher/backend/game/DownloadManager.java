@@ -2,8 +2,6 @@ package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.therandomlabs.curseapi.CurseException;
-import com.therandomlabs.curseapi.project.CurseProject;
 import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
@@ -79,13 +77,13 @@ public class DownloadManager {
         }
 
         /*
-
+        FINISH UP AFTER INSTALLATION
          */
 
-        Platform.runLater(() -> Install.getInstance().getButtonPane().setVisible(true));
         setTotalProgressPercent(1, 1);
         setProgressPercent(1, 1);
-        setProgressText("Successfully Installed " + pack.getName() + "!");
+        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText("Successfully Installed " + pack.getName() + "!"));
+        Platform.runLater(() -> Install.getInstance().getButtonPane().setVisible(true));
     }
 
     public static void setProgressText(String text) {
@@ -140,17 +138,21 @@ public class DownloadManager {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "osx":
                                     if(!SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "linux":
                                     if(!SystemUtils.IS_OS_LINUX) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                             }
+                            break;
                         case "disallow":
                             if(!rule.getAsJsonObject().has("os")) break;
                             switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
@@ -159,17 +161,21 @@ public class DownloadManager {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "osx":
                                     if(SystemUtils.IS_OS_MAC) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                                 case "linux":
                                     if(SystemUtils.IS_OS_LINUX) {
                                         completedLibraries++;
                                         continue libraryLoop;
                                     }
+                                    break;
                             }
+                            break;
                     }
                 }
             }

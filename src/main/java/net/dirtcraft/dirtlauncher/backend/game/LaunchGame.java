@@ -17,6 +17,9 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
+        if(SystemUtils.IS_OS_UNIX) {
+            command.append("bash -c ");
+        }
         command.append("java ");
 
         // RAM

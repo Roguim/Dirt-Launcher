@@ -26,6 +26,61 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+
+        System.out.println("\n\n\n                                  whatthefu                                         \n" +
+                "                              ckdidyoujustfucki                                     \n" +
+                "                          ngsayaboutme,youlittlebi                                  \n" +
+                "                  tch?I’llhaveyou           knowIgra                                \n" +
+                "               duatedtopofmy                  classin                               \n" +
+                "             theNavySeals,an                   dI’veb                               \n" +
+                "             eeninvolvedinnum                   erous                               \n" +
+                "             secretraids onAl-Q    uaeda,andIh  aveov                               \n" +
+                "             er300confirmedkills .Iamtrainedingo rill                               \n" +
+                "             awarfareandI’mthe  topsniperintheentireU                               \n" +
+                "            Sarme  dforces.You  arenothingtomebutjust                               \n" +
+                "           anothertarget.Iwillw ipeyouthefu ckoutwith                               \n" +
+                "          precisionthelikesof   whichhasneverbeenseen                               \n" +
+                "         beforeonthisEarth,markmyfuckingwords  .Yout                                \n" +
+                "        hinky          oucangetawaywithsa     yingth                                \n" +
+                "       atshi                      ttomeov     ertheI                                \n" +
+                "      nterne                                 t?Thin                                 \n" +
+                "     kagain                                 ,fucke                                  \n" +
+                "    r.Aswe                                  speakI                                  \n" +
+                "    amcon                      tact        ingmys                                   \n" +
+                "    ecre                      tnetw ork   ofspie                                    \n" +
+                "    sacr                      osstheUSAa  ndyou                         rIPisbein   \n" +
+                "   gtrac                      edrightno  wsoyo                        ubetterprepa  \n" +
+                "   refor                     thestorm,m aggot                       .Thest    ormt  \n" +
+                "   hatwi                     pesoutthe  pathe                     ticlitt    lethi  \n" +
+                "   ngyou                    callyourl  ife.Yo                   u’refuc     kingd   \n" +
+                "   ead,k                    id.Icanb   eanywhere,anytime,an   dIcanki     llyou     \n" +
+                "    inov                   ersevenh    undredways,andthat’sjustwith      mybar      \n" +
+                "    ehan                   ds.Noto     nlyam   Iexte   nsivelytra      inedin       \n" +
+                "    unar                  medcomba      t,b   utIhaveaccesstoth      eentir         \n" +
+                "    earse               nalof theUn         itedStatesMarineCo     rpsandI          \n" +
+                "     will             useit  toitsfu         llextenttowipeyourm   iserable         \n" +
+                "     assof            fthefaceofthec                     ontinent    ,youlittl      \n" +
+                "      eshit            .Ifonlyyouco              uldh       avekno  wnwh atunh      \n" +
+                "      olyret              ribu                   tion        yourli  ttle\"cle       \n" +
+                "       ver\"co                                mme              ntwas    abou         \n" +
+                "        ttobring                            down              upony     ou,m        \n" +
+                "           aybeyou                          woul              dhaveheldyourf        \n" +
+                " uck        ingtongue.                       Buty           oucouldn’t,youd         \n" +
+                "idn’t,a    ndnowyou’repaying                  the         price,y    o              \n" +
+                "ugoddamnidiot. Iwillshitfuryallovery           ouan    dyouwil                      \n" +
+                "ldro wninit.You’ref    uckingdead,kidd o.Wwhatthefuckdidyouj                        \n" +
+                " ustf  uckingsaya         boutme,youl ittlebitch?I’llhave                           \n" +
+                "  youk   nowIgr         aduatedtopof mycla ssintheNavy                              \n" +
+                "   Seals,andI           ’vebeeninvo  lved                                           \n" +
+                "    innumer              oussecre   trai                                            \n" +
+                "      dso                nAl-Qu    aeda                                             \n" +
+                "                          ,andIh  aveo                                              \n" +
+                "                           ver300conf                                               \n" +
+                "                             irmedki                                                \n" +
+                "                               lls                                                  ");
+
+        System.out.println("\n\n\n All Hail Dirt \n\n\n");
+
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
