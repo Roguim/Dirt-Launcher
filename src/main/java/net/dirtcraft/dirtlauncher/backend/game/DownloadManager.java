@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 public class DownloadManager {
-
+    
     public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods) throws IOException  {
         JsonObject versionManifest = JsonFetcher.getVersionManifestJson(pack.getGameVersion());
 
@@ -347,7 +347,7 @@ public class DownloadManager {
                     for(JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
                         JsonObject mod = modElement.getAsJsonObject();
                         CurseProject project = CurseProject.fromID(mod.get("projectID").getAsString());
-                        String outputFilePath = modsFolder.getPath() + File.separator + project.fileWithID(mod.get("fileID").getAsInt()).name();
+                        String outputFilePath = modsFolder.getPath() + File.separator + project.fileWithID(mod.get("fileID").getAsInt()).name().replace(" ", "-");
                         if(!outputFilePath.endsWith(".jar")) outputFilePath += ".jar";
                         FileUtils.copyURLToFile(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString(), new File(outputFilePath));
                         completedMods++;
