@@ -19,8 +19,10 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.web.WebView?>
+<?import net.dirtcraft.dirtlauncher.backend.components.PlayButton?>
+<?scenebuilder-classpath-element ../../../../build/classes/net/dirtcraft/dirtlauncher/backend/components/PlayButton.class?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onEnterPressed" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
     <children>
       <FlowPane layoutY="-150.0" prefHeight="745.0" prefWidth="845.0" styleClass="BackgroundBottom" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
       <HBox id="topPane" fx:id="topPane" alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="body" stylesheets="@../CSS/FXML/Banner.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -97,7 +99,7 @@
                               <String fx:value="LoginBar" />
                            </styleClass>
                         </GridPane>
-                        <Button id="PlayButton" fx:id="playButton" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                        <PlayButton id="PlayButton" fx:id="playButton" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" stylesheets="@../CSS/FXML/Playarea.css" text="Play" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -109,7 +111,7 @@
                            <font>
                               <Font size="11.0" />
                            </font>
-                        </Button>
+                        </PlayButton>
                      </children>
                      <styleClass>
                         <String fx:value="LoginArea" />
