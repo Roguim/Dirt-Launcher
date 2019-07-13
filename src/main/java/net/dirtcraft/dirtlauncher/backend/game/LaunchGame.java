@@ -15,57 +15,58 @@ public class LaunchGame {
     public static void launchPack(Pack pack, Account account) {
         JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
 
-        String launchCommand = "java ";
+        StringBuilder command = new StringBuilder();
+        command.append("java ");
 
         // RAM
-        launchCommand += "-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ";
+        command.append("-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ");
         // Config Java Arguments
-        launchCommand += config.get("java-arguments").getAsString() + " ";
+        command.append(config.get("java-arguments").getAsString() + " ");
         // Mojang Tricks
-        launchCommand += "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
+        command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
         // Natives path
-        launchCommand += "-Djava.library.path=\"" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives\" ";
+        command.append("-Djava.library.path=\"" + Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives\" ");
         // Classpath
-        launchCommand += "-cp \"";
+        command.append("-cp \"");
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
-                launchCommand += jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";";
+                command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getVersionsDirectory())).getAsJsonArray("versions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
-                launchCommand += jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";";
+                command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        launchCommand += new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ";
+        command.append(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
 
         //Loader class
-        launchCommand += "net.minecraft.launchwrapper.Launch ";
+        command.append("net.minecraft.launchwrapper.Launch ");
         // Dimensions
-        launchCommand += "--width 960 --height 540 ";
+        command.append("--width 960 --height 540 ");
         // Username
-        launchCommand += "--username " + account.getUsername() + " ";
+        command.append("--username " + account.getUsername() + " ");
         // Version
-        launchCommand += "--version " + pack.getForgeVersion() + " ";
+        command.append("--version " + pack.getForgeVersion() + " ");
         // Game Dir
-        launchCommand += "--gameDir \"" + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ";
+        command.append("--gameDir \"" + new File(Paths.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Paths.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        launchCommand += "--assetsDir \"" + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + " \"";
+        command.append("--assetsDir \"" + new File(Paths.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
         // Assets Index
-        launchCommand += "--assetsIndex " + assetsVersion + " ";
+        command.append("--assetsIndex " + assetsVersion + " ");
         // UUID
-        launchCommand += "--uuid " + account.getUuid() + " ";
+        command.append("--uuid " + account.getUuid() + " ");
         // Access Token
-        launchCommand += "--accessToken " + account.getSession().getAccessToken() + " ";
+        command.append("--accessToken " + account.getSession().getAccessToken() + " ");
         // User Type
-        launchCommand += "--userType mojang ";
+        command.append("--userType mojang ");
         // Tweak Class
-        launchCommand += "--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ";
+        command.append("--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ");
         // Version Type
-        launchCommand += "--versionType Forge";
+        command.append("--versionType Forge");
 
-        System.out.println(launchCommand);
+        System.out.println(command.toString());
         try {
-            Process game = Runtime.getRuntime().exec(launchCommand);
+            Process game = Runtime.getRuntime().exec(command.toString());
             System.out.println("Game Launched.");
             System.out.println(game.isAlive());
         } catch (IOException e) {
