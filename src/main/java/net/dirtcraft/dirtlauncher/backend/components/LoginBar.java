@@ -66,6 +66,8 @@ public class LoginBar extends Pane {
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(6);
 
+        passField.setText("Password");
+        usernameField.setText("E-Mail/User");
         actionButton.setDefaultButton(true);
         actionButton.setDisable(true);
         actionButton.setText("Play");
