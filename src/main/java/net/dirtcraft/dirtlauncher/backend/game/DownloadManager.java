@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.installation;
+package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -77,7 +77,7 @@ public class DownloadManager {
             completedSteps += 2;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
-        setProgressText("TEST COMPLETE");
+        closePopup();
     }
 
     public static void setProgressText(String text) {
@@ -90,6 +90,10 @@ public class DownloadManager {
 
     public static void setTotalProgressPercent(int completed, int total) {
         Platform.runLater(() -> Install.getInstance().getBottomBar().setProgress(((double)completed) / total));
+    }
+
+    public static void closePopup() {
+        //Platform.runLater(() -> Install.getInstance().getScene().close());
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {

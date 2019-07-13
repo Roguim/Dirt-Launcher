@@ -22,7 +22,8 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.installation.DownloadManager;
+import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
+import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -75,10 +76,7 @@ public class LoginButtonHandler {
     }
 
     public static void launchPack(Account account) {
-
-        /*
-        LAUNCH PACK STUFF HERE
-         */
+        LaunchGame.launchPack(modPack, account);
     }
 
     public static void updatePack(){
