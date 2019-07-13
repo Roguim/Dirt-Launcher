@@ -32,7 +32,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
@@ -98,7 +98,7 @@ public class LoginButtonHandler {
         launchInstallScene();
         new Thread(() -> {
             try {
-                DownloadManager.completePackSetup(modPack, Arrays.asList());
+                DownloadManager.completePackSetup(modPack, Collections.emptyList());
             } catch (IOException e) {
                 e.printStackTrace();
             }

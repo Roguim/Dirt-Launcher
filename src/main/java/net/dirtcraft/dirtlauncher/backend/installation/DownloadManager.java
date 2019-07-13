@@ -77,11 +77,17 @@ public class DownloadManager {
             completedSteps += 2;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
+
+        /*
+
+         */
+
+        Install.getInstance().getButtonPane().setDisable(false);
         setProgressText("TEST COMPLETE");
     }
 
     public static void setProgressText(String text) {
-        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText(text));
+        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText(text + "..."));
     }
 
     public static void setProgressPercent(int completed, int total) {
@@ -310,7 +316,7 @@ public class DownloadManager {
         switch(pack.getPackType()) {
             case CURSE:
                 try {
-                    setProgressText("Downloading Modpack Manifest");
+                    setProgressText("Downloading ModPack Manifest");
                     File modpackFolder = new File(Paths.getInstancesDirectory() + File.separator + pack.getName());
                     FileUtils.deleteDirectory(modpackFolder);
                     modpackFolder.mkdirs();

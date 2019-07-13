@@ -1,8 +1,11 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
@@ -27,9 +30,25 @@ public class Install {
     private ProgressBar bottomBar;
 
     @FXML
+    private FlowPane buttonPane;
+
+    @FXML
+    private Button playButton;
+
+    @FXML
     private void initialize() {
         instance = this;
 
+    }
+
+    @FXML
+    private void onButtonClick(MouseEvent event) {
+        buttonPane.setDisable(true);
+        Stage stage = getStage();
+        if (stage != null) stage.close();
+
+        //TODO: @TECHDG
+        //DO STUFF WHEN PLAY BUTTON CLICKED HERE
     }
 
     public void setStage(Stage stage) {
@@ -39,6 +58,10 @@ public class Install {
     @Nullable
     public Stage getStage() {
         return stage;
+    }
+
+    public FlowPane getButtonPane() {
+        return buttonPane;
     }
 
     public AnchorPane getAnchorPane() {
