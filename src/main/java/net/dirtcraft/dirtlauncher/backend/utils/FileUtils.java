@@ -36,7 +36,7 @@ public class FileUtils {
         return null;
     }
 
-    public static JsonObject parseJsonFromFile(File file) {
+    public static JsonObject readJsonFromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
             JsonParser parser = new JsonParser();
             return parser.parse(reader).getAsJsonObject();
@@ -61,6 +61,10 @@ public class FileUtils {
 
     public static void copyURLToFile(String URL, File file) throws IOException {
         org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
+    }
+
+    public static void copyDirectory(File src, File dest) throws IOException {
+        org.apache.commons.io.FileUtils.copyDirectory(src, dest);
     }
 
     public static void extractJar(String jarFile, String destDir) throws IOException {
@@ -91,7 +95,7 @@ public class FileUtils {
         while(enumEntries.hasMoreElements()) {
             JarEntry file = (JarEntry) enumEntries.nextElement();
             if(file.getName().contains(".jar")) {
-                File f = new File(destDir + File.separator + file.getName());
+                File f = new File(destDir + File.separator + file.getName().replace("-1.7.10-universal", "-universal"));
                 InputStream is = jar.getInputStream(file);
                 FileOutputStream fos = new FileOutputStream(f);
                 while(is.available() > 0) {
@@ -112,8 +116,6 @@ public class FileUtils {
     }
 
     public static void unpackPackXZ(File packXZFile) throws IOException {
-        //JarOutputStream outputStream = new JarOutputStream(new FileOutputStream(StringUtils.substringBeforeLast(packXZFile.getPath(), ".pack.gz")));
-
         // XZ -> Pack
         InputStream fileIn = Files.newInputStream(packXZFile.toPath());
         BufferedInputStream bufferedIn = new BufferedInputStream(fileIn);

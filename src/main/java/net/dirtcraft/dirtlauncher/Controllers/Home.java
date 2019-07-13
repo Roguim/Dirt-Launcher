@@ -89,7 +89,7 @@ public class Home {
             stage.show();
             stage.setOnCloseRequest(e -> {
 
-                JsonObject config = FileUtils.parseJsonFromFile(Paths.getConfiguration());
+                JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
 
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMinimumRam().getText())) config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
                 else config.addProperty("minimum-ram", Integer.valueOf(Settings.getInstance().getMinimumRam().getText()));

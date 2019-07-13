@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.backend.objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.backend.config.Paths;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -117,11 +118,17 @@ public class Pack {
     }
 
     public boolean isInstalled() {
-        return getInstanceDirectory().exists();
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory())).getAsJsonArray("packs")) {
+            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName())) return true;
+        }
+        return false;
     }
 
     public boolean isOutdated() {
-        return false;
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Paths.getDirectoryManifest(Paths.getInstancesDirectory())).getAsJsonArray("packs")) {
+            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
+        }
+        return true;
     }
 
 }

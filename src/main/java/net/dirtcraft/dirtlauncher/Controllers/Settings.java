@@ -48,7 +48,7 @@ public class Settings {
         minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
         maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
 
-        JsonObject config = FileUtils.parseJsonFromFile(Paths.getConfiguration());
+        JsonObject config = FileUtils.readJsonFromFile(Paths.getConfiguration());
 
         minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
         maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
