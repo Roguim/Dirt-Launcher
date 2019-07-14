@@ -12,7 +12,6 @@ import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
-import net.dirtcraft.dirtlauncher.backend.objects.PackType;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
@@ -44,7 +43,8 @@ public class PackCell extends Button {
                 "Forge Version: " + pack.getForgeVersion(),
                 "Minimum Ram: " + pack.getRequiredRam() + " GB",
                 "Recommended Ram: " + pack.getRecommendedRam() + " GB",
-                "Direct Connect IP: " + (pack.getPackType() != PackType.PIXELMON ? pack.getCode().toUpperCase() + ".DIRTCRAFT" : "PIXELMON") + ".GG")));
+                "Direct Connect IP: " + (!pack.getCode().equalsIgnoreCase("pixel") ? (pack.getCode() + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
+        ));
 
         Image image = new Image(MiscUtils.getResourceStream(
                 Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+", "-") + ".png"),

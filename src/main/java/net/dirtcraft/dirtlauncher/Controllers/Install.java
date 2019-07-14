@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +11,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class Install {
@@ -39,6 +41,7 @@ public class Install {
     @FXML
     private void initialize() {
         instance = this;
+        playButton.setCursor(Cursor.HAND);
 
     }
 
@@ -48,12 +51,16 @@ public class Install {
         buttonPane.setVisible(false);
         getStage().ifPresent(Stage::close);
 
-
         LoginButtonHandler.launchPack(LoginButtonHandler.login());
     }
 
     public void setStage(Stage stage) {
         Install.stage = stage;
+    }
+
+    @Nullable
+    public Stage getStageUnsafe() {
+        return stage;
     }
 
     public static Optional<Stage> getStage() {
