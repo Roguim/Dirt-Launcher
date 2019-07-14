@@ -101,14 +101,14 @@ public class LoginBar extends Pane {
     public enum Types{
         INSTALL,
         UPDATE,
-        LAUNCH,
+        PLAY,
         NONE;
 
         @Override
         public String toString() {
             switch (this) {
-                case LAUNCH:
-                    return "Launch";
+                case PLAY:
+                    return "Play";
                 case UPDATE:
                     return "Update";
                 case INSTALL:

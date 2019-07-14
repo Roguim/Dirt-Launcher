@@ -89,7 +89,7 @@ public class DownloadManager {
                 if (installStage != null) installStage.setOnCloseRequest(event -> {
                     if (!install.getButtonPane().isVisible()) event.consume();
                 });
-                Home.getInstance().getLoginBar().setType(LoginBar.Types.LAUNCH);
+                Home.getInstance().getLoginBar().setType(LoginBar.Types.PLAY);
             }));
     }
 
