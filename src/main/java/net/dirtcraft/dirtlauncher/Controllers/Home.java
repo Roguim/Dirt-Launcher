@@ -6,7 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
@@ -14,6 +18,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
+import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
@@ -44,6 +49,11 @@ public class Home {
     private LoginBar loginBar;
 
     private PackCell activeCell = null;
+
+    private PasswordField passwordField;
+    private TextField usernameField;
+    private Button playButton;
+
 
     public static Home getInstance() {
         return instance;
@@ -93,13 +103,15 @@ public class Home {
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
         DiscordPresence.setState("www.dirtcraft.net");
+        passwordField = loginBar.getPassField();
+        loginBar.getUsernameField();
+        loginBar.getActionButton();
 
     }
-    /*
     @FXML
     private void onTabPressed(KeyEvent event) {
         if (event.getCode() != KeyCode.TAB) return;
-        if (event.getSource() == usernameField) passwordField.requestFocus();
+        if (event.getSource() == loginBar.getUsernameField()) passwordField.requestFocus();
         else if (event.getSource() == passwordField) usernameField.requestFocus();
     }
 
@@ -120,7 +132,7 @@ public class Home {
         }
         else playButton.setDisable(true);
     }
-    */
+
 
     public TextFlow getNotificationBox() {
         return notificationBox;
