@@ -6,9 +6,11 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,15 +28,21 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
-        command.append("java ");
+        command.append("java");
+        if (SystemUtils.IS_OS_WINDOWS) command.append("w");
+        command.append(" ");
 
         // RAM
         command.append("-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ");
-        // Config Java Arguments
-        command.append(config.get("java-arguments").getAsString() + " ");
+
+        // Configurable Java Arguments
+        String javaArgs = config.get("java-arguments").getAsString();
+        if (MiscUtils.isEmptyOrNull(javaArgs)) command.append(Internal.DEFAULT_JAVA_ARGS);
+        else command.append(javaArgs);
+        command.append(" ");
 
         // Language Tricks
-        //command.append("-Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Duser.language=en -Duser.country=US ");
+        command.append("-Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Duser.language=en -Duser.country=US ");
 
         // Mojang Tricks
         command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
@@ -55,26 +63,26 @@ public class LaunchGame {
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
         // Username
-        command.append("--username " + account.getUsername() + " ");
+        command.append("--username=" + account.getUsername() + " ");
         // Version
-        command.append("--version " + pack.getForgeVersion() + " ");
+        command.append("--version=" + pack.getForgeVersion() + " ");
         // Game Dir
-        command.append("--gameDir \"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
+        command.append("--gameDir=\"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        command.append("--assetsDir \"" + new File(Directories.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
+        command.append("--assetsDir=\"" + new File(Directories.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
         // Assets Index
-        command.append("--assetsIndex " + assetsVersion + " ");
+        command.append("--assetsIndex=" + assetsVersion + " ");
         // UUID
-        command.append("--uuid " + account.getUuid() + " ");
+        command.append("--uuid=" + account.getUuid() + " ");
         // Access Token
-        command.append("--accessToken " + account.getSession().getAccessToken() + " ");
+        command.append("--accessToken=" + account.getSession().getAccessToken() + " ");
         // User Type
-        command.append("--userType mojang ");
+        command.append("--userType=mojang ");
         // Tweak Class
-        command.append("--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ");
+        command.append("--tweakClass=net.minecraftforge.fml.common.launcher.FMLTweaker ");
         // Version Type
-        command.append("--versionType Forge");
+        command.append("--versionType=Forge");
 
         String launchCommand = command.toString();
 
