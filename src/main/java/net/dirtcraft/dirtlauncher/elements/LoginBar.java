@@ -30,7 +30,7 @@ public class LoginBar extends Pane {
         //Force the size - otherwise it changes and that's bad..
         setAbsoluteSize(actionButton , 58 ,  59 );
         setAbsoluteSize(this ,264.0 ,  74 );
-        setAbsoluteSize(loginContainer,250.0, 60);
+        setAbsoluteSize(loginContainer,250.0, 59);
 
         setId("LoginBar");
         getStyleClass().add("LoginArea");
@@ -46,10 +46,10 @@ public class LoginBar extends Pane {
         x2.setValignment ( VPos.TOP );
         y2.setHalignment( HPos.LEFT );
         y1.setHalignment(HPos.RIGHT );
-        x1.setMinHeight(30);
-        x1.setMaxHeight(30);        // This is how u make a grid pane without  \\
-        x2.setMinHeight(30);        // scene builder. It's hard work but hey,  \\
-        x2.setMaxHeight(30);        // It's an honest living. Also this space  \\
+        x1.setMinHeight(29);
+        x1.setMaxHeight(29);        // This is how u make a grid pane without  \\
+        x2.setMinHeight(29);        // scene builder. It's hard work but hey,  \\
+        x2.setMaxHeight(29);        // It's an honest living. Also this space  \\
         y1.setMinWidth(190);        // was perfect for a comment block because \\
         y1.setMaxWidth(190);        // it just is screaming for someone to put \\
         y2.setMinWidth( 60);        // something in this exact box shaped area \\
@@ -62,7 +62,7 @@ public class LoginBar extends Pane {
         loginContainer.add(usernameField, 0, 0, 1, 1);
         loginContainer.add(passField , 0,  1,  1,  1);
         loginContainer.setLayoutX(8);
-        loginContainer.setLayoutY(6);
+        loginContainer.setLayoutY(8);
 
         passField.setText("Password");
         usernameField.setText("E-Mail/User");
