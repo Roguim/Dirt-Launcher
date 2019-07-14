@@ -106,12 +106,16 @@ public class LoginBar extends Pane {
 
         @Override
         public String toString() {
-            switch (this){
-                case LAUNCH:return "Launch";
-                case UPDATE:return "Update";
-                case INSTALL:return "Install";
-                case NONE:return "N/A";
-                default:return "NULL";
+            switch (this) {
+                case LAUNCH:
+                    return "Launch";
+                case UPDATE:
+                    return "Update";
+                case INSTALL:
+                    return "Install";
+                default:
+                case NONE:
+                    return "N/A";
             }
         }
     }

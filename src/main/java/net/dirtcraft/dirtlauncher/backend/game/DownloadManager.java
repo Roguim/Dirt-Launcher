@@ -6,12 +6,14 @@ import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -87,6 +89,7 @@ public class DownloadManager {
                 if (installStage != null) installStage.setOnCloseRequest(event -> {
                     if (!install.getButtonPane().isVisible()) event.consume();
                 });
+                Home.getInstance().getLoginBar().setType(LoginBar.Types.LAUNCH);
             }));
     }
 
