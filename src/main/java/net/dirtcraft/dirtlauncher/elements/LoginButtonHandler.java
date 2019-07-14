@@ -86,9 +86,14 @@ public class LoginButtonHandler {
         if (Internal.VERBOSE) {
             System.out.println("Updated the game");
         }
-        /*
-        UPDATE PACK STUFF HERE
-         */
+        launchInstallScene();
+        new Thread(() -> {
+            try {
+                DownloadManager.completePackSetup(modPack, Collections.emptyList(), true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public static void installPack() {
@@ -99,7 +104,7 @@ public class LoginButtonHandler {
         launchInstallScene();
         new Thread(() -> {
             try {
-                DownloadManager.completePackSetup(modPack, Collections.emptyList());
+                DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
             } catch (IOException e) {
                 e.printStackTrace();
             }

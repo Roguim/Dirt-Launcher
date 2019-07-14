@@ -18,21 +18,27 @@ import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class DownloadManager {
 
-    public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods) throws IOException  {
+    public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods, boolean isUpdate) throws IOException  {
         JsonObject versionManifest = JsonFetcher.getVersionManifestJson(pack.getGameVersion());
 
         boolean installMinecraft = true;
         boolean installAssets = true;
         boolean installForge = true;
         boolean installPack = true;
+        boolean updatePack = isUpdate;
 
         for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getVersionsDirectory())).getAsJsonArray("versions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion())) installMinecraft = false;
@@ -43,26 +49,41 @@ public class DownloadManager {
         for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion())) installForge = false;
         }
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory())).getAsJsonArray("packs")) {
-            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getVersion())) installPack = false;
+        if(isUpdate) {
+            installPack = false;
+        } else {
+            for(JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory())).getAsJsonArray("packs")) {
+                if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getVersion())) installPack = false;
+            }
         }
 
         int packStageSteps = 0;
-        switch(pack.getPackType()) {
-            case CURSE:
-                packStageSteps = 2;
-                break;
-            case CUSTOM:
-                packStageSteps = 1;
-                break;
+        if(isUpdate) {
+            switch(pack.getPackType()) {
+                case CURSE:
+                    packStageSteps = 4;
+                    break;
+                case CUSTOM:
+                    packStageSteps = 1;
+                    break;
+            }
+        } else {
+            switch(pack.getPackType()) {
+                case CURSE:
+                    packStageSteps = 2;
+                    break;
+                case CUSTOM:
+                    packStageSteps = 1;
+                    break;
+            }
         }
-
         int totalSteps = optionalMods.size();
         int completedSteps = 0;
         if(installMinecraft) totalSteps += 2;
         if(installAssets) totalSteps++;
         if(installForge) totalSteps += 3;
         if(installPack) totalSteps += packStageSteps;
+        if(updatePack) totalSteps += packStageSteps;
         setTotalProgressPercent(completedSteps, totalSteps);
 
         if(installMinecraft) {
@@ -86,6 +107,12 @@ public class DownloadManager {
         if(installPack) {
             setProgressPercent(0, 1);
             installPack(pack, completedSteps, totalSteps);
+            completedSteps += packStageSteps;
+            setTotalProgressPercent(completedSteps, totalSteps);
+        }
+        if(updatePack) {
+            setProgressPercent(0, 1);
+            updatePack(pack, completedSteps, totalSteps);
             completedSteps += packStageSteps;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
@@ -337,7 +364,7 @@ public class DownloadManager {
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        setProgressText("Downloading ModPack Manifest");
+        setProgressText("Downloading Modpack Manifest");
 
         // Delete directory if exists and make new ones
         File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
@@ -413,5 +440,108 @@ public class DownloadManager {
         packJson.addProperty("forgeVersion", pack.getForgeVersion());
         instanceManifest.getAsJsonArray("packs").add(packJson);
         FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
+    }
+
+    public static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
+        setProgressText("Downloading Modpack Manifest");
+
+        // Get the modpack directory
+        File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
+        modpackFolder.mkdirs();
+
+        final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
+        final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
+
+        switch(pack.getPackType()) {
+            case CUSTOM:
+                // TODO this.
+                break;
+            case CURSE:
+                // Download modpack
+                FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
+                setProgressText("Extracting " + pack.getName() + " Files");
+                setTotalProgressPercent(completedSteps + 1, totalSteps);
+                tempDir.mkdirs();
+                new ZipFile(modpackZip).extractAll(tempDir.getPath());
+                modpackZip.delete();
+                setProgressPercent(1, 2);
+                FileUtils.copyDirectory(new File(tempDir.getPath() + File.separator + "overrides"), modpackFolder);
+                File oldManifestFile = new File(modpackFolder.getPath() + File.separator + "manifest.json");
+                JsonObject oldManifest = FileUtils.readJsonFromFile(oldManifestFile);
+                JsonObject newManifest = FileUtils.readJsonFromFile(new File(tempDir.getPath() + File.separator + "manifest.json"));
+                oldManifestFile.delete();
+                FileUtils.writeJsonToFile(oldManifestFile, newManifest);
+                FileUtils.deleteDirectory(tempDir);
+                setProgressPercent(0, 0);
+                setTotalProgressPercent(completedSteps + 2, totalSteps);
+
+                // Build checksum registries
+                setProgressText("Comparing Mod Manifests");
+                List<Pair<Integer, Integer>> modsToDelete = new ArrayList<>();
+                List<Pair<Integer, Integer>> modsToAdd = new ArrayList<>();
+                for(JsonElement modElement : oldManifest.getAsJsonArray("files")) {
+                    modsToDelete.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
+                }
+                for(JsonElement modElement : newManifest.getAsJsonArray("files")) {
+                    modsToAdd.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
+                }
+
+                // If any mods are the same in both lists, remove them. No need to repeat work
+                ListIterator<Pair<Integer, Integer>> iterator = modsToDelete.listIterator();
+                while(iterator.hasNext()) {
+                    if(modsToAdd.contains(iterator.next())) {
+                        modsToAdd.remove(iterator.next());
+                        iterator.remove();
+                    }
+                }
+
+                setTotalProgressPercent(completedSteps + 3, totalSteps);
+                setProgressPercent(0, 0);
+                setProgressText("Updating Mods");
+                int completedMods = 0;
+                int totalMods = modsToDelete.size() + modsToAdd.size();
+
+                // Delete old mods
+                for(Pair<Integer, Integer> oldMod : modsToDelete) {
+                    JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
+                    new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()).delete();
+                    completedMods++;
+                    setProgressPercent(completedMods, totalMods);
+                }
+
+                // Download new mods
+                for(Pair<Integer, Integer> newMod : modsToDelete) {
+                    JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
+                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()));
+                    completedMods++;
+                    setProgressPercent(completedMods, totalMods);
+                }
+
+                // Update instance manifest
+                JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
+                for(JsonElement jsonElement : instanceManifest.getAsJsonArray("packs")) {
+                    if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName())) {
+                        jsonElement.getAsJsonObject().addProperty("version", pack.getVersion());
+                        jsonElement.getAsJsonObject().addProperty("gameVersion", pack.getGameVersion());
+                        jsonElement.getAsJsonObject().addProperty("forgeVersion", pack.getForgeVersion());
+                    }
+                }
+
+                JsonObject newPackObject = new JsonObject();
+                Iterator<JsonElement> jsonIterator = instanceManifest.getAsJsonArray("packs").iterator();
+                while(iterator.hasNext()) {
+                    JsonObject nextElement = jsonIterator.next().getAsJsonObject();
+                    if(nextElement.get("name").getAsString().equals(pack.getName())) {
+                        newPackObject.addProperty("name", pack.getName());
+                        newPackObject.addProperty("version", pack.getVersion());
+                        newPackObject.addProperty("gameVersion", pack.getGameVersion());
+                        newPackObject.addProperty("forgeVersion", pack.getForgeVersion());
+                        jsonIterator.remove();
+                    }
+                }
+                instanceManifest.getAsJsonArray("packs").add(newPackObject);
+                FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
+                break;
+        }
     }
 }
