@@ -34,6 +34,7 @@
             <Cursor fx:constant="DISAPPEAR" />
          </cursor>
       </HBox>
+      <WebView fx:id="webView" focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <FlowPane id="NotificationSpacingPane" alignment="BOTTOM_CENTER" columnHalignment="CENTER" layoutX="300.0" layoutY="25.0" mouseTransparent="true" prefHeight="465.0" prefWidth="545.0" styleClass="NotificationPane" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <TextFlow id="NotificationField" fx:id="notificationBox" centerShape="false" prefWidth="265.0" stylesheets="@../CSS/FXML/Playarea.css" textAlignment="CENTER">
@@ -43,7 +44,6 @@
                </styleClass></TextFlow>
          </children>
       </FlowPane>
-      <WebView fx:id="webView" focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../CSS/HTML/webEngine.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
             <LoginBar fx:id="loginBar" />
