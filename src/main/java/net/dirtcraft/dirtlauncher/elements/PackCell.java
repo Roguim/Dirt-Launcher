@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.components;
+package net.dirtcraft.dirtlauncher.elements;
 
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -74,15 +75,15 @@ public class PackCell extends Button {
         Home.getInstance().setActiveCell(this);
         DiscordPresence.setDetails("Playing " + pack.getName());
 
-        Home home = Home.getInstance();
-        Button playButton = home.getPlayButton();
+        LoginBar home = Home.getInstance().getLoginBar();
+        Button playButton = home.getActionButton();
 
         if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL, pack);
         else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE, pack);
         else LoginButtonHandler.setAction(PackAction.PLAY, pack);
 
 
-        if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPasswordField().getText().trim())) return;
+        if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) return;
 
         playButton.setDisable(false);
         playButton.setOnAction(e -> LoginButtonHandler.onClick());

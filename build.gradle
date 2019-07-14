@@ -9,7 +9,6 @@ buildscript {
         jcenter()
     }
 }
-
 configurations {
     provided
     compile.extendsFrom(provided)
@@ -46,6 +45,13 @@ dependencies {
     provided 'net.lingala.zip4j:zip4j:2.1.0'
     provided group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.0'
     provided group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
+}
+
+task cJar(type: Jar) {
+    baseName = 'components'
+    from sourceSets.main.output
+    include 'net/dirtcraft/dirtlauncher/elements/PlayButton.class',
+            'net/dirtcraft/dirtlauncher/elements/LoginBar.class'
 }
 
 jar {  

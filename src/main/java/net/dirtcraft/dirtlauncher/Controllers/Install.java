@@ -8,8 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
+import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 
 import javax.annotation.Nullable;
 

@@ -6,23 +6,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.backend.components.LoginButtonHandler;
-import net.dirtcraft.dirtlauncher.backend.components.PackCell;
+import net.dirtcraft.dirtlauncher.elements.LoginBar;
+import net.dirtcraft.dirtlauncher.elements.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
@@ -31,7 +23,6 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
-import net.dirtcraft.dirtlauncher.backend.components.PlayButton;
 
 public class Home {
 
@@ -44,31 +35,13 @@ public class Home {
     private WebView webView;
 
     @FXML
-    private TextField usernameField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private PlayButton playButton;
-
-    @FXML
     private TextFlow notificationBox;
 
     @FXML
-    private FlowPane loginArea;
-
-    @FXML
-    private Pane loginBox;
-
-    @FXML
-    private Text headerText;
-
-    @FXML
-    private ScrollPane packListScroll;
-
-    @FXML
     private Button settingsButton;
+
+    @FXML
+    private LoginBar loginBar;
 
     private PackCell activeCell = null;
 
@@ -103,9 +76,7 @@ public class Home {
                 FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
             });
         });
-        loginArea.setPickOnBounds(false);
         notificationBox.setOpacity(0);
-        playButton.setDisable(true);
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.setAll(PackRegistry.getPacks());
 
@@ -124,7 +95,7 @@ public class Home {
         DiscordPresence.setState("www.dirtcraft.net");
 
     }
-
+    /*
     @FXML
     private void onTabPressed(KeyEvent event) {
         if (event.getCode() != KeyCode.TAB) return;
@@ -149,29 +120,10 @@ public class Home {
         }
         else playButton.setDisable(true);
     }
-
-    public VBox getPackList() {
-        return packList;
-    }
-
-    public Button getPlayButton() {
-        return playButton;
-    }
-
-    public PasswordField getPasswordField() {
-        return passwordField;
-    }
-
-    public TextField getUsernameField() {
-        return usernameField;
-    }
+    */
 
     public TextFlow getNotificationBox() {
         return notificationBox;
-    }
-
-    public Pane getLoginBox() {
-        return loginBox;
     }
 
     public PackCell getActiveCell() {
@@ -180,5 +132,9 @@ public class Home {
 
     public void setActiveCell(PackCell activeCell) {
         this.activeCell = activeCell;
+    }
+
+    public LoginBar getLoginBar() {
+        return loginBar;
     }
 }

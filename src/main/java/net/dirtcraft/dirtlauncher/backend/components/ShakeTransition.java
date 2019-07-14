@@ -20,7 +20,7 @@ import javafx.util.Duration;
  *
  * @author Jasper Potts
  */
-final class ShakeTransition extends Transition {
+final public class ShakeTransition extends Transition {
 
     private final Timeline timeline;
     private final Node node;
@@ -34,7 +34,7 @@ final class ShakeTransition extends Transition {
      *
      * @param node The node to affect
      */
-    ShakeTransition(final Node node) {
+    public ShakeTransition(final Node node) {
         this.node = node;
         statusProperty().addListener((ov, t, newStatus) -> {
             if (newStatus == Status.RUNNING) {

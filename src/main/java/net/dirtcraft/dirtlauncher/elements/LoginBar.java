@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.components;
+package net.dirtcraft.dirtlauncher.elements;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -32,8 +32,6 @@ public class LoginBar extends Pane {
         setAbsoluteSize(this ,264.0 ,  74 );
         setAbsoluteSize(loginContainer,250.0, 60);
 
-        //FXML CSS
-        getStylesheets().add(MiscUtils.getResourcePath(Internal.CSS_FXML, "Playarea.css"));
         setId("LoginBar");
         getStyleClass().add("LoginArea");
         getStyleClass().add( "LoginBar");

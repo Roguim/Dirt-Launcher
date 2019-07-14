@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.components;
+package net.dirtcraft.dirtlauncher.elements;
 
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -21,6 +21,7 @@ import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
@@ -37,6 +38,7 @@ import java.util.Collections;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
+    private static LoginBar loginBar;
     private static TextField usernameField;
     private static PasswordField passwordField;
     private static Thread uiCallback;
@@ -46,10 +48,11 @@ public class LoginButtonHandler {
     private static Pack modPack;
 
     private static void Initialize(){
-        usernameField = Home.getInstance().getUsernameField();
-        passwordField = Home.getInstance().getPasswordField();
+        loginBar = Home.getInstance().getLoginBar();
+        usernameField = loginBar.getUsernameField();
+        passwordField = loginBar.getPassField();
         messageBox = Home.getInstance().getNotificationBox();
-        playButton = Home.getInstance().getPlayButton();
+        playButton = loginBar.getActionButton();
         initialized = true;
         uiCallback = null;
         packAction = null;
