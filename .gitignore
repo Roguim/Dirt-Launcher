@@ -27,6 +27,11 @@ out/*
 .idea/*
 build/*
 DirtCraft.lnk
+logs
+.mixin.out
+concheckrmd
+options.txt
+config/*
 
 build
 
