@@ -8,6 +8,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Pack {
 
@@ -24,6 +25,7 @@ public class Pack {
     private int recommendedRam;
     private String forgeVersion;
     private List<OptionalMod> optionalMods;
+    private Optional<Integer> fileSize;
 
     public Pack(JsonObject json) {
         this.name = json.get("name").getAsString();
@@ -38,6 +40,7 @@ public class Pack {
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.forgeVersion = json.get("forgeVersion").getAsString();
+        this.fileSize = this.packType == PackType.CUSTOM ? Optional.of(json.get("fileSize").getAsInt()) : Optional.empty();
 
         List<OptionalMod> optionalMods = new ArrayList<>();
         for (JsonElement mods : json.get("optionalMods").getAsJsonArray()) {
@@ -75,6 +78,11 @@ public class Pack {
     }
     public String getCode() {
         return code;
+    }
+
+    //Gets file size of custom pack in megabytes
+    public Optional<Integer> getFileSize() {
+        return fileSize;
     }
 
 
