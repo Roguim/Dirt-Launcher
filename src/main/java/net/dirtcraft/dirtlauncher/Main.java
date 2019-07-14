@@ -24,6 +24,9 @@ public class Main extends Application {
     private static Main instance;
     private Stage stage;
 
+    public static Logger getLogger() {
+        return logger;
+    }
 
     public static void main(String[] args) {
 
