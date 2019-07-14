@@ -33,8 +33,6 @@ public class Main extends Application {
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
-        Logger x = LogManager.getLogger("hurr");
-        x.info("sgsdfgsfgadsfgsadfg");
         // Ensure that the application folders are created
         Directories.getInstallDirectory().mkdirs();
         Directories.getInstancesDirectory().mkdirs();

@@ -9,11 +9,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class JsonFetcher {
 
-    private static String jsonVersion;
+    private static String jsonVersion = null;
 
     public static JsonObject getJsonFromUrl(String url) throws IOException {
         HttpRequestFactory requestFacotry = new NetHttpTransport().createRequestFactory();
@@ -24,6 +25,7 @@ public class JsonFetcher {
         return new JsonParser().parse(response).getAsJsonObject();
     }
 
+    @Nullable
     public static JsonObject getVersionManifestJson(String versionID) throws IOException {
         JsonObject versionsList = getJsonFromUrl("https://launchermeta.mojang.com/mc/game/version_manifest.json");
         for(JsonElement version : versionsList.getAsJsonArray("versions")) {

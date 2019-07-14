@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
@@ -91,14 +92,22 @@ public class LaunchGame {
         System.out.println(launchCommand);
         String finalLaunchCommand = launchCommand;
         new Thread(() -> {
-
             try {
-            Process process;
-            if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand);
-            else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand});
-            String line;
-            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            Main.getLogger().warn("Starting Minecraft Logger...");
+                Process process;
+                if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand);
+                else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand});
+
+                Platform.runLater(() -> {
+                    //Close install stage if it's open
+                    Install.getStage().ifPresent(Stage::close);
+
+                    //Minimize the main stage to the task bar
+                    Main.getInstance().getStage().setIconified(true);
+                });
+
+                String line;
+                BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                Main.getLogger().warn("Starting Minecraft Logger...");
                 while ((line = input.readLine()) != null) {
                     logger.info(line);
                 }
@@ -107,11 +116,6 @@ public class LaunchGame {
                 exception.printStackTrace();
             }
         }).start();
-
-        //Close install stage if it's open
-        Install.getStage().ifPresent(Stage::close);
-
-        Main.getInstance().getStage().setIconified(true);
     }
 
 }
