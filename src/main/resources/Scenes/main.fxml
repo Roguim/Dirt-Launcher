@@ -64,24 +64,7 @@
       </Pane>
       <ScrollPane fx:id="packListScroll" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" layoutY="100.0" pannable="true" prefHeight="500.0" prefWidth="300.0" styleClass="PackListScroll" stylesheets="@../CSS/FXML/Sidebar.css" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
          <content>
-            <VBox fx:id="packList" alignment="TOP_CENTER" prefHeight="663.0" prefWidth="298.0" styleClass="PackList">
-               <children>
-                  <Button focusTraversable="false" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="60.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="110.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="250.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="430.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-                  <Button focusTraversable="false" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="278.0" styleClass="PackCell" text="Button" />
-               </children>
-            </VBox>
+            <VBox fx:id="packList" alignment="TOP_CENTER" prefHeight="663.0" prefWidth="298.0" styleClass="PackList" />
          </content>
       </ScrollPane>
     </children>
