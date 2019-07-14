@@ -24,10 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class DownloadManager {
 
@@ -116,6 +113,10 @@ public class DownloadManager {
             completedSteps += packStageSteps;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
+
+        /*
+                --- CODE WHEN INSTALLATION IS COMPLETE ---
+         */
 
         setTotalProgressPercent(1, 1);
         setProgressPercent(1, 1);
@@ -366,13 +367,14 @@ public class DownloadManager {
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Downloading Modpack Manifest");
 
-        // Delete directory if exists and make new ones
-        File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
-        FileUtils.deleteDirectory(modpackFolder);
-        modpackFolder.mkdirs();
-
+        // These values will never change
+        final File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
         final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
         final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
+
+        // Delete directory if exists and make new ones
+        FileUtils.deleteDirectory(modpackFolder);
+        modpackFolder.mkdirs();
 
         switch (pack.getPackType()) {
             default:
@@ -380,23 +382,23 @@ public class DownloadManager {
                 return;
             case CUSTOM:
 
-                //int zipSize = FileUtils.getFileSize(pack.getLink());
-
                 setProgressText("Downloading " + pack.getName() + " Files");
-                /*
-                TODO: SET UP PROGRESS
-                new Thread(() -> {
-                    while (modpackZip.length() > zipSize) {
-                        System.out.println("MODPACK ZIP SIZE: " + modpackZip.length());
-                        System.out.println("TARGET ZIP SIZE: " + modpackZip.length());
-                        setProgressPercent((int) modpackZip.length(), zipSize);
-                    }
-                }).start();
 
-                 */
+                Timer timer = new Timer();
+                pack.getFileSize().ifPresent(fileSize ->
+                        timer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                System.out.println("MODPACK ZIP SIZE: " + modpackZip.length() / 1024 / 1024);
+                                System.out.println("TARGET ZIP SIZE: " + fileSize);
+                                setProgressPercent((int) (modpackZip.length() / 1024 / 1024), fileSize);
+                            }
+
+                        }, 0, 1000));
                 FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+                timer.cancel();
                 setProgressText("Extracting " + pack.getName() + " Files");
-                setProgressPercent(3, 4);
+                setTotalProgressPercent(completedSteps + 1, totalSteps);
                 new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
                 modpackZip.delete();
                 break;

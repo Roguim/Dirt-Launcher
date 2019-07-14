@@ -46,7 +46,7 @@
       </FlowPane>
       <FlowPane id="LoginSpacingPane" fx:id="loginArea" alignment="TOP_CENTER" layoutX="300.0" layoutY="513.0" orientation="VERTICAL" prefHeight="115.0" prefWidth="545.0" styleClass="LoginBar" stylesheets="@../CSS/FXML/Playarea.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <LoginBar fx:id="loginBar" onKeyTyped="#onKeyTyped" />
+            <LoginBar fx:id="loginBar" />
          </children>
       </FlowPane>
       <Pane id="SettingsBar" layoutX="764.0" prefHeight="45.0" prefWidth="45.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

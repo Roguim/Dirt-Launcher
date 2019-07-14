@@ -61,21 +61,21 @@ public class LoginButtonHandler {
     public static void onClick() {
         if (!initialized) Initialize();
         Account account = login();
-        if (account == null) return;
-        else switch (packAction) {
-            case INSTALL:
-                installPack();
-                return;
-            case UPDATE:
-                updatePack();
-                return;
-            case PLAY:
-                launchPack(account);
-                return;
-            default:
-                displayError(null);
-                return;
-        }
+        if (account != null)
+            switch (packAction) {
+                case INSTALL:
+                    installPack();
+                    return;
+                case UPDATE:
+                    updatePack();
+                    return;
+                case PLAY:
+                    launchPack(account);
+                    return;
+                default:
+                    displayError(null);
+                    return;
+            }
     }
 
     public static void launchPack(Account account) {
@@ -145,7 +145,7 @@ public class LoginButtonHandler {
         ShakeTransition animation = new ShakeTransition(messageBox);
         animation.playFromStart();
 
-        if (result == null) text.setText("Your " + modPack.getName() + " installation is corrupted!");
+        if (result == null) text.setText("Your " + modPack.getName() + " Installation Is Corrupted!");
         else switch (result) {
             case USER_MIGRATED:
                 text.setText("Please use your E-Mail to log in!");
@@ -164,7 +164,6 @@ public class LoginButtonHandler {
 
         if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
         messageBox.getChildren().setAll(text);
-
 
         uiCallback = getThread();
 
