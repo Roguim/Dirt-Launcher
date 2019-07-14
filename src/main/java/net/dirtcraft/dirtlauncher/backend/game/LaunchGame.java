@@ -2,6 +2,9 @@ package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.Controllers.Install;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -10,7 +13,6 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class LaunchGame {
 
@@ -18,13 +20,16 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
-
         command.append("java ");
 
         // RAM
         command.append("-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ");
         // Config Java Arguments
         command.append(config.get("java-arguments").getAsString() + " ");
+
+        // Language Tricks
+        //command.append("-Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Duser.language=en -Duser.country=US ");
+
         // Mojang Tricks
         command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
         // Natives path
@@ -71,22 +76,12 @@ public class LaunchGame {
 
         System.out.println(launchCommand);
         try {
-            File gameDir = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-"));
-            // Run directly on windows, through a script on unix systems
-            if(SystemUtils.IS_OS_UNIX) {
-                File script = new File(gameDir.getPath() + File.separator + "dllaunch.sh");
-                script.delete();
-                org.apache.commons.io.FileUtils.writeLines(script, Arrays.asList("#!/bin/bash", launchCommand));
-                Runtime.getRuntime().exec(script.getPath(), null, gameDir);
-                System.out.println("Game Launched.");
-                script.delete();
-                System.out.println("Script Deleted.");
-                System.exit(0);
-            } else {
-                Runtime.getRuntime().exec(launchCommand, null, gameDir);
-                System.out.println("Game Launched.");
-                System.exit(0);
-            }
+            Process process = Runtime.getRuntime().exec(launchCommand);
+            System.out.println("Game Launched.");
+            System.out.println(process.isAlive());
+            Stage installStage = Install.getInstance().getStage();
+            if (installStage != null) installStage.close();
+            Main.getInstance().getStage().setIconified(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

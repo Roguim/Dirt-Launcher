@@ -18,6 +18,7 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 public class DownloadManager {
@@ -360,7 +361,7 @@ public class DownloadManager {
 
                         JsonObject mod = modElement.getAsJsonObject();
                         JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-                        FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString(), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
+                        FileUtils.copyURLToFile(URLEncoder.encode(apiResponse.get("downloadUrl").getAsString(),"UTF-8"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
                         completedMods++;
                         setProgressPercent(completedMods, totalMods);
                     }
