@@ -84,13 +84,13 @@ public class DownloadManager {
         setProgressPercent(1, 1);
         Platform.runLater(() ->
             Install.getInstance().ifPresent(install -> {
-                install.getNotificationText().getChildren().setAll(new Text("Successfully Installed " + pack.getName() + "!"));
+                ((Text)install.getNotificationText().getChildren().get(0)).setText("Successfully Installed " + pack.getName() + "!");
                 install.getButtonPane().setVisible(true);
             }));
     }
 
     public static void setProgressText(String text) {
-        Platform.runLater(() -> Install.getInstance().ifPresent(install -> install.getNotificationText().getChildren().setAll(new Text(text + "..."))));
+        Platform.runLater(() -> Install.getInstance().ifPresent(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text + "...")));
     }
 
     public static void setProgressPercent(int completed, int total) {
