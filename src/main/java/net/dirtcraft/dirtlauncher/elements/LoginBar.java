@@ -5,8 +5,6 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 public class LoginBar extends Pane {
     private GridPane loginContainer;
@@ -64,8 +62,8 @@ public class LoginBar extends Pane {
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(8);
 
-        passField.setText("Password");
-        usernameField.setText("E-Mail/User");
+        usernameField.setPromptText("E-Mail Address");
+        passField.setPromptText("Password");
         actionButton.setDefaultButton(true);
         actionButton.setDisable(true);
         actionButton.setText("Play");

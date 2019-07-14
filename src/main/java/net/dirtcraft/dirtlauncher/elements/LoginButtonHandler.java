@@ -211,13 +211,13 @@ public class LoginButtonHandler {
 
             Install.getInstance().ifPresent(install -> {
                 TextFlow notificationArea = install.getNotificationText();
-                Text notification = new Text("Beginning download!");
+                Text notification = new Text("Beginning Download...");
                 notification.setFill(Color.WHITE);
                 notification.setTextOrigin(VPos.CENTER);
                 notification.setTextAlignment(TextAlignment.CENTER);
                 notificationArea.getChildren().add(notification);
 
-                notification.setText("Preparing to install...");
+                notification.setText("Preparing To Install...");
                 install.setStage(stage);
             });
 

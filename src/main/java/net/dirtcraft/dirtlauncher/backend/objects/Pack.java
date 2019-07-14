@@ -30,7 +30,7 @@ public class Pack {
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
         final String packType = json.get("packType").getAsString().trim();
-        this.packType =  packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : (packType.equalsIgnoreCase("PIXELMON") ? PackType.PIXELMON : PackType.CUSTOM);
+        this.packType = packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
         this.logo = json.get("logo").getAsString();

@@ -76,10 +76,6 @@ public class DownloadManager {
             setTotalProgressPercent(completedSteps, totalSteps);
         }
 
-        /*
-        FINISH UP AFTER INSTALLATION
-         */
-
         setTotalProgressPercent(1, 1);
         setProgressPercent(1, 1);
         Platform.runLater(() ->
@@ -280,12 +276,11 @@ public class DownloadManager {
         int totalLibraries = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries").size() - 1;
         String librariesLaunchCode = "";
 
-        libraryLoop:
-        for(JsonElement libraryElement : forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries")) {
+        for (JsonElement libraryElement : forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries")) {
             JsonObject library = libraryElement.getAsJsonObject();
             String[] libraryMaven = library.get("name").getAsString().split(":");
             // We already got forge
-            if(libraryMaven[1].equals("forge")) {
+            if (libraryMaven[1].equals("forge")) {
                 completedLibraries++;
                 setProgressPercent(completedLibraries, totalLibraries);
                 continue;
@@ -293,21 +288,21 @@ public class DownloadManager {
             File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
             libraryPath.mkdirs();
             String url = "https://libraries.minecraft.net/";
-            if(library.has("url")) {
+            if (library.has("url")) {
                 url = library.get("url").getAsString();
             }
             url += libraryMaven[0].replace(".", "/") + "/" + libraryMaven[1] + "/" + libraryMaven[2] + "/" + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
 
             String fileName = libraryPath + File.separator + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
             // Typesafe does some weird crap
-            if(libraryMaven[0].contains("typesafe")) {
+            if (libraryMaven[0].contains("typesafe")) {
                 url += ".pack.xz";
                 fileName += ".pack.xz";
             }
 
             File libraryFile = new File(fileName);
             FileUtils.copyURLToFile(url, libraryFile);
-            if(libraryFile.getName().contains(".pack.xz")) {
+            if (libraryFile.getName().contains(".pack.xz")) {
                 FileUtils.unpackPackXZ(libraryFile);
             }
             librariesLaunchCode += StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";";
@@ -324,7 +319,9 @@ public class DownloadManager {
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        switch(pack.getPackType()) {
+        switch (pack.getPackType()) {
+            case CUSTOM:
+                break;
             case CURSE:
                 try {
                     setProgressText("Downloading ModPack Manifest");
