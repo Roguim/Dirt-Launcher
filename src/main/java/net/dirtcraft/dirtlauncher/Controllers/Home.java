@@ -104,8 +104,8 @@ public class Home {
         DiscordPresence.setDetails("Selecting a ModPack...");
         DiscordPresence.setState("www.dirtcraft.net");
         passwordField = loginBar.getPassField();
-        loginBar.getUsernameField();
-        loginBar.getActionButton();
+        usernameField = loginBar.getUsernameField();
+        playButton = loginBar.getActionButton();
 
     }
     @FXML
