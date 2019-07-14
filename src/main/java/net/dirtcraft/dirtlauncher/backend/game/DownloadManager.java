@@ -47,12 +47,22 @@ public class DownloadManager {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getVersion())) installPack = false;
         }
 
+        int packStageSteps = 0;
+        switch(pack.getPackType()) {
+            case CURSE:
+                packStageSteps = 2;
+                break;
+            case CUSTOM:
+                packStageSteps = 1;
+                break;
+        }
+
         int totalSteps = optionalMods.size();
         int completedSteps = 0;
         if(installMinecraft) totalSteps += 2;
         if(installAssets) totalSteps++;
         if(installForge) totalSteps += 3;
-        if(installPack) totalSteps += 2;
+        if(installPack) totalSteps += packStageSteps;
         setTotalProgressPercent(completedSteps, totalSteps);
 
         if(installMinecraft) {
@@ -76,7 +86,7 @@ public class DownloadManager {
         if(installPack) {
             setProgressPercent(0, 1);
             installPack(pack, completedSteps, totalSteps);
-            completedSteps += 2;
+            completedSteps += packStageSteps;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
 
@@ -362,9 +372,6 @@ public class DownloadManager {
                 setProgressPercent(3, 4);
                 new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
                 modpackZip.delete();
-
-                setTotalProgressPercent(completedSteps + 1, totalSteps);
-
                 break;
             case CURSE:
                 // Download ModPack
