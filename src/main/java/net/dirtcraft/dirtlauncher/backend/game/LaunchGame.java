@@ -10,6 +10,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class LaunchGame {
 
@@ -17,8 +18,6 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
-
-        if(SystemUtils.IS_OS_UNIX) command.append("nohup ");
 
         command.append("java ");
 
@@ -66,17 +65,28 @@ public class LaunchGame {
         // Version Type
         command.append("--versionType Forge");
 
-        if(SystemUtils.IS_OS_UNIX) command.append(" &");
-
         String launchCommand = command.toString();
 
         if (SystemUtils.IS_OS_UNIX) launchCommand = launchCommand.replace(";", ":");
 
         System.out.println(launchCommand);
         try {
-            Runtime.getRuntime().exec(launchCommand, null, new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")));
-            System.out.println("Game Launched.");
-            System.exit(0);
+            File gameDir = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-"));
+            // Run directly on windows, through a script on unix systems
+            if(SystemUtils.IS_OS_UNIX) {
+                File script = new File(gameDir.getPath() + File.separator + "dllaunch.sh");
+                script.delete();
+                org.apache.commons.io.FileUtils.writeLines(script, Arrays.asList("#!/bin/bash", launchCommand));
+                Runtime.getRuntime().exec(script.getPath(), null, gameDir);
+                System.out.println("Game Launched.");
+                script.delete();
+                System.out.println("Script Deleted.");
+                System.exit(0);
+            } else {
+                Runtime.getRuntime().exec(launchCommand, null, gameDir);
+                System.out.println("Game Launched.");
+                System.exit(0);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
