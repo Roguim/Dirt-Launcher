@@ -94,10 +94,11 @@ public class LoginBar extends Pane {
     }
 
     public void setType(Types type) {
+        actionButton.setText(type.toString());
         this.type = type;
     }
 
-    public static enum Types{
+    public enum Types{
         INSTALL,
         UPDATE,
         LAUNCH,
