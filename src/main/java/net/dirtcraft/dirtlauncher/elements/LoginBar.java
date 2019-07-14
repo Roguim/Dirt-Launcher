@@ -11,15 +11,9 @@ public class LoginBar extends Pane {
     private TextField usernameField;
     private PasswordField passField;
     private PlayButton actionButton;
-
-    private void setAbsoluteSize(Region node, double width, double height){
-        node.setPrefSize(width, height);
-        node.setMaxSize(width,  height);
-        node.setMinSize(width,  height);
-    }
+    private Types type;
 
     public LoginBar(){
-
         passField = new PasswordField();
         usernameField = new TextField();
         actionButton = new PlayButton();
@@ -71,6 +65,13 @@ public class LoginBar extends Pane {
 
     }
 
+
+    private void setAbsoluteSize(Region node, double width, double height){
+        node.setPrefSize(width, height);
+        node.setMaxSize(width,  height);
+        node.setMinSize(width,  height);
+    }
+
     public PlayButton getActionButton() {
         return actionButton;
     }
@@ -87,9 +88,30 @@ public class LoginBar extends Pane {
         return loginContainer;
     }
 
-    public enum PlayButtons{
+
+    public Types getType() {
+        return type;
+    }
+
+    public void setType(Types type) {
+        this.type = type;
+    }
+
+    public static enum Types{
         INSTALL,
         UPDATE,
-        LAUNCH;
+        LAUNCH,
+        NONE;
+
+        @Override
+        public String toString() {
+            switch (this){
+                case LAUNCH:return "Launch";
+                case UPDATE:return "Update";
+                case INSTALL:return "Install";
+                case NONE:return "N/A";
+                default:return "NULL";
+            }
+        }
     }
 }
