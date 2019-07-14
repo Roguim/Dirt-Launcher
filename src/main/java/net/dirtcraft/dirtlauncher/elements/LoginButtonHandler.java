@@ -209,16 +209,17 @@ public class LoginButtonHandler {
 
             stage.show();
 
-            TextFlow notificationArea = Install.getInstance().getNotificationText();
-            Text notification = new Text("Beginning download!");
-            notification.setFill(Color.WHITE);
-            notification.setTextOrigin(VPos.CENTER);
-            notification.setTextAlignment(TextAlignment.CENTER);
-            notificationArea.getChildren().add(notification);
+            Install.getInstance().ifPresent(install -> {
+                TextFlow notificationArea = install.getNotificationText();
+                Text notification = new Text("Beginning download!");
+                notification.setFill(Color.WHITE);
+                notification.setTextOrigin(VPos.CENTER);
+                notification.setTextAlignment(TextAlignment.CENTER);
+                notificationArea.getChildren().add(notification);
 
-            notification.setText("Preparing to install...");
-
-            Install.getInstance().setStage(stage);
+                notification.setText("Preparing to install...");
+                install.setStage(stage);
+            });
 
 
         } catch (IOException exception) {

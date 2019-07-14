@@ -18,7 +18,6 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 public class DownloadManager {
@@ -83,20 +82,23 @@ public class DownloadManager {
 
         setTotalProgressPercent(1, 1);
         setProgressPercent(1, 1);
-        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText("Successfully Installed " + pack.getName() + "!"));
-        Platform.runLater(() -> Install.getInstance().getButtonPane().setVisible(true));
+        Platform.runLater(() ->
+            Install.getInstance().ifPresent(install -> {
+                install.getNotificationText().getChildren().setAll(new Text("Successfully Installed " + pack.getName() + "!"));
+                install.getButtonPane().setVisible(true);
+            }));
     }
 
     public static void setProgressText(String text) {
-        Platform.runLater(() -> ((Text) Install.getInstance().getNotificationText().getChildren().get(0)).setText(text + "..."));
+        Platform.runLater(() -> Install.getInstance().ifPresent(install -> install.getNotificationText().getChildren().setAll(new Text(text + "..."))));
     }
 
     public static void setProgressPercent(int completed, int total) {
-        Platform.runLater(() -> Install.getInstance().getLoadingBar().setProgress(((double)completed) / total));
+        Platform.runLater(() -> Install.getInstance().ifPresent(install -> install.getLoadingBar().setProgress(((double)completed) / total)));
     }
 
     public static void setTotalProgressPercent(int completed, int total) {
-        Platform.runLater(() -> Install.getInstance().getBottomBar().setProgress(((double)completed) / total));
+        Platform.runLater(() -> Install.getInstance().ifPresent(install -> install.getBottomBar().setProgress(((double)completed) / total)));
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
@@ -361,7 +363,7 @@ public class DownloadManager {
 
                         JsonObject mod = modElement.getAsJsonObject();
                         JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-                        FileUtils.copyURLToFile(URLEncoder.encode(apiResponse.get("downloadUrl").getAsString(),"UTF-8"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
+                        FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
                         completedMods++;
                         setProgressPercent(completedMods, totalMods);
                     }

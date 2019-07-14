@@ -10,11 +10,17 @@ import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class LaunchGame {
+
+    private static Logger logger = LogManager.getLogger("Launch Game");
 
     public static void launchPack(Pack pack, Account account) {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
@@ -75,16 +81,29 @@ public class LaunchGame {
         if (SystemUtils.IS_OS_UNIX) launchCommand = launchCommand.replace(";", ":");
 
         System.out.println(launchCommand);
-        try {
-            Process process = Runtime.getRuntime().exec(launchCommand);
-            System.out.println("Game Launched.");
-            System.out.println(process.isAlive());
-            Stage installStage = Install.getInstance().getStage();
-            if (installStage != null) installStage.close();
-            Main.getInstance().getStage().setIconified(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String finalLaunchCommand = launchCommand;
+        new Thread(() -> {
+
+            try {
+            Process process;
+            if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand);
+            else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand});
+            String line;
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            Main.getLogger().warn("Starting Minecraft Logger...");
+                while ((line = input.readLine()) != null) {
+                    logger.info(line);
+                }
+                input.close();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }).start();
+
+        //Close install stage if it's open
+        Install.getStage().ifPresent(Stage::close);
+
+        Main.getInstance().getStage().setIconified(true);
     }
 
 }

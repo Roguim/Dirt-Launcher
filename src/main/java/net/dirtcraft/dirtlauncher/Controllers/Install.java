@@ -10,13 +10,13 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class Install {
 
-    private static Install instance;
+    private static Install instance = null;
 
-    private Stage stage;
+    private static Stage stage = null;
 
     @FXML
     private AnchorPane anchorPane;
@@ -46,19 +46,19 @@ public class Install {
     private void onButtonClick(MouseEvent event) {
         if (!buttonPane.isVisible()) return;
         buttonPane.setVisible(false);
-        Stage stage = getStage();
-        if (stage != null) stage.close();
+        getStage().ifPresent(Stage::close);
+
 
         LoginButtonHandler.launchPack(LoginButtonHandler.login());
     }
 
     public void setStage(Stage stage) {
-        this.stage = stage;
+        Install.stage = stage;
     }
 
-    @Nullable
-    public Stage getStage() {
-        return stage;
+    public static Optional<Stage> getStage() {
+        if (stage == null || instance == null) return Optional.empty();
+        return Optional.of(stage);
     }
 
     public FlowPane getButtonPane() {
@@ -77,8 +77,9 @@ public class Install {
         return bottomBar;
     }
 
-    public static Install getInstance() {
-        return instance;
+    public static Optional<Install> getInstance() {
+        if (instance == null) return Optional.empty();
+        return Optional.of(instance);
     }
 
     public TextFlow getNotificationText() {
