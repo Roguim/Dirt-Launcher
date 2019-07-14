@@ -17,6 +17,9 @@ public class LaunchGame {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
         StringBuilder command = new StringBuilder();
+
+        if(SystemUtils.IS_OS_UNIX) command.append("nohup ");
+
         command.append("java ");
 
         // RAM
@@ -62,6 +65,8 @@ public class LaunchGame {
         command.append("--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ");
         // Version Type
         command.append("--versionType Forge");
+
+        if(SystemUtils.IS_OS_UNIX) command.append(" &");
 
         String launchCommand = command.toString();
 
