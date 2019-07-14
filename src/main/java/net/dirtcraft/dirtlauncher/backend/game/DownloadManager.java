@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
@@ -326,63 +327,84 @@ public class DownloadManager {
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
+        setProgressText("Downloading ModPack Manifest");
+
+        // Delete directory if exists and make new ones
+        File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
+        FileUtils.deleteDirectory(modpackFolder);
+        modpackFolder.mkdirs();
+
+        final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
+        final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
+
         switch (pack.getPackType()) {
+            default:
+                Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
+                return;
             case CUSTOM:
+
+                //int zipSize = FileUtils.getFileSize(pack.getLink());
+
+                setProgressText("Downloading " + pack.getName() + " Files");
+                /*
+                TODO: SET UP PROGRESS
+                new Thread(() -> {
+                    while (modpackZip.length() > zipSize) {
+                        System.out.println("MODPACK ZIP SIZE: " + modpackZip.length());
+                        System.out.println("TARGET ZIP SIZE: " + modpackZip.length());
+                        setProgressPercent((int) modpackZip.length(), zipSize);
+                    }
+                }).start();
+
+                 */
+                FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+                setProgressText("Extracting " + pack.getName() + " Files");
+                setProgressPercent(3, 4);
+                new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
+                modpackZip.delete();
+
+                setTotalProgressPercent(completedSteps + 1, totalSteps);
+
                 break;
             case CURSE:
-                try {
-                    setProgressText("Downloading ModPack Manifest");
-                    File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
-                    FileUtils.deleteDirectory(modpackFolder);
-                    modpackFolder.mkdirs();
+                // Download ModPack
+                FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
+                setProgressPercent(1, 2);
+                tempDir.mkdirs();
+                new ZipFile(modpackZip).extractAll(tempDir.getPath());
+                modpackZip.delete();
+                FileUtils.copyDirectory(new File(tempDir.getPath() + File.separator + "overrides"), modpackFolder);
+                JsonObject modpackManifest = FileUtils.readJsonFromFile(new File(tempDir.getPath() + File.separator + "manifest.json"));
+                FileUtils.writeJsonToFile(new File(modpackFolder.getPath() + File.separator + "manifest.json"), modpackManifest);
+                FileUtils.deleteDirectory(tempDir);
+                setProgressPercent(0, 0);
+                setTotalProgressPercent(completedSteps + 1, totalSteps);
 
-                    // Download Modpack
-                    File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
-                    FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
-                    setProgressPercent(1, 2);
-                    File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
-                    tempDir.mkdirs();
-                    new ZipFile(modpackZip).extractAll(tempDir.getPath());
-                    modpackZip.delete();
-                    FileUtils.copyDirectory(new File(tempDir.getPath() + File.separator + "overrides"), modpackFolder);
-                    JsonObject modpackManifest = FileUtils.readJsonFromFile(new File(tempDir.getPath() + File.separator + "manifest.json"));
-                    FileUtils.writeJsonToFile(new File(modpackFolder.getPath() + File.separator + "manifest.json"), modpackManifest);
-                    FileUtils.deleteDirectory(tempDir);
-                    setProgressPercent(0, 0);
-                    setTotalProgressPercent(completedSteps + 1, totalSteps);
+                // Download Mods
+                setProgressText("Downloading Mods");
+                int completedMods = 0;
+                int totalMods = modpackManifest.getAsJsonArray("files").size();
+                File modsFolder = new File(modpackFolder.getPath() + File.separator + "mods");
 
-                    // Download Mods
-                    setProgressText("Downloading Mods");
-                    int completedMods = 0;
-                    int totalMods = modpackManifest.getAsJsonArray("files").size();
-                    File modsFolder = new File(modpackFolder.getPath() + File.separator + "mods");
+                for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
 
-                    for(JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
-                        //JsonObject mod = modElement.getAsJsonObject();
-                        //CurseProject project = CurseProject.fromID(mod.get("projectID").getAsString());
-                        //FileUtils.copyURLToFile(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString(), new File(modsFolder.getPath() + File.separator + project.fileWithID(mod.get("fileID").getAsInt()).downloadInfo().getFileName()));
-                        //System.out.print(project.fileWithID(mod.get("fileID").getAsInt()).downloadURLString());
-                        //completedMods++;
-                        //setProgressPercent(completedMods, totalMods);
-
-                        JsonObject mod = modElement.getAsJsonObject();
-                        JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-                        FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
-                        completedMods++;
-                        setProgressPercent(completedMods, totalMods);
-                    }
-
-                    JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
-                    JsonObject packJson = new JsonObject();
-                    packJson.addProperty("name", pack.getName());
-                    packJson.addProperty("version", pack.getVersion());
-                    packJson.addProperty("gameVersion", pack.getGameVersion());
-                    packJson.addProperty("forgeVersion", pack.getForgeVersion());
-                    instanceManifest.getAsJsonArray("packs").add(packJson);
-                    FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    JsonObject mod = modElement.getAsJsonObject();
+                    JsonObject apiResponse = JsonFetcher.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
+                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
+                    completedMods++;
+                    setProgressPercent(completedMods, totalMods);
                 }
+
+                break;
         }
+
+        JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
+        JsonObject packJson = new JsonObject();
+        packJson.addProperty("name", pack.getName());
+        packJson.addProperty("version", pack.getVersion());
+        packJson.addProperty("gameVersion", pack.getGameVersion());
+        packJson.addProperty("forgeVersion", pack.getForgeVersion());
+        instanceManifest.getAsJsonArray("packs").add(packJson);
+        FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
     }
 }

@@ -26,7 +26,7 @@ import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
-import net.dirtcraft.dirtlauncher.backend.objects.LoginResult;
+import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
@@ -116,17 +116,17 @@ public class LoginButtonHandler {
         try {
             account = Verification.login(email, password);
         } catch (InvalidCredentialsException e) {
-            displayError(LoginResult.INVALID_CREDENTIALS);
+            displayError(LoginError.INVALID_CREDENTIALS);
         } catch (IllegalArgumentException e) {
-            displayError(LoginResult.ILLEGAL_ARGUMENT);
+            displayError(LoginError.ILLEGAL_ARGUMENT);
         } catch (UserMigratedException e) {
-            displayError(LoginResult.USER_MIGRATED);
+            displayError(LoginError.USER_MIGRATED);
         }
 
         return account;
     }
 
-    private static void displayError(LoginResult result) {
+    private static void displayError(LoginError result) {
 
         if (uiCallback != null) uiCallback.interrupt();
 

@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class PackCell extends Button {
 
     private Pack pack;
+
     public PackCell(Pack pack){
         this.pack = pack;
         getStyleClass().add(CssClasses.PACK_CELL);
@@ -69,8 +70,7 @@ public class PackCell extends Button {
     }
 
     private void onClick(Pack pack) {
-        PackCell oldCell = Home.getInstance().getActiveCell();
-        if (oldCell!= null) oldCell.deactivate();
+        Home.getInstance().getActiveCell().ifPresent(PackCell::deactivate);
         getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
         Home.getInstance().setActiveCell(this);
         DiscordPresence.setDetails("Playing " + pack.getName());

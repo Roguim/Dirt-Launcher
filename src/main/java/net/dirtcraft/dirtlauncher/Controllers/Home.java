@@ -17,17 +17,19 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.elements.LoginBar;
-import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
-import net.dirtcraft.dirtlauncher.elements.PackCell;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
+import net.dirtcraft.dirtlauncher.elements.LoginBar;
+import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
+import net.dirtcraft.dirtlauncher.elements.PackCell;
+
+import java.util.Optional;
 
 public class Home {
 
@@ -108,12 +110,6 @@ public class Home {
         playButton = loginBar.getActionButton();
 
     }
-    @FXML
-    private void onTabPressed(KeyEvent event) {
-        if (event.getCode() != KeyCode.TAB) return;
-        if (event.getSource() == loginBar.getUsernameField()) passwordField.requestFocus();
-        else if (event.getSource() == passwordField) usernameField.requestFocus();
-    }
 
     @FXML
     private void onEnterPressed(KeyEvent event) {
@@ -126,6 +122,8 @@ public class Home {
     @FXML
     private void onKeyTyped(KeyEvent event) {
         //if (!PackCellFactory.hasPackSelected) return;
+        if (!getActiveCell().isPresent()) playButton.setDisable(true);
+
         if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
             playButton.setOnAction(e -> LoginButtonHandler.onClick());
@@ -138,8 +136,9 @@ public class Home {
         return notificationBox;
     }
 
-    public PackCell getActiveCell() {
-        return activeCell;
+    public Optional<PackCell> getActiveCell() {
+        if (activeCell == null) return Optional.empty();
+        return Optional.of(activeCell);
     }
 
     public void setActiveCell(PackCell activeCell) {
