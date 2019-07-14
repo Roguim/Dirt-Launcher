@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
@@ -82,6 +83,10 @@ public class DownloadManager {
             Install.getInstance().ifPresent(install -> {
                 ((Text)install.getNotificationText().getChildren().get(0)).setText("Successfully Installed " + pack.getName() + "!");
                 install.getButtonPane().setVisible(true);
+                Stage installStage = install.getStageUnsafe();
+                if (installStage != null) installStage.setOnCloseRequest(event -> {
+                    if (!install.getButtonPane().isVisible()) event.consume();
+                });
             }));
     }
 
@@ -195,7 +200,6 @@ public class DownloadManager {
                 if(SystemUtils.IS_OS_MAC) nativesType = "natives-osx";
                 if(SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
                 if(libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
-                    System.out.println("Native Found! " + libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType).get("url").getAsString());
                     JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
                     File outputFile = new File(nativesFolder + File.separator + nativeJson.get("sha1").getAsString());
                     FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
