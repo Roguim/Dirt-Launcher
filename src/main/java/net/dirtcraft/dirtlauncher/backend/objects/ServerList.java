@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.utils;
+package net.dirtcraft.dirtlauncher.backend.objects;
 
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,7 +25,7 @@ public class ServerList {
         servers = new ArrayList<>();
         this.serverDat = Paths.get(Directories.getInstancesDirectory().toString(),pack, "servers.dat").toFile();
     }
-
+    //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
     private List<Byte> getAsByteArray(){
         final List<Byte> compound = new ArrayList<>();
         //Server lists are wrapped in an empty compound tag.
@@ -94,16 +94,30 @@ public class ServerList {
             bytes.add(type.getByte());
 
             //The second two are the size of the key
-            short idLength = (short) name.length();
-            bytes.add((byte) ((idLength >> 8 ) & 0xff));
-            bytes.add((byte) (idLength & 0xff));
+            final short nameLength = (short) name.length();
+            bytes.add((byte) ((nameLength >> 8 ) & 0xff));
+            bytes.add((byte) (nameLength & 0xff));
             for (byte bit :name.getBytes(StandardCharsets.US_ASCII)) bytes.add(bit);
 
-            //After the property, the next 2 are the size of the value.
-            idLength = (short) value.length();
-            bytes.add((byte) ((idLength >> 8 ) & 0xff));
-            bytes.add((byte) (idLength & 0xff));
-            for (byte bit : value.getBytes(StandardCharsets.US_ASCII)) bytes.add(bit);
+            //After the property, the next 2 are the size of the value
+            //Since we want to add colours, we blank the size and work
+            //it out later and fill it in, since when we convert the §
+            //character to ascii, it has to become two separate bytes.
+            short valueLength = (short) value.length();
+            final int valueLengthIndex = bytes.size();
+            bytes.add((byte) (0));
+            bytes.add((byte) (0));
+            final byte[] asciiChar = value.getBytes(StandardCharsets.US_ASCII);
+            final char[] utf16Char = value.toCharArray();
+            for (short i = 0; i < value.length(); i++){
+                if (utf16Char[i]=='§'){
+                    bytes.add((byte)194);
+                    bytes.add((byte)167);
+                    valueLength++;
+                } else bytes.add(asciiChar[i]);
+            }
+            bytes.set(valueLengthIndex, (byte) ((valueLength >> 8 ) & 0xff));
+            bytes.set(valueLengthIndex + 1, (byte) (valueLength & 0xff));
             return bytes;
         }
 

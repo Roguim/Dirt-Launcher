@@ -25,7 +25,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
-import net.dirtcraft.dirtlauncher.backend.utils.ServerList;
+import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
@@ -114,8 +114,9 @@ public class Home {
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
 
         ServerList.builder("Pixelmon-Reforged")
-                .addServer("glow.pixelmon.gg", "dirtcraft glowstone", null)
-                .addServer("red.pixelmon.gg", "dirtcraft redstone", null)
+                .addServer("glow.pixelmon.gg", "§c§ldirtcraft §e§lglowstone", null)
+                .addServer("red.pixelmon.gg", "§c§ldirtcraft §4§lredstone", null)
+                .addServer("blue.pixelmon.gg", "§c§ldirtcraft §1§lapis", null)
                 .build();
     }
 
@@ -137,8 +138,7 @@ public class Home {
         if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
             playButton.setOnAction(e -> LoginButtonHandler.onClick());
-        }
-        else playButton.setDisable(true);
+        } else playButton.setDisable(true);
     }
 
     public TextFlow getNotificationBox() {
