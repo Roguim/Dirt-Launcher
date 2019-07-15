@@ -8,8 +8,6 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -150,31 +148,6 @@ public class FileUtils {
         packIn.close();
         packBufferedIn.close();
         packFileIn.close();
-    }
-
-    public static int getFileSize(String url) throws MalformedURLException {
-        HttpURLConnection connection = null;
-        URL serverAddress = new URL(url);
-        int size = 0;
-
-        try {
-            //Set up the initial connection
-            connection = (HttpURLConnection) serverAddress.openConnection();
-
-            //HEAD request will make sure that the contents are not downloaded.
-            connection.setRequestMethod("HEAD");
-
-            connection.connect();
-            size = connection.getContentLength();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //close the connection, set all objects to null
-            if (connection != null) connection.disconnect();
-        }
-
-        return size;
     }
 
 }

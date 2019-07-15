@@ -5,6 +5,8 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 
 public class LoginBar extends Pane {
     private GridPane loginContainer;
@@ -13,7 +15,7 @@ public class LoginBar extends Pane {
     private PlayButton actionButton;
     private Types type;
 
-    public LoginBar(){
+    public LoginBar() {
         passField = new PasswordField();
         usernameField = new TextField();
         actionButton = new PlayButton();
@@ -61,7 +63,7 @@ public class LoginBar extends Pane {
         actionButton.setDefaultButton(true);
         actionButton.setDisable(true);
         actionButton.setText("Play");
-        getChildren().add(loginContainer);
+        getChildren().setAll(loginContainer);
 
     }
 
@@ -95,6 +97,7 @@ public class LoginBar extends Pane {
 
     public void setType(Types type) {
         actionButton.setText(type.toString());
+        Home.getInstance().getActiveCell().ifPresent(cell -> LoginButtonHandler.setAction(type.getPackAction(), cell.getPack()));
         this.type = type;
     }
 
@@ -103,6 +106,18 @@ public class LoginBar extends Pane {
         UPDATE,
         PLAY,
         NONE;
+
+        public PackAction getPackAction() {
+            switch (this) {
+                case PLAY:
+                    return PackAction.PLAY;
+                case UPDATE:
+                    return PackAction.UPDATE;
+                default:
+                case INSTALL:
+                    return PackAction.INSTALL;
+            }
+        }
 
         @Override
         public String toString() {

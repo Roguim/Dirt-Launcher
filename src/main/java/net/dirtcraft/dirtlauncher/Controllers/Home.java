@@ -109,20 +109,25 @@ public class Home {
         usernameField = loginBar.getUsernameField();
         playButton = loginBar.getActionButton();
 
+        usernameField.setOnKeyTyped(this::setKeyTypedEvent);
+        passwordField.setOnKeyPressed(this::setKeyTypedEvent);
+
     }
 
     @FXML
     private void onEnterPressed(KeyEvent event) {
         if (event.getCode() != KeyCode.ENTER) return;
+        if (!getActiveCell().isPresent()) return;
         if (playButton.isDisabled()) return;
 
         LoginButtonHandler.onClick();
     }
 
-    @FXML
-    private void onKeyTyped(KeyEvent event) {
-        //if (!PackCellFactory.hasPackSelected) return;
-        if (!getActiveCell().isPresent()) playButton.setDisable(true);
+    private void setKeyTypedEvent(KeyEvent event) {
+        if (!getActiveCell().isPresent()) {
+            playButton.setDisable(true);
+            return;
+        }
 
         if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
@@ -130,7 +135,6 @@ public class Home {
         }
         else playButton.setDisable(true);
     }
-
 
     public TextFlow getNotificationBox() {
         return notificationBox;
@@ -148,4 +152,5 @@ public class Home {
     public LoginBar getLoginBar() {
         return loginBar;
     }
+
 }

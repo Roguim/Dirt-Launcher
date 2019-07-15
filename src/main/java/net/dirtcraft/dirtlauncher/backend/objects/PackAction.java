@@ -7,11 +7,14 @@ public enum PackAction {
 
     @Override
     public String toString() {
-        switch (this){
-            case PLAY: return "Play";
-            case UPDATE: return "Update";
+        switch (this) {
+            case PLAY:
+                return "Play";
+            case UPDATE:
+                return "Update";
+            default:
             case INSTALL:
-            default: return "Install";
+                return "Install";
         }
     }
 }
