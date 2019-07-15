@@ -25,6 +25,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
+import net.dirtcraft.dirtlauncher.backend.utils.ServerList;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
@@ -112,6 +113,10 @@ public class Home {
         usernameField.setOnKeyTyped(this::setKeyTypedEvent);
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
 
+        ServerList.builder("Pixelmon-Reforged")
+                .addServer("glow.pixelmon.gg", "dirtcraft glowstone", null)
+                .addServer("red.pixelmon.gg", "dirtcraft redstone", null)
+                .build();
     }
 
     @FXML
