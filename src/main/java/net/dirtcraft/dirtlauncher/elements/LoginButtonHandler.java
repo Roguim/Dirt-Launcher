@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -28,7 +27,6 @@ import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
-import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
@@ -38,55 +36,31 @@ import java.util.Collections;
 
 public class LoginButtonHandler {
     private static boolean initialized = false;
-    private static LoginBar loginBar;
     private static TextField usernameField;
     private static PasswordField passwordField;
     private static Thread uiCallback;
     private static TextFlow messageBox;
-    private static Button playButton;
-    private static PackAction packAction;
-    private static Pack modPack;
 
     private static void Initialize(){
-        loginBar = Home.getInstance().getLoginBar();
+        LoginBar loginBar = Home.getInstance().getLoginBar();
         usernameField = loginBar.getUsernameField();
         passwordField = loginBar.getPassField();
         messageBox = Home.getInstance().getNotificationBox();
-        playButton = loginBar.getActionButton();
         initialized = true;
         uiCallback = null;
-        packAction = null;
     }
 
-    public static void onClick() {
+    public static void launchPack(Account account, Pack modPack) {
         if (!initialized) Initialize();
-        Account account = login();
-        if (account != null)
-            switch (packAction) {
-                case INSTALL:
-                    installPack();
-                    return;
-                case UPDATE:
-                    updatePack();
-                    return;
-                case PLAY:
-                    launchPack(account);
-                    return;
-                default:
-                    displayError(null);
-                    return;
-            }
-    }
-
-    public static void launchPack(Account account) {
         LaunchGame.launchPack(modPack, account);
     }
 
-    public static void updatePack(){
+    public static void updatePack(Pack modPack){
+        if (!initialized) Initialize();
         if (Internal.VERBOSE) {
             System.out.println("Updated the game");
         }
-        launchInstallScene();
+        launchInstallScene(modPack);
         new Thread(() -> {
             try {
                 DownloadManager.completePackSetup(modPack, Collections.emptyList(), true);
@@ -96,12 +70,13 @@ public class LoginButtonHandler {
         }).start();
     }
 
-    public static void installPack() {
+    public static void installPack(Pack modPack) {
+        if (!initialized) Initialize();
         if (Internal.VERBOSE) {
             System.out.println("Installing the pack");
         }
 
-        launchInstallScene();
+        launchInstallScene(modPack);
         new Thread(() -> {
             try {
                 DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
@@ -113,6 +88,7 @@ public class LoginButtonHandler {
 
     @Nullable
     public static Account login() {
+        if (!initialized) Initialize();
         Account account = null;
 
         String email = usernameField.getText().trim();
@@ -121,18 +97,18 @@ public class LoginButtonHandler {
         try {
             account = Verification.login(email, password);
         } catch (InvalidCredentialsException e) {
-            displayError(LoginError.INVALID_CREDENTIALS);
+            displayError(LoginError.INVALID_CREDENTIALS, null);
         } catch (IllegalArgumentException e) {
-            displayError(LoginError.ILLEGAL_ARGUMENT);
+            displayError(LoginError.ILLEGAL_ARGUMENT, null);
         } catch (UserMigratedException e) {
-            displayError(LoginError.USER_MIGRATED);
+            displayError(LoginError.USER_MIGRATED, null);
         }
 
         return account;
     }
 
-    private static void displayError(LoginError result) {
-
+    public static void displayError(LoginError result, Pack modPack) {
+        if (!initialized) Initialize();
         if (uiCallback != null) uiCallback.interrupt();
 
         Text text = new Text();
@@ -171,13 +147,6 @@ public class LoginButtonHandler {
 
     }
 
-    public static void setAction(PackAction action, Pack pack){
-        if (!initialized) Initialize();
-        modPack = pack;
-        packAction = action;
-        playButton.setText(action.toString());
-    }
-
     private static Thread getThread() {
         return new Thread(() -> {
             Platform.runLater(() -> {
@@ -193,7 +162,7 @@ public class LoginButtonHandler {
         });
     }
 
-    private static void launchInstallScene() {
+    private static void launchInstallScene(Pack modPack) {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");

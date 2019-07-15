@@ -123,35 +123,26 @@ public class Home {
     @FXML
     private void onEnterPressed(KeyEvent event) {
         if (event.getCode() != KeyCode.ENTER) return;
-        if (!getActiveCell().isPresent()) return;
+        if (!loginBar.getActivePackCell().isPresent()) return;
         if (playButton.isDisabled()) return;
 
-        LoginButtonHandler.onClick();
+        loginBar.getActionButton().fire();
     }
 
     private void setKeyTypedEvent(KeyEvent event) {
-        if (!getActiveCell().isPresent()) {
+        if (!loginBar.getActivePackCell().isPresent()) {
             playButton.setDisable(true);
             return;
         }
 
         if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
             playButton.setDisable(false);
-            playButton.setOnAction(e -> LoginButtonHandler.onClick());
+            playButton.setOnAction(e -> loginBar.getActionButton().fire());
         } else playButton.setDisable(true);
     }
 
     public TextFlow getNotificationBox() {
         return notificationBox;
-    }
-
-    public Optional<PackCell> getActiveCell() {
-        if (activeCell == null) return Optional.empty();
-        return Optional.of(activeCell);
-    }
-
-    public void setActiveCell(PackCell activeCell) {
-        this.activeCell = activeCell;
     }
 
     public LoginBar getLoginBar() {

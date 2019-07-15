@@ -6,16 +6,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
-import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+
+import java.util.Optional;
 
 public class LoginBar extends Pane {
     private GridPane loginContainer;
     private TextField usernameField;
     private PasswordField passField;
     private PlayButton actionButton;
-    private Types type;
+    private PackCell activePackCell;
 
     public LoginBar() {
+        activePackCell = null;//ripblock
         passField = new PasswordField();
         usernameField = new TextField();
         actionButton = new PlayButton();
@@ -86,52 +89,24 @@ public class LoginBar extends Pane {
         return usernameField;
     }
 
-    public GridPane getLoginContainer() {
-        return loginContainer;
+    public Optional<PackCell> getActivePackCell() {
+        if (activePackCell!=null) return Optional.of(activePackCell);
+        else return Optional.empty();
     }
 
+    public void setActivePackCell(PackCell cell) {
+        Pack pack = cell.getPack();
+        this.activePackCell = cell;
+        PlayButton.Types type;
 
-    public Types getType() {
-        return type;
+        if (!pack.isInstalled()) type = PlayButton.Types.INSTALL;
+        else if (pack.isOutdated()) type = PlayButton.Types.UPDATE;
+        else type = PlayButton.Types.PLAY;
+
+        this.actionButton.setType(type, cell.getPack());
     }
 
-    public void setType(Types type) {
-        actionButton.setText(type.toString());
-        Home.getInstance().getActiveCell().ifPresent(cell -> LoginButtonHandler.setAction(type.getPackAction(), cell.getPack()));
-        this.type = type;
-    }
-
-    public enum Types{
-        INSTALL,
-        UPDATE,
-        PLAY,
-        NONE;
-
-        public PackAction getPackAction() {
-            switch (this) {
-                case PLAY:
-                    return PackAction.PLAY;
-                case UPDATE:
-                    return PackAction.UPDATE;
-                default:
-                case INSTALL:
-                    return PackAction.INSTALL;
-            }
-        }
-
-        @Override
-        public String toString() {
-            switch (this) {
-                case PLAY:
-                    return "Play";
-                case UPDATE:
-                    return "Update";
-                case INSTALL:
-                    return "Install";
-                default:
-                case NONE:
-                    return "N/A";
-            }
-        }
+    public void updatePlayButton(PlayButton.Types types){
+        actionButton.setType(types, activePackCell.getPack());
     }
 }

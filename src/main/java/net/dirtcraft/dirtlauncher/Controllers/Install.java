@@ -51,7 +51,7 @@ public class Install {
         buttonPane.setVisible(false);
         getStage().ifPresent(Stage::close);
 
-        LoginButtonHandler.launchPack(LoginButtonHandler.login());
+        LoginButtonHandler.launchPack(LoginButtonHandler.login(), Home.getInstance().getLoginBar().getActivePackCell().get().getPack());
     }
 
     public void setStage(Stage stage) {

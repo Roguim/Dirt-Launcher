@@ -11,7 +11,6 @@ import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
-import net.dirtcraft.dirtlauncher.backend.objects.PackAction;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
@@ -70,22 +69,20 @@ public class PackCell extends Button {
     }
 
     private void onClick(Pack pack) {
-        Home.getInstance().getActiveCell().ifPresent(PackCell::deactivate);
+        Home.getInstance().getLoginBar().getActivePackCell().ifPresent(PackCell::deactivate);
         getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
-        Home.getInstance().setActiveCell(this);
+        Home.getInstance().getLoginBar().setActivePackCell(this);
         DiscordPresence.setDetails("Playing " + pack.getName());
 
         LoginBar home = Home.getInstance().getLoginBar();
         Button playButton = home.getActionButton();
 
-        if (!pack.isInstalled()) LoginButtonHandler.setAction(PackAction.INSTALL, pack);
-        else if (pack.isOutdated()) LoginButtonHandler.setAction(PackAction.UPDATE, pack);
-        else LoginButtonHandler.setAction(PackAction.PLAY, pack);
-
 
         if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) return;
 
         playButton.setDisable(false);
-        playButton.setOnAction(e -> LoginButtonHandler.onClick());
+
+        // TODO: JULIAN WTF IS THIS DO?
+        //playButton.setOnAction(e -> home.getActionButton().fire());
     }
 }
