@@ -5,9 +5,14 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.cydhra.nidhogg.exception.InvalidCredentialsException;
+import net.cydhra.nidhogg.exception.UserMigratedException;
+import net.dirtcraft.dirtlauncher.backend.objects.Account;
+import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class LoginBar extends Pane {
@@ -21,7 +26,7 @@ public class LoginBar extends Pane {
         activePackCell = null;//ripblock
         passField = new PasswordField();
         usernameField = new TextField();
-        actionButton = new PlayButton();
+        actionButton = new PlayButton(this);
         loginContainer = new GridPane();
 
         //Force the size - otherwise it changes and that's bad..
@@ -68,6 +73,26 @@ public class LoginBar extends Pane {
         actionButton.setText("Play");
         getChildren().setAll(loginContainer);
 
+    }
+
+    @Nullable
+    public Account login() {
+        Account account = null;
+
+        String email = usernameField.getText().trim();
+        String password = passField.getText().trim();
+
+        try {
+            account = Verification.login(email, password);
+        } catch (InvalidCredentialsException e) {
+            NotificationHandler.displayError(LoginError.INVALID_CREDENTIALS, null);
+        } catch (IllegalArgumentException e) {
+            NotificationHandler.displayError(LoginError.ILLEGAL_ARGUMENT, null);
+        } catch (UserMigratedException e) {
+            NotificationHandler.displayError(LoginError.USER_MIGRATED, null);
+        }
+
+        return account;
     }
 
 

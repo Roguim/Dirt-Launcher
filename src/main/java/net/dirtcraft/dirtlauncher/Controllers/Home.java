@@ -27,10 +27,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
-import net.dirtcraft.dirtlauncher.elements.LoginButtonHandler;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
-
-import java.util.Optional;
 
 public class Home {
 
