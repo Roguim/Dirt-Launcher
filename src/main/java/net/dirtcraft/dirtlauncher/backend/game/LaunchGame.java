@@ -16,10 +16,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class LaunchGame {
 
@@ -82,6 +79,8 @@ public class LaunchGame {
         command.append("--uuid " + account.getUuid() + " ");
         // Access Token
         command.append("--accessToken " + account.getSession().getAccessToken() + " ");
+        // Auto Join
+        //command.append("--server dirtcraft.gg ");
         // User Type
         command.append("--userType mojang ");
         // Tweak Class
