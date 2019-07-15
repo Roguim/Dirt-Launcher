@@ -14,7 +14,6 @@ import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
-import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PlayButton;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
@@ -368,7 +367,7 @@ public class DownloadManager {
         setProgressText("Downloading Modpack Manifest");
 
         // These values will never change
-        final File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
+        final File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replaceAll("\\s", "-"));
         final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
         final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
 

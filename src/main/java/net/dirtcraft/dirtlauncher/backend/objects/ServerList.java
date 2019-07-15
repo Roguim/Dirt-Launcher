@@ -21,9 +21,9 @@ public class ServerList {
         return new ServerList(pack);
     }
 
-    private ServerList(String pack){
+    private ServerList(String packName){
         servers = new ArrayList<>();
-        this.serverDat = Paths.get(Directories.getInstancesDirectory().toString(),pack, "servers.dat").toFile();
+        this.serverDat = Paths.get(Directories.getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
     }
     //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
     private List<Byte> getAsByteArray(){
@@ -60,6 +60,11 @@ public class ServerList {
 
     public ServerList addServer(String ip, String name, String icon){
         servers.add(new Server(ip, name, icon==null?DIRTCRAFT_ICON:icon));
+        return this;
+    }
+
+    public ServerList addServer(String ip, String name){
+        servers.add(new Server(ip, name, DIRTCRAFT_ICON));
         return this;
     }
 

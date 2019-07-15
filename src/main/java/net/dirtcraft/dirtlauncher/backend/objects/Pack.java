@@ -26,6 +26,7 @@ public class Pack {
     private String forgeVersion;
     private List<OptionalMod> optionalMods;
     private Optional<Integer> fileSize;
+    private Optional<List<Listing>> listings;
 
     public Pack(JsonObject json) {
         this.name = json.get("name").getAsString();
@@ -47,6 +48,15 @@ public class Pack {
             optionalMods.add(new OptionalMod(mods.getAsJsonObject()));
         }
         this.optionalMods = optionalMods;
+
+        if (!json.has("serverList")) this.listings = Optional.empty();
+        else {
+            List<Listing> listings = new ArrayList<>();
+            for (JsonElement servers : json.get("serverList").getAsJsonArray()) {
+                listings.add(new Listing(servers.getAsJsonObject()));
+            }
+            this.listings = Optional.of(listings);
+        }
     }
 
     public String getName() {
@@ -85,6 +95,9 @@ public class Pack {
         return fileSize;
     }
 
+    public Optional<List<Listing>> getListings() {
+        return listings;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -123,6 +136,10 @@ public class Pack {
 
     public File getInstanceDirectory() {
         return new File(Directories.getInstallDirectory().getPath() + File.separator + "instances" + File.separator + name);
+    }
+
+    public boolean isPixelmon() {
+        return this.getCode().equalsIgnoreCase("PIXEL");
     }
 
     public boolean isInstalled() {

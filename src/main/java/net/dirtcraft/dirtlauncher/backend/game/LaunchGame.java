@@ -9,18 +9,35 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
+import net.dirtcraft.dirtlauncher.backend.objects.Listing;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class LaunchGame {
 
     private static Logger logger = LogManager.getLogger("Launch Game");
+
+    public static void loadServerList(Pack pack) {
+        ServerList serverList = ServerList.builder(pack.getName());
+        if (pack.isPixelmon()) {
+            pack.getListings().ifPresent(listings -> {
+                for (Listing listing : listings) {
+                    serverList.addServer(listing.getIp(), listing.getName());
+                }
+            });
+        } else serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §6" + pack.getName());
+        serverList.build();
+    }
 
     public static void launchPack(Pack pack, Account account) {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
