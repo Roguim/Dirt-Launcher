@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.elements;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
@@ -72,6 +73,14 @@ public class LoginBar extends Pane {
         actionButton.setDisable(true);
         actionButton.setText("Play");
         getChildren().setAll(loginContainer);
+
+        SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
+        usernameField.focusedProperty().addListener((observable,  oldValue,  newValue) -> {
+            if(newValue && firstTime.get()){
+                this.requestFocus();
+                firstTime.setValue(false);
+            }
+        });
 
     }
 
