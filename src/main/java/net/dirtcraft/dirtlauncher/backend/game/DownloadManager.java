@@ -364,7 +364,7 @@ public class DownloadManager {
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        setProgressText("Downloading Modpack Manifest");
+        setProgressText("Downloading ModPack Manifest");
 
         // These values will never change
         final File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replaceAll("\\s", "-"));
@@ -444,7 +444,7 @@ public class DownloadManager {
     }
 
     public static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        setProgressText("Downloading Modpack Manifest");
+        setProgressText("Downloading ModPack Manifest");
 
         // Get the modpack directory
         File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
