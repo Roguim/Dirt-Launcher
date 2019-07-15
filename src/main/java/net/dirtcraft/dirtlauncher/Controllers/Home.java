@@ -116,7 +116,7 @@ public class Home {
         ServerList.builder("Pixelmon-Reforged")
                 .addServer("glow.pixelmon.gg", "§c§ldirtcraft §e§lglowstone", null)
                 .addServer("red.pixelmon.gg", "§c§ldirtcraft §4§lredstone", null)
-                .addServer("blue.pixelmon.gg", "§c§ldirtcraft §1§lapis", null)
+                .addServer("blue.pixelmon.gg", "§c§ldirtcraft §1§llapis", null)
                 .build();
     }
 
