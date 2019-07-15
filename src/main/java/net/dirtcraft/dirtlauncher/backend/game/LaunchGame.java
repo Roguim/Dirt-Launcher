@@ -68,26 +68,26 @@ public class LaunchGame {
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
         // Username
-        command.append("--username=" + account.getUsername() + " ");
+        command.append("--username " + account.getUsername() + " ");
         // Version
-        command.append("--version=" + pack.getForgeVersion() + " ");
+        command.append("--version " + pack.getForgeVersion() + " ");
         // Game Dir
-        command.append("--gameDir=\"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
+        command.append("--gameDir \"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        command.append("--assetsDir=\"" + new File(Directories.getAssetsDirectory().getPath() + File.separator + assetsVersion).toPath() + "\" ");
+        command.append("--assetsDir \"" + new File(Directories.getAssetsDirectory().getPath()).toPath() + "\" ");
         // Assets Index
-        command.append("--assetsIndex=" + assetsVersion + " ");
+        command.append("--assetIndex " + assetsVersion + " ");
         // UUID
-        command.append("--uuid=" + account.getUuid() + " ");
+        command.append("--uuid " + account.getUuid() + " ");
         // Access Token
-        command.append("--accessToken=" + account.getSession().getAccessToken() + " ");
+        command.append("--accessToken " + account.getSession().getAccessToken() + " ");
         // User Type
-        command.append("--userType=mojang ");
+        command.append("--userType mojang ");
         // Tweak Class
-        command.append("--tweakClass=net.minecraftforge.fml.common.launcher.FMLTweaker ");
+        command.append("--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ");
         // Version Type
-        command.append("--versionType=Forge");
+        command.append("--versionType Forge");
 
         String launchCommand = command.toString();
 

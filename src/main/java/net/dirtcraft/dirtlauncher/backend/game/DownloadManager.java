@@ -264,8 +264,7 @@ public class DownloadManager {
 
     public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         setProgressText("Downloading Assets");
-        File assetsFolder = new File(Directories.getAssetsDirectory() + File.separator + versionManifest.get("assets").getAsString());
-        FileUtils.deleteDirectory(assetsFolder);
+        File assetsFolder = Directories.getAssetsDirectory();
         assetsFolder.mkdirs();
 
         // Write assets JSON manifest
