@@ -85,7 +85,10 @@ public class LaunchGame {
         // User Type
         command.append("--userType mojang ");
         // Tweak Class
-        if(!pack.getGameVersion().equals("1.7.10")) command.append("--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker ");
+        command.append("--tweakClass ").append(!pack.getGameVersion().equals("1.7.10") ?
+                "net.minecraftforge.fml.common.launcher.FMLTweaker" :
+                "cpw.mods.fml.common.launcher.FMLTweaker").append(" ");
+
         // Version Type
         command.append("--versionType Forge");
 
