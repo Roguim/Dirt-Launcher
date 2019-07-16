@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -32,7 +31,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.html.HTMLAnchorElement;
 
 import java.awt.*;
@@ -58,7 +56,6 @@ public class Home {
 
     @FXML
     private LoginBar loginBar;
-
     private PasswordField passwordField;
     private TextField usernameField;
     private Button playButton;
@@ -71,6 +68,13 @@ public class Home {
     @FXML
     private void initialize() {
         instance = this;
+        notificationBox.setOpacity(0);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                          //
+        //                                              SETTINGS INIT                                               //
+        //                                                                                                          //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);
         settingsImage.setFitWidth(50);
@@ -95,21 +99,16 @@ public class Home {
                 FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
             });
         });
-        notificationBox.setOpacity(0);
-        ObservableList<Pack> packs = FXCollections.observableArrayList();
-        packs.setAll(PackRegistry.getPacks());
 
-        packList.getStyleClass().add(CssClasses.PACKLIST);
-        packList.getChildren().clear();
-        packs.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                          //
+        //                                              WEBVIEW INIT                                                //
+        //                                                                                                          //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         WebEngine webEngine = webView.getEngine();
-
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
-
-
-
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             Pattern pattern = Pattern.compile("^https?://(store.|)dirtcraft.net");
             if (!(newValue == Worker.State.SUCCEEDED)) return;
@@ -137,13 +136,22 @@ public class Home {
         });
 
 
+        //                  PACKLIST INIT
+        ObservableList<Pack> packs = FXCollections.observableArrayList();
+        packs.setAll(PackRegistry.getPacks());
+        packList.getStyleClass().add(CssClasses.PACKLIST);
+        packList.getChildren().clear();
+        packs.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
+
+        //                  DISCORD PRESENCE INIT
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
         DiscordPresence.setState("www.dirtcraft.net");
+
+        //                  LOGIN BAR INIT
         passwordField = loginBar.getPassField();
         usernameField = loginBar.getUsernameField();
         playButton = loginBar.getActionButton();
-
         usernameField.setOnKeyTyped(this::setKeyTypedEvent);
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
     }
