@@ -38,7 +38,7 @@ public class SystemTray {
 
             TrayIcon trayIcon;
             if (getIcon().isPresent()) trayIcon = getIcon().get();
-            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png")));
+            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon_small.png")));
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
@@ -62,11 +62,12 @@ public class SystemTray {
             final PopupMenu popup = new PopupMenu();
             popup.add(exit);
             trayIcon.setPopupMenu(popup);
-            trayIcon.displayMessage(pack.getName(), pack.getName() + " has started loading!", TrayIcon.MessageType.INFO);
-            
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
+
+            // Display notification message
+            trayIcon.displayMessage(pack.getName(), pack.getName() + " has started loading!", TrayIcon.MessageType.INFO);
 
             SystemTray.icon = trayIcon;
 
