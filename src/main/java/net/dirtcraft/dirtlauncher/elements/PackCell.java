@@ -14,6 +14,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public final class PackCell extends Button {
 
@@ -62,7 +63,7 @@ public final class PackCell extends Button {
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
         setOnMouseDragged(this::onDrag);
         setOnMouseDragExited(e-> lastDragY = 0);
-        setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
+        if (MiscUtils.inIde()) setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
 
     }
 
@@ -108,5 +109,13 @@ public final class PackCell extends Button {
         contextMenu.getItems().add(reinstall);
         contextMenu.getItems().add(uninstall);
         contextMenu.getItems().add(openFolder);
+
+        reinstall.setOnAction(e->{
+            LoginBar loginBar = Home.getInstance().getLoginBar();
+            Optional<PackCell> oldPack = loginBar.getActivePackCell();;
+            loginBar.setActivePackCell(this);
+            loginBar.getActionButton().installPack(pack);
+            oldPack.ifPresent(PackCell::fire);
+        });
     }
 }

@@ -85,6 +85,10 @@ public class PlayButton extends Button {
         }
     }
 
+    public void setPack(Pack pack){
+        this.pack = pack;
+    }
+
     public void launchPack(Account account, Pack modPack) {
         LaunchGame.loadServerList(modPack);
         LaunchGame.launchPack(modPack, account);
