@@ -109,7 +109,7 @@ public class PlayButton extends Button {
         }).start();
     }
 
-    private void installPack(Pack modPack) {
+    public void installPack(Pack modPack) {
         if (Internal.VERBOSE) {
             System.out.println("Installing the pack");
         }

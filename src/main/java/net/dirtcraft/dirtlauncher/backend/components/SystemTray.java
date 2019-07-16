@@ -66,7 +66,7 @@ public class SystemTray {
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
 
-            icon = trayIcon;
+            SystemTray.icon = trayIcon;
 
         } catch (AWTException | IOException e) {
             e.printStackTrace();
