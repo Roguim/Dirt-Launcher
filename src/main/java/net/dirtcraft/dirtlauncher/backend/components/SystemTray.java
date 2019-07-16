@@ -39,7 +39,9 @@ public class SystemTray {
 
             TrayIcon trayIcon;
             if (getIcon().isPresent()) trayIcon = getIcon().get();
-            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_windows.ico" : "dirticon.png")));
+            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png")));
+
+            trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
