@@ -111,7 +111,7 @@ public class Home {
 
 
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            Pattern pattern = Pattern.compile("https?://(store.|)dirtcraft.net");
+            Pattern pattern = Pattern.compile("^https?://(store.|)dirtcraft.net");
             if (!(newValue == Worker.State.SUCCEEDED)) return;
             EventListener listener =  e -> {
                 HTMLAnchorElement element = (HTMLAnchorElement) e.getTarget();
