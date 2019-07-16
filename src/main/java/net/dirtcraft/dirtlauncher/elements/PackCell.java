@@ -94,15 +94,15 @@ public final class PackCell extends Button {
     }
 
     private void initContextMenu(){
-        contextMenu.getStyleClass().add(CssClasses.PACK_CELL);
-        contextMenu.getStyleClass().add(CssClasses.PACK_MENU);
-        contextMenu.getId(CssClasses.PACK_MENU);
         MenuItem reinstall = new MenuItem("Reinstall");
         MenuItem uninstall = new MenuItem("Uninstall");
         MenuItem openFolder = new MenuItem("Open Folder");
         reinstall.getStyleClass().add(CssClasses.PACK_MENU);
         uninstall.getStyleClass().add(CssClasses.PACK_MENU);
         openFolder.getStyleClass().add(CssClasses.PACK_MENU);
+        contextMenu.getStyleClass().add(CssClasses.PACK_CELL);
+        contextMenu.getStyleClass().add(CssClasses.PACK_MENU);
+        contextMenu.setId(CssClasses.PACK_MENU);
         contextMenu.getItems().add(reinstall);
         contextMenu.getItems().add(uninstall);
         contextMenu.getItems().add(openFolder);
