@@ -110,15 +110,6 @@ public class Home {
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
     }
 
-    @FXML
-    private void onEnterPressed(KeyEvent event) {
-        if (event.getCode() != KeyCode.ENTER) return;
-        if (!loginBar.getActivePackCell().isPresent()) return;
-        if (playButton.isDisabled()) return;
-
-        loginBar.getActionButton().fire();
-    }
-
     private void setKeyTypedEvent(KeyEvent event) {
         if (!loginBar.getActivePackCell().isPresent()) {
             playButton.setDisable(true);
