@@ -41,8 +41,7 @@ public class LaunchGame {
 
     public static void launchPack(Pack pack, Account account) {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
-
-        final File instanceDirectory = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-"));
+        final File instanceDirectory = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         StringBuilder command = new StringBuilder();
         command.append("java");

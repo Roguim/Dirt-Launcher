@@ -5,6 +5,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
@@ -25,12 +27,10 @@ public class PackCell extends Button {
 
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
-
         setText(pack.getName());
         setMinSize(278, 50);
         setPrefSize(278, 50);
         setMaxSize(278, 50);
-        setOnMouseClicked(event -> onClick(pack));
 
         Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
@@ -47,7 +47,7 @@ public class PackCell extends Button {
         ));
 
         Image image = new Image(MiscUtils.getResourceStream(
-                Internal.PACK_IMAGES, pack.getName().trim().toLowerCase().replaceAll("\\s+", "-") + ".png"),
+                Internal.PACK_IMAGES, pack.getFormattedName().toLowerCase() + ".png"),
                 128, 128, false, true);
 
         ImageView imageView = new ImageView(image);
@@ -57,6 +57,8 @@ public class PackCell extends Button {
         tooltip.setGraphicTextGap(50);
 
         setTooltip(tooltip);
+        setOnMouseClicked(this::onClick);
+        setOnContextMenuRequested(this::onContextMenuRequested);
 
     }
 
@@ -68,11 +70,11 @@ public class PackCell extends Button {
         return pack;
     }
 
-    private void onClick(Pack pack) {
+    private void onClick(MouseEvent event) {
         Home.getInstance().getLoginBar().getActivePackCell().ifPresent(PackCell::deactivate);
         getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
         Home.getInstance().getLoginBar().setActivePackCell(this);
-        DiscordPresence.setDetails("Playing " + pack.getName());
+        DiscordPresence.setDetails("Playing " + pack.getFormattedName());
 
         LoginBar home = Home.getInstance().getLoginBar();
         Button playButton = home.getActionButton();
@@ -81,8 +83,9 @@ public class PackCell extends Button {
         if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) return;
 
         playButton.setDisable(false);
+    }
 
-        // TODO: JULIAN WTF IS THIS DO?
-        //playButton.setOnAction(e -> home.getActionButton().fire());
+    private void onContextMenuRequested(ContextMenuEvent event){
+
     }
 }

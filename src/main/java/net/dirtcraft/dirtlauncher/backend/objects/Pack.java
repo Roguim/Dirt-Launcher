@@ -14,6 +14,7 @@ public class Pack {
 
 
     private String name;
+    private String formattedName;
     private String version;
     private String code;
     private PackType packType;
@@ -29,7 +30,8 @@ public class Pack {
     private Optional<List<Listing>> listings;
 
     public Pack(JsonObject json) {
-        this.name = json.get("name").getAsString();
+        this.name = json.get("name").getAsString().trim();
+        this.formattedName = this.name.replaceAll("\\s+", "-");
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
         final String packType = json.get("packType").getAsString().trim();
@@ -62,6 +64,7 @@ public class Pack {
     public String getName() {
         return name;
     }
+    public String getFormattedName() { return formattedName; }
     public String getVersion() {
         return version;
     }
