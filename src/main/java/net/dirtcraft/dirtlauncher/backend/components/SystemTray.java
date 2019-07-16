@@ -39,7 +39,7 @@ public class SystemTray {
 
             TrayIcon trayIcon;
             if (getIcon().isPresent()) trayIcon = getIcon().get();
-            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png")));
+            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_windows.ico" : "dirticon.png")));
 
             trayIcon.setImageAutoSize(true);
 

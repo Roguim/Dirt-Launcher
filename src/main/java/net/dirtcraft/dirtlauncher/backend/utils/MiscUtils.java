@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.common.base.Strings;
 import javafx.scene.image.Image;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class MiscUtils {
 
-    public static boolean inIde(){
+    public static boolean inIde() {
         Class main = Main.getInstance().getClass();
         Pattern pattern = Pattern.compile("^file:/");
         Matcher matcher = pattern.matcher(main.getResource(main.getSimpleName()+".class").toString());
