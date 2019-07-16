@@ -14,6 +14,7 @@ import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public final class PackCell extends Button {
 
@@ -62,7 +63,7 @@ public final class PackCell extends Button {
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
         setOnMouseDragged(this::onDrag);
         setOnMouseDragExited(e-> lastDragY = 0);
-        setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
+        if (MiscUtils.inIde()) setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
 
     }
 
@@ -97,5 +98,24 @@ public final class PackCell extends Button {
         MenuItem reinstall = new MenuItem("Reinstall");
         MenuItem uninstall = new MenuItem("Uninstall");
         MenuItem openFolder = new MenuItem("Open Folder");
+        reinstall.getStyleClass().add(CssClasses.PACK_MENU);
+        uninstall.getStyleClass().add(CssClasses.PACK_MENU);
+        openFolder.getStyleClass().add(CssClasses.PACK_MENU);;
+        reinstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
+        uninstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
+        openFolder.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
+        contextMenu.getStyleClass().add(CssClasses.PACK_MENU);
+        contextMenu.setId(CssClasses.PACK_MENU);
+        contextMenu.getItems().add(reinstall);
+        contextMenu.getItems().add(uninstall);
+        contextMenu.getItems().add(openFolder);
+
+        reinstall.setOnAction(e->{
+            LoginBar loginBar = Home.getInstance().getLoginBar();
+            Optional<PackCell> oldPack = loginBar.getActivePackCell();;
+            loginBar.setActivePackCell(this);
+            loginBar.getActionButton().installPack(pack);
+            oldPack.ifPresent(PackCell::fire);
+        });
     }
 }
