@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.components.SystemTray;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.io.InputStreamReader;
 public class LaunchGame {
 
     private static Logger logger = LogManager.getLogger("Launch Game");
+    public static boolean isGameRunning = false;
 
     public static void loadServerList(Pack pack) {
         ServerList serverList = ServerList.builder(pack.getName());
@@ -35,7 +38,7 @@ public class LaunchGame {
                     serverList.addServer(listing.getIp(), listing.getName());
                 }
             });
-        } else serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §6" + pack.getName());
+        } else serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
         serverList.build();
     }
 
@@ -125,7 +128,7 @@ public class LaunchGame {
 
         final String finalLaunchCommand = launchCommand;
         System.out.println(finalLaunchCommand);
-        new Thread(() -> {
+        Thread gameThread = new Thread(() -> {
             try {
                 Process process;
                 if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand, null, instanceDirectory);
@@ -136,7 +139,9 @@ public class LaunchGame {
                     Install.getStage().ifPresent(Stage::close);
 
                     //Minimize the main stage to the task bar
-                    Main.getInstance().getStage().setIconified(true);
+                    Main.getInstance().getStage().close();
+                    //Create system tray icon
+                    SwingUtilities.invokeLater(SystemTray::createIcon);
                 });
 
                 String line;
@@ -148,8 +153,17 @@ public class LaunchGame {
                 input.close();
             } catch (IOException exception) {
                 exception.printStackTrace();
+            } finally {
+                isGameRunning = false;
+
+                //Show main stage
+                Platform.runLater(() -> Main.getInstance().getStage().show());
+
+                //Close system tray icon
+                SwingUtilities.invokeLater(() -> SystemTray.getIcon().ifPresent(icon -> SystemTray.tray.remove(icon)));
             }
-        }).start();
+        });
+        gameThread.start();
     }
 
 }

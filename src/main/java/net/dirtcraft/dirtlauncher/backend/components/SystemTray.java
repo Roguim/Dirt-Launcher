@@ -1,14 +1,25 @@
 package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.application.Platform;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Optional;
 
 public class SystemTray {
+
+    public static java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+
+    private static TrayIcon icon = null;
+
+    public static Optional<TrayIcon> getIcon() {
+        if (icon == null) return Optional.empty();
+        return Optional.of(icon);
+    }
 
     public static void createIcon() {
         try {
@@ -22,47 +33,42 @@ public class SystemTray {
             }
 
             // set up a system tray icon.
-            java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
-            TrayIcon trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png")));
+
+            TrayIcon trayIcon;
+            if (getIcon().isPresent()) trayIcon = getIcon().get();
+            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png")));
 
             // if the user double-clicks on the tray icon, show the main app stage.
-            //trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
+            trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
 
-            // if the user selects the default menu item (which includes the app name),
-            // show the main app stage.
-            MenuItem title = new MenuItem("Dirt Launcher");
-            java.awt.MenuItem openItem = new java.awt.MenuItem("hello, world");
-            //openItem.addActionListener(event -> Platform.runLater(this::showStage));
-
+            MenuItem exit = new MenuItem("Exit");
             // the convention for tray icons seems to be to set the default icon for opening
             // the application stage in a bold font.
-            java.awt.Font defaultFont = java.awt.Font.decode(null);
-            java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
-            openItem.setFont(boldFont);
+            Font defaultFont = Font.decode(null);
+            Font boldFont = defaultFont.deriveFont(Font.BOLD);
+            exit.setFont(boldFont);
 
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
             // tray icon (removing the tray icon will also shut down AWT).
-            java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
-            exitItem.addActionListener(event -> {
+            exit.addActionListener(event -> {
                 Platform.exit();
                 tray.remove(trayIcon);
             });
 
-            // setup the popup menu for the application.
-            final PopupMenu popup = new PopupMenu();
-            popup.add(title);
-            popup.addSeparator();
-            popup.add(openItem);
-            popup.addSeparator();
-            popup.add(exitItem);
-            trayIcon.setPopupMenu(popup);
 
+
+            // setup the popup menu for the application.
+            PopupMenu popup = new PopupMenu();
+            popup.add(exit);
+            trayIcon.setPopupMenu(popup);
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
-        } catch (java.awt.AWTException | IOException e) {
-            System.out.println("Unable to init system tray");
+
+            icon = trayIcon;
+
+        } catch (AWTException | IOException e) {
             e.printStackTrace();
         }
     }
