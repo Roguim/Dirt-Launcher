@@ -5,6 +5,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,7 +39,7 @@ public class SystemTray {
 
             TrayIcon trayIcon;
             if (getIcon().isPresent()) trayIcon = getIcon().get();
-            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon_small.png")));
+            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_tiny.png" : "dirticon_small.png")));
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
