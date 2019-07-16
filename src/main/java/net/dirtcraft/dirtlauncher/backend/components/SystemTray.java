@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.backend.components;
 import javafx.application.Platform;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import javax.imageio.ImageIO;
@@ -21,14 +22,15 @@ public class SystemTray {
         return Optional.of(icon);
     }
 
-    public static void createIcon() {
+    public static void createIcon(Pack pack) {
         try {
             // ensure awt toolkit is initialized.
             Toolkit.getDefaultToolkit();
 
             // app requires system tray support, just exit if there is no support.
+
             if (!java.awt.SystemTray.isSupported()) {
-                System.out.println("No system tray support, application exiting.");
+                System.out.println("No system tray support. Returning method.");
                 return;
             }
 
@@ -40,13 +42,12 @@ public class SystemTray {
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
+            trayIcon.setToolTip("Playing " + pack.getName());
 
-            MenuItem exit = new MenuItem("Exit");
+            MenuItem exit = new MenuItem("Close");
             // the convention for tray icons seems to be to set the default icon for opening
             // the application stage in a bold font.
-            Font defaultFont = Font.decode(null);
-            Font boldFont = defaultFont.deriveFont(Font.BOLD);
-            exit.setFont(boldFont);
+            exit.setFont(Font.decode(null).deriveFont(Font.BOLD));
 
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
@@ -57,11 +58,12 @@ public class SystemTray {
             });
 
 
-
             // setup the popup menu for the application.
-            PopupMenu popup = new PopupMenu();
+            final PopupMenu popup = new PopupMenu();
             popup.add(exit);
             trayIcon.setPopupMenu(popup);
+            trayIcon.displayMessage(pack.getName(), pack.getName() + " has started loading!", TrayIcon.MessageType.INFO);
+            
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
