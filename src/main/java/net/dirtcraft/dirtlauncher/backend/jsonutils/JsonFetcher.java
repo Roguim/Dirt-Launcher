@@ -24,7 +24,7 @@ public class JsonFetcher {
             httpResponse.disconnect();
             return new JsonParser().parse(response).getAsJsonObject();
         } catch (SocketTimeoutException | HttpResponseException exception) {
-            Main.getLogger().warn(exception.getMessage() + ". Retrying...");
+            Main.getLogger().warn(exception.getMessage() + "\nRetrying...");
             return getJsonFromUrl(url);
         }
     }
