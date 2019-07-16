@@ -2,11 +2,10 @@ package net.dirtcraft.dirtlauncher.Controllers;
 
 
 import com.google.gson.JsonObject;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -30,13 +29,16 @@ import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.html.HTMLAnchorElement;
 
-import javax.swing.event.HyperlinkEvent;
+import java.awt.*;
+import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Home {
 
@@ -104,28 +106,36 @@ public class Home {
         WebEngine webEngine = webView.getEngine();
 
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
-
         webEngine.load("https://dirtcraft.net/launcher/");
 
 
+
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == Worker.State.SUCCEEDED) {
-                EventListener listener = e -> {
-                    if (e instanceof HyperlinkEvent){
-                        System.out.println("sdfsdfs");
+            Pattern pattern = Pattern.compile("https?://(store.|)dirtcraft.net");
+            if (!(newValue == Worker.State.SUCCEEDED)) return;
+            EventListener listener =  e -> {
+                HTMLAnchorElement element = (HTMLAnchorElement) e.getTarget();
+                try {
+                    Desktop.getDesktop().browse(new URI(element.getHref()));
+                    if (e.getCancelable()){
+                        e.preventDefault();
                     }
-                };
-                Document doc = webEngine.getDocument();
-                NodeList lista = doc.getElementsByTagName("a");
-                for (int i=0; i<lista.getLength(); i++) {
-                    if (lista.item(i) instanceof org.w3c.dom.html.HTMLAnchorElement) {
-                        HTMLAnchorElement hyperlink = (HTMLAnchorElement) lista.item(i);
-                        System.out.println(hyperlink.getHref());
-                        ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
-                    }
+                } catch (Exception exc) {
+                    exc.printStackTrace();
                 }
+            };
+            Document doc = webEngine.getDocument();
+            NodeList lista = doc.getElementsByTagName("a");
+            for (int i = 0; i < lista.getLength(); i++) {
+                if (!(lista.item(i) instanceof HTMLAnchorElement)) continue;
+                Matcher matcher = null;
+                HTMLAnchorElement hyperlink = (HTMLAnchorElement) lista.item(i);
+                if (hyperlink.getHref() != null) matcher = pattern.matcher(hyperlink.getHref());
+                if (matcher != null && matcher.find() ) continue;
+                ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
             }
         });
+
 
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
