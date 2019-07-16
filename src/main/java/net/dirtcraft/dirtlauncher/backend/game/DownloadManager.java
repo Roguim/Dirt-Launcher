@@ -380,7 +380,6 @@ public class DownloadManager {
                 Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
                 return;
             case CUSTOM:
-
                 setProgressText("Downloading " + pack.getName() + " Files");
 
                 Timer timer = new Timer();
@@ -388,11 +387,8 @@ public class DownloadManager {
                         timer.scheduleAtFixedRate(new TimerTask() {
                             @Override
                             public void run() {
-                                System.out.println("MODPACK ZIP SIZE: " + modpackZip.length() / 1024 / 1024);
-                                System.out.println("TARGET ZIP SIZE: " + fileSize);
                                 setProgressPercent((int) (modpackZip.length() / 1024 / 1024), fileSize);
                             }
-
                         }, 0, 1000));
                 FileUtils.copyURLToFile(pack.getLink(), modpackZip);
                 timer.cancel();
@@ -447,15 +443,32 @@ public class DownloadManager {
         setProgressText("Downloading ModPack Manifest");
 
         // Get the modpack directory
-        File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
-        modpackFolder.mkdirs();
-
+        final File modpackFolder = new File(Directories.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
         final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
         final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
 
+        //Delete modpack directory if exists and make new ones
+        FileUtils.deleteDirectory(modpackFolder);
+        modpackFolder.mkdirs();
+
         switch(pack.getPackType()) {
             case CUSTOM:
-                // TODO this.
+                setProgressText("Downloading " + pack.getName() + " Files");
+
+                Timer timer = new Timer();
+                pack.getFileSize().ifPresent(fileSize ->
+                        timer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                setProgressPercent((int) (modpackZip.length() / 1024 / 1024), fileSize);
+                            }
+                        }, 0, 1000));
+                FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+                timer.cancel();
+                setProgressText("Extracting " + pack.getName() + " Files");
+                setTotalProgressPercent(completedSteps + 1, totalSteps);
+                new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
+                modpackZip.delete();
                 break;
             case CURSE:
                 // Download modpack
@@ -517,32 +530,31 @@ public class DownloadManager {
                     completedMods++;
                     setProgressPercent(completedMods, totalMods);
                 }
-
-                // Update instance manifest
-                JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
-                for(JsonElement jsonElement : instanceManifest.getAsJsonArray("packs")) {
-                    if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName())) {
-                        jsonElement.getAsJsonObject().addProperty("version", pack.getVersion());
-                        jsonElement.getAsJsonObject().addProperty("gameVersion", pack.getGameVersion());
-                        jsonElement.getAsJsonObject().addProperty("forgeVersion", pack.getForgeVersion());
-                    }
-                }
-
-                JsonObject newPackObject = new JsonObject();
-                Iterator<JsonElement> jsonIterator = instanceManifest.getAsJsonArray("packs").iterator();
-                while(iterator.hasNext()) {
-                    JsonObject nextElement = jsonIterator.next().getAsJsonObject();
-                    if(nextElement.get("name").getAsString().equals(pack.getName())) {
-                        newPackObject.addProperty("name", pack.getName());
-                        newPackObject.addProperty("version", pack.getVersion());
-                        newPackObject.addProperty("gameVersion", pack.getGameVersion());
-                        newPackObject.addProperty("forgeVersion", pack.getForgeVersion());
-                        jsonIterator.remove();
-                    }
-                }
-                instanceManifest.getAsJsonArray("packs").add(newPackObject);
-                FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
                 break;
         }
+        // Update instance manifest
+        JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
+        for(JsonElement jsonElement : instanceManifest.getAsJsonArray("packs")) {
+            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(pack.getName())) {
+                jsonElement.getAsJsonObject().addProperty("version", pack.getVersion());
+                jsonElement.getAsJsonObject().addProperty("gameVersion", pack.getGameVersion());
+                jsonElement.getAsJsonObject().addProperty("forgeVersion", pack.getForgeVersion());
+            }
+        }
+
+        JsonObject newPackObject = new JsonObject();
+        Iterator<JsonElement> jsonIterator = instanceManifest.getAsJsonArray("packs").iterator();
+        while(jsonIterator.hasNext()) {
+            JsonObject nextElement = jsonIterator.next().getAsJsonObject();
+            if(nextElement.get("name").getAsString().equals(pack.getName())) {
+                newPackObject.addProperty("name", pack.getName());
+                newPackObject.addProperty("version", pack.getVersion());
+                newPackObject.addProperty("gameVersion", pack.getGameVersion());
+                newPackObject.addProperty("forgeVersion", pack.getForgeVersion());
+                jsonIterator.remove();
+            }
+        }
+        instanceManifest.getAsJsonArray("packs").add(newPackObject);
+        FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
     }
 }
