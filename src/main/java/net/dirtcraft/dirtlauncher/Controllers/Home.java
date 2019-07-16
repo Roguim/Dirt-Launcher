@@ -2,14 +2,16 @@ package net.dirtcraft.dirtlauncher.Controllers;
 
 
 import com.google.gson.JsonObject;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
@@ -27,6 +29,14 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.html.HTMLAnchorElement;
+
+import javax.swing.event.HyperlinkEvent;
 
 public class Home {
 
@@ -46,8 +56,6 @@ public class Home {
 
     @FXML
     private LoginBar loginBar;
-
-    private PackCell activeCell = null;
 
     private PasswordField passwordField;
     private TextField usernameField;
@@ -98,6 +106,26 @@ public class Home {
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
 
         webEngine.load("https://dirtcraft.net/launcher/");
+
+
+        webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                EventListener listener = e -> {
+                    if (e instanceof HyperlinkEvent){
+                        System.out.println("sdfsdfs");
+                    }
+                };
+                Document doc = webEngine.getDocument();
+                NodeList lista = doc.getElementsByTagName("a");
+                for (int i=0; i<lista.getLength(); i++) {
+                    if (lista.item(i) instanceof org.w3c.dom.html.HTMLAnchorElement) {
+                        HTMLAnchorElement hyperlink = (HTMLAnchorElement) lista.item(i);
+                        System.out.println(hyperlink.getHref());
+                        ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
+                    }
+                }
+            }
+        });
 
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
