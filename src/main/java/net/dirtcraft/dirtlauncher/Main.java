@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import net.dirtcraft.dirtlauncher.Controllers.Settings;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
@@ -75,8 +77,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
 
-        //Platform.setImplicitExit(false);
-        //SwingUtilities.invokeLater(SystemTray::createIcon);
+        Platform.setImplicitExit(false);
 
         Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "main.fxml"));
 
@@ -88,6 +89,9 @@ public class Main extends Application {
         primaryStage.initStyle(StageStyle.DECORATED);
 
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(event -> {
+            if (!LaunchGame.isGameRunning) Platform.exit();
+        });
         stage = primaryStage;
 
 
@@ -99,7 +103,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         LogManager.shutdown();
     }
 

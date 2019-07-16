@@ -86,11 +86,12 @@ public class PlayButton extends Button {
     }
 
     public void launchPack(Account account, Pack modPack) {
+        LaunchGame.isGameRunning = true;
         LaunchGame.loadServerList(modPack);
         LaunchGame.launchPack(modPack, account);
     }
 
-    public void updatePack(Pack modPack){
+    private void updatePack(Pack modPack){
         if (Internal.VERBOSE) {
             System.out.println("Updated the game");
         }
@@ -104,7 +105,7 @@ public class PlayButton extends Button {
         }).start();
     }
 
-    public void installPack(Pack modPack) {
+    private void installPack(Pack modPack) {
         if (Internal.VERBOSE) {
             System.out.println("Installing the pack");
         }
