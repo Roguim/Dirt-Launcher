@@ -141,7 +141,7 @@ public class LaunchGame {
                     //Minimize the main stage to the task bar
                     Main.getInstance().getStage().close();
                     //Create system tray icon
-                    SwingUtilities.invokeLater(SystemTray::createIcon);
+                    SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
 
                 String line;
