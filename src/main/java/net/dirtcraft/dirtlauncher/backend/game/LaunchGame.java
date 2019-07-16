@@ -42,6 +42,8 @@ public class LaunchGame {
     public static void launchPack(Pack pack, Account account) {
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
+        final File instanceDirectory = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-"));
+
         StringBuilder command = new StringBuilder();
         command.append("java");
         if (SystemUtils.IS_OS_WINDOWS) command.append("w");
@@ -66,7 +68,7 @@ public class LaunchGame {
         command.append("-Djava.library.path=\"" + nativesPath + "\" ");
         command.append("-Dorg.lwjgl.librarypath=\"" + nativesPath + "\" ");
         command.append("-Dnet.java.games.input.librarypath=\"" + nativesPath + "\" ");
-        command.append("-Duser.home=\"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
+        command.append("-Duser.home=\"" + instanceDirectory.getPath() + "\" ");
         // Classpath
         command.append("-cp \"");
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
@@ -86,24 +88,30 @@ public class LaunchGame {
         // Version
         command.append("--version " + pack.getForgeVersion() + " ");
         // Game Dir
-        command.append("--gameDir \"" + new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getName().replace(" ", "-")).getPath() + "\" ");
+        command.append("--gameDir \"" + instanceDirectory.getPath() + "\" ");
         // Assets Dir
         String assetsVersion = FileUtils.readJsonFromFile(new File(Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
         command.append("--assetsDir \"" + new File(Directories.getAssetsDirectory().getPath()).toPath() + "\" ");
         // Assets Index
         command.append("--assetIndex " + assetsVersion + " ");
         // UUID
-        command.append("--uuid " + account.getUuid() + " ");
+        command.append("--uuid " + account.getUuid().toString().replace("-", "") + " ");
         // Access Token
         command.append("--accessToken " + account.getSession().getAccessToken() + " ");
+
         // Auto Join
-        //command.append("--server dirtcraft.gg ");
+        /*command.append("--server ");
+        if (pack.isPixelmon()) command.append(pack.getCode() + ".dirtcraft.gg");
+        else command.append("pixelmon.gg");
+        command.append(" ");*/
+
         // User Type
         command.append("--userType mojang ");
         // Tweak Class
         command.append("--tweakClass ").append(!pack.getGameVersion().equals("1.7.10") ?
                 "net.minecraftforge.fml.common.launcher.FMLTweaker" :
-                "cpw.mods.fml.common.launcher.FMLTweaker").append(" ");
+                "cpw.mods.fml.common.launcher.FMLTweaker")
+                .append(" ");
 
         // Version Type
         command.append("--versionType Forge");
@@ -112,13 +120,13 @@ public class LaunchGame {
 
         if (SystemUtils.IS_OS_UNIX) launchCommand = launchCommand.replace(";", ":");
 
-        System.out.println(launchCommand);
-        String finalLaunchCommand = launchCommand;
+        final String finalLaunchCommand = launchCommand;
+        System.out.println(finalLaunchCommand);
         new Thread(() -> {
             try {
                 Process process;
-                if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand);
-                else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand});
+                if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand, null, instanceDirectory);
+                else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand}, null, instanceDirectory);
 
                 Platform.runLater(() -> {
                     //Close install stage if it's open

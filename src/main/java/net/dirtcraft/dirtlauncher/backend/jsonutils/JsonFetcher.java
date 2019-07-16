@@ -1,28 +1,32 @@
 package net.dirtcraft.dirtlauncher.backend.jsonutils;
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.Main;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 public class JsonFetcher {
 
     private static String jsonVersion = null;
 
     public static JsonObject getJsonFromUrl(String url) throws IOException {
-        HttpRequestFactory requestFacotry = new NetHttpTransport().createRequestFactory();
-        HttpRequest httpRequest = requestFacotry.buildGetRequest(new GenericUrl(url));
-        HttpResponse httpResponse = httpRequest.execute();
-        String response = httpResponse.parseAsString();
-        httpResponse.disconnect();
-        return new JsonParser().parse(response).getAsJsonObject();
+        try {
+            HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
+            HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+            HttpResponse httpResponse = httpRequest.execute();
+            String response = httpResponse.parseAsString();
+            httpResponse.disconnect();
+            return new JsonParser().parse(response).getAsJsonObject();
+        } catch (SocketTimeoutException | HttpResponseException exception) {
+            Main.getLogger().warn(exception.getMessage() + ". Retrying...");
+            return getJsonFromUrl(url);
+        }
     }
 
     @Nullable
