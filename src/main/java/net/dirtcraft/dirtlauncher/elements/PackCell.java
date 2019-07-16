@@ -88,10 +88,9 @@ public final class PackCell extends Button {
         home.getActivePackCell().ifPresent(PackCell::deactivate);
         home.setActivePackCell(this);
         getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
-        DiscordPresence.setDetails("Playing " + pack.getFormattedName());
+        DiscordPresence.setDetails("Playing " + pack.getName());
 
-        if (MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()));
-        else playButton.setDisable(false);
+        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) playButton.setDisable(false);
     }
 
     private void initContextMenu(){
