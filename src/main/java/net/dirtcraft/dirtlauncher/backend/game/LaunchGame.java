@@ -83,6 +83,9 @@ public class LaunchGame {
 
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
+        // User Properties < For 1.7.10 packs. doesn't seem to bother 1.12.2 packs so ima leave this here
+        // TODO impliment only for 1.7.10 packs?
+        command.append("--userProperties {} ");
         // Username
         command.append("--username " + account.getUsername() + " ");
         // Version
