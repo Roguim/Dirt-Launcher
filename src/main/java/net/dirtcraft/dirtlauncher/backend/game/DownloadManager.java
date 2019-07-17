@@ -452,9 +452,13 @@ public class DownloadManager {
                 Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
                 return;
             case CUSTOM:
-                //Delete modpack directory if exists and make a new one
-                FileUtils.deleteDirectory(modpackFolder);
-                modpackFolder.mkdirs();
+
+                //Delete mods and configs directories if exists and make a new directory for the modpack if it does not exist
+                if (!modpackFolder.exists()) modpackFolder.mkdirs();
+                else {
+                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "mods"));
+                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "config"));
+                }
 
                 setProgressText("Downloading " + pack.getName() + " Files");
 

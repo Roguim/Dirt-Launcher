@@ -36,8 +36,6 @@ public class SystemTray {
             }
 
             Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png"));
-            Dimension trayIconSize = tray.getTrayIconSize();
-            trayImage = trayImage.getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
 
             // set up a system tray icon.
 
@@ -45,7 +43,7 @@ public class SystemTray {
             if (getIcon().isPresent()) trayIcon = getIcon().get();
             else trayIcon = new TrayIcon(trayImage);
 
-            //trayIcon.setImageAutoSize(true);
+            trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main stage
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
