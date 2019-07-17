@@ -9,6 +9,9 @@
     -fx-background-radius: 15 0 0 0;
     -fx-opacity: 1;
 }
+#UsernameField:focused, #UsernameField:hover, #PasswordField:focused, #PasswordField:hover{
+    -fx-background-color: #DDDDDD;
+}
 
 #PlayButton{
     -fx-border-radius: 00 15 15 00;
