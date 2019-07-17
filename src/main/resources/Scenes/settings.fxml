@@ -88,7 +88,7 @@
                               <Cursor fx:constant="TEXT" />
                            </cursor>
                         </TextField>
-                        <Button fx:id="gameDirectoryButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="29.0" prefWidth="30.0" styleClass="DirectoryPicker" text="Button" translateY="-1.0">
+                        <Button fx:id="gameDirectoryButton" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="29.0" prefWidth="30.0" styleClass="DirectoryPicker" text="Button" translateY="-1.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
