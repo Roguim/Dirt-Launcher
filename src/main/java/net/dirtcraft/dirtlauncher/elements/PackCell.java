@@ -46,7 +46,7 @@ public final class PackCell extends Button {
                 "Forge Version: " + pack.getForgeVersion(),
                 "Minimum Ram: " + pack.getRequiredRam() + " GB",
                 "Recommended Ram: " + pack.getRecommendedRam() + " GB",
-                "Direct Connect IP: " + (!pack.getCode().equalsIgnoreCase("pixel") ? (pack.getCode() + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
+                "Direct Connect IP: " + (!pack.isPixelmon() ? (pack.getCode() + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
         ));
 
         final Image image = new Image(MiscUtils.getResourceStream(

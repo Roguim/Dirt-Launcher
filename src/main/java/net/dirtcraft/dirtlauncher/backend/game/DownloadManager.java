@@ -447,12 +447,19 @@ public class DownloadManager {
         final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
         final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
 
-        //Delete modpack directory if exists and make new ones
-        FileUtils.deleteDirectory(modpackFolder);
-        modpackFolder.mkdirs();
-
         switch(pack.getPackType()) {
+            default:
+                Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
+                return;
             case CUSTOM:
+
+                //Delete mods and configs directories if exists and make a new directory for the modpack if it does not exist
+                if (!modpackFolder.exists()) modpackFolder.mkdirs();
+                else {
+                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "mods"));
+                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "config"));
+                }
+
                 setProgressText("Downloading " + pack.getName() + " Files");
 
                 Timer timer = new Timer();
@@ -546,7 +553,7 @@ public class DownloadManager {
         Iterator<JsonElement> jsonIterator = instanceManifest.getAsJsonArray("packs").iterator();
         while(jsonIterator.hasNext()) {
             JsonObject nextElement = jsonIterator.next().getAsJsonObject();
-            if(nextElement.get("name").getAsString().equals(pack.getName())) {
+            if (nextElement.get("name").getAsString().equals(pack.getName())) {
                 newPackObject.addProperty("name", pack.getName());
                 newPackObject.addProperty("version", pack.getVersion());
                 newPackObject.addProperty("gameVersion", pack.getGameVersion());
