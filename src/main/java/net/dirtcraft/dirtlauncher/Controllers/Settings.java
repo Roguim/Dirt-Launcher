@@ -1,15 +1,18 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
 import com.google.gson.JsonObject;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -20,6 +23,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -42,6 +46,12 @@ public class Settings {
     private TextField javaArguments;
 
     @FXML
+    private TextField gameDirectoryField;
+
+    @FXML
+    private Button gameDirectoryButton;
+
+    @FXML
     private void initialize() {
         instance = this;
 
@@ -50,6 +60,8 @@ public class Settings {
 
         JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
+        gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
+        gameDirectoryField.setText(Directories.getGameDirectory().getPath());
         minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
         maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
         javaArguments.setText(config.get("java-arguments").getAsString());
@@ -68,8 +80,19 @@ public class Settings {
         return javaArguments;
     }
 
+    public TextField getGameDirectoryField() {
+        return gameDirectoryField;
+    }
+
     public static Settings getInstance() {
         return instance;
+    }
+
+    private void onGameDirectoryFolderGuiRequested(ActionEvent event){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File(gameDirectoryField.getText()));
+        File selectedFolder = directoryChooser.showDialog(stage);
+        if (selectedFolder != null) gameDirectoryField.setText(selectedFolder.getPath());
     }
 
     @FXML

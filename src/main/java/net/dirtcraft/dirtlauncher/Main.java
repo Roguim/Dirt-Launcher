@@ -31,44 +31,12 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
         // Ensure that the application folders are created
-        Directories.getInstallDirectory().mkdirs();
-        Directories.getInstancesDirectory().mkdirs();
-        Directories.getVersionsDirectory().mkdirs();
-        Directories.getAssetsDirectory().mkdirs();
-        Directories.getForgeDirectory().mkdirs();
-        // Ensure that all required manifests are created
-        if (!Directories.getConfiguration().exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
-            emptyManifest.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
-            emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
-            FileUtils.writeJsonToFile(Directories.getConfiguration(), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getInstancesDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("packs", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getVersionsDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("versions", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getVersionsDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getAssetsDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("assets", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getAssetsDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getForgeDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("forgeVersions", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getForgeDirectory()), emptyManifest);
-        }
+        Directories.getLauncherDirectory().mkdirs();
+        FileUtils.initGameDirectory();
         // Launch the application
         launch(args);
     }

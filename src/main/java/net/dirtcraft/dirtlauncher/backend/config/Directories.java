@@ -1,5 +1,7 @@
 package net.dirtcraft.dirtlauncher.backend.config;
 
+import com.google.gson.JsonObject;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -11,7 +13,7 @@ import java.util.Date;
 
 public class Directories {
 
-    public static File getInstallDirectory() {
+    public static File getLauncherDirectory() {
         final Path fileEnding = Paths.get("DirtCraft", "DirtLauncher");
 
         // If it's windows, use AppData
@@ -28,31 +30,39 @@ public class Directories {
         }
     }
 
+    public static File getGameDirectory() {
+
+        JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
+        if (config != null && config.has("game-directory")){
+            return new File(config.get("game-directory").getAsString());
+        } else return getLauncherDirectory();
+    }
+
     public static Path getLogDirectory() {
-        return Paths.get(getInstallDirectory().getPath(),"logs");
+        return Paths.get(getGameDirectory().getPath(),"logs");
     }
 
     public static File getInstancesDirectory() {
-        return Paths.get(getInstallDirectory().getPath(), "instances").toFile();
+        return Paths.get(getGameDirectory().getPath(), "instances").toFile();
     }
 
     public static File getVersionsDirectory() {
-        return Paths.get(getInstallDirectory().getPath(), "versions").toFile();
+        return Paths.get(getGameDirectory().getPath(), "versions").toFile();
     }
 
     public static File getAssetsDirectory() {
-        return Paths.get(getInstallDirectory().getPath(), "assets").toFile();
+        return Paths.get(getGameDirectory().getPath(), "assets").toFile();
     }
 
     public static File getForgeDirectory() {
-        return Paths.get(getInstallDirectory().getPath(), "forge").toFile();
+        return Paths.get(getGameDirectory().getPath(), "forge").toFile();
     }
 
     public static File getDirectoryManifest(File directory) {
         return new File(directory.getPath(), "manifest.json");
     }
     public static File getConfiguration() {
-        return new File(getInstallDirectory().getPath(), "configuration.json");
+        return new File(getLauncherDirectory().getPath(), "configuration.json");
     }
 
     public static File getLog(){

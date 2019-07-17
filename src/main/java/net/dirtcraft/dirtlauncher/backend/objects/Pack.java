@@ -138,7 +138,7 @@ public class Pack {
     public void setCode(String code) { this.code = code; }
 
     public File getInstanceDirectory() {
-        return new File(Directories.getInstallDirectory().getPath() + File.separator + "instances" + File.separator + name);
+        return new File(Directories.getInstancesDirectory().getPath() + File.separator + formattedName);
     }
 
     public boolean isPixelmon() {

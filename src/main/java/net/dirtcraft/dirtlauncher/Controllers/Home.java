@@ -96,7 +96,11 @@ public class Home {
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getJavaArguments().getText())) config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
                 else config.addProperty("java-arguments", Settings.getInstance().getJavaArguments().getText());
 
+                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getGameDirectoryField().getText())) config.addProperty("game-directory", Directories.getLauncherDirectory().getPath());
+                else config.addProperty("game-directory", Settings.getInstance().getGameDirectoryField().getText());
+
                 FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
+                FileUtils.initGameDirectory();
             });
         });
 
