@@ -73,8 +73,7 @@ public class SystemTray {
             tray.add(trayIcon);
 
             // Display notification message
-            if (SystemUtils.IS_OS_MAC) Runtime.getRuntime().exec(new String[]{"osascript", "-e", "'display notification \"" + "Game Launching" + "\" with title \"" + pack.getName() + "\"'"});
-            else trayIcon.displayMessage(pack.getName(), "Game Launching", TrayIcon.MessageType.INFO);
+            trayIcon.displayMessage(pack.getName(), "Game Launching", TrayIcon.MessageType.INFO);
 
             SystemTray.icon = trayIcon;
 
