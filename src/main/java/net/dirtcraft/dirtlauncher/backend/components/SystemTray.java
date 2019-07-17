@@ -35,7 +35,7 @@ public class SystemTray {
                 return;
             }
 
-            Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png"));
+            Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon_small.png"));
 
             // set up a system tray icon.
 
