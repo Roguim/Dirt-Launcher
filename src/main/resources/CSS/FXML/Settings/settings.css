@@ -48,3 +48,13 @@
     -fx-background-radius: 0 3 3 0 ;	
     -fx-background-color: #FFFFFF;
 }
+
+.DirectoryPicker:hover{
+    -fx-background-radius: 0 3 3 0 ;	
+    -fx-background-color: #DDDDDD;
+}
+
+.DirectoryPicker:pressed{
+    -fx-background-radius: 0 3 3 0 ;	
+    -fx-background-color: #888888;
+}
