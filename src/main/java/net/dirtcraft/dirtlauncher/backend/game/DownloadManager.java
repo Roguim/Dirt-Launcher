@@ -448,6 +448,9 @@ public class DownloadManager {
         final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
 
         switch(pack.getPackType()) {
+            default:
+                Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
+                return;
             case CUSTOM:
                 //Delete modpack directory if exists and make a new one
                 FileUtils.deleteDirectory(modpackFolder);
