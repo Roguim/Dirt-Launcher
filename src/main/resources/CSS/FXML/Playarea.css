@@ -22,6 +22,10 @@
     -fx-background-color: #BBBB44;
 }
 
+#PlayButton:hover{
+    -fx-background-color: #999922;
+}
+
 #PlayButton:disabled{
     -fx-background-color: #aaaaaa;
 }
