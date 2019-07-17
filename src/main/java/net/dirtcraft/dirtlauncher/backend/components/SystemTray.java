@@ -35,16 +35,21 @@ public class SystemTray {
                 return;
             }
 
+            Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, "dirticon.png"));
+            Dimension trayIconSize = tray.getTrayIconSize();
+            trayImage = trayImage.getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
+
             // set up a system tray icon.
 
             TrayIcon trayIcon;
             if (getIcon().isPresent()) trayIcon = getIcon().get();
-            else trayIcon = new TrayIcon(ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_windows.ico" : "dirticon.png")));
+            else trayIcon = new TrayIcon(trayImage);
 
-            trayIcon.setImageAutoSize(true);
+            //trayIcon.setImageAutoSize(true);
 
-            // if the user double-clicks on the tray icon, show the main app stage.
+            // if the user double-clicks on the tray icon, show the main stage
             trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
+            // set tooltip on hover
             trayIcon.setToolTip("Playing " + pack.getName());
 
             MenuItem exit = new MenuItem("Close");
@@ -70,9 +75,8 @@ public class SystemTray {
             tray.add(trayIcon);
 
             // Display notification message
-            if (!SystemUtils.IS_OS_MAC) trayIcon.displayMessage(pack.getName(), "Loading...", TrayIcon.MessageType.INFO);
-            else Runtime.getRuntime().exec(new String[]{"osascript", "-e", "'display notification \"" + "Loading..." + "\" with title \"" + pack.getName() + "\"'"});
-
+            if (SystemUtils.IS_OS_MAC) Runtime.getRuntime().exec(new String[]{"osascript", "-e", "'display notification \"" + "Game Launching" + "\" with title \"" + pack.getName() + "\"'"});
+            else trayIcon.displayMessage(pack.getName(), "Game Launching", TrayIcon.MessageType.INFO);
 
             SystemTray.icon = trayIcon;
 
