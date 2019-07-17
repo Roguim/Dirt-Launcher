@@ -1,19 +1,33 @@
 package net.dirtcraft.dirtlauncher.elements;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
+import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class PackCell extends Button {
@@ -63,7 +77,7 @@ public final class PackCell extends Button {
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
         setOnMouseDragged(this::onDrag);
         setOnMouseDragExited(e-> lastDragY = 0);
-        if (MiscUtils.inIde()) setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
+        setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
 
     }
 
@@ -111,11 +125,36 @@ public final class PackCell extends Button {
         contextMenu.getItems().add(openFolder);
 
         reinstall.setOnAction(e->{
+            uninstall.fire();
             LoginBar loginBar = Home.getInstance().getLoginBar();
             Optional<PackCell> oldPack = loginBar.getActivePackCell();;
             loginBar.setActivePackCell(this);
             loginBar.getActionButton().installPack(pack);
             oldPack.ifPresent(PackCell::fire);
+        });
+
+        uninstall.setOnAction(e->{
+
+            JsonObject instanceManifest = FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()));
+            if (instanceManifest == null || !instanceManifest.has("packs")) return;
+            JsonArray packs = instanceManifest.getAsJsonArray("packs");
+            for (int i = 0; i < packs.size(); i++){
+                if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), pack.getName())) packs.remove(i);
+            }
+            FileUtils.writeJsonToFile(new File(Directories.getDirectoryManifest(Directories.getInstancesDirectory()).getPath()), instanceManifest);
+            try {
+                FileUtils.deleteDirectory(pack.getInstanceDirectory());
+            } catch (IOException exception){
+                Main.getLogger().error(exception);
+            }
+        });
+
+        openFolder.setOnAction(e->{
+            try {
+                Desktop.getDesktop().open(pack.getInstanceDirectory());
+            } catch (IOException exception){
+                Main.getLogger().error(exception);
+            }
         });
     }
 }
