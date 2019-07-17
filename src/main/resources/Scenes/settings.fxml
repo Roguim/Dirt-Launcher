@@ -70,12 +70,12 @@
                <children>
                   <FlowPane prefHeight="30.0" prefWidth="300.0">
                      <children>
-                        <TextField fx:id="gameDirectoryField" alignment="CENTER" focusTraversable="false" onKeyPressed="#onTab" prefHeight="30.0" prefWidth="270.0">
+                        <TextField fx:id="gameDirectoryField" alignment="CENTER" focusTraversable="false" onKeyPressed="#onTab" prefHeight="30.0" prefWidth="270.0" styleClass="Directory">
                            <FlowPane.margin>
                               <Insets />
                            </FlowPane.margin>
                         </TextField>
-                        <Button fx:id="gameDirectoryButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="Button" />
+                        <Button fx:id="gameDirectoryButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="29.0" prefWidth="30.0" styleClass="DirectoryPicker" text="Button" translateY="-1.0" />
                      </children>
                   </FlowPane>
                   <Text fill="#bababa" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="labels" text="Game Directory" textAlignment="CENTER" />
