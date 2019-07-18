@@ -116,7 +116,6 @@ public class Home {
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getGameDirectoryField().getText())) config.addProperty("game-directory", Directories.getLauncherDirectory().getPath());
                 else config.addProperty("game-directory", Settings.getInstance().getGameDirectoryField().getText());
 
-                //final File oldLog = Directories.getLog();
                 FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
 
                 if (!Objects.equals(currentGameDirectory, changedGameDirectory)){
@@ -127,6 +126,8 @@ public class Home {
                             logger.error(exception);
                         }
                     }
+                    //noinspection ResultOfMethodCallIgnored
+                    currentGameDirectory.delete();
                     FileUtils.initGameDirectory();
                 }
             });

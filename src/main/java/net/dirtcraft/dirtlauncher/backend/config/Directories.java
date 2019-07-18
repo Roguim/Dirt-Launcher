@@ -39,7 +39,7 @@ public class Directories {
     }
 
     public static Path getLogDirectory() {
-        return Paths.get(getGameDirectory().getPath(),"logs");
+        return Paths.get(getLauncherDirectory().getPath(),"logs");
     }
 
     public static File getInstancesDirectory() {
