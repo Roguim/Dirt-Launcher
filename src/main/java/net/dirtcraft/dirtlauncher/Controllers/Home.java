@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.Controllers;
 
 
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
@@ -28,10 +29,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
@@ -42,18 +40,14 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Home {
-
     private static Home instance;
 
     @FXML
@@ -85,9 +79,10 @@ public class Home {
 
     @FXML
     private void initialize() {
+        new Thread(this::populatePackListAsync).start();
         instance = this;
         notificationBox.setOpacity(0);
-        Future<ObservableList<Pack>> packs = PackRegistry.getPacksAsync();
+        //  initialize async first so there's stuff to run while we wait for them to finish.
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                                                                                          //
@@ -181,20 +176,17 @@ public class Home {
         playButton = loginBar.getActionButton();
         usernameField.setOnKeyTyped(this::setKeyTypedEvent);
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
+    }
 
-
-        //                  PACKLIST INIT
+    private void populatePackListAsync(){
+        ObservableList<Pack> packs = FXCollections.observableArrayList();
+        packs.addAll(PackRegistry.getPacks());
+        if (Internal.VERBOSE) logger.info("Waiting for pack list JSON");
         packList.getStyleClass().add(CssClasses.PACKLIST);
-        packList.getChildren().clear();
-        try {
-            packs.get().forEach(pack -> packList.getChildren().add(new PackCell(pack)));
-        } catch (InterruptedException | ExecutionException e){
-            logger.warn(e);
-            logger.warn("Pack list async failed, trying again synchronized");
-            ObservableList<Pack> packsSync = FXCollections.observableArrayList();
-            packsSync.addAll(PackRegistry.getPacks());
-            packsSync.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
-        }
+        Platform.runLater(()->packList.getChildren().clear());
+        Platform.runLater(()->packs.forEach(pack -> packList.getChildren().add(new PackCell(pack))));
+        if (Internal.VERBOSE) logger.info("Packlist built!");
+
     }
 
     private void setKeyTypedEvent(KeyEvent event) {

@@ -13,9 +13,8 @@ import java.util.regex.Pattern;
 public class MiscUtils {
 
     public static boolean inIde() {
-        Class main = Main.getInstance().getClass();
         Pattern pattern = Pattern.compile("^file:/");
-        Matcher matcher = pattern.matcher(main.getResource(main.getSimpleName()+".class").toString());
+        Matcher matcher = pattern.matcher(MiscUtils.class.getResource(MiscUtils.class.getSimpleName()+".class").toString());
         return matcher.find();
     }
 

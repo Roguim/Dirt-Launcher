@@ -9,9 +9,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class PackRegistry {
     private static final String JSON_URL = "http://164.132.201.67/launcher/packs.json";
 
     public static List<Pack> getPacks() {
+        final Logger logger = Main.getLogger();
         JsonElement json = new JsonParser().parse(getStringFromURL());
 
         List<Pack> packs = new ArrayList<>();
@@ -34,28 +37,27 @@ public class PackRegistry {
         }
 
         packs.sort(Comparator.comparing(Pack::getName));
-        if (Internal.VERBOSE) {
+        if (Internal.VERBOSE && false) {
             for (Pack pack : packs) {
-                System.out.println("Name: " + pack.getName());
-                System.out.println("Version: " + pack.getVersion());
-                System.out.println("Code: " + pack.getCode());
-                System.out.println("Pack Type: " + pack.getPackType());
-                System.out.println("Link: " + pack.getLink());
-                System.out.println("Splash: " + pack.getSplash());
-                System.out.println("Logo: " + pack.getLogo());
-                System.out.println("Game Version: " + pack.getGameVersion());
-                System.out.println("Required Ram: " + pack.getRequiredRam());
-                System.out.println("Recommended Ram: " + pack.getRecommendedRam());
-                System.out.println("Forge Version: " + pack.getForgeVersion());
+                logger.info("Name: " + pack.getName());
+                logger.info("Version: " + pack.getVersion());
+                logger.info("Code: " + pack.getCode());
+                logger.info("Pack Type: " + pack.getPackType());
+                logger.info("Link: " + pack.getLink());
+                logger.info("Splash: " + pack.getSplash());
+                logger.info("Logo: " + pack.getLogo());
+                logger.info("Game Version: " + pack.getGameVersion());
+                logger.info("Required Ram: " + pack.getRequiredRam());
+                logger.info("Recommended Ram: " + pack.getRecommendedRam());
+                logger.info("Forge Version: " + pack.getForgeVersion());
                 for (OptionalMod optionalMod : pack.getOptionalMods()) {
-                    System.out.println("[Optional Mod] - Name: " + optionalMod.getName());
-                    System.out.println("[Optional Mod] - Version: " + optionalMod.getVersion());
-                    System.out.println("[Optional Mod] - Link: " + optionalMod.getLink());
-                    System.out.println("[Optional Mod] - Description: " + optionalMod.getDescription());
+                    logger.info("[Optional Mod] - Name: " + optionalMod.getName());
+                    logger.info("[Optional Mod] - Version: " + optionalMod.getVersion());
+                    logger.info("[Optional Mod] - Link: " + optionalMod.getLink());
+                    logger.info("[Optional Mod] - Description: " + optionalMod.getDescription());
                 }
             }
         }
-
         return packs;
 
     }
@@ -66,6 +68,7 @@ public class PackRegistry {
         return executor.submit(() -> {
             ObservableList<Pack> packs = FXCollections.observableArrayList();
             packs.setAll(PackRegistry.getPacks());
+            if (Internal.VERBOSE) Main.getLogger().info("Pack list JSON retrieved.");
             return packs;
         });
     }
