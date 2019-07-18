@@ -55,18 +55,19 @@ public class Settings {
     @FXML
     private void initialize() {
         instance = this;
+        new Thread(()->{
+            JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
+            Platform.runLater(()->{
+                minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
+                maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
 
-        minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
-        maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
-
-        JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
-
-        gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
-        gameDirectoryField.setText(Directories.getGameDirectory().getPath());
-        minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
-        maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
-        javaArguments.setText(config.get("java-arguments").getAsString());
-
+                gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
+                gameDirectoryField.setText(config.get("game-directory").getAsString());
+                minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
+                maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
+                javaArguments.setText(config.get("java-arguments").getAsString());
+            });
+        }).start();
     }
 
     public TextField getMinimumRam() {
@@ -137,9 +138,7 @@ public class Settings {
     public static void loadSettings() {
         try {
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "settings.fxml"));
-            root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
-            root.getStylesheets().add("https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIhTpumxdt0.woff2");
-            root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
+            Scene scene = new Scene(root, 600, 300);
             Platform.runLater(()->{
                 Stage stage = new Stage();
                 stage.initOwner(Main.getInstance().getStage());
@@ -148,7 +147,6 @@ public class Settings {
 
                 stage.setTitle("Dirt Launcher Settings");
                 stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
-                Scene scene = new Scene(root, 600, 300);
                 stage.setScene(scene);
                 stage.setResizable(false);
                 Settings.stage = stage;
