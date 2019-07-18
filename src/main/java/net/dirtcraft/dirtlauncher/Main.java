@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,8 +40,8 @@ public class Main extends Application {
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
-        //Grab a list of log files and delete all but the last 5.
         new Thread(()->{
+            //Grab a list of log files and delete all but the last 5.
             List<File> logFiles = Arrays.asList(Objects.requireNonNull(Directories.getLogDirectory().toFile().listFiles()));
             logFiles.sort(Collections.reverseOrder());
             for(int i = 0; i < logFiles.size(); i++){
@@ -51,7 +52,8 @@ public class Main extends Application {
             }
             // Ensure that the application folders are created
             Directories.getLauncherDirectory().mkdirs();
-            FileUtils.initGameDirectory();}).start();
+            FileUtils.initGameDirectory();
+        }).start();
         // Launch the application
         launch(args);
     }
@@ -78,8 +80,14 @@ public class Main extends Application {
 
         stage.show();
 
-        Settings.loadSettings();
-        if (Update.hasUpdate()) Update.showStage();
+        new Thread(()->{
+            Settings.loadSettings();
+            try {
+                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
+            } catch (IOException e){
+                logger.error(e);
+            }
+        }).start();
 
     }
 

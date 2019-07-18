@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -139,20 +140,19 @@ public class Settings {
             root.getStylesheets().add("https://fonts.gstatic.com/s/oleoscript/v7/rax5HieDvtMOe0iICsUccChdu0_y8zac.woff2");
             root.getStylesheets().add("https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIhTpumxdt0.woff2");
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
+            Platform.runLater(()->{
+                Stage stage = new Stage();
+                stage.initOwner(Main.getInstance().getStage());
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initStyle(StageStyle.UTILITY);
 
-
-            Stage stage = new Stage();
-            stage.initOwner(Main.getInstance().getStage());
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initStyle(StageStyle.UTILITY);
-
-            stage.setTitle("Dirt Launcher Settings");
-            stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
-            Scene scene = new Scene(root, 600, 300);
-            stage.setScene(scene);
-            stage.setResizable(false);
-
-            Settings.stage = stage;
+                stage.setTitle("Dirt Launcher Settings");
+                stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
+                Scene scene = new Scene(root, 600, 300);
+                stage.setScene(scene);
+                stage.setResizable(false);
+                Settings.stage = stage;
+            });
         } catch (IOException e){
             e.printStackTrace();
         }
