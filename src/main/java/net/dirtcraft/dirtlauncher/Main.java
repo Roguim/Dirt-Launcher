@@ -30,10 +30,6 @@ public class Main extends Application {
     private static Main instance;
     private Stage stage;
 
-    public static Logger getLogger() {
-        return logger;
-    }
-
     public static void main(String[] args) {
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
@@ -94,5 +90,9 @@ public class Main extends Application {
 
     public static Main getInstance() {
         return instance;
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }
