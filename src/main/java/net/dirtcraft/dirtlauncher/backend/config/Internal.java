@@ -1,11 +1,10 @@
 package net.dirtcraft.dirtlauncher.backend.config;
 
-import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 public class Internal {
 
-    public static final boolean VERBOSE = MiscUtils.inIde();
-
+    public static boolean VERBOSE = false;
+    public static boolean PORTABLE = false;
     public static final String LAUNCHER_VERSION = "1.0.1";
     public static final String DEFAULT_JAVA_ARGS = "-XX:+UseG1GC -Dfml.readTimeout=180 -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 
