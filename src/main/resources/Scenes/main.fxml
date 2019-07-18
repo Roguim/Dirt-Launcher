@@ -51,7 +51,7 @@
       </FlowPane>
       <Pane id="SettingsBar" layoutX="764.0" prefHeight="45.0" prefWidth="45.0" styleClass="SettingsBar" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
+            <Button id="SettingsButton" fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" stylesheets="@../CSS/FXML/Sidebar.css">
                <styleClass>
                   <String fx:value="SettingsBar" />
                   <String fx:value="SettingsButton" />

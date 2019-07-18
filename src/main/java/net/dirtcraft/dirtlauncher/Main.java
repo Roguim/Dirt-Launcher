@@ -31,10 +31,6 @@ public class Main extends Application {
     private Stage stage;
 
     public static void main(String[] args) {
-        for (String s : args) switch (s){
-            case "-portable":Internal.PORTABLE = true; break;
-            case "-verbose":Internal.VERBOSE = true; break;
-        }
         System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");

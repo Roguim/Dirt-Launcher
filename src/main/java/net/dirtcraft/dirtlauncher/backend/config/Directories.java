@@ -1,12 +1,10 @@
 package net.dirtcraft.dirtlauncher.backend.config;
 
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -16,28 +14,19 @@ import java.util.Date;
 public class Directories {
 
     public static File getLauncherDirectory() {
-        if (Internal.PORTABLE){
-            try {
-                return new File(Directories.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-            } catch (URISyntaxException e){
-                Main.getLogger().error(e);
-                return null;
-            }
-        } else {
-            final Path fileEnding = Paths.get("DirtCraft", "DirtLauncher");
+        final Path fileEnding = Paths.get("DirtCraft", "DirtLauncher");
 
-            // If it's windows, use AppData
-            if (SystemUtils.IS_OS_WINDOWS) {
-                return Paths.get(System.getenv("AppData")).resolve(fileEnding).toFile();
-            }
-            // If it's linux, use the user's Application Support directory
-            else if (SystemUtils.IS_OS_MAC) {
-                return Paths.get(System.getProperty("user.home"), "Library", "Application Support").resolve(fileEnding).toFile();
-            }
-            // Otherwise, we can assume it's probably linux, so we'll use their application folder
-            else {
-                return Paths.get(System.getProperty("user.home")).resolve(fileEnding).toFile();
-            }
+        // If it's windows, use AppData
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return Paths.get(System.getenv("AppData")).resolve(fileEnding).toFile();
+        }
+        // If it's linux, use the user's Application Support directory
+        else if (SystemUtils.IS_OS_MAC) {
+            return Paths.get(System.getProperty("user.home") , "Library" , "Application Support").resolve(fileEnding).toFile();
+        }
+        // Otherwise, we can assume it's probably linux, so we'll use their application folder
+        else {
+            return Paths.get(System.getProperty("user.home")).resolve(fileEnding).toFile();
         }
     }
 
