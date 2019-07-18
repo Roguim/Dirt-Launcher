@@ -47,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,6 +87,7 @@ public class Home {
     private void initialize() {
         instance = this;
         notificationBox.setOpacity(0);
+        Future<ObservableList<Pack>> packs = PackRegistry.getPacksAsync();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                                                                                          //
@@ -167,15 +170,6 @@ public class Home {
                 ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
             }
         });
-
-
-        //                  PACKLIST INIT
-        ObservableList<Pack> packs = FXCollections.observableArrayList();
-        packs.setAll(PackRegistry.getPacks());
-        packList.getStyleClass().add(CssClasses.PACKLIST);
-        packList.getChildren().clear();
-        packs.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
-
         //                  DISCORD PRESENCE INIT
         DiscordPresence.initPresence();
         DiscordPresence.setDetails("Selecting a ModPack...");
@@ -187,6 +181,20 @@ public class Home {
         playButton = loginBar.getActionButton();
         usernameField.setOnKeyTyped(this::setKeyTypedEvent);
         passwordField.setOnKeyPressed(this::setKeyTypedEvent);
+
+
+        //                  PACKLIST INIT
+        packList.getStyleClass().add(CssClasses.PACKLIST);
+        packList.getChildren().clear();
+        try {
+            packs.get().forEach(pack -> packList.getChildren().add(new PackCell(pack)));
+        } catch (InterruptedException | ExecutionException e){
+            logger.warn(e);
+            logger.warn("Pack list async failed, trying again synchronized");
+            ObservableList<Pack> packsSync = FXCollections.observableArrayList();
+            packsSync.addAll(PackRegistry.getPacks());
+            packsSync.forEach(pack -> packList.getChildren().add(new PackCell(pack)));
+        }
     }
 
     private void setKeyTypedEvent(KeyEvent event) {

@@ -7,6 +7,8 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -15,6 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class PackRegistry {
 
@@ -53,6 +58,16 @@ public class PackRegistry {
 
         return packs;
 
+    }
+
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    public static Future<ObservableList<Pack>> getPacksAsync(){
+        return executor.submit(() -> {
+            ObservableList<Pack> packs = FXCollections.observableArrayList();
+            packs.setAll(PackRegistry.getPacks());
+            return packs;
+        });
     }
 
     private static String getStringFromURL() {
