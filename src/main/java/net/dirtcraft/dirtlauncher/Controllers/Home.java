@@ -41,9 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -203,6 +200,10 @@ public class Home {
 
     public TextFlow getNotificationBox() {
         return notificationBox;
+    }
+
+    public Button getSettingsButton(){
+        return settingsButton;
     }
 
     public LoginBar getLoginBar() {

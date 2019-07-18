@@ -66,6 +66,7 @@ public class Settings {
                 minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
                 maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
                 javaArguments.setText(config.get("java-arguments").getAsString());
+                Home.getInstance().getSettingsButton().setDisable(false);
             });
         }).start();
     }
