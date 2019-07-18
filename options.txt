@@ -1,2 +1,0 @@
-mipmapLevels:0
-lang:ru_ru

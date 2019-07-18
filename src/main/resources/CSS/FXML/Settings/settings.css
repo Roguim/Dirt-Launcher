@@ -44,8 +44,12 @@
     -fx-background-radius: 3 0 0 3 ;	
 }
 
-.text-field:hover, .text-field:focused{	
+.text-field:hover{
     -fx-background-color: #DDDDDD;
+}
+
+.text-field:focused{
+    -fx-background-color: #FFFFFF;
 }
 
 .DirectoryPicker{
