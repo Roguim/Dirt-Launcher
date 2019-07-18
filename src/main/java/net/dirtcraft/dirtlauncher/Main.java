@@ -40,17 +40,18 @@ public class Main extends Application {
         logger = LogManager.getLogger(Main.class);
         logger.info("Logger logging, App starting.");
         //Grab a list of log files and delete all but the last 5.
-        List<File> logFiles = Arrays.asList(Objects.requireNonNull(Directories.getLogDirectory().toFile().listFiles()));
-        logFiles.sort(Collections.reverseOrder());
-        for(int i = 0; i < logFiles.size(); i++){
-            if (i>=5){
-                boolean success = logFiles.get(i).delete();
-                if (!success) logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
+        new Thread(()->{
+            List<File> logFiles = Arrays.asList(Objects.requireNonNull(Directories.getLogDirectory().toFile().listFiles()));
+            logFiles.sort(Collections.reverseOrder());
+            for(int i = 0; i < logFiles.size(); i++){
+                if (i>=5){
+                    boolean success = logFiles.get(i).delete();
+                    if (!success) logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
+                }
             }
-        }
-        // Ensure that the application folders are created
-        Directories.getLauncherDirectory().mkdirs();
-        FileUtils.initGameDirectory();
+            // Ensure that the application folders are created
+            Directories.getLauncherDirectory().mkdirs();
+            FileUtils.initGameDirectory();}).start();
         // Launch the application
         launch(args);
     }
