@@ -72,6 +72,10 @@ public class FileUtils {
         org.apache.commons.io.FileUtils.copyDirectory(src, dest);
     }
 
+    public static void moveDirectory(File src, File dest, boolean createDir) throws IOException {
+        org.apache.commons.io.FileUtils.moveDirectoryToDirectory(src, dest, createDir);
+    }
+
     public static void extractJar(String jarFile, String destDir) throws IOException {
         JarFile jar = new JarFile(jarFile);
         Enumeration enumEntries = jar.entries();

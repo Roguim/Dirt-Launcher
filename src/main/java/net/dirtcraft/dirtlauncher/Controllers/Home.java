@@ -16,6 +16,7 @@ import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
@@ -27,6 +28,10 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
@@ -34,7 +39,14 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.html.HTMLAnchorElement;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +71,11 @@ public class Home {
     private PasswordField passwordField;
     private TextField usernameField;
     private Button playButton;
+    private final Logger logger;
 
+    public Home(){
+        logger = Main.getLogger();
+    }
 
     public static Home getInstance() {
         return instance;
@@ -84,8 +100,9 @@ public class Home {
             Stage stage = Settings.getInstance().getStage();
             stage.show();
             stage.setOnCloseRequest(e -> {
-
-                JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
+                final File currentGameDirectory = Directories.getGameDirectory();
+                final File changedGameDirectory = new File(Settings.getInstance().getGameDirectoryField().getText());
+                final JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
 
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMinimumRam().getText())) config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
                 else config.addProperty("minimum-ram", Integer.valueOf(Settings.getInstance().getMinimumRam().getText()));
@@ -99,8 +116,19 @@ public class Home {
                 if (MiscUtils.isEmptyOrNull(Settings.getInstance().getGameDirectoryField().getText())) config.addProperty("game-directory", Directories.getLauncherDirectory().getPath());
                 else config.addProperty("game-directory", Settings.getInstance().getGameDirectoryField().getText());
 
+                //final File oldLog = Directories.getLog();
                 FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
-                FileUtils.initGameDirectory();
+
+                if (!Objects.equals(currentGameDirectory, changedGameDirectory)){
+                    for(File file : Objects.requireNonNull(currentGameDirectory.listFiles())) {
+                        try {
+                            FileUtils.moveDirectory(file, changedGameDirectory, true);
+                        } catch (IOException exception) {
+                            logger.error(exception);
+                        }
+                    }
+                    FileUtils.initGameDirectory();
+                }
             });
         });
 
