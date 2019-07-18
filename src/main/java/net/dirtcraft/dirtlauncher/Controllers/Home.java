@@ -141,7 +141,6 @@ public class Home {
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            Pattern pattern = Pattern.compile("^https?://(store.|)dirtcraft.net");
             if (!(newValue == Worker.State.SUCCEEDED)) return;
             EventListener listener =  e -> {
                 HTMLAnchorElement element = (HTMLAnchorElement) e.getTarget();
@@ -158,10 +157,6 @@ public class Home {
             NodeList lista = doc.getElementsByTagName("a");
             for (int i = 0; i < lista.getLength(); i++) {
                 if (!(lista.item(i) instanceof HTMLAnchorElement)) continue;
-                Matcher matcher = null;
-                HTMLAnchorElement hyperlink = (HTMLAnchorElement) lista.item(i);
-                if (hyperlink.getHref() != null) matcher = pattern.matcher(hyperlink.getHref());
-                if (matcher != null && matcher.find() ) continue;
                 ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
             }
         });
