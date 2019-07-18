@@ -2,23 +2,18 @@ package net.dirtcraft.dirtlauncher;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Settings;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
 import net.dirtcraft.dirtlauncher.backend.config.Directories;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Future;
 
 public class Main extends Application {
 
