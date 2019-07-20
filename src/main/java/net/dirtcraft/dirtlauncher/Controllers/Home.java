@@ -1,7 +1,5 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
-
-import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
@@ -20,13 +19,11 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import net.dirtcraft.dirtlauncher.elements.PackCell;
 import org.apache.logging.log4j.Logger;
@@ -46,10 +43,10 @@ public class Home {
     private static Home instance;
 
     @FXML
-    private VBox packList;
+    private StackPane webArea;
 
     @FXML
-    private WebView webView;
+    private VBox packList;
 
     @FXML
     private TextFlow notificationBox;
@@ -80,12 +77,12 @@ public class Home {
         return instance;
     }
 
-    @FXML
+    @FXML   //this is all async
     private void initialize() {
         new Thread(this::populatePackListAsync).start();
+        Platform.runLater(this::initWebView);
         instance = this;
         notificationBox.setOpacity(0);
-        //  initialize async first so there's stuff to run while we wait for them to finish.
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                                                                                          //
@@ -125,18 +122,27 @@ public class Home {
             });
         });
 
+        //                  DISCORD PRESENCE INIT
+        DiscordPresence.initPresence();
+        DiscordPresence.setDetails("Selecting a ModPack...");
+        DiscordPresence.setState("www.dirtcraft.net");
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                                                                                          //
-        //                                              WEBVIEW INIT                                                //
-        //                                                                                                          //
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                  LOGIN BAR INIT
+        passwordField = loginBar.getPassField();
+        usernameField = loginBar.getUsernameField();
+        playButton = loginBar.getActionButton();
+        usernameField.setOnKeyTyped(this::setKeyTypedEvent);
+        passwordField.setOnKeyPressed(this::setKeyTypedEvent);
+    }
+
+    private void initWebView(){
+        WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (!(newValue == Worker.State.SUCCEEDED)) return;
-            EventListener listener =  e -> {
+            EventListener listener = e -> {
                 HTMLAnchorElement element = (HTMLAnchorElement) e.getTarget();
                 try {
                     Desktop.getDesktop().browse(new URI(element.getHref()));
@@ -154,17 +160,7 @@ public class Home {
                 ((EventTarget) lista.item(i)).addEventListener("click", listener, false);
             }
         });
-        //                  DISCORD PRESENCE INIT
-        DiscordPresence.initPresence();
-        DiscordPresence.setDetails("Selecting a ModPack...");
-        DiscordPresence.setState("www.dirtcraft.net");
-
-        //                  LOGIN BAR INIT
-        passwordField = loginBar.getPassField();
-        usernameField = loginBar.getUsernameField();
-        playButton = loginBar.getActionButton();
-        usernameField.setOnKeyTyped(this::setKeyTypedEvent);
-        passwordField.setOnKeyPressed(this::setKeyTypedEvent);
+        webArea.getChildren().add(webView);
     }
 
     private void populatePackListAsync(){
@@ -174,7 +170,6 @@ public class Home {
         Platform.runLater(()->packList.getChildren().clear());
         Platform.runLater(()->packs.forEach(pack -> packList.getChildren().add(new PackCell(pack))));
         if (Internal.VERBOSE) System.out.println("Packlist built!");
-
     }
 
     private void setKeyTypedEvent(KeyEvent event) {

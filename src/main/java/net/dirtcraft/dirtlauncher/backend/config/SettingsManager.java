@@ -2,11 +2,15 @@ package net.dirtcraft.dirtlauncher.backend.config;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -23,7 +27,13 @@ public final class SettingsManager {
 
     public SettingsManager(Path launcherDirectory){
         this.launcherDirectory = launcherDirectory;
-        final JsonObject config = FileUtils.readaJsonFromFile(getConfiguration());
+        JsonObject config;
+        try (FileReader reader = new FileReader(getConfiguration())) {
+            JsonParser parser = new JsonParser();
+            config = parser.parse(reader).getAsJsonObject();
+        } catch (IOException e){
+            config = null;
+        }
         if (getConfiguration().exists() && config != null){
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
             else config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);

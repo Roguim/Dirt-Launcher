@@ -13,7 +13,11 @@
 }
 .BackgroundBottom{
     -fx-background-color: linear-gradient(to top, #191919, #595959);
-	
+
+}
+.BackgroundTop{
+  -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
+
 }
 
 .PackList{
