@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
@@ -41,11 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Home {
     private static Home instance;
@@ -67,10 +62,18 @@ public class Home {
     private PasswordField passwordField;
     private TextField usernameField;
     private Button playButton;
-    private final Logger logger;
+    private Logger logger;
 
     public Home(){
-        logger = Main.getLogger();
+        new Thread(()->{
+            logger = null;
+            while (Main.getLogger() == null){
+                try{
+                    Thread.sleep(5);
+                } catch (Exception ignored){}
+            }
+            logger = Main.getLogger();
+        });
     }
 
     public static Home getInstance() {
@@ -95,26 +98,18 @@ public class Home {
         settingsImage.setImage(MiscUtils.getImage(Internal.ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(event -> {
-            Stage stage = Settings.getInstance().getStage();
+            Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
             stage.show();
             stage.setOnCloseRequest(e -> {
-                final File currentGameDirectory = Directories.getGameDirectory();
-                final File changedGameDirectory = new File(Settings.getInstance().getGameDirectoryField().getText());
-                final JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
+                final File currentGameDirectory = Main.getSettings().getGameDirectory().toFile();
+                final File changedGameDirectory = new File(net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getGameDirectoryField().getText());
 
-                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMinimumRam().getText())) config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
-                else config.addProperty("minimum-ram", Integer.valueOf(Settings.getInstance().getMinimumRam().getText()));
+                final int minimumRam = Integer.valueOf(Settings.getInstance().getMinimumRam().getText());
+                final int maximumRam = Integer.valueOf(Settings.getInstance().getMaximumRam().getText());
+                final String gameDirectory = Settings.getInstance().getGameDirectoryField().getText();
+                final String javaArguments = Settings.getInstance().getJavaArguments().getText();
 
-                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getMaximumRam().getText())) config.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
-                else config.addProperty("maximum-ram", Integer.valueOf(Settings.getInstance().getMaximumRam().getText()));
-
-                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getJavaArguments().getText())) config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
-                else config.addProperty("java-arguments", Settings.getInstance().getJavaArguments().getText());
-
-                if (MiscUtils.isEmptyOrNull(Settings.getInstance().getGameDirectoryField().getText())) config.addProperty("game-directory", Directories.getLauncherDirectory().getPath());
-                else config.addProperty("game-directory", Settings.getInstance().getGameDirectoryField().getText());
-
-                FileUtils.writeJsonToFile(Directories.getConfiguration(), config);
+                Main.getSettings().updateSettings(minimumRam, maximumRam, javaArguments, gameDirectory);
 
                 if (!Objects.equals(currentGameDirectory, changedGameDirectory)){
                     for(File file : Objects.requireNonNull(currentGameDirectory.listFiles())) {
@@ -126,7 +121,6 @@ public class Home {
                     }
                     //noinspection ResultOfMethodCallIgnored
                     currentGameDirectory.delete();
-                    FileUtils.initGameDirectory();
                 }
             });
         });
@@ -176,11 +170,10 @@ public class Home {
     private void populatePackListAsync(){
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
-        if (Internal.VERBOSE) logger.info("Waiting for pack list JSON");
         packList.getStyleClass().add(CssClasses.PACKLIST);
         Platform.runLater(()->packList.getChildren().clear());
         Platform.runLater(()->packs.forEach(pack -> packList.getChildren().add(new PackCell(pack))));
-        if (Internal.VERBOSE) logger.info("Packlist built!");
+        if (Internal.VERBOSE) System.out.println("Packlist built!");
 
     }
 

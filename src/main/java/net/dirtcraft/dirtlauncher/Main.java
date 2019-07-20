@@ -2,57 +2,76 @@ package net.dirtcraft.dirtlauncher;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
-import net.dirtcraft.dirtlauncher.Controllers.Settings;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
-import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.Timer;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Future;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Main extends Application {
 
-    private static Logger logger;
+    private static SettingsManager settings = null;
+    private static Logger logger = null;
     private static Main instance;
     private Stage stage;
 
     public static void main(String[] args) {
-        System.setProperty("log4j.saveDirectory", Directories.getLog().toString());
-        logger = LogManager.getLogger(Main.class);
-        logger.info("Logger logging, App starting.");
+        Path launcherDirectory;
+        // If it's windows, use AppData
+        if (SystemUtils.IS_OS_WINDOWS) launcherDirectory = Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
+        // If it's linux, use the user's Application Support directory
+        else if (SystemUtils.IS_OS_MAC) launcherDirectory =  Paths.get(System.getProperty("user.home") , "Library" , "Application Support", "DirtCraft", "DirtLauncher");
+        // Otherwise, we can assume it's probably linux, so we'll use their application folder
+        else launcherDirectory =  Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
+
+        //init settings async
         new Thread(()->{
+            settings = new SettingsManager(launcherDirectory);
+        }).start();
+
+        //init logger async
+        new Thread(()->{
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+            Date date = new Date();
+            final String fname = dateFormat.format(date);
+            System.setProperty("log4j.saveDirectory", launcherDirectory.resolve(fname+".log").toString());
+            logger = LogManager.getLogger(Main.class);
+            logger.info("Logger logging, App starting.");
             //Grab a list of log files and delete all but the last 5.
-            List<File> logFiles = Arrays.asList(Objects.requireNonNull(Directories.getLogDirectory().toFile().listFiles()));
+            final List<File> logFiles = Arrays.asList(Objects.requireNonNull(settings.getLogDirectory().toFile().listFiles()));
             logFiles.sort(Collections.reverseOrder());
             for(int i = 0; i < logFiles.size(); i++){
                 if (i>=5){
-                    boolean success = logFiles.get(i).delete();
-                    if (!success) logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
+                    if (!logFiles.get(i).delete()) logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
                 }
             }
-            // Ensure that the application folders are created
-            Directories.getLauncherDirectory().mkdirs();
-            FileUtils.initGameDirectory();
+        }).start();
+
+        //pre-init settings async
+        new Thread(()->{
+            net.dirtcraft.dirtlauncher.Controllers.Settings.loadSettings();
+            try {
+                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
+            } catch (IOException e){
+                logger.error(e);
+            }
         }).start();
         // Launch the application
         launch(args);
@@ -61,34 +80,18 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         instance = this;
-
-        Platform.setImplicitExit(false);
-
         Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "main.fxml"));
+        Platform.setImplicitExit(false);
         primaryStage.setTitle("Dirt Launcher");
         primaryStage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "main.png"));
-
-        Scene scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
-
         primaryStage.initStyle(StageStyle.DECORATED);
-
-        primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event -> {
             if (!LaunchGame.isGameRunning) Platform.exit();
         });
+        Scene scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
+        primaryStage.setScene(scene);
+        primaryStage.show();
         stage = primaryStage;
-
-        stage.show();
-
-        new Thread(()->{
-            Settings.loadSettings();
-            try {
-                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
-            } catch (IOException e){
-                logger.error(e);
-            }
-        }).start();
-
     }
 
     @Override
@@ -106,5 +109,9 @@ public class Main extends Application {
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    public static SettingsManager getSettings() {
+        return settings;
     }
 }

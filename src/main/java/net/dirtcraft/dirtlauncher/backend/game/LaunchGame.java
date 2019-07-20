@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.SystemTray;
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
@@ -43,8 +43,8 @@ public class LaunchGame {
     }
 
     public static void launchPack(Pack pack, Account account) {
-        JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
-        final File instanceDirectory = new File(Directories.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
+        SettingsManager settings = Main.getSettings();
+        final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         StringBuilder command = new StringBuilder();
         command.append("java");
@@ -52,10 +52,10 @@ public class LaunchGame {
         command.append(" ");
 
         // RAM
-        command.append("-Xms" + config.get("minimum-ram").getAsString() + "M -Xmx" + config.get("maximum-ram").getAsString() + "M ");
+        command.append("-Xms" + settings.getMinimumRam() + "M -Xmx" + settings.getMaximumRam() + "M ");
 
         // Configurable Java Arguments
-        String javaArgs = config.get("java-arguments").getAsString();
+        String javaArgs = settings.getJavaArguments();
         if (MiscUtils.isEmptyOrNull(javaArgs)) command.append(Internal.DEFAULT_JAVA_ARGS);
         else command.append(javaArgs);
         command.append(" ");
@@ -66,22 +66,22 @@ public class LaunchGame {
         // Mojang Tricks
         command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
         // Natives path
-        String nativesPath = Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives";
+        String nativesPath = settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives";
         command.append("-Djava.library.path=\"" + nativesPath + "\" ");
         command.append("-Dorg.lwjgl.librarypath=\"" + nativesPath + "\" ");
         command.append("-Dnet.java.games.input.librarypath=\"" + nativesPath + "\" ");
         command.append("-Duser.home=\"" + instanceDirectory.getPath() + "\" ");
         // Classpath
         command.append("-cp \"");
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+        for (JsonElement jsonElement : FileUtils.readaJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(Directories.getDirectoryManifest(Directories.getVersionsDirectory())).getAsJsonArray("versions")) {
+        for (JsonElement jsonElement : FileUtils.readaJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        command.append(new File(Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
+        command.append(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
 
         //Loader class
         command.append("net.minecraft.launchwrapper.Launch ");
@@ -95,8 +95,8 @@ public class LaunchGame {
         // Game Dir
         command.append("--gameDir \"" + instanceDirectory.getPath() + "\" ");
         // Assets Dir
-        String assetsVersion = FileUtils.readJsonFromFile(new File(Directories.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        command.append("--assetsDir \"" + new File(Directories.getAssetsDirectory().getPath()).toPath() + "\" ");
+        String assetsVersion = FileUtils.readaJsonFromFile(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
+        command.append("--assetsDir \"" + new File(settings.getAssetsDirectory().getPath()).toPath() + "\" ");
         // Assets Index
         command.append("--assetIndex " + assetsVersion + " ");
         // UUID

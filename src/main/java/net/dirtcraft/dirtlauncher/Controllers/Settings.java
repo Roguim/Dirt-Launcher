@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
@@ -55,19 +55,12 @@ public class Settings {
     @FXML
     private void initialize() {
         instance = this;
-        new Thread(()->{
-            JsonObject config = FileUtils.readJsonFromFile(Directories.getConfiguration());
-            Platform.runLater(()->{
-                minimumRam.setPromptText(RamUtils.getMinimumRam() * 1024 + " MB");
-                maximumRam.setPromptText(RamUtils.getRecommendedRam() * 1024 + " MB");
-
-                gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
-                gameDirectoryField.setText(config.get("game-directory").getAsString());
-                minimumRam.setText(String.valueOf(config.get("minimum-ram").getAsInt()));
-                maximumRam.setText(String.valueOf(config.get("maximum-ram").getAsInt()));
-                javaArguments.setText(config.get("java-arguments").getAsString());
-            });
-        }).start();
+        SettingsManager config = Main.getSettings();
+        gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
+        gameDirectoryField.setText(config.getGameDirectory().toString());
+        minimumRam.setText(String.valueOf(config.getMinimumRam()));
+        maximumRam.setText(String.valueOf(config.getMaximumRam()));
+        javaArguments.setText(config.getJavaArguments());
     }
 
     public TextField getMinimumRam() {

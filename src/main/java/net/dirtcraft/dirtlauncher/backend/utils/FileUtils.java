@@ -1,10 +1,7 @@
 package net.dirtcraft.dirtlauncher.backend.utils;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
@@ -41,7 +38,7 @@ public class FileUtils {
     }
 
     @Nullable
-    public static JsonObject readJsonFromFile(File file) {
+    public static JsonObject readaJsonFromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
             JsonParser parser = new JsonParser();
             return parser.parse(reader).getAsJsonObject();
@@ -51,7 +48,7 @@ public class FileUtils {
         return null;
     }
 
-    public static void writeJsonToFile(File file, JsonObject jsonObject) {
+    public static void writeaJsonToFile(File file, JsonObject jsonObject) {
         try (FileWriter writer = new FileWriter(file, false)) {
             writer.write(jsonObject.toString());
         } catch (IOException e) {
@@ -155,43 +152,6 @@ public class FileUtils {
         packIn.close();
         packBufferedIn.close();
         packFileIn.close();
-    }
-
-    public static void initGameDirectory(){
-        // Ensure that the application folders are created
-        Directories.getGameDirectory().mkdirs();
-        Directories.getInstancesDirectory().mkdirs();
-        Directories.getVersionsDirectory().mkdirs();
-        Directories.getAssetsDirectory().mkdirs();
-        Directories.getForgeDirectory().mkdirs();
-        // Ensure that all required manifests are created
-        if (!Directories.getConfiguration().exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
-            emptyManifest.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
-            emptyManifest.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
-            FileUtils.writeJsonToFile(Directories.getConfiguration(), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getInstancesDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("packs", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getInstancesDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getVersionsDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("versions", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getVersionsDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getAssetsDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("assets", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getAssetsDirectory()), emptyManifest);
-        }
-        if(!Directories.getDirectoryManifest(Directories.getForgeDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("forgeVersions", new JsonArray());
-            FileUtils.writeJsonToFile(Directories.getDirectoryManifest(Directories.getForgeDirectory()), emptyManifest);
-        }
     }
 
 }

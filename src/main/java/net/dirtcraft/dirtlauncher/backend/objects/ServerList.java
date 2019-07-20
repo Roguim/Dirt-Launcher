@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.backend.objects;
 
-import net.dirtcraft.dirtlauncher.backend.config.Directories;
+import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 
@@ -23,7 +24,7 @@ public class ServerList {
 
     private ServerList(String packName){
         servers = new ArrayList<>();
-        this.serverDat = Paths.get(Directories.getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+        this.serverDat = Paths.get(Main.getSettings().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
     }
     //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
     private List<Byte> getAsByteArray(){
