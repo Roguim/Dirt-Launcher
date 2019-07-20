@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.backend.game;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
@@ -73,11 +72,11 @@ public class LaunchGame {
         command.append("-Duser.home=\"" + instanceDirectory.getPath() + "\" ");
         // Classpath
         command.append("-cp \"");
-        for (JsonElement jsonElement : FileUtils.readaJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        for (JsonElement jsonElement : FileUtils.readaJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
                 command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
@@ -95,7 +94,7 @@ public class LaunchGame {
         // Game Dir
         command.append("--gameDir \"" + instanceDirectory.getPath() + "\" ");
         // Assets Dir
-        String assetsVersion = FileUtils.readaJsonFromFile(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
+        String assetsVersion = FileUtils.readJsonFromFile(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
         command.append("--assetsDir \"" + new File(settings.getAssetsDirectory().getPath()).toPath() + "\" ");
         // Assets Index
         command.append("--assetIndex " + assetsVersion + " ");

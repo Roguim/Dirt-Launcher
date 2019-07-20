@@ -3,12 +3,11 @@ package net.dirtcraft.dirtlauncher.backend.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,6 +15,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 
 public final class SettingsManager {
@@ -61,31 +61,31 @@ public final class SettingsManager {
     }
 
     public void initGameDirectory(){
-        // Ensure that the application folders are created
         getGameDirectory().toFile().mkdirs();
         getInstancesDirectory().mkdirs();
         getVersionsDirectory().mkdirs();
         getAssetsDirectory().mkdirs();
         getForgeDirectory().mkdirs();
+        // Ensure that the application folders are created
         if(!getDirectoryManifest(getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("packs", new JsonArray());
-            FileUtils.writeaJsonToFile(getDirectoryManifest(getInstancesDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(getDirectoryManifest(getInstancesDirectory()), emptyManifest);
         }
         if(!getDirectoryManifest(getVersionsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("versions", new JsonArray());
-            FileUtils.writeaJsonToFile(getDirectoryManifest(getVersionsDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(getDirectoryManifest(getVersionsDirectory()), emptyManifest);
         }
         if(!getDirectoryManifest(getAssetsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("assets", new JsonArray());
-            FileUtils.writeaJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
         }
         if(!getDirectoryManifest(getForgeDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("forgeVersions", new JsonArray());
-            FileUtils.writeaJsonToFile(getDirectoryManifest(getForgeDirectory()), emptyManifest);
+            FileUtils.writeJsonToFile(getDirectoryManifest(getForgeDirectory()), emptyManifest);
         }
     }
 
@@ -95,14 +95,32 @@ public final class SettingsManager {
         config.addProperty("maximum-ram", maximumRam);
         config.addProperty("java-arguments", javaArguments);
         config.addProperty("game-directory", gameDirectory.toString());
-        FileUtils.writeaJsonToFile(getConfiguration(), config);
+        FileUtils.writeJsonToFile(getConfiguration(), config);
     }
 
     public void updateSettings(int minimumRam, int maximumRam, String javaArguments, String gameDirectory){
+        final boolean changedDir = !this.gameDirectory.toString().equals(gameDirectory);
+        final File oldGameDir = getGameDirectory().toFile();
+        final File oldInstanceDir = getInstancesDirectory();
+        final File oldVersionDir = getVersionsDirectory();
+        final File oldAssetsDir = getAssetsDirectory();
+        final File oldForgeDir = getForgeDirectory();
         this.minimumRam = minimumRam;
         this.maximumRam = maximumRam;
         this.javaArguments = javaArguments;
         this.gameDirectory = Paths.get(gameDirectory);
+        if (changedDir){
+            try {
+                org.apache.commons.io.FileUtils.moveDirectory(oldInstanceDir, getInstancesDirectory());
+                org.apache.commons.io.FileUtils.moveDirectory(oldVersionDir, getVersionsDirectory());
+                org.apache.commons.io.FileUtils.moveDirectory(oldAssetsDir, getAssetsDirectory());
+                org.apache.commons.io.FileUtils.moveDirectory(oldForgeDir, getForgeDirectory());
+            } catch (IOException e){
+                Main.getLogger().error(e);
+            }
+            oldGameDir.delete();
+            initGameDirectory();
+        }
         saveSettings();
     }
 
@@ -131,7 +149,7 @@ public final class SettingsManager {
     }
 
     public File getDirectoryManifest(File directory) {
-        return gameDirectory.resolve("manifest.json").toFile();
+        return directory.toPath().resolve("manifest.json").toFile();
     }
 
     public File getConfiguration() {

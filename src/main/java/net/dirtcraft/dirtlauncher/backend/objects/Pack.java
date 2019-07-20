@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.backend.objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 
 import java.io.File;
@@ -147,14 +146,14 @@ public class Pack {
     }
 
     public boolean isInstalled() {
-        for(JsonElement jsonElement : FileUtils.readaJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName())) return true;
         }
         return false;
     }
 
     public boolean isOutdated() {
-        for(JsonElement jsonElement : FileUtils.readaJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
         }
         return true;

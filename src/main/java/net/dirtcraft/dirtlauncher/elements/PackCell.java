@@ -15,7 +15,6 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -133,13 +132,13 @@ public final class PackCell extends Button {
 
         uninstall.setOnAction(e->{
 
-            JsonObject instanceManifest = FileUtils.readaJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
+            JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
             if (instanceManifest == null || !instanceManifest.has("packs")) return;
             JsonArray packs = instanceManifest.getAsJsonArray("packs");
             for (int i = 0; i < packs.size(); i++){
                 if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), pack.getName())) packs.remove(i);
             }
-            FileUtils.writeaJsonToFile(new File(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()).getPath()), instanceManifest);
+            FileUtils.writeJsonToFile(new File(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()).getPath()), instanceManifest);
             try {
                 FileUtils.deleteDirectory(pack.getInstanceDirectory());
             } catch (IOException exception){

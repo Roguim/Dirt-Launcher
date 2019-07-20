@@ -98,27 +98,11 @@ public class Home {
             Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
             stage.show();
             stage.setOnCloseRequest(e -> {
-                final File currentGameDirectory = Main.getSettings().getGameDirectory().toFile();
-                final File changedGameDirectory = new File(net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getGameDirectoryField().getText());
-
                 final int minimumRam = Integer.valueOf(Settings.getInstance().getMinimumRam().getText());
                 final int maximumRam = Integer.valueOf(Settings.getInstance().getMaximumRam().getText());
                 final String gameDirectory = Settings.getInstance().getGameDirectoryField().getText();
                 final String javaArguments = Settings.getInstance().getJavaArguments().getText();
-
                 Main.getSettings().updateSettings(minimumRam, maximumRam, javaArguments, gameDirectory);
-
-                if (!Objects.equals(currentGameDirectory, changedGameDirectory)){
-                    for(File file : Objects.requireNonNull(currentGameDirectory.listFiles())) {
-                        try {
-                            FileUtils.moveDirectory(file, changedGameDirectory, true);
-                        } catch (IOException exception) {
-                            logger.error(exception);
-                        }
-                    }
-                    //noinspection ResultOfMethodCallIgnored
-                    currentGameDirectory.delete();
-                }
             });
         });
 

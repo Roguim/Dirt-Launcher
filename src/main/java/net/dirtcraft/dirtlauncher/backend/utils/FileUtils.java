@@ -38,7 +38,7 @@ public class FileUtils {
     }
 
     @Nullable
-    public static JsonObject readaJsonFromFile(File file) {
+    public static JsonObject readJsonFromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
             JsonParser parser = new JsonParser();
             return parser.parse(reader).getAsJsonObject();
@@ -48,7 +48,7 @@ public class FileUtils {
         return null;
     }
 
-    public static void writeaJsonToFile(File file, JsonObject jsonObject) {
+    public static void writeJsonToFile(File file, JsonObject jsonObject) {
         try (FileWriter writer = new FileWriter(file, false)) {
             writer.write(jsonObject.toString());
         } catch (IOException e) {
