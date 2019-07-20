@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 
 public final class SettingsManager {
@@ -26,15 +25,16 @@ public final class SettingsManager {
     private final transient Path launcherDirectory;
 
     public SettingsManager(Path launcherDirectory){
+        File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
         JsonObject config;
-        try (FileReader reader = new FileReader(getConfiguration())) {
+        try (FileReader reader = new FileReader(configFile)) {
             JsonParser parser = new JsonParser();
             config = parser.parse(reader).getAsJsonObject();
         } catch (IOException e){
             config = null;
         }
-        if (getConfiguration().exists() && config != null){
+        if (configFile.exists() && config != null){
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
             else config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
             if (config.has("maximum-ram")) maximumRam = config.get("maximum-ram").getAsInt();
@@ -42,7 +42,7 @@ public final class SettingsManager {
             if (config.has("java-arguments")) javaArguments = config.get("java-arguments").getAsString();
             else config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
             if (config.has("game-directory")) gameDirectory = Paths.get(config.get("game-directory").getAsString());
-            else config.addProperty("game-directory", getLauncherDirectory().toString());
+            else config.addProperty("game-directory", launcherDirectory.toString());
         } else {
             minimumRam = RamUtils.getMinimumRam() * 1024;
             maximumRam = RamUtils.getRecommendedRam() * 1024;
@@ -90,12 +90,13 @@ public final class SettingsManager {
     }
 
     private void saveSettings(){
+        File configFile = launcherDirectory.resolve("configuration.json").toFile();
         final JsonObject config = new JsonObject();
         config.addProperty("minimum-ram", minimumRam);
         config.addProperty("maximum-ram", maximumRam);
         config.addProperty("java-arguments", javaArguments);
         config.addProperty("game-directory", gameDirectory.toString());
-        FileUtils.writeJsonToFile(getConfiguration(), config);
+        FileUtils.writeJsonToFile(configFile, config);
     }
 
     public void updateSettings(int minimumRam, int maximumRam, String javaArguments, String gameDirectory){
@@ -124,10 +125,6 @@ public final class SettingsManager {
         saveSettings();
     }
 
-    public Path getLauncherDirectory() {
-        return launcherDirectory;
-    }
-
     public Path getLogDirectory() {
         return launcherDirectory.resolve("logs");
     }
@@ -150,10 +147,6 @@ public final class SettingsManager {
 
     public File getDirectoryManifest(File directory) {
         return directory.toPath().resolve("manifest.json").toFile();
-    }
-
-    public File getConfiguration() {
-        return launcherDirectory.resolve("configuration.json").toFile();
     }
 
     public int getMinimumRam() {
