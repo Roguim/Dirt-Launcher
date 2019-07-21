@@ -9,7 +9,6 @@ import javafx.scene.text.TextFlow;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 
 public class NotificationHandler {
     private static boolean initialized = false;

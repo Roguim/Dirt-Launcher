@@ -12,7 +12,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.elements.PlayButton;
 import net.lingala.zip4j.ZipFile;

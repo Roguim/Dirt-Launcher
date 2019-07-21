@@ -10,7 +10,7 @@ import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;

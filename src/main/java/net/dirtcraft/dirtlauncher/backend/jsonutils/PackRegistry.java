@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
+import net.dirtcraft.dirtlauncher.elements.Pack;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;

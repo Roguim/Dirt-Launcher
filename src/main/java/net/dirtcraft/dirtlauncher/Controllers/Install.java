@@ -52,7 +52,7 @@ public class Install {
         getStage().ifPresent(Stage::close);
 
         LoginBar loginBar = Home.getInstance().getLoginBar();
-        Home.getInstance().getLoginBar().getActivePackCell().ifPresent(cell -> loginBar.getActionButton().launchPack(loginBar.login(), cell.getPack()));
+        Home.getInstance().getLoginBar().getActivePackCell().ifPresent(pack -> loginBar.getActionButton().launchPack(loginBar.login(), pack));
     }
 
     public void setStage(Stage stage) {

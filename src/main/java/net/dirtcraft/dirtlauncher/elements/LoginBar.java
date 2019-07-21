@@ -10,7 +10,6 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 
 import javax.annotation.Nullable;
@@ -21,7 +20,7 @@ public class LoginBar extends Pane {
     private TextField usernameField;
     private PasswordField passField;
     private PlayButton actionButton;
-    private PackCell activePackCell;
+    private Pack activePackCell;
 
     public LoginBar() {
         activePackCell = null;//ripblock
@@ -123,24 +122,23 @@ public class LoginBar extends Pane {
         return usernameField;
     }
 
-    public Optional<PackCell> getActivePackCell() {
+    public Optional<Pack> getActivePackCell() {
         if (activePackCell!=null) return Optional.of(activePackCell);
         else return Optional.empty();
     }
 
-    public void setActivePackCell(PackCell cell) {
-        Pack pack = cell.getPack();
-        this.activePackCell = cell;
+    public void setActivePackCell(Pack pack) {
+        this.activePackCell = pack;
         PlayButton.Types type;
 
         if (!pack.isInstalled()) type = PlayButton.Types.INSTALL;
         else if (pack.isOutdated()) type = PlayButton.Types.UPDATE;
         else type = PlayButton.Types.PLAY;
 
-        this.actionButton.setType(type, cell.getPack());
+        this.actionButton.setType(type, pack);
     }
 
     public void updatePlayButton(PlayButton.Types types){
-        actionButton.setType(types, activePackCell.getPack());
+        actionButton.setType(types, activePackCell);
     }
 }

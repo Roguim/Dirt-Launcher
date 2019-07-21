@@ -21,11 +21,9 @@ import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
 import net.dirtcraft.dirtlauncher.backend.config.Internal;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
-import net.dirtcraft.dirtlauncher.backend.objects.Pack;
-import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
-import net.dirtcraft.dirtlauncher.elements.PackCell;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -34,10 +32,7 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.html.HTMLAnchorElement;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.Objects;
 
 public class Home {
     private static Home instance;
@@ -152,7 +147,7 @@ public class Home {
         packs.addAll(PackRegistry.getPacks());
         packList.getStyleClass().add(CssClasses.PACKLIST);
         Platform.runLater(()->packList.getChildren().clear());
-        Platform.runLater(()->packs.forEach(pack -> packList.getChildren().add(new PackCell(pack))));
+        Platform.runLater(()->packList.getChildren().addAll(packs));
         if (Internal.VERBOSE) System.out.println("Packlist built!");
     }
 
