@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileReader;
@@ -60,12 +61,13 @@ public final class SettingsManager {
         return new File(getLogDirectory().toFile(), fname+".log");
     }
 
-    public void initGameDirectory(){
-        getGameDirectory().toFile().mkdirs();
-        getInstancesDirectory().mkdirs();
-        getVersionsDirectory().mkdirs();
-        getAssetsDirectory().mkdirs();
-        getForgeDirectory().mkdirs();
+    private void initGameDirectory(){
+        final Logger logger = Main.getLogger();
+        logger.info(getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
+        logger.info(getInstancesDirectory().mkdirs()?"Successfully created":"Failed to create"+" instances directory");
+        logger.info(getVersionsDirectory().mkdirs()?"Successfully created":"Failed to create"+" versions directory");
+        logger.info(getAssetsDirectory().mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
+        logger.info(getForgeDirectory().mkdirs()?"Successfully created":"Failed to create"+" forge directory.");
         // Ensure that the application folders are created
         if(!getDirectoryManifest(getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
@@ -119,7 +121,7 @@ public final class SettingsManager {
             } catch (IOException e){
                 Main.getLogger().error(e);
             }
-            oldGameDir.delete();
+            Main.getLogger().info(oldGameDir.delete()?"Successfully deleted":"Failed to delete"+" "+oldGameDir);
             initGameDirectory();
         }
         saveSettings();

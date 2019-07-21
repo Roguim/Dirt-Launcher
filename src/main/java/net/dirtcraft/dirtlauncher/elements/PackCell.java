@@ -74,7 +74,11 @@ public final class PackCell extends Button {
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
         setOnMouseDragged(this::onDrag);
         setOnMouseDragExited(e-> lastDragY = 0);
-        setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
+        setOnContextMenuRequested(e->{
+            if (pack.isInstalled()) {
+                contextMenu.show(this, e.getScreenX(), e.getScreenY());
+            }
+        });
 
     }
 
@@ -131,7 +135,6 @@ public final class PackCell extends Button {
         });
 
         uninstall.setOnAction(e->{
-
             JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
             if (instanceManifest == null || !instanceManifest.has("packs")) return;
             JsonArray packs = instanceManifest.getAsJsonArray("packs");
