@@ -1,21 +1,18 @@
-package net.dirtcraft.dirtlauncher.backend.config;
+package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.management.OperatingSystemMXBean;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
-import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 public final class Config {
@@ -24,6 +21,8 @@ public final class Config {
     private String javaArguments;
     private Path gameDirectory;
     private final transient Path launcherDirectory;
+    private transient final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
+
 
     public Config(Path launcherDirectory){
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
@@ -37,16 +36,16 @@ public final class Config {
         }
         if (configFile.exists() && config != null){
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
-            else config.addProperty("minimum-ram", RamUtils.getMinimumRam() * 1024);
+            else config.addProperty("minimum-ram", getDefaultMinimumRam() * 1024);
             if (config.has("maximum-ram")) maximumRam = config.get("maximum-ram").getAsInt();
-            else config.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
+            else config.addProperty("maximum-ram", getDefaultRecommendedRam() * 1024);
             if (config.has("java-arguments")) javaArguments = config.get("java-arguments").getAsString();
             else config.addProperty("java-arguments", Constants.DEFAULT_JAVA_ARGS);
             if (config.has("game-directory")) gameDirectory = Paths.get(config.get("game-directory").getAsString());
             else config.addProperty("game-directory", launcherDirectory.toString());
         } else {
-            minimumRam = RamUtils.getMinimumRam() * 1024;
-            maximumRam = RamUtils.getRecommendedRam() * 1024;
+            minimumRam = getDefaultMinimumRam() * 1024;
+            maximumRam = getDefaultRecommendedRam() * 1024;
             javaArguments = Constants.DEFAULT_JAVA_ARGS;
             gameDirectory = launcherDirectory;
             initGameDirectory();
@@ -54,11 +53,20 @@ public final class Config {
         }
     }
 
-    public File getLog(){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-        Date date = new Date();
-        String fname = dateFormat.format(date);
-        return new File(getLogDirectory().toFile(), fname+".log");
+    public int getDefaultRecommendedRam() {
+
+        if (maxMemory > 10000) return 8;
+        else if (maxMemory > 7000) return 6;
+        else if (maxMemory > 5000) return 4;
+        else if (maxMemory > 2000) return 3;
+        else return 2;
+    }
+
+    public int getDefaultMinimumRam() {
+
+        if (maxMemory > 5000) return 4;
+        else if (maxMemory > 3000) return 3;
+        else return 2;
     }
 
     private void initGameDirectory(){

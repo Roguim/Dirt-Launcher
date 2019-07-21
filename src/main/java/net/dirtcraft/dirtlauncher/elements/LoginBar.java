@@ -16,7 +16,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.Verification;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class LoginBar extends Pane {
+public final class LoginBar extends Pane {
     private GridPane loginContainer;
     private TextField usernameField;
     private PasswordField passField;

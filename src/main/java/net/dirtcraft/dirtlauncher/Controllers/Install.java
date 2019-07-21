@@ -14,7 +14,7 @@ import net.dirtcraft.dirtlauncher.elements.LoginBar;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class Install {
+public final class Install {
 
     private static Install instance = null;
 

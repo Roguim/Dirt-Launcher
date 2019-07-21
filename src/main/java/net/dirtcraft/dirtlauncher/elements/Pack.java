@@ -16,7 +16,7 @@ import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.backend.config.Constants;
+import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-public class Pack  extends Button {
+public final class Pack extends Button {
     private double lastDragY;
     private String version;
     private final ContextMenu contextMenu;

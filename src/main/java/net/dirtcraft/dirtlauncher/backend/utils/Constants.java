@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.backend.config;
+package net.dirtcraft.dirtlauncher.backend.utils;
 
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 

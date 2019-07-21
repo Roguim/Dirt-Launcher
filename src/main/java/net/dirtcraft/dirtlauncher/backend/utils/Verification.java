@@ -7,7 +7,6 @@ import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.NameEntry;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
-import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 
 import java.util.List;

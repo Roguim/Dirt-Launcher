@@ -17,7 +17,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.backend.config.Constants;
+import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.elements.NotificationBox;
 import net.dirtcraft.dirtlauncher.elements.Pack;
@@ -32,7 +32,7 @@ import org.w3c.dom.html.HTMLAnchorElement;
 import java.awt.*;
 import java.net.URI;
 
-public class Home {
+public final class Home {
     private static Home instance;
 
     @FXML

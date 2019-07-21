@@ -10,7 +10,7 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 
-public class NotificationBox extends TextFlow{
+public final class NotificationBox extends TextFlow{
     private boolean initialized = false;
     private Thread uiCallback;
 

@@ -17,7 +17,7 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Constants;
+import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
@@ -26,7 +26,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import java.io.IOException;
 import java.util.Collections;
 
-public class PlayButton extends Button {
+public final class PlayButton extends Button {
     private Types type;
     private Pack pack;
     private LoginBar loginBar;
