@@ -57,7 +57,7 @@
      -fx-background-color: #661313;
 }
 
-.PackCell:hover, .PackCell:selected, .PackCellSelected, .PackCell:pressed, .SettingsButton:hover, .SettingsButton:selected{
+.PackCell:hover, .PackCell:selected, .PackCell:pressed, .SettingsButton:hover, .SettingsButton:selected{
      -fx-scale-y: 1.075;
      -fx-scale-x: 1.075;
 }
@@ -67,7 +67,7 @@
      -fx-text-fill: #FFF0F5;
 }
 
-.PackCellSelected {
+.PackCell:selected {
      -fx-background-color: #FFF0F5 !important ;
      -fx-text-fill: black !important ;
 

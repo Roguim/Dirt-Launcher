@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.elements;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import javafx.css.PseudoClass;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -38,7 +39,6 @@ public final class PackCell extends Button {
         getStyleClass().add(CssClasses.PACK_CELL);
         contextMenu = new ContextMenu();
         initContextMenu();
-
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
         setText(pack.getName());
@@ -82,14 +82,14 @@ public final class PackCell extends Button {
 
     }
 
-    public void deactivate(){
-        getStyleClass().remove(CssClasses.PACK_CELL_SELECTED);
+    private void deactivate(){
+        pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), false);
     }
 
     public Pack getPack(){
         return pack;
     }
-    public void onDrag(MouseEvent event) {
+    private void onDrag(MouseEvent event) {
         if (event.isPrimaryButtonDown()) {
             ScrollPane window = (ScrollPane) this.getParent().getParent().getParent().getParent();
             double change = (lastDragY - event.getY()) / window.getHeight();
@@ -103,7 +103,7 @@ public final class PackCell extends Button {
         final Button playButton = home.getActionButton();
         home.getActivePackCell().ifPresent(PackCell::deactivate);
         home.setActivePackCell(this);
-        getStyleClass().add(CssClasses.PACK_CELL_SELECTED);
+        pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + pack.getName());
 
         if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) playButton.setDisable(false);
@@ -115,7 +115,7 @@ public final class PackCell extends Button {
         MenuItem openFolder = new MenuItem("Open Folder");
         reinstall.getStyleClass().add(CssClasses.PACK_MENU);
         uninstall.getStyleClass().add(CssClasses.PACK_MENU);
-        openFolder.getStyleClass().add(CssClasses.PACK_MENU);;
+        openFolder.getStyleClass().add(CssClasses.PACK_MENU);
         reinstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
         uninstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
         openFolder.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
@@ -128,7 +128,7 @@ public final class PackCell extends Button {
         reinstall.setOnAction(e->{
             uninstall.fire();
             LoginBar loginBar = Home.getInstance().getLoginBar();
-            Optional<PackCell> oldPack = loginBar.getActivePackCell();;
+            Optional<PackCell> oldPack = loginBar.getActivePackCell();
             loginBar.setActivePackCell(this);
             loginBar.getActionButton().installPack(pack);
             oldPack.ifPresent(PackCell::fire);
