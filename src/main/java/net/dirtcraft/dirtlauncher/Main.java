@@ -32,15 +32,19 @@ public class Main extends Application {
     private static Logger logger = null;
     private static Future<Parent> root;
     private static Main instance;
+    private static List<String> options;
     private Stage stage;
 
     public static void main(String[] args) {
+        options = Arrays.asList(args);
         final Path launcherDirectory;
-        // If it's windows, use AppData
-        if (SystemUtils.IS_OS_WINDOWS) launcherDirectory = Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
-        // If it's linux, use the user's Application Support directory
+        // If we are using a portable install, we use the current folder.
+        if (options.contains("-portable")) launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        // If the host OS is windows, use AppData
+        else if (SystemUtils.IS_OS_WINDOWS) launcherDirectory = Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
+        // If the host OS is linux, use the user's Application Support directory
         else if (SystemUtils.IS_OS_MAC) launcherDirectory =  Paths.get(System.getProperty("user.home") , "Library" , "Application Support", "DirtCraft", "DirtLauncher");
-        // Otherwise, we can assume it's probably linux, so we'll use their application folder
+        // Otherwise, we can assume the host OS is probably linux, so we'll use their application folder
         else launcherDirectory =  Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
 
         //init settings async
@@ -123,5 +127,9 @@ public class Main extends Application {
 
     public static Config getSettings() {
         return settings;
+    }
+
+    public static List<String> getOptions(){
+        return options;
     }
 }
