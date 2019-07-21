@@ -141,14 +141,15 @@ public class LaunchGame {
                     //Create system tray icon
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
-
-                String line;
-                BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                Main.getLogger().warn("Starting Minecraft Logger...");
-                while ((line = input.readLine()) != null) {
-                    logger.info(line);
+                if (Constants.VERBOSE  || Main.getOptions().contains("-console")) {
+                    String line;
+                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    Main.getLogger().warn("Starting Minecraft Logger...");
+                    while ((line = input.readLine()) != null) {
+                        logger.info(line);
+                    }
+                    input.close();
                 }
-                input.close();
             } catch (IOException exception) {
                 exception.printStackTrace();
             } finally {
