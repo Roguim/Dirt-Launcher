@@ -10,18 +10,16 @@ import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 
-public class NotificationHandler {
-    private static boolean initialized = false;
-    private static Thread uiCallback;
-    private static TextFlow messageBox;
+public class NotificationBox extends TextFlow{
+    private boolean initialized = false;
+    private Thread uiCallback;
 
-    private static void Initialize(){
-        messageBox = Home.getInstance().getNotificationBox();
+    private void Initialize(){
         initialized = true;
         uiCallback = null;
     }
 
-    public static void displayError(LoginError result, Pack modPack) {
+    public void displayError(LoginError result, Pack modPack) {
         if (!initialized) Initialize();
         if (uiCallback != null) uiCallback.interrupt();
 
@@ -32,7 +30,7 @@ public class NotificationHandler {
         text.setTextOrigin(VPos.CENTER);
         text.setTextAlignment(TextAlignment.CENTER);
 
-        ShakeTransition animation = new ShakeTransition(messageBox);
+        ShakeTransition animation = new ShakeTransition(this);
         animation.playFromStart();
 
         if (result == null) text.setText("Your " + modPack.getName() + " Installation Is Corrupted!");
@@ -46,30 +44,23 @@ public class NotificationHandler {
             case INVALID_CREDENTIALS:
                 text.setText("Your E-Mail or password is invalid!");
                 break;
-
         }
-
-
-        if (messageBox.getTextAlignment() != TextAlignment.CENTER) messageBox.setTextAlignment(TextAlignment.CENTER);
-
-        if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
-        messageBox.getChildren().setAll(text);
-
+        if (getTextAlignment() != TextAlignment.CENTER) setTextAlignment(TextAlignment.CENTER);
+        if (getOpacity() != 0) setOpacity(0);
+        getChildren().setAll(text);
         uiCallback = getThread();
-
         uiCallback.start();
-
     }
 
-    private static Thread getThread() {
+    private Thread getThread() {
         return new Thread(() -> {
             Platform.runLater(() -> {
-                if (messageBox.getOpacity() != 1) messageBox.setOpacity(1);
+                if (getOpacity() != 1) setOpacity(1);
             });
             try {
                 Thread.sleep(5000);
                 Platform.runLater(() -> {
-                    if (messageBox.getOpacity() != 0) messageBox.setOpacity(0);
+                    if (getOpacity() != 0) setOpacity(0);
                     if (uiCallback != null) uiCallback = null;
                 });
             } catch (InterruptedException ignored) { }

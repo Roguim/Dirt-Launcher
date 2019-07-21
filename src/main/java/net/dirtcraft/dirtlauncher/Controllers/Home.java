@@ -12,19 +12,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
+import net.dirtcraft.dirtlauncher.elements.NotificationBox;
 import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
@@ -44,7 +42,7 @@ public class Home {
     private VBox packList;
 
     @FXML
-    private TextFlow notificationBox;
+    private NotificationBox notificationBox;
 
     @FXML
     private Button settingsButton;
@@ -54,23 +52,6 @@ public class Home {
     private PasswordField passwordField;
     private TextField usernameField;
     private Button playButton;
-    private Logger logger;
-
-    public Home(){
-        new Thread(()->{
-            logger = null;
-            while (Main.getLogger() == null){
-                try{
-                    Thread.sleep(5);
-                } catch (Exception ignored){}
-            }
-            logger = Main.getLogger();
-        });
-    }
-
-    public static Home getInstance() {
-        return instance;
-    }
 
     @FXML   //this is all async
     private void initialize() {
@@ -87,7 +68,7 @@ public class Home {
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);
         settingsImage.setFitWidth(50);
-        settingsImage.setImage(MiscUtils.getImage(Internal.ICONS, "settings.png"));
+        settingsImage.setImage(MiscUtils.getImage(Constants.ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(event -> {
             Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
@@ -117,7 +98,7 @@ public class Home {
     private void initWebView(){
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Internal.CSS_HTML, "webEngine.css"));
+        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Constants.CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (!(newValue == Worker.State.SUCCEEDED)) return;
@@ -145,10 +126,12 @@ public class Home {
     private void populatePackListAsync(){
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
-        packList.getStyleClass().add(CssClasses.PACKLIST);
-        Platform.runLater(()->packList.getChildren().clear());
-        Platform.runLater(()->packList.getChildren().addAll(packs));
-        if (Internal.VERBOSE) System.out.println("Packlist built!");
+        packList.getStyleClass().add(Constants.CSS_PACKLIST);
+        Platform.runLater(()->{
+            packList.getChildren().clear();
+            packList.getChildren().addAll(packs);
+        });
+        if (Constants.VERBOSE) System.out.println("Packlist built!");
     }
 
     private void setKeyTypedEvent(KeyEvent event) {
@@ -163,12 +146,16 @@ public class Home {
         } else playButton.setDisable(true);
     }
 
-    public TextFlow getNotificationBox() {
+    public NotificationBox getNotificationBox() {
         return notificationBox;
     }
 
     public LoginBar getLoginBar() {
         return loginBar;
+    }
+
+    public static Home getInstance() {
+        return instance;
     }
 
 }

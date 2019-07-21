@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.SystemTray;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Config;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
 import net.dirtcraft.dirtlauncher.elements.Pack;
@@ -42,7 +42,7 @@ public class LaunchGame {
     }
 
     public static void launchPack(Pack pack, Account account) {
-        SettingsManager settings = Main.getSettings();
+        Config settings = Main.getSettings();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         StringBuilder command = new StringBuilder();
@@ -55,7 +55,7 @@ public class LaunchGame {
 
         // Configurable Java Arguments
         String javaArgs = settings.getJavaArguments();
-        if (MiscUtils.isEmptyOrNull(javaArgs)) command.append(Internal.DEFAULT_JAVA_ARGS);
+        if (MiscUtils.isEmptyOrNull(javaArgs)) command.append(Constants.DEFAULT_JAVA_ARGS);
         else command.append(javaArgs);
         command.append(" ");
 

@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
+import net.dirtcraft.dirtlauncher.backend.config.Config;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.elements.Pack;
@@ -36,7 +36,7 @@ public class DownloadManager {
         boolean installForge = true;
         boolean installPack = true;
         boolean updatePack = isUpdate;
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
 
         for(JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion())) installMinecraft = false;
@@ -146,7 +146,7 @@ public class DownloadManager {
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Main.getSettings().getVersionsDirectory(), versionManifest.get("id").getAsString());
         FileUtils.deleteDirectory(versionFolder);
@@ -265,7 +265,7 @@ public class DownloadManager {
     }
 
     public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
         setProgressText("Downloading Assets");
         File assetsFolder = settings.getAssetsDirectory();
         assetsFolder.mkdirs();
@@ -297,7 +297,7 @@ public class DownloadManager {
     }
 
     public static void installForge(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
         setProgressText("Downloading Forge Installer");
         File forgeFolder = new File(settings.getForgeDirectory() + File.separator + pack.getForgeVersion());
         FileUtils.deleteDirectory(forgeFolder);
@@ -368,7 +368,7 @@ public class DownloadManager {
     }
 
     public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
         setProgressText("Downloading ModPack Manifest");
 
         // These values will never change
@@ -445,7 +445,7 @@ public class DownloadManager {
     }
 
     public static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
-        final SettingsManager settings = Main.getSettings();
+        final Config settings = Main.getSettings();
         setProgressText("Downloading ModPack Manifest");
 
         // Get the modpack directory

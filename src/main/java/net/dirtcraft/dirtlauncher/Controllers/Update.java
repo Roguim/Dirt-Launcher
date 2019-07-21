@@ -11,7 +11,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
@@ -59,7 +59,7 @@ public class Update {
 
     public static void showStage() {
         try {
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "update.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "update.fxml"));
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             Stage stage = new Stage();
@@ -68,7 +68,7 @@ public class Update {
             stage.initStyle(StageStyle.UTILITY);
 
             stage.setTitle("Version " + JsonFetcher.getLatestVersion() + " available");
-            stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "update.png"));
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "update.png"));
             Scene scene = new Scene(root, 400, 200);
             stage.setScene(scene);
             stage.setResizable(false);
@@ -84,7 +84,7 @@ public class Update {
     }
 
     public static boolean hasUpdate() throws IOException {
-        return !JsonFetcher.getLatestVersion().equalsIgnoreCase(Internal.LAUNCHER_VERSION);
+        return !JsonFetcher.getLatestVersion().equalsIgnoreCase(Constants.LAUNCHER_VERSION);
     }
 
 }

@@ -7,7 +7,7 @@ import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.NameEntry;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class Verification {
 
         Account account = new Account(session, mojangClient, names.get(names.size() - 1).getName(), password, uuid, client.validate(session));
 
-        if (Internal.VERBOSE) {
+        if (Constants.VERBOSE) {
             System.out.println("USERNAME: " + account.getUsername());
             System.out.println("PASSWORD: " + account.getPassword());
             System.out.println("UUID: " + account.getUuid());

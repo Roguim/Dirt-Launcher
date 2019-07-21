@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.utils.Verification;
@@ -93,11 +94,11 @@ public class LoginBar extends Pane {
         try {
             account = Verification.login(email, password);
         } catch (InvalidCredentialsException e) {
-            NotificationHandler.displayError(LoginError.INVALID_CREDENTIALS, null);
+            Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
         } catch (IllegalArgumentException e) {
-            NotificationHandler.displayError(LoginError.ILLEGAL_ARGUMENT, null);
+            Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
         } catch (UserMigratedException e) {
-            NotificationHandler.displayError(LoginError.USER_MIGRATED, null);
+            Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
         }
 
         return account;

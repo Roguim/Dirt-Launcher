@@ -14,9 +14,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
@@ -58,7 +59,7 @@ public class PlayButton extends Button {
                     launchPack(account, pack);
                     return;
                 default:
-                    NotificationHandler.displayError(null, pack);
+                    Home.getInstance().getNotificationBox().displayError(null, pack);
                     return;
             }
     }
@@ -95,7 +96,7 @@ public class PlayButton extends Button {
     }
 
     private void updatePack(Pack modPack){
-        if (Internal.VERBOSE) {
+        if (Constants.VERBOSE) {
             System.out.println("Updated the game");
         }
         launchInstallScene(modPack);
@@ -109,7 +110,7 @@ public class PlayButton extends Button {
     }
 
     public void installPack(Pack modPack) {
-        if (Internal.VERBOSE) {
+        if (Constants.VERBOSE) {
             System.out.println("Installing the pack");
         }
 
@@ -127,14 +128,14 @@ public class PlayButton extends Button {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "install.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "install.fxml"));
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             stage.initOwner(Main.getInstance().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.DECORATED);
 
-            stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "install.png"));
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "install.png"));
 
             stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
             stage.setResizable(false);

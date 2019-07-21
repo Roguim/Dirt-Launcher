@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.Controllers;
 
-import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,11 +17,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
-import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
+import net.dirtcraft.dirtlauncher.backend.config.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.backend.utils.RamUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +52,7 @@ public class Settings {
     @FXML
     private void initialize() {
         instance = this;
-        SettingsManager config = Main.getSettings();
+        Config config = Main.getSettings();
         gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
         gameDirectoryField.setText(config.getGameDirectory().toString());
         minimumRam.setText(String.valueOf(config.getMinimumRam()));
@@ -130,7 +127,7 @@ public class Settings {
 
     public static void loadSettings() {
         try {
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "settings.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "settings.fxml"));
             Scene scene = new Scene(root, 600, 300);
             Platform.runLater(()->{
                 Stage stage = new Stage();
@@ -139,7 +136,7 @@ public class Settings {
                 stage.initStyle(StageStyle.UTILITY);
 
                 stage.setTitle("Dirt Launcher Settings");
-                stage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "settings.png"));
+                stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "settings.png"));
                 stage.setScene(scene);
                 stage.setResizable(false);
                 Settings.stage = stage;

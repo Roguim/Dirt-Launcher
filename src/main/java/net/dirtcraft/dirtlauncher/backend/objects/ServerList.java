@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.backend.objects;
 
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 

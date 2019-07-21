@@ -2,7 +2,11 @@ package net.dirtcraft.dirtlauncher.backend.config;
 
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
-public class Internal {
+public class Constants {
+    public static final String CSS_PACKLIST = "PackList";
+    public static final String CSS_PACK_CELL = "PackCell";
+    public static final String CSS_PACK_MENU = "PackCellContext";
+    public static final String CSS_PACK_MENU_OPTION = "PackCellContextOption";
 
     public static final boolean VERBOSE = MiscUtils.inIde();
 

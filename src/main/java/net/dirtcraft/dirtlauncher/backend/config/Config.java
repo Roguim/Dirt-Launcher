@@ -18,14 +18,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public final class SettingsManager {
+public final class Config {
     private int minimumRam;
     private int maximumRam;
     private String javaArguments;
     private Path gameDirectory;
     private final transient Path launcherDirectory;
 
-    public SettingsManager(Path launcherDirectory){
+    public Config(Path launcherDirectory){
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
         JsonObject config;
@@ -41,13 +41,13 @@ public final class SettingsManager {
             if (config.has("maximum-ram")) maximumRam = config.get("maximum-ram").getAsInt();
             else config.addProperty("maximum-ram", RamUtils.getRecommendedRam() * 1024);
             if (config.has("java-arguments")) javaArguments = config.get("java-arguments").getAsString();
-            else config.addProperty("java-arguments", Internal.DEFAULT_JAVA_ARGS);
+            else config.addProperty("java-arguments", Constants.DEFAULT_JAVA_ARGS);
             if (config.has("game-directory")) gameDirectory = Paths.get(config.get("game-directory").getAsString());
             else config.addProperty("game-directory", launcherDirectory.toString());
         } else {
             minimumRam = RamUtils.getMinimumRam() * 1024;
             maximumRam = RamUtils.getRecommendedRam() * 1024;
-            javaArguments = Internal.DEFAULT_JAVA_ARGS;
+            javaArguments = Constants.DEFAULT_JAVA_ARGS;
             gameDirectory = launcherDirectory;
             initGameDirectory();
             saveSettings();

@@ -8,15 +8,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
-import net.dirtcraft.dirtlauncher.backend.config.SettingsManager;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Config;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.Timer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,7 +28,7 @@ import java.util.concurrent.Future;
 
 public class Main extends Application {
 
-    private static SettingsManager settings = null;
+    private static Config settings = null;
     private static Logger logger = null;
     private static Future<Parent> root;
     private static Main instance;
@@ -45,7 +44,7 @@ public class Main extends Application {
         else launcherDirectory =  Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
 
         //init settings async
-        new Thread(()->settings = new SettingsManager(launcherDirectory)).start();
+        new Thread(()->settings = new Config(launcherDirectory)).start();
 
         //init logger async
         new Thread(()->{
@@ -78,7 +77,7 @@ public class Main extends Application {
         //pre-init main stage async.
         root = CompletableFuture.supplyAsync(()->{
             try {
-                return FXMLLoader.load(MiscUtils.getResourceURL(Internal.SCENES, "main.fxml"));
+                return FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "main.fxml"));
             } catch (Exception e){
                 e.printStackTrace();
                 return null;
@@ -94,7 +93,7 @@ public class Main extends Application {
         instance = this;
         Platform.setImplicitExit(false);
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(MiscUtils.getImage(Internal.ICONS, "main.png"));
+        primaryStage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "main.png"));
         primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setOnCloseRequest(event -> {
             if (!LaunchGame.isGameRunning) Platform.exit();
@@ -122,7 +121,7 @@ public class Main extends Application {
         return logger;
     }
 
-    public static SettingsManager getSettings() {
+    public static Config getSettings() {
         return settings;
     }
 }

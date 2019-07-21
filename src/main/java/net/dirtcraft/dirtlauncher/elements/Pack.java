@@ -16,11 +16,9 @@ import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.backend.config.CssClasses;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
-import net.dirtcraft.dirtlauncher.backend.objects.PackType;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
@@ -49,10 +47,22 @@ public class Pack  extends Button {
     private final List<Listing> listings;
 
     public Pack(JsonObject json) {
+        final List<OptionalMod> optionalMods = new ArrayList<>();
+        for (JsonElement mods : json.get("optionalMods").getAsJsonArray()) {
+            optionalMods.add(new OptionalMod(mods.getAsJsonObject()));
+        }
+        if (!json.has("serverList")) this.listings = null;
+        else {
+            final List<Listing> listings = new ArrayList<>();
+            for (JsonElement servers : json.get("serverList").getAsJsonArray()) {
+                listings.add(new Listing(servers.getAsJsonObject()));
+            }
+            this.listings = listings;
+        }
+        final String packType = json.get("packType").getAsString().trim();
         this.name = json.get("name").getAsString().trim();
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
-        final String packType = json.get("packType").getAsString().trim();
         this.packType = packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
@@ -62,22 +72,9 @@ public class Pack  extends Button {
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.forgeVersion = json.get("forgeVersion").getAsString();
         this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
-
-        List<OptionalMod> optionalMods = new ArrayList<>();
-        for (JsonElement mods : json.get("optionalMods").getAsJsonArray()) {
-            optionalMods.add(new OptionalMod(mods.getAsJsonObject()));
-        }
         this.optionalMods = optionalMods;
 
-        if (!json.has("serverList")) this.listings = null;
-        else {
-            List<Listing> listings = new ArrayList<>();
-            for (JsonElement servers : json.get("serverList").getAsJsonArray()) {
-                listings.add(new Listing(servers.getAsJsonObject()));
-            }
-            this.listings = listings;
-        }
-        getStyleClass().add(CssClasses.PACK_CELL);
+        getStyleClass().add(Constants.CSS_PACK_CELL);
         contextMenu = new ContextMenu();
         initContextMenu();
         setCursor(Cursor.HAND);
@@ -89,7 +86,7 @@ public class Pack  extends Button {
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
-        tooltip.getStyleClass().add(CssClasses.PACKLIST);
+        tooltip.getStyleClass().add(Constants.CSS_PACKLIST);
 
         tooltip.setText(String.join("\n", Arrays.asList(
                 "ModPack Name: " + name,
@@ -102,7 +99,7 @@ public class Pack  extends Button {
         ));
 
         final Image image = new Image(MiscUtils.getResourceStream(
-                Internal.PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
+                Constants.PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
                 128, 128, false, true);
 
         final ImageView imageView = new ImageView(image);
@@ -150,14 +147,14 @@ public class Pack  extends Button {
         MenuItem reinstall = new MenuItem("Reinstall");
         MenuItem uninstall = new MenuItem("Uninstall");
         MenuItem openFolder = new MenuItem("Open Folder");
-        reinstall.getStyleClass().add(CssClasses.PACK_MENU);
-        uninstall.getStyleClass().add(CssClasses.PACK_MENU);
-        openFolder.getStyleClass().add(CssClasses.PACK_MENU);
-        reinstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
-        uninstall.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
-        openFolder.getStyleClass().add(CssClasses.PACK_MENU_OPTION);
-        contextMenu.getStyleClass().add(CssClasses.PACK_MENU);
-        contextMenu.setId(CssClasses.PACK_MENU);
+        reinstall.getStyleClass().add(Constants.CSS_PACK_MENU);
+        uninstall.getStyleClass().add(Constants.CSS_PACK_MENU);
+        openFolder.getStyleClass().add(Constants.CSS_PACK_MENU);
+        reinstall.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
+        uninstall.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
+        openFolder.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
+        contextMenu.getStyleClass().add(Constants.CSS_PACK_MENU);
+        contextMenu.setId(Constants.CSS_PACK_MENU);
         contextMenu.getItems().add(reinstall);
         contextMenu.getItems().add(uninstall);
         contextMenu.getItems().add(openFolder);
@@ -262,6 +259,9 @@ public class Pack  extends Button {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
         }
         return true;
+    }
+    public enum PackType {
+        CURSE, CUSTOM
     }
 
 }

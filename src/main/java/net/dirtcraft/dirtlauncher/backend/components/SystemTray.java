@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.backend.components;
 
 import javafx.application.Platform;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -35,7 +35,7 @@ public class SystemTray {
                 return;
             }
 
-            Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Internal.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_tiny.png" : "dirticon_small.png"));
+            Image trayImage = ImageIO.read(MiscUtils.getResourceStream(Constants.ICONS, SystemUtils.IS_OS_WINDOWS ? "dirticon_tiny.png" : "dirticon_small.png"));
 
             // set up a system tray icon.
 

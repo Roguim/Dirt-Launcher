@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.config.Internal;
+import net.dirtcraft.dirtlauncher.backend.config.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.elements.Pack;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ public class PackRegistry {
         }
 
         packs.sort(Comparator.comparing(Pack::getName));
-        if (Internal.VERBOSE && false) {
+        if (Constants.VERBOSE && false) {
             for (Pack pack : packs) {
                 logger.info("Name: " + pack.getName());
                 logger.info("Version: " + pack.getVersion());
@@ -68,7 +68,7 @@ public class PackRegistry {
         return executor.submit(() -> {
             ObservableList<Pack> packs = FXCollections.observableArrayList();
             packs.setAll(PackRegistry.getPacks());
-            if (Internal.VERBOSE) Main.getLogger().info("Pack list JSON retrieved.");
+            if (Constants.VERBOSE) Main.getLogger().info("Pack list JSON retrieved.");
             return packs;
         });
     }
