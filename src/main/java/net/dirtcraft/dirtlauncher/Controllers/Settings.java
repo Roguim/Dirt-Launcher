@@ -127,7 +127,7 @@ public class Settings {
 
     public static void loadSettings() {
         try {
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "settings.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "settings.fxml"));
             Scene scene = new Scene(root, 600, 300);
             Platform.runLater(()->{
                 Stage stage = new Stage();
@@ -136,7 +136,7 @@ public class Settings {
                 stage.initStyle(StageStyle.UTILITY);
 
                 stage.setTitle("Dirt Launcher Settings");
-                stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "settings.png"));
+                stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "settings.png"));
                 stage.setScene(scene);
                 stage.setResizable(false);
                 Settings.stage = stage;

@@ -68,7 +68,7 @@ public class Home {
         ImageView settingsImage = new ImageView();
         settingsImage.setFitHeight(50);
         settingsImage.setFitWidth(50);
-        settingsImage.setImage(MiscUtils.getImage(Constants.ICONS, "settings.png"));
+        settingsImage.setImage(MiscUtils.getImage(Constants.JAR_ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(event -> {
             Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
@@ -98,7 +98,7 @@ public class Home {
     private void initWebView(){
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Constants.CSS_HTML, "webEngine.css"));
+        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Constants.JAR_CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (!(newValue == Worker.State.SUCCEEDED)) return;
@@ -126,7 +126,7 @@ public class Home {
     private void populatePackListAsync(){
         ObservableList<Pack> packs = FXCollections.observableArrayList();
         packs.addAll(PackRegistry.getPacks());
-        packList.getStyleClass().add(Constants.CSS_PACKLIST);
+        packList.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
         Platform.runLater(()->{
             packList.getChildren().clear();
             packList.getChildren().addAll(packs);

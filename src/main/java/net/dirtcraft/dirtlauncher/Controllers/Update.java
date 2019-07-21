@@ -59,7 +59,7 @@ public class Update {
 
     public static void showStage() {
         try {
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "update.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "update.fxml"));
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             Stage stage = new Stage();
@@ -68,7 +68,7 @@ public class Update {
             stage.initStyle(StageStyle.UTILITY);
 
             stage.setTitle("Version " + JsonFetcher.getLatestVersion() + " available");
-            stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "update.png"));
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "update.png"));
             Scene scene = new Scene(root, 400, 200);
             stage.setScene(scene);
             stage.setResizable(false);

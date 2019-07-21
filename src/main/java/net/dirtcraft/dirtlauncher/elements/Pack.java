@@ -74,7 +74,7 @@ public class Pack  extends Button {
         this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
         this.optionalMods = optionalMods;
 
-        getStyleClass().add(Constants.CSS_PACK_CELL);
+        getStyleClass().add(Constants.CSS_CLASS_PACK_CELL);
         contextMenu = new ContextMenu();
         initContextMenu();
         setCursor(Cursor.HAND);
@@ -86,7 +86,7 @@ public class Pack  extends Button {
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
-        tooltip.getStyleClass().add(Constants.CSS_PACKLIST);
+        tooltip.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
 
         tooltip.setText(String.join("\n", Arrays.asList(
                 "ModPack Name: " + name,
@@ -99,7 +99,7 @@ public class Pack  extends Button {
         ));
 
         final Image image = new Image(MiscUtils.getResourceStream(
-                Constants.PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
+                Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
                 128, 128, false, true);
 
         final ImageView imageView = new ImageView(image);
@@ -147,14 +147,14 @@ public class Pack  extends Button {
         MenuItem reinstall = new MenuItem("Reinstall");
         MenuItem uninstall = new MenuItem("Uninstall");
         MenuItem openFolder = new MenuItem("Open Folder");
-        reinstall.getStyleClass().add(Constants.CSS_PACK_MENU);
-        uninstall.getStyleClass().add(Constants.CSS_PACK_MENU);
-        openFolder.getStyleClass().add(Constants.CSS_PACK_MENU);
-        reinstall.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
-        uninstall.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
-        openFolder.getStyleClass().add(Constants.CSS_PACK_MENU_OPTION);
-        contextMenu.getStyleClass().add(Constants.CSS_PACK_MENU);
-        contextMenu.setId(Constants.CSS_PACK_MENU);
+        reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+        uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+        openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+        reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+        uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+        openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+        contextMenu.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+        contextMenu.setId(Constants.CSS_CLASS_PACK_MENU);
         contextMenu.getItems().add(reinstall);
         contextMenu.getItems().add(uninstall);
         contextMenu.getItems().add(openFolder);

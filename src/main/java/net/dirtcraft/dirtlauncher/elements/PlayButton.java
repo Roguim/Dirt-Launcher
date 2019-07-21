@@ -128,14 +128,14 @@ public class PlayButton extends Button {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "install.fxml"));
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             stage.initOwner(Main.getInstance().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.DECORATED);
 
-            stage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "install.png"));
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
 
             stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
             stage.setResizable(false);

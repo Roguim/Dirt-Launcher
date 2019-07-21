@@ -77,7 +77,7 @@ public class Main extends Application {
         //pre-init main stage async.
         root = CompletableFuture.supplyAsync(()->{
             try {
-                return FXMLLoader.load(MiscUtils.getResourceURL(Constants.SCENES, "main.fxml"));
+                return FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "main.fxml"));
             } catch (Exception e){
                 e.printStackTrace();
                 return null;
@@ -93,7 +93,7 @@ public class Main extends Application {
         instance = this;
         Platform.setImplicitExit(false);
         primaryStage.setTitle("Dirt Launcher");
-        primaryStage.getIcons().setAll(MiscUtils.getImage(Constants.ICONS, "main.png"));
+        primaryStage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "main.png"));
         primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setOnCloseRequest(event -> {
             if (!LaunchGame.isGameRunning) Platform.exit();
