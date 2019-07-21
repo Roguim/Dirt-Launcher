@@ -21,8 +21,6 @@ public final class Config {
     private String javaArguments;
     private Path gameDirectory;
     private final transient Path launcherDirectory;
-    private transient final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
-
 
     public Config(Path launcherDirectory){
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
@@ -54,7 +52,7 @@ public final class Config {
     }
 
     public int getDefaultRecommendedRam() {
-
+        final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
         if (maxMemory > 10000) return 8;
         else if (maxMemory > 7000) return 6;
         else if (maxMemory > 5000) return 4;
@@ -63,7 +61,7 @@ public final class Config {
     }
 
     public int getDefaultMinimumRam() {
-
+        final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
         if (maxMemory > 5000) return 4;
         else if (maxMemory > 3000) return 3;
         else return 2;

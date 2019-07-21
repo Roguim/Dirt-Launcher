@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 
