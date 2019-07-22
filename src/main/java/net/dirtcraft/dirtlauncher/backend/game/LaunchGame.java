@@ -19,10 +19,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LaunchGame {
 
@@ -37,7 +38,8 @@ public class LaunchGame {
                     serverList.addServer(listing.getIp(), listing.getName());
                 }
             });
-        } else serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
+        } else
+            serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
         serverList.build();
     }
 
@@ -45,63 +47,77 @@ public class LaunchGame {
         Config settings = Main.getSettings();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
-        StringBuilder command = new StringBuilder();
-        command.append("java");
-        if (SystemUtils.IS_OS_WINDOWS) command.append("w");
-        command.append(" ");
+        List<String> args = new ArrayList<>();
+        if (SystemUtils.IS_OS_UNIX) {
+            args.add("/bin/sh");
+            args.add("-c");
+        }
+        args.add(SystemUtils.IS_OS_WINDOWS ? "javaw" : "java");
 
         // RAM
-        command.append("-Xms" + settings.getMinimumRam() + "M -Xmx" + settings.getMaximumRam() + "M ");
+        args.add("-Xms" + settings.getMinimumRam() + "M");
+        args.add("-Xmx" + settings.getMaximumRam() + "M");
 
         // Configurable Java Arguments
         String javaArgs = settings.getJavaArguments();
-        if (MiscUtils.isEmptyOrNull(javaArgs)) command.append(Constants.DEFAULT_JAVA_ARGS);
-        else command.append(javaArgs);
-        command.append(" ");
+        if (MiscUtils.isEmptyOrNull(javaArgs)) args.addAll(Arrays.asList(Constants.DEFAULT_JAVA_ARGS.split(" ")));
+        else args.addAll(Arrays.asList(javaArgs.split(" ")));
 
         // Language Tricks
-        command.append("-Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -Duser.language=en -Duser.country=US ");
+        args.add("-Dfml.ignorePatchDiscrepancies=true");
+        args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
+        args.add("-Duser.language=en");
+        args.add("-Duser.country=US");
 
         // Mojang Tricks
-        command.append("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ");
+        args.add("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump");
+
         // Natives path
         String nativesPath = settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives";
-        command.append("-Djava.library.path=\"" + nativesPath + "\" ");
-        command.append("-Dorg.lwjgl.librarypath=\"" + nativesPath + "\" ");
-        command.append("-Dnet.java.games.input.librarypath=\"" + nativesPath + "\" ");
-        command.append("-Duser.home=\"" + instanceDirectory.getPath() + "\" ");
+        args.add("-Djava.library.path=" + nativesPath);
+        args.add("-Dorg.lwjgl.librarypath=" + nativesPath);
+        args.add("-Dnet.java.games.input.librarypath=" + nativesPath);
+        args.add("-Duser.home=" + instanceDirectory.getPath());
+
         // Classpath
-        command.append("-cp \"");
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
-            if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
-                command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
-        }
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
-            if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
-                command.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
-        }
-        command.append(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath() + "\" ");
+        args.add("-cp");
+        args.add(getLibs(pack));
 
         //Loader class
-        command.append("net.minecraft.launchwrapper.Launch ");
+        args.add("net.minecraft.launchwrapper.Launch");
 
-        // User Properties < For 1.7.10 packs. doesn't seem to bother 1.10.2+ packs so ima leave this here
-        if (pack.getGameVersion().equalsIgnoreCase("1.7.10")) command.append("--userProperties {} ");
+        // User Properties
+        if (pack.getGameVersion().equalsIgnoreCase("1.7.10")) {
+            args.add("--userProperties");
+            args.add("{}");
+        }
         // Username
-        command.append("--username " + account.getUsername() + " ");
+        args.add("--username");
+        args.add(account.getUsername());
+
         // Version
-        command.append("--version " + pack.getForgeVersion() + " ");
+        args.add("--version");
+        args.add(pack.getForgeVersion());
+
         // Game Dir
-        command.append("--gameDir \"" + instanceDirectory.getPath() + "\" ");
+        args.add("--gameDir");
+        args.add(instanceDirectory.getPath());
+
         // Assets Dir
-        String assetsVersion = FileUtils.readJsonFromFile(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".json")).get("assets").getAsString();
-        command.append("--assetsDir \"" + new File(settings.getAssetsDirectory().getPath()).toPath() + "\" ");
+        args.add("--assetsDir");
+        args.add(settings.getAssetsDirectory().toString());
+
         // Assets Index
-        command.append("--assetIndex " + assetsVersion + " ");
+        File assetsVersionJsonFile = Paths.get(settings.getVersionsDirectory().getPath(), pack.getGameVersion(), pack.getGameVersion() + ".json").toFile();
+        String assetsVersion = FileUtils.readJsonFromFile(assetsVersionJsonFile).get("assets").getAsString();
+        args.add("--assetIndex");
+        args.add(assetsVersion);
         // UUID
-        command.append("--uuid " + account.getUuid().toString().replace("-", "") + " ");
+        args.add("--uuid");
+        args.add(account.getUuid().toString().replace("-", ""));
         // Access Token
-        command.append("--accessToken " + account.getSession().getAccessToken() + " ");
+        args.add("--accessToken");
+        args.add(account.getSession().getAccessToken());
 
         // Auto Join
         /*command.append("--server ");
@@ -110,28 +126,31 @@ public class LaunchGame {
         command.append(" ");*/
 
         // User Type
-        command.append("--userType mojang ");
+        args.add("--userType");
+        args.add("mojang");
         // Tweak Class
-        command.append("--tweakClass ").append(!pack.getGameVersion().equals("1.7.10") ?
+        args.add("--tweakClass");
+        args.add(!pack.getGameVersion().equals("1.7.10") ?
                 "net.minecraftforge.fml.common.launcher.FMLTweaker" :
-                "cpw.mods.fml.common.launcher.FMLTweaker")
-                .append(" ");
+                "cpw.mods.fml.common.launcher.FMLTweaker");
 
         // Version Type
-        command.append("--versionType Forge");
+        args.add("--versionType");
+        args.add("Forge");
 
-        String launchCommand = command.toString();
+        if (SystemUtils.IS_OS_UNIX) {
+            for (int i = 0; i < args.size(); i++) args.set(i, args.get(i).replace(";", ":"));
+        }
 
-        if (SystemUtils.IS_OS_UNIX) launchCommand = launchCommand.replace(";", ":");
-
-        final String finalLaunchCommand = launchCommand;
-        System.out.println(finalLaunchCommand);
         Thread gameThread = new Thread(() -> {
             try {
-                Process process;
-                if (!SystemUtils.IS_OS_UNIX) process = Runtime.getRuntime().exec(finalLaunchCommand, null, instanceDirectory);
-                else process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", finalLaunchCommand}, null, instanceDirectory);
-
+                Process minecraft = new ProcessBuilder()
+                        .directory(instanceDirectory)
+                        //.inheritIO()
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                        .command(args)
+                        .start();
                 Platform.runLater(() -> {
                     //Close install stage if it's open
                     Install.getStage().ifPresent(Stage::close);
@@ -141,28 +160,38 @@ public class LaunchGame {
                     //Create system tray icon
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
-                if (Constants.VERBOSE  || Main.getOptions().contains("-console")) {
-                    String line;
-                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    Main.getLogger().warn("Starting Minecraft Logger...");
-                    while ((line = input.readLine()) != null) {
-                        logger.info(line);
+                try(InputStreamReader isr = new InputStreamReader(minecraft.getErrorStream());
+                    BufferedReader br = new BufferedReader(isr)
+                ){
+                    String ln;
+                    while((ln = br.readLine()) != null){
+                        logger.error("!!!" + ln + "!!!");
                     }
-                    input.close();
                 }
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } finally {
-                isGameRunning = false;
-
                 //Show main stage
                 Platform.runLater(() -> Main.getInstance().getStage().show());
 
                 //Close system tray icon
                 SwingUtilities.invokeLater(() -> SystemTray.getIcon().ifPresent(icon -> SystemTray.tray.remove(icon)));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
         gameThread.start();
     }
 
+    private static String getLibs(Pack pack) {
+        Config settings = Main.getSettings();
+        StringBuilder libs = new StringBuilder();
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+            if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
+                libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
+        }
+        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
+            if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
+                libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
+        }
+        libs.append(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath());
+        return libs.toString();
+    }
 }
