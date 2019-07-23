@@ -1,6 +1,10 @@
 package net.dirtcraft.dirtlauncher.elements;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
@@ -15,28 +19,36 @@ import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
+import net.dirtcraft.dirtlauncher.backend.utils.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 
-import javax.annotation.Nullable;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public final class LoginBar extends Pane {
-    private GridPane loginContainer;
-    private TextField usernameField;
-    private PasswordField passField;
-    private PlayButton actionButton;
+    private final TextField usernameField;
+    private final PasswordField passField;
+    private final PlayButton actionButton;
+    private final YggdrasilClient client;
     private Pack activePackCell;
+    private Account account;
 
     public LoginBar() {
+        Future<Account> accountFuture = loadAccountData();
         activePackCell = null;//ripblock
+        client = new YggdrasilClient() ;
         passField = new PasswordField();
         usernameField = new TextField();
         actionButton = new PlayButton(this);
-        loginContainer = new GridPane();
+        GridPane loginContainer = new GridPane();
 
         //Force the size - otherwise it changes and that's bad..
         setAbsoluteSize(actionButton , 58 ,  59 );
@@ -44,10 +56,10 @@ public final class LoginBar extends Pane {
         setAbsoluteSize(loginContainer,250.0, 59);
 
         setId("LoginBar");
-        getStyleClass().add("LoginArea");
-        getStyleClass().add( "LoginBar");
-        passField.setId("PasswordField");
-        usernameField.setId("UsernameField");
+        getStyleClass().add("LoginArea");           //this is just for the webm
+        getStyleClass().add( "LoginBar");           //extra comments going here
+        passField.setId("PasswordField");           //so it looks like its some
+        usernameField.setId("UsernameField");       //epic hazor l33t talk code
 
         RowConstraints x1 = new RowConstraints();
         RowConstraints x2 = new RowConstraints();
@@ -75,11 +87,11 @@ public final class LoginBar extends Pane {
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(8);
 
-        usernameField.setPromptText("E-Mail Address");
-        passField.setPromptText("Password");
-        actionButton.setDefaultButton(true);
-        actionButton.setDisable(true);
-        actionButton.setText("Play");
+        usernameField.setPromptText("E-Mail Address");      //btw this is code..
+        passField.setPromptText("Password");                //just so u remember
+        actionButton.setDefaultButton(true);                //these comments are
+        actionButton.setDisable(true);                      //totally serving an
+        actionButton.setText("Play");                       //purpose and stuff!
         getChildren().setAll(loginContainer);
 
         SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
@@ -89,52 +101,117 @@ public final class LoginBar extends Pane {
                 firstTime.setValue(false);
             }
         });
-
-    }
-
-    @Nullable
-    public Account login() {
-        Account account = null;
-
-        String email = usernameField.getText().trim();
-        String password = passField.getText().trim();
-
-        try {
-            account = login(email, password);
-        } catch (InvalidCredentialsException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
-        } catch (IllegalArgumentException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
-        } catch (UserMigratedException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
+        try{
+            if (client.validate(accountFuture.get().getSession())){
+                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                account = accountFuture.get();
+            } else {
+                account = null;
+            }
+        } catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+            account = null;
         }
 
-        return account;
     }
 
-    private Account login(String email, String password) throws InvalidCredentialsException {
+    private Future<Account> loadAccountData() {
+        return CompletableFuture.supplyAsync(()-> {
+            //deserialize the account.
+            Config settings = Main.getSettings();
+            File jsonFile = settings.getAccountJson();
+            if (!jsonFile.exists()) return null;
+            JsonObject config;
+            try (FileReader reader = new FileReader(jsonFile)) {
+                JsonParser parser = new JsonParser();
+                config = parser.parse(reader).getAsJsonObject();
+                if (config == null) throw new JsonParseException("Json was null");
+                if (!config.has("uuid")) throw new JsonParseException("No uuid");
+                if (!config.has("username")) throw new JsonParseException("No username");
+                if (!config.has("sessionID")) throw new JsonParseException("No sessionID");
+                if (!config.has("sessionAlias")) throw new JsonParseException("No sessionAlias");
+                if (!config.has("sessionAccessToken")) throw new JsonParseException("No sessionAccessToken");
+                if (!config.has("sessionClientToken")) throw new JsonParseException("No sessionClientToken");
 
-        YggdrasilClient client = new YggdrasilClient();
+                String uuid = config.get("uuid").getAsString();
+                String username = config.get("username").getAsString();
+                String sessionID = config.get("sessionID").getAsString();
+                String sessionAlias = config.get("sessionAlias").getAsString();
+                String sessionAccessToken = config.get("sessionAccessToken").getAsString();
+                String sessionClientToken = config.get("sessionClientToken").getAsString();
 
-        Session session = client.login(new AccountCredentials(email, password), YggdrasilAgent.MINECRAFT);
-        final UUID uuid = session.getUuid();
+                Session session = new Session(sessionID, sessionAlias, sessionAccessToken, sessionClientToken);
+                return new Account(session, username, UUID.fromString(uuid), true);
 
-        MojangClient mojangClient = new MojangClient(session.getClientToken());
+            } catch (IOException | JsonParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+    }
 
-        List<NameEntry> names = mojangClient.getNameHistoryByUUID(uuid);
+    private void saveAccountData(Account account){
+        //serialize the account.
+        Config settings = Main.getSettings();
+        File jsonFile = settings.getAccountJson();
+        JsonObject config;
+        try (FileWriter writer = new FileWriter(jsonFile)) {
+            config = new JsonObject();
 
-        Account account = new Account(session, mojangClient, names.get(names.size() - 1).getName(), password, uuid, client.validate(session));
+            config.addProperty("uuid", account.getUuid().toString());
+            config.addProperty("username", account.getUsername());
+            config.addProperty("sessionID", account.getSession().getId());
+            config.addProperty("sessionAlias", account.getSession().getAlias());
+            config.addProperty("sessionAccessToken", account.getSession().getAccessToken());
+            config.addProperty("sessionClientToken", account.getSession().getClientToken());
 
-        if (Constants.VERBOSE) {
-            System.out.println("USERNAME: " + account.getUsername());
-            System.out.println("PASSWORD: " + account.getPassword());
-            System.out.println("UUID: " + account.getUuid());
-            System.out.println("IS AUTHENTICATED: " + account.isAuthenticated());
+            writer.write(config.toString());
+        } catch (IOException e) {
+            Main.getLogger().warn(e);
         }
-        return account;
-
     }
 
+    public boolean hasAccount(){
+        return account != null;
+    }
+
+    public Optional<Account> getAccount() throws InvalidCredentialsException {
+        if (account != null && client.validate(account.getSession())) {
+            //System.out.println("TOKEN: " + account.getSession().getAccessToken());
+            return Optional.of(account);
+        } else {
+            try {
+                final Session session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
+                final UUID uuid = session.getUuid();
+                final MojangClient mojangClient = new MojangClient(session.getClientToken());
+                final List<NameEntry> names = mojangClient.getNameHistoryByUUID(uuid);
+                account = new Account(session, names.get(names.size() - 1).getName(), uuid, client.validate(session));
+
+                if (Constants.VERBOSE) {
+                    //System.out.println("USERNAME: " + account.getUsername());
+                    //System.out.println("PASSWORD: " + account.getPassword());
+                    //System.out.println("SESSION: " + account.getSession());
+                    //System.out.println("UUID: " + account.getUuid());
+                    //System.out.println("IS AUTHENTICATED: " + account.isAuthenticated());
+                }
+                new Thread(()->saveAccountData(account)).start();
+                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                return Optional.of(account);
+            } catch (InvalidCredentialsException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
+            } catch (IllegalArgumentException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
+            } catch (UserMigratedException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
+            }
+            if (account != null) account = null;
+            usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+            passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+            return Optional.empty();
+        }
+    }
 
     private void setAbsoluteSize(Region node, double width, double height){
         node.setPrefSize(width, height);

@@ -140,7 +140,7 @@ public final class Home {
             return;
         }
 
-        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim())) {
+        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim()) || loginBar.hasAccount()) {
             playButton.setDisable(false);
             playButton.setOnAction(e -> loginBar.getActionButton().fire());
         } else playButton.setDisable(true);

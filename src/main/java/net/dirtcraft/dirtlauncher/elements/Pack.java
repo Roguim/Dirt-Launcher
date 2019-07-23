@@ -140,7 +140,7 @@ public final class Pack extends Button {
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + name);
 
-        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim())) playButton.setDisable(false);
+        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Home.getInstance().getLoginBar().hasAccount()) playButton.setDisable(false);
     }
 
     private void initContextMenu(){

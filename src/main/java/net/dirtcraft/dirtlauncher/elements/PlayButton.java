@@ -25,6 +25,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 public final class PlayButton extends Button {
     private Types type;
@@ -46,8 +47,8 @@ public final class PlayButton extends Button {
 
     @Override
     public void fire() {
-        Account account = loginBar.login();
-        if (account != null)
+        Optional<Account> account = loginBar.getAccount();
+        if (account.isPresent())
             switch (type) {
                 case INSTALL:
                     installPack(pack);
@@ -56,7 +57,7 @@ public final class PlayButton extends Button {
                     updatePack(pack);
                     return;
                 case PLAY:
-                    launchPack(account, pack);
+                    launchPack(account.get(), pack);
                     return;
                 default:
                     Home.getInstance().getNotificationBox().displayError(null, pack);

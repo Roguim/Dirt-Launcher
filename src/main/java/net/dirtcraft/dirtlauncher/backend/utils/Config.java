@@ -157,6 +157,10 @@ public final class Config {
         return directory.toPath().resolve("manifest.json").toFile();
     }
 
+    public File getAccountJson() {
+        return launcherDirectory.resolve("account.json").toFile();
+    }
+
     public int getMinimumRam() {
         return minimumRam;
     }

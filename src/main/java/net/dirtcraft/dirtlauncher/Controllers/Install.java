@@ -9,7 +9,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.elements.LoginBar;
+import net.dirtcraft.dirtlauncher.elements.Pack;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -52,7 +54,11 @@ public final class Install {
         getStage().ifPresent(Stage::close);
 
         LoginBar loginBar = Home.getInstance().getLoginBar();
-        Home.getInstance().getLoginBar().getActivePackCell().ifPresent(pack -> loginBar.getActionButton().launchPack(loginBar.login(), pack));
+        Optional<Account> account = loginBar.getAccount();
+        Optional<Pack> pack = Home.getInstance().getLoginBar().getActivePackCell();
+        if (pack.isPresent() && account.isPresent()){
+            loginBar.getActionButton().launchPack(account.get(), pack.get());
+        }
     }
 
     public void setStage(Stage stage) {
