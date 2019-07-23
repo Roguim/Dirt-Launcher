@@ -17,6 +17,7 @@ import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.NameEntry;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
+import net.cydhra.nidhogg.exception.InvalidSessionException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
@@ -101,7 +102,7 @@ public final class LoginBar extends Pane {
             }
         });
         try{
-            if (client.validate(accountFuture.get().getSession())){
+            if (accountFuture.get() != null && client.validate(accountFuture.get().getSession())){
                 usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
                 passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
                 account = accountFuture.get();
@@ -110,6 +111,9 @@ public final class LoginBar extends Pane {
             }
         } catch (InterruptedException | ExecutionException e){
             e.printStackTrace();
+            account = null;
+        } catch (InvalidSessionException e){
+            System.out.println("WARNING: Invalid Session Exception");
             account = null;
         }
 
