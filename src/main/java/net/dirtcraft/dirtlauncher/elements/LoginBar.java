@@ -10,23 +10,14 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import net.cydhra.nidhogg.MojangClient;
-import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.YggdrasilClient;
-import net.cydhra.nidhogg.data.AccountCredentials;
-import net.cydhra.nidhogg.data.NameEntry;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
-import net.cydhra.nidhogg.exception.InvalidSessionException;
-import net.cydhra.nidhogg.exception.UserMigratedException;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
-import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
 
 import java.io.*;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -101,19 +92,10 @@ public final class LoginBar extends Pane {
                 firstTime.setValue(false);
             }
         });
-        try{
-            if (accountFuture.get() != null && client.validate(accountFuture.get().getSession())){
-                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                account = accountFuture.get();
-            } else {
-                account = null;
-            }
+        try {
+            account = verifySession(accountFuture.get());
         } catch (InterruptedException | ExecutionException e){
             e.printStackTrace();
-            account = null;
-        } catch (InvalidSessionException e){
-            System.out.println("WARNING: Invalid Session Exception");
             account = null;
         }
 
@@ -179,32 +161,38 @@ public final class LoginBar extends Pane {
         return account != null;
     }
 
-    public Optional<Account> getAccount() throws InvalidCredentialsException {
-        if (account != null && client.validate(account.getSession())) {
-            return Optional.of(account);
-        } else {
+    private Account verifySession(Account account) {
+        if (account != null) {
             try {
-                final Session session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
-                final UUID uuid = session.getUuid();
-                final MojangClient mojangClient = new MojangClient(session.getClientToken());
-                final List<NameEntry> names = mojangClient.getNameHistoryByUUID(uuid);
-                account = new Account(session, names.get(names.size() - 1).getName(), uuid, client.validate(session));
-                new Thread(()->saveAccountData(account)).start();
-                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                return Optional.of(account);
-            } catch (InvalidCredentialsException e) {
-                Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
-            } catch (IllegalArgumentException e) {
-                Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
-            } catch (UserMigratedException e) {
-                Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
+                if (client.validate(account.getSession())) {
+                    usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                    passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                    new Thread(() -> saveAccountData(account));
+                    return account;
+                }
+            } catch (Exception ignored) {
+                try {
+                    client.refresh(account.getSession());
+                    if (client.validate(account.getSession())) {
+                        usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                        passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                        new Thread(() -> saveAccountData(account));
+                        return account;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            if (account != null) account = null;
-            usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
-            passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
-            return Optional.empty();
         }
+        usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+        passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+        return null;
+    }
+
+    public Optional<Account> getAccount() throws InvalidCredentialsException {
+        account = verifySession(account);
+        if (account == null) return Optional.empty();
+        else return Optional.of(account);
     }
 
     private void setAbsoluteSize(Region node, double width, double height){
