@@ -10,11 +10,16 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.YggdrasilClient;
+import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
+import net.cydhra.nidhogg.exception.UserMigratedException;
+import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
+import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
 
 import java.io.*;
@@ -167,20 +172,21 @@ public final class LoginBar extends Pane {
                 if (client.validate(account.getSession())) {
                     usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
                     passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                    new Thread(() -> saveAccountData(account));
+                    new Thread(() -> saveAccountData(account)).start();
                     return account;
                 }
-            } catch (Exception ignored) {
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
                 try {
                     client.refresh(account.getSession());
                     if (client.validate(account.getSession())) {
                         usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
                         passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                        new Thread(() -> saveAccountData(account));
+                        new Thread(() -> saveAccountData(account)).start();
                         return account;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
             }
         }
@@ -191,7 +197,25 @@ public final class LoginBar extends Pane {
 
     public Optional<Account> getAccount() throws InvalidCredentialsException {
         account = verifySession(account);
-        if (account == null) return Optional.empty();
+        if (account == null) {
+            try{
+                final Session session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
+                account = new Account(session, session.getAlias(), session.getUuid(), true);
+                new Thread(() -> saveAccountData(account)).start();
+                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                return Optional.of(account);
+            } catch (InvalidCredentialsException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
+            } catch (IllegalArgumentException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
+            } catch (UserMigratedException e) {
+                Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+            return Optional.empty();
+        }
         else return Optional.of(account);
     }
 
