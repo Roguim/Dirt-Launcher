@@ -56,10 +56,10 @@ public final class LoginBar extends Pane {
         setAbsoluteSize(loginContainer,250.0, 59);
 
         setId("LoginBar");
-        getStyleClass().add("LoginArea");           //this is just for the webm
-        getStyleClass().add( "LoginBar");           //extra comments going here
-        passField.setId("PasswordField");           //so it looks like its some
-        usernameField.setId("UsernameField");       //epic hazor l33t talk code
+        getStyleClass().add("LoginArea");
+        getStyleClass().add( "LoginBar");
+        passField.setId("PasswordField");
+        usernameField.setId("UsernameField");
 
         RowConstraints x1 = new RowConstraints();
         RowConstraints x2 = new RowConstraints();
@@ -87,11 +87,11 @@ public final class LoginBar extends Pane {
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(8);
 
-        usernameField.setPromptText("E-Mail Address");      //btw this is code..
-        passField.setPromptText("Password");                //just so u remember
-        actionButton.setDefaultButton(true);                //these comments are
-        actionButton.setDisable(true);                      //totally serving an
-        actionButton.setText("Play");                       //purpose and stuff!
+        usernameField.setPromptText("E-Mail Address");
+        passField.setPromptText("Password");
+        actionButton.setDefaultButton(true);
+        actionButton.setDisable(true);
+        actionButton.setText("Play");
         getChildren().setAll(loginContainer);
 
         SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
