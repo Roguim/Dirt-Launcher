@@ -15,6 +15,11 @@
 #UsernameField:focused, #PasswordField:focused{
     -fx-background-color: #FFFFFF;
 }
+#UsernameField:authenticated, #PasswordField:authenticated{
+    -fx-background-color: #55AA55;
+     -fx-text-fill: black !important ;
+}
+
 
 #PlayButton{
     -fx-border-radius: 00 15 15 00;

@@ -23,7 +23,6 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
-import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 
 import java.io.*;
 import java.util.List;
@@ -178,7 +177,6 @@ public final class LoginBar extends Pane {
 
     public Optional<Account> getAccount() throws InvalidCredentialsException {
         if (account != null && client.validate(account.getSession())) {
-            //System.out.println("TOKEN: " + account.getSession().getAccessToken());
             return Optional.of(account);
         } else {
             try {
@@ -187,14 +185,6 @@ public final class LoginBar extends Pane {
                 final MojangClient mojangClient = new MojangClient(session.getClientToken());
                 final List<NameEntry> names = mojangClient.getNameHistoryByUUID(uuid);
                 account = new Account(session, names.get(names.size() - 1).getName(), uuid, client.validate(session));
-
-                if (Constants.VERBOSE) {
-                    //System.out.println("USERNAME: " + account.getUsername());
-                    //System.out.println("PASSWORD: " + account.getPassword());
-                    //System.out.println("SESSION: " + account.getSession());
-                    //System.out.println("UUID: " + account.getUuid());
-                    //System.out.println("IS AUTHENTICATED: " + account.isAuthenticated());
-                }
                 new Thread(()->saveAccountData(account)).start();
                 usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
                 passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
