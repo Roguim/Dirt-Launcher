@@ -69,11 +69,6 @@ public final class Home {
         //                                              SETTINGS INIT                                               //
         //                                                                                                          //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ImageView settingsImage = new ImageView();
-        settingsImage.setFitHeight(50);
-        settingsImage.setFitWidth(50);
-        settingsImage.setImage(MiscUtils.getImage(Constants.JAR_ICONS, "settings.png"));
-        settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(event -> {
             if (!Constants.VERBOSE) extraPane.setDisable(true);
             Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();

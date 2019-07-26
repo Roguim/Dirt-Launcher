@@ -80,6 +80,7 @@
 
 .SettingsButtonSmall{
     -fx-background-radius: 5 0 0 5 ;
+    -fx-content-display: GRAPHIC_ONLY ;
 }
 
 .SettingsButton:pressed {
