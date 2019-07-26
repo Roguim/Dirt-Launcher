@@ -59,7 +59,7 @@ public final class Home {
 
     @FXML   //this is all async
     private void initialize() {
-        new Thread(this::populatePackListAsync).start();
+        updatePacksAsync();
         Platform.runLater(this::initWebView);
         instance = this;
         notificationBox.setOpacity(0);
@@ -128,15 +128,17 @@ public final class Home {
         webArea.getChildren().add(webView);
     }
 
-    private void populatePackListAsync(){
-        ObservableList<Pack> packs = FXCollections.observableArrayList();
-        packs.addAll(PackRegistry.getPacks());
-        packList.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
-        Platform.runLater(()->{
-            packList.getChildren().clear();
-            packList.getChildren().addAll(packs);
-        });
-        if (Constants.VERBOSE) System.out.println("Packlist built!");
+    private void updatePacksAsync(){
+        new Thread(()-> {
+            ObservableList<Pack> packs = FXCollections.observableArrayList();
+            packs.addAll(PackRegistry.getPacks());
+            packList.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
+            Platform.runLater(() -> {
+                packList.getChildren().clear();
+                packList.getChildren().addAll(packs);
+            });
+            if (Constants.VERBOSE) System.out.println("Packlist built!");
+        }).start();
     }
 
     private void setKeyTypedEvent(KeyEvent event) {

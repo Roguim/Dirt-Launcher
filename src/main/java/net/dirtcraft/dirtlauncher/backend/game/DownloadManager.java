@@ -569,5 +569,6 @@ public class DownloadManager {
         }
         instanceManifest.getAsJsonArray("packs").add(newPackObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
+        pack.updateInstallStatus();
     }
 }

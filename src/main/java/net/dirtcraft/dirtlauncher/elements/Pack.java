@@ -112,11 +112,7 @@ public final class Pack extends Button {
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
         setOnMouseDragged(this::onDrag);
         setOnMouseDragExited(e-> lastDragY = 0);
-        setOnContextMenuRequested(e->{
-            if (isInstalled()) {
-                contextMenu.show(this, e.getScreenX(), e.getScreenY());
-            }
-        });
+        setOnContextMenuRequested(e->contextMenu.show(this, e.getScreenX(), e.getScreenY()));
     }
 
     private void deactivate(){
@@ -132,6 +128,10 @@ public final class Pack extends Button {
         }
     }
 
+    public void updateInstallStatus(){
+        initContextMenu();
+    }
+
     public void fire() {
         final LoginBar home = Home.getInstance().getLoginBar();
         final Button playButton = home.getActionButton();
@@ -144,52 +144,69 @@ public final class Pack extends Button {
     }
 
     private void initContextMenu(){
-        MenuItem reinstall = new MenuItem("Reinstall");
-        MenuItem uninstall = new MenuItem("Uninstall");
-        MenuItem openFolder = new MenuItem("Open Folder");
-        reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-        uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-        openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-        reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
-        uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
-        openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+        contextMenu.getItems().clear();
         contextMenu.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
         contextMenu.setId(Constants.CSS_CLASS_PACK_MENU);
-        contextMenu.getItems().add(reinstall);
-        contextMenu.getItems().add(uninstall);
-        contextMenu.getItems().add(openFolder);
+        if (isInstalled()) {
+            MenuItem reinstall = new MenuItem("Reinstall");
+            MenuItem uninstall = new MenuItem("Uninstall");
+            MenuItem openFolder = new MenuItem("Open Folder");
+            reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+            uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+            openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+            reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+            uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+            openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+            contextMenu.getItems().add(reinstall);
+            contextMenu.getItems().add(uninstall);
+            contextMenu.getItems().add(openFolder);
+            contextMenu.pseudoClassStateChanged(PseudoClass.getPseudoClass("installed"), true);
 
-        reinstall.setOnAction(e->{
-            uninstall.fire();
-            LoginBar loginBar = Home.getInstance().getLoginBar();
-            Optional<Pack> oldPack = loginBar.getActivePackCell();
-            loginBar.setActivePackCell(this);
-            loginBar.getActionButton().installPack(this);
-            oldPack.ifPresent(Pack::fire);
-        });
+            reinstall.setOnAction(e->{
+                uninstall.fire();
+                LoginBar loginBar = Home.getInstance().getLoginBar();
+                Optional<Pack> oldPack = loginBar.getActivePackCell();
+                loginBar.setActivePackCell(this);
+                loginBar.getActionButton().installPack(this);
+                oldPack.ifPresent(Pack::fire);
+            });
 
-        uninstall.setOnAction(e->{
-            JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
-            if (instanceManifest == null || !instanceManifest.has("packs")) return;
-            JsonArray packs = instanceManifest.getAsJsonArray("packs");
-            for (int i = 0; i < packs.size(); i++){
-                if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), name)) packs.remove(i);
-            }
-            FileUtils.writeJsonToFile(new File(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()).getPath()), instanceManifest);
-            try {
-                FileUtils.deleteDirectory(getInstanceDirectory());
-            } catch (IOException exception){
-                Main.getLogger().error(exception);
-            }
-        });
+            uninstall.setOnAction(e->{
+                JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
+                if (instanceManifest == null || !instanceManifest.has("packs")) return;
+                JsonArray packs = instanceManifest.getAsJsonArray("packs");
+                for (int i = 0; i < packs.size(); i++){
+                    if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), name)) packs.remove(i);
+                }
+                FileUtils.writeJsonToFile(new File(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()).getPath()), instanceManifest);
+                try {
+                    FileUtils.deleteDirectory(getInstanceDirectory());
+                } catch (IOException exception){
+                    Main.getLogger().error(exception);
+                }
+            });
 
-        openFolder.setOnAction(e->{
-            try {
-                Desktop.getDesktop().open(getInstanceDirectory());
-            } catch (IOException exception){
-                Main.getLogger().error(exception);
-            }
-        });
+            openFolder.setOnAction(e->{
+                try {
+                    Desktop.getDesktop().open(getInstanceDirectory());
+                } catch (IOException exception){
+                    Main.getLogger().error(exception);
+                }
+            });
+        } else {
+            MenuItem install = new MenuItem("Install");
+            contextMenu.getItems().add(install);
+            install.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
+            install.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
+
+            install.setOnAction(e->{
+                LoginBar loginBar = Home.getInstance().getLoginBar();
+                Optional<Pack> oldPack = loginBar.getActivePackCell();
+                loginBar.setActivePackCell(this);
+                loginBar.getActionButton().installPack(this);
+                oldPack.ifPresent(Pack::fire);
+            });
+        }
     }
 
     public String getName() {
