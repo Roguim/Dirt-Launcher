@@ -79,7 +79,7 @@
 }
 
 .SettingsButtonSmall{
-    -fx-background-radius: 0 0 5 5 ;
+    -fx-background-radius: 5 0 0 5 ;
 }
 
 .SettingsButton:pressed {

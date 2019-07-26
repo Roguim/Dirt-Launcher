@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
@@ -34,6 +35,9 @@ import java.net.URI;
 
 public final class Home {
     private static Home instance;
+
+    @FXML
+    private Pane extraPane;
 
     @FXML
     private StackPane webArea;
@@ -71,6 +75,7 @@ public final class Home {
         settingsImage.setImage(MiscUtils.getImage(Constants.JAR_ICONS, "settings.png"));
         settingsButton.setGraphic(settingsImage);
         settingsButton.setOnMouseClicked(event -> {
+            if (!Constants.VERBOSE) extraPane.setDisable(true);
             Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
             stage.show();
             stage.setOnCloseRequest(e -> {
