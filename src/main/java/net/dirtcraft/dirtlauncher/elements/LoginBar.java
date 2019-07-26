@@ -6,9 +6,13 @@ import com.google.gson.JsonParser;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.YggdrasilClient;
@@ -34,20 +38,23 @@ public final class LoginBar extends Pane {
     private final PasswordField passField;
     private final PlayButton actionButton;
     private final YggdrasilClient client;
+    private final LogoutButton logout;
+    private final GridPane loginContainer;
+    private boolean loggedIn;
     private Pack activePackCell;
     private Account account;
 
     public LoginBar() {
         Future<Account> accountFuture = loadAccountData();
+        actionButton = new PlayButton(this);
         activePackCell = null;//ripblock
-        client = new YggdrasilClient() ;
         passField = new PasswordField();
         usernameField = new TextField();
-        actionButton = new PlayButton(this);
-        GridPane loginContainer = new GridPane();
+        loginContainer = new GridPane();
+        client = new YggdrasilClient();
+        logout = new LogoutButton(this);
 
         //Force the size - otherwise it changes and that's bad..
-        setAbsoluteSize(actionButton , 58 ,  59 );
         setAbsoluteSize(this ,264.0 ,  74 );
         setAbsoluteSize(loginContainer,250.0, 59);
 
@@ -77,9 +84,6 @@ public final class LoginBar extends Pane {
         loginContainer.getRowConstraints().add(1, x2);
         loginContainer.getColumnConstraints().add(0, y1);
         loginContainer.getColumnConstraints().add(1, y2);
-        loginContainer.add(actionButton, 1, 0,  1, 2);
-        loginContainer.add(usernameField, 0, 0, 1, 1);
-        loginContainer.add(passField , 0,  1,  1,  1);
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(8);
 
@@ -104,6 +108,34 @@ public final class LoginBar extends Pane {
             account = null;
         }
 
+    }
+
+    public void logOut(){
+        client.invalidate(account.getSession());
+        this.account = null;
+        setLoggedIn(false, null);
+    }
+
+    private void setLoggedIn(boolean value, Account account){
+        loggedIn = value;
+        loginContainer.getChildren().clear();
+        if (!value){
+            setAbsoluteSize(actionButton , 58 ,  59 );
+            actionButton.setTranslateX(0);
+            loginContainer.add(usernameField, 0, 0, 1, 1);
+            loginContainer.add(passField , 0,  1,  1,  1);
+            loginContainer.add(actionButton, 1, 0,  1, 2);
+            actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+        } else {
+            final int barSize = 252;
+            final int logoutSize = 35;
+            actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+            actionButton.setTranslateX(-logoutSize);
+            setAbsoluteSize(actionButton , barSize-logoutSize ,  59 );
+            setAbsoluteSize(logout , logoutSize ,  59 );
+            loginContainer.add(actionButton, 0, 0,  2, 2);
+            loginContainer.add(logout, 0, 0,  2, 2);
+        }
     }
 
     private Future<Account> loadAccountData() {
@@ -170,8 +202,7 @@ public final class LoginBar extends Pane {
         if (account != null) {
             try {
                 if (client.validate(account.getSession())) {
-                    usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                    passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                    setLoggedIn(true, account);
                     new Thread(() -> saveAccountData(account)).start();
                     return account;
                 }
@@ -180,8 +211,7 @@ public final class LoginBar extends Pane {
                 try {
                     client.refresh(account.getSession());
                     if (client.validate(account.getSession())) {
-                        usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                        passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                        setLoggedIn(true, account);
                         new Thread(() -> saveAccountData(account)).start();
                         return account;
                     }
@@ -190,8 +220,7 @@ public final class LoginBar extends Pane {
                 }
             }
         }
-        usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
-        passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+        setLoggedIn(false, account);
         return null;
     }
 
@@ -202,8 +231,7 @@ public final class LoginBar extends Pane {
                 final Session session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
                 account = new Account(session, session.getAlias(), session.getUuid(), true);
                 new Thread(() -> saveAccountData(account)).start();
-                usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
-                passField.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+                setLoggedIn(true, account);
                 return Optional.of(account);
             } catch (InvalidCredentialsException e) {
                 Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
@@ -250,10 +278,10 @@ public final class LoginBar extends Pane {
         else if (pack.isOutdated()) type = PlayButton.Types.UPDATE;
         else type = PlayButton.Types.PLAY;
 
-        this.actionButton.setType(type, pack);
+        this.actionButton.setType(type, pack, account);
     }
 
     public void updatePlayButton(PlayButton.Types types){
-        actionButton.setType(types, activePackCell);
+        actionButton.setType(types, activePackCell, account);
     }
 }

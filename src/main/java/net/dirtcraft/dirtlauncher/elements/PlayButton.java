@@ -39,10 +39,11 @@ public final class PlayButton extends Button {
         setCursor(Cursor.HAND);
     }
 
-    public void setType(Types type, Pack pack) {
+    public void setType(Types type, Pack pack, Account account) {
         this.type = type;
         this.pack = pack;
-        setText(type.toString());
+        if (account == null || type != Types.PLAY) setText(type.toString());
+        else setText(type.toString() + " As " + "SixteenCharsHere"); //account.getSession().getAlias()
     }
 
     @Override

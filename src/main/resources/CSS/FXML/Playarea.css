@@ -9,6 +9,15 @@
     -fx-background-radius: 15 0 0 0;
     -fx-opacity: 1;
 }
+
+#UsernameFlow{
+    -fx-border-radius: 15 0 0 15;
+    -fx-background-radius: 15 0 0 15;
+    -fx-background-color: #FFFFFF;
+    -fx-text-alignment: center ;
+    -fx-opacity: 1;
+}
+
 #UsernameField:hover, #PasswordField:hover{
     -fx-background-color: #DDDDDD;
 }
@@ -20,7 +29,6 @@
      -fx-text-fill: black !important ;
 }
 
-
 #PlayButton{
     -fx-border-radius: 00 15 15 00;
     -fx-background-radius: 00 15 15 00;
@@ -28,6 +36,27 @@
     -fx-font-size: 13 ;
     -fx-font-weight: bold ;
     -fx-background-color: #BBBB44;
+}
+#LogoutButton{
+    -fx-background-color: #FF8888;
+    -fx-border-radius: 0 15 15 0;
+    -fx-background-radius: 0 15 15 0;
+}
+
+#LogoutButton:hover{
+    -fx-background-color: #DD6666;
+    -fx-border-radius: 0 15 15 0;
+    -fx-background-radius: 0 15 15 0;
+}
+
+#LogoutButton:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 3, 2, 1, 1 );
+}
+
+#PlayButton:authenticated{
+    -fx-border-radius: 15 0 0 15;
+    -fx-background-radius: 15 0 0 15;
+    -fx-font-size: 16 ;
 }
 
 #PlayButton:hover{
@@ -41,8 +70,6 @@
 #PlayButton:pressed{
     -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 3, 2, 1, 1 );
     -fx-background-insets: 0;
-    -fx-border-radius: 00 15 15 00;
-    -fx-background-radius: 00 15 15 00;
     -fx-background-color: #008800;
     -fx-opacity: 1;
 }

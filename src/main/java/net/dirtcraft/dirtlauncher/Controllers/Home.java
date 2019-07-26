@@ -97,6 +97,7 @@ public final class Home {
 
     private void initWebView(){
         WebView webView = new WebView();
+        webView.setFocusTraversable(false);
         WebEngine webEngine = webView.getEngine();
         webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Constants.JAR_CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
