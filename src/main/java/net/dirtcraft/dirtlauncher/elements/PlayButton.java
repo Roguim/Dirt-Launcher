@@ -7,6 +7,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -33,17 +34,24 @@ public final class PlayButton extends Button {
     private LoginBar loginBar;
 
     public PlayButton(LoginBar loginBar){
+        this.type = Types.INITIAL;
+        setTextOverrun(OverrunStyle.CLIP);
         this.loginBar = loginBar;
         setFocusTraversable(false);
         setId("PlayButton");
         setCursor(Cursor.HAND);
     }
 
+    public void setType(Account account) {
+        if (account == null || type != Types.PLAY) setText(type.toString());
+        else setText(type.toString() + " As " + account.getSession().getAlias());
+    }
+
     public void setType(Types type, Pack pack, Account account) {
         this.type = type;
         this.pack = pack;
         if (account == null || type != Types.PLAY) setText(type.toString());
-        else setText(type.toString() + " As " + "SixteenCharsHere"); //account.getSession().getAlias()
+        else setText(type.toString() + " As " + account.getSession().getAlias());
     }
 
     @Override

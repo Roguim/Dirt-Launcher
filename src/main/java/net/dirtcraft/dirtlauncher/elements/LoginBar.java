@@ -126,6 +126,7 @@ public final class LoginBar extends Pane {
             loginContainer.add(passField , 0,  1,  1,  1);
             loginContainer.add(actionButton, 1, 0,  1, 2);
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
+            this.actionButton.setType(account);
         } else {
             final int barSize = 252;
             final int logoutSize = 35;
@@ -135,6 +136,7 @@ public final class LoginBar extends Pane {
             setAbsoluteSize(logout , logoutSize ,  59 );
             loginContainer.add(actionButton, 0, 0,  2, 2);
             loginContainer.add(logout, 0, 0,  2, 2);
+            this.actionButton.setType(account);
         }
     }
 
