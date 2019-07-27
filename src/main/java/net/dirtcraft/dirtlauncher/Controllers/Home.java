@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -19,6 +18,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
+import net.dirtcraft.dirtlauncher.backend.components.UpdateHelper;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.elements.NotificationBox;
@@ -60,9 +60,15 @@ public final class Home {
     private PasswordField passwordField;
     private TextField usernameField;
     private Button playButton;
+    @FXML
+    private Button updateButton;
 
     @FXML   //this is all async
     private void initialize() {
+        updateButton.setOnAction(e->{
+            new UpdateHelper();
+            System.exit(0);
+        });
         updatePacksAsync();
         Platform.runLater(this::initWebView);
         instance = this;

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Controllers.Update;
+import net.dirtcraft.dirtlauncher.backend.components.UpdateHelper;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -33,6 +35,7 @@ public class Main extends Application {
     private static Future<Parent> root;
     private static Main instance;
     private static List<String> options;
+    private static boolean updated = false;
     private Stage stage;
 
     public static void main(String[] args) {
@@ -65,6 +68,16 @@ public class Main extends Application {
                 if (i>=5){
                     if (!logFiles.get(i).delete()) logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
                 }
+            }
+            try {
+                File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+                String bootstrapName = "UpdateBootstrapper.class";
+                final File bootstrap = new File(currentJar, bootstrapName);
+                if (bootstrap.delete()){
+                    updated = true;
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         }).start();
 

@@ -50,7 +50,7 @@
       </FlowPane>
         <Pane id="SettingsBarExt" fx:id="extraPane" layoutX="774.0" layoutY="10.0" prefHeight="95.0" prefWidth="30.0" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
             <children>
-                <Button id="SettingsButton" fx:id="settingsButton1" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+                <Button id="SettingsButton" fx:id="accountButton" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                     <styleClass>
                         <String fx:value="SettingsBar" />
                         <String fx:value="SettingsButton" />
@@ -67,7 +67,7 @@
                   </ImageView>
                </graphic>
                 </Button>
-                <Button id="SettingsButton" fx:id="settingsButton3" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+                <Button id="SettingsButton" fx:id="infoButton" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                     <styleClass>
                         <String fx:value="SettingsBar" />
                         <String fx:value="SettingsButton" />
@@ -84,7 +84,7 @@
                   </ImageView>
                </graphic>
                 </Button>
-                <Button id="SettingsButton" fx:id="settingsButton2" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
+                <Button id="SettingsButton" fx:id="updateButton" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="35.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../CSS/FXML/Sidebar.css">
                     <styleClass>
                         <String fx:value="SettingsBar" />
                         <String fx:value="SettingsButton" />
