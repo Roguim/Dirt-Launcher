@@ -15,13 +15,13 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.io.IOException;
@@ -42,22 +42,22 @@ public final class PlayButton extends Button {
         setCursor(Cursor.HAND);
     }
 
-    public void setType(Account account) {
-        if (account == null || type != Types.PLAY) setText(type.toString());
-        else setText(type.toString() + " As " + account.getSession().getAlias());
+    public void setType(Session session) {
+        if (session == null || type != Types.PLAY) setText(type.toString());
+        else setText(type.toString() + " As " + session.getAlias());
     }
 
-    public void setType(Types type, Pack pack, Account account) {
+    public void setType(Types type, Pack pack, Session account) {
         this.type = type;
         this.pack = pack;
         if (account == null || type != Types.PLAY) setText(type.toString());
-        else setText(type.toString() + " As " + account.getSession().getAlias());
+        else setText(type.toString() + " As " + account.getAlias());
     }
 
     @Override
     public void fire() {
-        Optional<Account> account = loginBar.getAccount();
-        if (account.isPresent())
+        Optional<Session> session = loginBar.getAccount();
+        if (session.isPresent())
             switch (type) {
                 case INSTALL:
                     installPack(pack);
@@ -66,7 +66,7 @@ public final class PlayButton extends Button {
                     updatePack(pack);
                     return;
                 case PLAY:
-                    launchPack(account.get(), pack);
+                    launchPack(session.get(), pack);
                     return;
                 default:
                     Home.getInstance().getNotificationBox().displayError(null, pack);
@@ -99,10 +99,10 @@ public final class PlayButton extends Button {
         this.pack = pack;
     }
 
-    public void launchPack(Account account, Pack modPack) {
+    public void launchPack(Session session, Pack modPack) {
         LaunchGame.isGameRunning = true;
         LaunchGame.loadServerList(modPack);
-        LaunchGame.launchPack(modPack, account);
+        LaunchGame.launchPack(modPack, session);
     }
 
     private void updatePack(Pack modPack){

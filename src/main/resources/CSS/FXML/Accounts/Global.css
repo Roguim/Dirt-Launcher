@@ -1,0 +1,14 @@
+.viewport {
+   -fx-background-color: transparent;
+}
+.AccountList{
+	-fx-background-color: rgba(255,255,255,0.4);
+    -fx-spacing: 3;
+}
+
+.AccountListButton{
+    -fx-text-fill: FFFFFF;
+    -fx-background-color: firebrick;
+    -fx-pref-height: 28px;
+    -fx-pref-width: 200px;
+}

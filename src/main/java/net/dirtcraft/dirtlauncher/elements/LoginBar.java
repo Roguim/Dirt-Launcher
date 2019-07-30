@@ -18,13 +18,11 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Controllers.Home;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
 
 import java.io.*;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -36,12 +34,11 @@ public final class LoginBar extends Pane {
     private final YggdrasilClient client;
     private final LogoutButton logout;
     private final GridPane loginContainer;
-    private boolean loggedIn;
     private Pack activePackCell;
-    private Account account;
+    private Session session;
 
     public LoginBar() {
-        Future<Account> accountFuture = loadAccountData();
+        Future<Session> accountFuture = loadAccountData();
         actionButton = new PlayButton(this);
         activePackCell = null;//ripblock
         passField = new PasswordField();
@@ -98,22 +95,21 @@ public final class LoginBar extends Pane {
             }
         });
         try {
-            account = verifySession(accountFuture.get());
+            session = verifySession(accountFuture.get());
         } catch (InterruptedException | ExecutionException e){
             e.printStackTrace();
-            account = null;
+            session = null;
         }
 
     }
 
     public void logOut(){
-        client.invalidate(account.getSession());
-        this.account = null;
-        setLoggedIn(false, null);
+        client.invalidate(session);
+        this.session = null;
+        setInputs(false, null);
     }
 
-    private void setLoggedIn(boolean value, Account account){
-        loggedIn = value;
+    private void setInputs(boolean value, Session session){
         loginContainer.getChildren().clear();
         if (!value){
             setAbsoluteSize(actionButton , 58 ,  59 );
@@ -122,7 +118,7 @@ public final class LoginBar extends Pane {
             loginContainer.add(passField , 0,  1,  1,  1);
             loginContainer.add(actionButton, 1, 0,  1, 2);
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
-            this.actionButton.setType(account);
+            this.actionButton.setType(session);
         } else {
             final int barSize = 252;
             final int logoutSize = 35;
@@ -132,11 +128,11 @@ public final class LoginBar extends Pane {
             setAbsoluteSize(logout , logoutSize ,  59 );
             loginContainer.add(actionButton, 0, 0,  2, 2);
             loginContainer.add(logout, 0, 0,  2, 2);
-            this.actionButton.setType(account);
+            this.actionButton.setType(session);
         }
     }
 
-    private Future<Account> loadAccountData() {
+    private Future<Session> loadAccountData() {
         return CompletableFuture.supplyAsync(()-> {
             //deserialize the account.
             Config settings = Main.getSettings();
@@ -147,22 +143,17 @@ public final class LoginBar extends Pane {
                 JsonParser parser = new JsonParser();
                 config = parser.parse(reader).getAsJsonObject();
                 if (config == null) throw new JsonParseException("Json was null");
-                if (!config.has("uuid")) throw new JsonParseException("No uuid");
-                if (!config.has("username")) throw new JsonParseException("No username");
                 if (!config.has("sessionID")) throw new JsonParseException("No sessionID");
                 if (!config.has("sessionAlias")) throw new JsonParseException("No sessionAlias");
                 if (!config.has("sessionAccessToken")) throw new JsonParseException("No sessionAccessToken");
                 if (!config.has("sessionClientToken")) throw new JsonParseException("No sessionClientToken");
 
-                String uuid = config.get("uuid").getAsString();
-                String username = config.get("username").getAsString();
                 String sessionID = config.get("sessionID").getAsString();
                 String sessionAlias = config.get("sessionAlias").getAsString();
                 String sessionAccessToken = config.get("sessionAccessToken").getAsString();
                 String sessionClientToken = config.get("sessionClientToken").getAsString();
 
-                Session session = new Session(sessionID, sessionAlias, sessionAccessToken, sessionClientToken);
-                return new Account(session, username, UUID.fromString(uuid), true);
+                return new Session(sessionID, sessionAlias, sessionAccessToken, sessionClientToken);
 
             } catch (IOException | JsonParseException e) {
                 e.printStackTrace();
@@ -171,7 +162,11 @@ public final class LoginBar extends Pane {
         });
     }
 
-    private void saveAccountData(Account account){
+    public void setSession(Session session){
+        //TODO: Not absolutely fucking nothing.
+    }
+
+    private void saveAccountData(Session session){
         //serialize the account.
         Config settings = Main.getSettings();
         File jsonFile = settings.getAccountJson();
@@ -179,12 +174,10 @@ public final class LoginBar extends Pane {
         try (FileWriter writer = new FileWriter(jsonFile)) {
             config = new JsonObject();
 
-            config.addProperty("uuid", account.getUuid().toString());
-            config.addProperty("username", account.getUsername());
-            config.addProperty("sessionID", account.getSession().getId());
-            config.addProperty("sessionAlias", account.getSession().getAlias());
-            config.addProperty("sessionAccessToken", account.getSession().getAccessToken());
-            config.addProperty("sessionClientToken", account.getSession().getClientToken());
+            config.addProperty("sessionID", session.getId());
+            config.addProperty("sessionAlias", session.getAlias());
+            config.addProperty("sessionAccessToken", session.getAccessToken());
+            config.addProperty("sessionClientToken", session.getClientToken());
 
             writer.write(config.toString());
         } catch (IOException e) {
@@ -193,44 +186,43 @@ public final class LoginBar extends Pane {
     }
 
     public boolean hasAccount(){
-        return account != null;
+        return session != null;
     }
 
-    private Account verifySession(Account account) {
-        if (account != null) {
+    private Session verifySession(Session session) {
+        if (session != null) {
             try {
-                if (client.validate(account.getSession())) {
-                    setLoggedIn(true, account);
-                    new Thread(() -> saveAccountData(account)).start();
-                    return account;
+                if (client.validate(session)) {
+                    setInputs(true, session);
+                    new Thread(() -> saveAccountData(session)).start();
+                    return session;
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 try {
-                    client.refresh(account.getSession());
-                    if (client.validate(account.getSession())) {
-                        setLoggedIn(true, account);
-                        new Thread(() -> saveAccountData(account)).start();
-                        return account;
+                    client.refresh(session);
+                    if (client.validate(session)) {
+                        setInputs(true, session);
+                        new Thread(() -> saveAccountData(session)).start();
+                        return session;
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }
         }
-        setLoggedIn(false, account);
+        setInputs(false, session);
         return null;
     }
 
-    public Optional<Account> getAccount() throws InvalidCredentialsException {
-        account = verifySession(account);
-        if (account == null) {
+    public Optional<Session> getAccount() throws InvalidCredentialsException {
+        session = verifySession(session);
+        if (session == null) {
             try{
-                final Session session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
-                account = new Account(session, session.getAlias(), session.getUuid(), true);
-                new Thread(() -> saveAccountData(account)).start();
-                setLoggedIn(true, account);
-                return Optional.of(account);
+                session = client.login(new AccountCredentials(usernameField.getText().trim(), passField.getText().trim()), YggdrasilAgent.MINECRAFT);
+                new Thread(() -> saveAccountData(session)).start();
+                setInputs(true, session);
+                return Optional.of(session);
             } catch (InvalidCredentialsException e) {
                 Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
             } catch (IllegalArgumentException e) {
@@ -242,7 +234,7 @@ public final class LoginBar extends Pane {
             }
             return Optional.empty();
         }
-        else return Optional.of(account);
+        else return Optional.of(session);
     }
 
     private void setAbsoluteSize(Region node, double width, double height){
@@ -276,10 +268,10 @@ public final class LoginBar extends Pane {
         else if (pack.isOutdated()) type = PlayButton.Types.UPDATE;
         else type = PlayButton.Types.PLAY;
 
-        this.actionButton.setType(type, pack, account);
+        this.actionButton.setType(type, pack, session);
     }
 
     public void updatePlayButton(PlayButton.Types types){
-        actionButton.setType(types, activePackCell, account);
+        actionButton.setType(types, activePackCell, session);
     }
 }

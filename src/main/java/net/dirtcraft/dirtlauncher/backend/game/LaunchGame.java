@@ -3,12 +3,12 @@ package net.dirtcraft.dirtlauncher.backend.game;
 import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.Controllers.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.SystemTray;
 import net.dirtcraft.dirtlauncher.backend.utils.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
-import net.dirtcraft.dirtlauncher.backend.objects.Account;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
 import net.dirtcraft.dirtlauncher.elements.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
@@ -43,7 +43,7 @@ public class LaunchGame {
         serverList.build();
     }
 
-    public static void launchPack(Pack pack, Account account) {
+    public static void launchPack(Pack pack, Session session) {
         Config settings = Main.getSettings();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
@@ -93,7 +93,7 @@ public class LaunchGame {
         }
         // Username
         args.add("--username");
-        args.add(account.getUsername());
+        args.add(session.getAlias());
 
         // Version
         args.add("--version");
@@ -114,10 +114,10 @@ public class LaunchGame {
         args.add(assetsVersion);
         // UUID
         args.add("--uuid");
-        args.add(account.getUuid().toString().replace("-", ""));
+        args.add(session.getId().toString().replace("-", ""));
         // Access Token
         args.add("--accessToken");
-        args.add(account.getSession().getAccessToken());
+        args.add(session.getAccessToken());
 
         // Auto Join
         /*command.append("--server ");

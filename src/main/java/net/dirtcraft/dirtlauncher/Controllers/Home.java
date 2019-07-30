@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.UpdateHelper;
+import net.dirtcraft.dirtlauncher.backend.objects.AccountList;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
 import net.dirtcraft.dirtlauncher.elements.NotificationBox;
@@ -62,9 +63,14 @@ public final class Home {
     private Button playButton;
     @FXML
     private Button updateButton;
+    @FXML
+    private Button accountButton;
 
     @FXML   //this is all async
     private void initialize() {
+        accountButton.setOnAction(e->{
+            new AccountList().show();
+        });
         updateButton.setOnAction(e->{
             new UpdateHelper();
             System.exit(0);
