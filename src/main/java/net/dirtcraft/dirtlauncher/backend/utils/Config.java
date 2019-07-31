@@ -34,13 +34,29 @@ public final class Config {
         }
         if (configFile.exists() && config != null){
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
-            else config.addProperty("minimum-ram", getDefaultMinimumRam() * 1024);
+            else {
+                final int value = getDefaultMinimumRam() * 1024;
+                config.addProperty("minimum-ram", value);
+                minimumRam = value;
+            }
             if (config.has("maximum-ram")) maximumRam = config.get("maximum-ram").getAsInt();
-            else config.addProperty("maximum-ram", getDefaultRecommendedRam() * 1024);
+            else {
+                final int value = getDefaultRecommendedRam() * 1024;
+                config.addProperty("maximum-ram", value);
+                maximumRam = value;
+            }
             if (config.has("java-arguments")) javaArguments = config.get("java-arguments").getAsString();
-            else config.addProperty("java-arguments", Constants.DEFAULT_JAVA_ARGS);
+            else {
+                final String value = Constants.DEFAULT_JAVA_ARGS;
+                config.addProperty("java-arguments", value);
+                javaArguments = value;
+            }
             if (config.has("game-directory")) gameDirectory = Paths.get(config.get("game-directory").getAsString());
-            else config.addProperty("game-directory", launcherDirectory.toString());
+            else {
+                final String value = launcherDirectory.toString();
+                config.addProperty("game-directory", value);
+                gameDirectory = launcherDirectory;
+            }
         } else {
             minimumRam = getDefaultMinimumRam() * 1024;
             maximumRam = getDefaultRecommendedRam() * 1024;
