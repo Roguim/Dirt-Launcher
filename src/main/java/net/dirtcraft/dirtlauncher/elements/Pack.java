@@ -80,9 +80,6 @@ public final class Pack extends Button {
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
         setText(name);
-        setMinSize(278, 50);
-        setPrefSize(278, 50);
-        setMaxSize(278, 50);
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);

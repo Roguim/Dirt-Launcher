@@ -1,14 +1,37 @@
-.viewport {
+.AccountList .viewport {
    -fx-background-color: transparent;
 }
-.AccountList{
-	-fx-background-color: rgba(255,255,255,0.4);
-    -fx-spacing: 3;
+
+.AccountList .scroll-pane{
+	-fx-background-color: rgba(255,255,255,0.5);
+	-fx-background-width: 3px;
+    -fx-border-color: rgba(0,0,0,0);
+    -fx-border-radius: 5px;
+	-fx-border-width: 3px;
 }
 
-.AccountListButton{
+.AccountList .AccountListBacking{
+	-fx-background-color: rgba(0,0,0,0.4);
+    -fx-spacing: 5;
+}
+
+.AccountList .button{
     -fx-text-fill: FFFFFF;
     -fx-background-color: firebrick;
-    -fx-pref-height: 28px;
-    -fx-pref-width: 200px;
+    -fx-background-radius: 15 15 15 15 ;
+    -fx-min-width: 252px;
+    -fx-max-width: 252px;
+    -fx-min-height: 59px;
+    -fx-max-height: 59px;
+}
+
+.Title{
+    -fx-min-width: 282px;
+    -fx-max-width: 282px;
+    -fx-min-height: 20px;
+    -fx-max-height: 20px;
+	-fx-background-color: rgba(255,255,255,0.5);
+	-fx-text-fill: #ffffff !important ;
+	-fx-font-family: "System Bold" !important ;
+	-fx-font-size: 20 !important ;
 }

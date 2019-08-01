@@ -8,11 +8,13 @@ public class Constants {
     public static final String DEFAULT_JAVA_ARGS = "-XX:+UseG1GC -Dfml.readTimeout=180 -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 
     public static final String CSS_CLASS_ACCOUNTLIST = "AccountList";
-    public static final String CSS_CLASS_ACCOUNTLIST_BUTTON = "AccountListButton";
     public static final String CSS_CLASS_PACKLIST = "PackList";
     public static final String CSS_CLASS_PACK_CELL = "PackCell";
     public static final String CSS_CLASS_PACK_MENU = "PackCellContext";
     public static final String CSS_CLASS_PACK_MENU_OPTION = "PackCellContextOption";
+
+    public static final String CSS_CLASS_SCROLLPANE_VBOX = "AccountListBacking";
+    public static final String CSS_CLASS_TITLE = "Title";
 
     public final static String JAR_CSS_FXML = "CSS/FXML";
     public final static String JAR_CSS_HTML = "CSS/HTML";

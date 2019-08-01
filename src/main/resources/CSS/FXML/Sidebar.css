@@ -51,6 +51,10 @@
 	-fx-font-family: "System Bold";
 	-fx-font-size: 20;
     -fx-background-radius: 5 5 5 5 ;
+    -fx-min-width: 278px;
+    -fx-max-width: 278px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
 }
 
 .PackCell:hover, .SettingsButton:hover {
