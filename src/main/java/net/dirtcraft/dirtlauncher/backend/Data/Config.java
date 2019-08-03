@@ -1,10 +1,12 @@
-package net.dirtcraft.dirtlauncher.backend.utils;
+package net.dirtcraft.dirtlauncher.backend.Data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.management.OperatingSystemMXBean;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.backend.utils.Constants;
+import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;

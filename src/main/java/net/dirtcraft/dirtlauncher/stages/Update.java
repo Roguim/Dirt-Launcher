@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.Controllers;
+package net.dirtcraft.dirtlauncher.stages;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

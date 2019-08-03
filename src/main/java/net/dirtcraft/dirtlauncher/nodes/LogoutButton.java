@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.elements;
+package net.dirtcraft.dirtlauncher.nodes;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -23,6 +23,5 @@ public final class LogoutButton extends Button {
     @Override
     public void fire() {
         loginBar.logOut();
-
     }
 }

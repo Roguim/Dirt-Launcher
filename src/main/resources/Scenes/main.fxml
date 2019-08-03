@@ -15,10 +15,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<?import net.dirtcraft.dirtlauncher.elements.LoginBar?>
-<?import net.dirtcraft.dirtlauncher.elements.NotificationBox?>
+<?import net.dirtcraft.dirtlauncher.nodes.LoginBar?>
+<?import net.dirtcraft.dirtlauncher.nodes.NotificationBox?>
 
-<AnchorPane fx:id="home" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../CSS/FXML/Global.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.Controllers.Home">
+<AnchorPane fx:id="home" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../CSS/FXML/Global.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.dirtcraft.dirtlauncher.stages.Home">
     <children>
       <FlowPane layoutX="-171.0" layoutY="-124.0" prefHeight="100.0" prefWidth="845.0" styleClass="BackgroundTop" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <FlowPane layoutY="38.0" prefHeight="807.0" prefWidth="845.0" styleClass="BackgroundBottom" stylesheets="@../CSS/FXML/Sidebar.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />

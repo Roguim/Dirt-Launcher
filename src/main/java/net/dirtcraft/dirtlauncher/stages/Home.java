@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.Controllers;
+package net.dirtcraft.dirtlauncher.stages;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,13 +19,12 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.components.UpdateHelper;
-import net.dirtcraft.dirtlauncher.backend.objects.AccountList;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.jsonutils.PackRegistry;
-import net.dirtcraft.dirtlauncher.elements.NotificationBox;
-import net.dirtcraft.dirtlauncher.elements.Pack;
+import net.dirtcraft.dirtlauncher.nodes.NotificationBox;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.elements.LoginBar;
+import net.dirtcraft.dirtlauncher.nodes.LoginBar;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventListener;
@@ -87,14 +86,14 @@ public final class Home {
         //                                                                                                          //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         settingsButton.setOnMouseClicked(event -> {
-            Stage stage = net.dirtcraft.dirtlauncher.Controllers.Settings.getInstance().getStage();
+            Stage stage = net.dirtcraft.dirtlauncher.stages.Settings.getInstance().getStage();
             stage.show();
             stage.setOnCloseRequest(e -> {
                 final int minimumRam = Integer.valueOf(Settings.getInstance().getMinimumRam().getText());
                 final int maximumRam = Integer.valueOf(Settings.getInstance().getMaximumRam().getText());
                 final String gameDirectory = Settings.getInstance().getGameDirectoryField().getText();
                 final String javaArguments = Settings.getInstance().getJavaArguments().getText();
-                Main.getSettings().updateSettings(minimumRam, maximumRam, javaArguments, gameDirectory);
+                Main.getConfig().updateSettings(minimumRam, maximumRam, javaArguments, gameDirectory);
             });
         });
 
@@ -159,7 +158,7 @@ public final class Home {
             return;
         }
 
-        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim()) || loginBar.hasAccount()) {
+        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passwordField.getText().trim()) || Main.getAccounts().hasSelectedAccount()) {
             playButton.setDisable(false);
             playButton.setOnAction(e -> loginBar.getActionButton().fire());
         } else playButton.setDisable(true);

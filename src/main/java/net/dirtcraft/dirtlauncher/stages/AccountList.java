@@ -1,6 +1,8 @@
-package net.dirtcraft.dirtlauncher.backend.objects;
+package net.dirtcraft.dirtlauncher.stages;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -12,6 +14,8 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cydhra.nidhogg.data.Session;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
@@ -62,17 +66,18 @@ final public class AccountList extends Stage {
         initStyle(StageStyle.TRANSPARENT);
         setTitle("Accounts");
 
-        for (byte i = 0; i < 16; i++){
-            backing.getChildren().add(new Account());
-        }
+        ObservableList<Node> contents = backing.getChildren();
+        Main.getAccounts().getAltAccounts().forEach(session -> contents.add(new Account(session)));
+        contents.add(new AddAccountButton());
 
     }
 
     private class Account extends Button {
-        //private final Session session;
+        private final Session session;
         private double lastDragY;
-        Account(){//(Session session){
-            //this.session = session;
+        Account(Session session){
+            this.session = session;
+            setText(session.getAlias());
             setOnMouseDragged(event->{
                 if (event.isPrimaryButtonDown()) {
                     double change = (lastDragY - event.getY()) / scrollPane.getHeight();
@@ -83,7 +88,29 @@ final public class AccountList extends Stage {
         }
         @Override
         public void fire() {
-            //Home.getInstance().getLoginBar().setSession(session);
+            Main.getAccounts().setSelectedAccount(session);
+            Home.getInstance().getLoginBar().setInputs();
+            instance.close();
+        }
+    }
+    private class AddAccountButton extends Button {
+        private double lastDragY;
+
+        AddAccountButton() {
+            setText("Add New Account");
+            setOnMouseDragged(event -> {
+                if (event.isPrimaryButtonDown()) {
+                    double change = (lastDragY - event.getY()) / scrollPane.getHeight();
+                    scrollPane.setVvalue(scrollPane.getVvalue() + change);
+                    lastDragY = change;
+                }
+            });
+        }
+
+        @Override
+        public void fire() {
+            Main.getAccounts().clearSelectedAccount();
+            Home.getInstance().getLoginBar().setInputs();
             instance.close();
         }
     }

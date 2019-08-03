@@ -4,13 +4,13 @@ import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.cydhra.nidhogg.data.Session;
-import net.dirtcraft.dirtlauncher.Controllers.Install;
+import net.dirtcraft.dirtlauncher.stages.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.SystemTray;
-import net.dirtcraft.dirtlauncher.backend.utils.Config;
+import net.dirtcraft.dirtlauncher.backend.Data.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.Listing;
-import net.dirtcraft.dirtlauncher.elements.Pack;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.backend.objects.ServerList;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
@@ -44,7 +44,7 @@ public class LaunchGame {
     }
 
     public static void launchPack(Pack pack, Session session) {
-        Config settings = Main.getSettings();
+        Config settings = Main.getConfig();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
@@ -181,7 +181,7 @@ public class LaunchGame {
     }
 
     private static String getLibs(Pack pack) {
-        Config settings = Main.getSettings();
+        Config settings = Main.getConfig();
         StringBuilder libs = new StringBuilder();
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))

@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
-import net.dirtcraft.dirtlauncher.elements.Pack;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class PackRegistry {
         }
 
         packs.sort(Comparator.comparing(Pack::getName));
-        if (Constants.VERBOSE) {
+        if (Constants.VERBOSE && false) {
             //Logger might take a little to appear, since we are loading it parallel to
             //this in another thread so we just wait for it to show our debug output...
             new Thread(()->{

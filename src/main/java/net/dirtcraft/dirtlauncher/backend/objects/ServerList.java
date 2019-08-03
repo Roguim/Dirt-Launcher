@@ -23,7 +23,7 @@ public class ServerList {
 
     private ServerList(String packName){
         servers = new ArrayList<>();
-        this.serverDat = Paths.get(Main.getSettings().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+        this.serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
     }
     //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
     private List<Byte> getAsByteArray(){

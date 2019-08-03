@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.elements;
+package net.dirtcraft.dirtlauncher.nodes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
+import net.dirtcraft.dirtlauncher.stages.Home;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
@@ -137,7 +137,7 @@ public final class Pack extends Button {
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + name);
 
-        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Home.getInstance().getLoginBar().hasAccount()) playButton.setDisable(false);
+        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
     }
 
     private void initContextMenu(){
@@ -169,13 +169,13 @@ public final class Pack extends Button {
             });
 
             uninstall.setOnAction(e->{
-                JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()));
+                JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()));
                 if (instanceManifest == null || !instanceManifest.has("packs")) return;
                 JsonArray packs = instanceManifest.getAsJsonArray("packs");
                 for (int i = 0; i < packs.size(); i++){
                     if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), name)) packs.remove(i);
                 }
-                FileUtils.writeJsonToFile(new File(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory()).getPath()), instanceManifest);
+                FileUtils.writeJsonToFile(new File(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()).getPath()), instanceManifest);
                 try {
                     FileUtils.deleteDirectory(getInstanceDirectory());
                 } catch (IOException exception){
@@ -254,7 +254,7 @@ public final class Pack extends Button {
     }
 
     public File getInstanceDirectory() {
-        return new File(Main.getSettings().getInstancesDirectory().getPath(), getFormattedName());
+        return new File(Main.getConfig().getInstancesDirectory().getPath(), getFormattedName());
     }
 
     public boolean isPixelmon() {
@@ -262,14 +262,14 @@ public final class Pack extends Button {
     }
 
     public boolean isInstalled() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName())) return true;
         }
         return false;
     }
 
     public boolean isOutdated() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getSettings().getDirectoryManifest(Main.getSettings().getInstancesDirectory())).getAsJsonArray("packs")) {
+        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs")) {
             if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
         }
         return true;

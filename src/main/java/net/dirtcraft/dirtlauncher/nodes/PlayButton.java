@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.elements;
+package net.dirtcraft.dirtlauncher.nodes;
 
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cydhra.nidhogg.data.Session;
-import net.dirtcraft.dirtlauncher.Controllers.Home;
-import net.dirtcraft.dirtlauncher.Controllers.Install;
+import net.dirtcraft.dirtlauncher.stages.Home;
+import net.dirtcraft.dirtlauncher.stages.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.game.DownloadManager;
@@ -47,16 +47,17 @@ public final class PlayButton extends Button {
         else setText(type.toString() + " As " + session.getAlias());
     }
 
-    public void setType(Types type, Pack pack, Session account) {
+    public void setType(Types type, Pack pack) {
+        Optional<Session> account = Main.getAccounts().getSelectedAccount();
         this.type = type;
         this.pack = pack;
-        if (account == null || type != Types.PLAY) setText(type.toString());
-        else setText(type.toString() + " As " + account.getAlias());
+        if (!account.isPresent() || type != Types.PLAY) setText(type.toString());
+        else setText(type.toString() + " As " + account.get().getAlias());
     }
 
     @Override
     public void fire() {
-        Optional<Session> session = loginBar.getAccount();
+        Optional<Session> session = Main.getAccounts().getSelectedAccount();
         if (session.isPresent())
             switch (type) {
                 case INSTALL:

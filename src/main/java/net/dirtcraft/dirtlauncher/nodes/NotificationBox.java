@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.elements;
+package net.dirtcraft.dirtlauncher.nodes;
 
 import javafx.application.Platform;
 import javafx.geometry.VPos;

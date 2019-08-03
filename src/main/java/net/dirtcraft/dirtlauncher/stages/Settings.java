@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.Controllers;
+package net.dirtcraft.dirtlauncher.stages;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
-import net.dirtcraft.dirtlauncher.backend.utils.Config;
+import net.dirtcraft.dirtlauncher.backend.Data.Config;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public final class Settings {
     @FXML
     private void initialize() {
         instance = this;
-        Config config = Main.getSettings();
+        Config config = Main.getConfig();
         gameDirectoryButton.setOnAction(this::onGameDirectoryFolderGuiRequested);
         gameDirectoryField.setText(config.getGameDirectory().toString());
         minimumRam.setText(String.valueOf(config.getMinimumRam()));

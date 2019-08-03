@@ -50,8 +50,8 @@ dependencies {
 task cJar(type: Jar) {
     baseName = 'components'
     from sourceSets.main.output
-    include 'net/dirtcraft/dirtlauncher/elements/PlayButton.class',
-            'net/dirtcraft/dirtlauncher/elements/LoginBar.class'
+    include 'net/dirtcraft/dirtlauncher/nodes/PlayButton.class',
+            'net/dirtcraft/dirtlauncher/nodes/LoginBar.class'
 }
 
 jar {  
