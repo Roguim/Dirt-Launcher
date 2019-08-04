@@ -36,7 +36,6 @@ public final class Accounts {
 
         try {
             if (accounts != null && accounts.has("selected account")) {
-                System.out.println("rrrrr");
                 selectedAccount = jsonToSession(accounts.getAsJsonObject("selected account"));
             } else {
                 throw new JsonParseException("No Selected Account");
@@ -100,7 +99,6 @@ public final class Accounts {
     }
 
     private Session jsonToSession(JsonObject jsonObject){
-        System.out.println("ttttt");
         try {
             if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
             if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");

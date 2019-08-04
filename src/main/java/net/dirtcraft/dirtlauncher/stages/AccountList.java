@@ -19,56 +19,69 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
+import java.util.List;
+
 final public class AccountList extends Stage {
     private final AccountList instance = this;
     private final ScrollPane scrollPane;
     public AccountList(){
-        VBox backing = new VBox();
+        final List<Session> sessions = Main.getAccounts().getAltAccounts();
+        double vBoxSize = (sessions.size() + 1) * (59+5) + 5;
+        vBoxSize = vBoxSize > 450 ? 450 : vBoxSize;
+        final VBox backing = new VBox();
         backing.setBackground(Background.EMPTY);
         backing.setAlignment(Pos.TOP_CENTER);
         backing.getStyleClass().add(Constants.CSS_CLASS_SCROLLPANE_VBOX);
+        backing.setMinHeight(vBoxSize);
 
-        TextFlow title = new TextFlow();
+        final TextFlow title = new TextFlow();
         title.getChildren().add(new Text("Accounts:"));
         title.setTextAlignment(TextAlignment.CENTER);
         title.getStyleClass().add(Constants.CSS_CLASS_TITLE);
 
         scrollPane = new ScrollPane();
         scrollPane.setBackground(Background.EMPTY);
-        scrollPane.setMinHeight(450);
-        scrollPane.setMaxHeight(450);
+        scrollPane.setMinHeight(vBoxSize);
+        scrollPane.setMaxHeight(vBoxSize);
         scrollPane.setFitToWidth(true);
         scrollPane.setContent(backing);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setPannable(true);
 
-        AnchorPane root = new AnchorPane();
+        final AnchorPane root = new AnchorPane();
         AnchorPane.setTopAnchor(title, 000d);
         AnchorPane.setLeftAnchor(title, 010d);
         AnchorPane.setRightAnchor(title, 010d);
-        AnchorPane.setBottomAnchor(title, 470d);
+        AnchorPane.setBottomAnchor(title, vBoxSize + 20);
         AnchorPane.setTopAnchor(scrollPane, 30d);
         AnchorPane.setLeftAnchor(scrollPane, 10d);
         AnchorPane.setRightAnchor(scrollPane, 10d);
-        AnchorPane.setBottomAnchor(scrollPane, 05d);
-        root.setMinHeight(500);
-        root.setMaxHeight(500);
+        AnchorPane.setBottomAnchor(scrollPane, 5d);
+        root.setMinHeight(vBoxSize + 50);
+        root.setMaxHeight(vBoxSize + 50);
         root.setBackground(Background.EMPTY);
         root.getChildren().addAll(title, scrollPane);
         root.getStyleClass().add(Constants.CSS_CLASS_ACCOUNTLIST);
         root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Accounts", "Global.css"));
 
-        Scene scene = new Scene(root, 292, 500);
+        final Scene scene = new Scene(root, 292, vBoxSize + 50);
         scene.setFill(Paint.valueOf("transparent"));
         setScene(scene);
-        initModality(Modality.APPLICATION_MODAL);
+        initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.TRANSPARENT);
         setTitle("Accounts");
 
-        ObservableList<Node> contents = backing.getChildren();
-        Main.getAccounts().getAltAccounts().forEach(session -> contents.add(new Account(session)));
+        final ObservableList<Node> contents = backing.getChildren();
+        sessions.forEach(session -> contents.add(new Account(session)));
         contents.add(new AddAccountButton());
+
+
+        focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (! isNowFocused) {
+                hide();
+            }
+        });
 
     }
 

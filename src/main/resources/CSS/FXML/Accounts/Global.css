@@ -13,6 +13,7 @@
 .AccountList .AccountListBacking{
 	-fx-background-color: rgba(0,0,0,0.4);
     -fx-spacing: 5;
+	-fx-padding: 5 0 0 0;
 }
 
 .AccountList .button{
@@ -23,6 +24,7 @@
     -fx-max-width: 252px;
     -fx-min-height: 59px;
     -fx-max-height: 59px;
+    -fx-font-weight: bold ;
     -fx-font-size: 16 ;
 }
 
@@ -32,6 +34,7 @@
     -fx-min-height: 20px;
     -fx-max-height: 20px;
 	-fx-background-color: rgba(255,255,255,0.5);
+    -fx-font-weight: bold ;
 	-fx-text-fill: #ffffff !important ;
 	-fx-font-family: "System Bold" !important ;
 	-fx-font-size: 20 !important ;
