@@ -1,23 +1,39 @@
 /*///////////////////////////////////////////
 // Makes the scrollbox background editable //
 ///////////////////////////////////////////*/
+@font-face {
+    font-family: "Minecrafter Alt";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../Fonts/MinecrafterAlt.ttf");
+}
+
+.Title {
+  -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
+}
+
+.Title > * {
+  -fx-font-family: 'Minecrafter Alt';
+  -fx-fill: #f8f4ff !important;
+  -fx-font-size: 34;
+  -fx-stroke: black;
+  -fx-stroke-width: 1;
+}
+
+#PackCellContext{
+     /*-fx-background-color: #303030;*/
+}
+
+.PackCellContextOption{
+     -fx-text-fill: #FFFFFF !important ;
+}
 
 .PackListScroll, .PackListScroll > .viewport {
    -fx-background-color: transparent;
 }
-.PackListScroll {
-    /*-fx-padding: 5px ;*/
-    /*-fx-background-color: #2c2f33;*/
-    /*-fx-background-color: #292929;
-    /* -fx-opacity: 0.8; */
-}
-.BackgroundBottom{
+
+.PackListBG{
     -fx-background-color: linear-gradient(to top, #191919, #595959);
-
-}
-.BackgroundTop{
-  -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
-
 }
 
 .PackList{
@@ -25,18 +41,16 @@
     -fx-spacing: 3;
 }
 
-#SettingsBar{
+.ToolBarUpper, .ToolBarLower{
     -fx-background-color: #303030;
-    -fx-border-radius: 0 0 0 10;
     -fx-background-radius: 0 0 0 20;
 }
-.SettingsBarExt{
-    -fx-background-color: #303030;
-    -fx-border-radius: 0 0 0 10;
+
+.ToolBarLower{
     -fx-background-radius: 0 0 0 10;
 }
 
-.PackCell, .SettingsButton{
+.PackCell, .ToolBarButton{
     -fx-text-fill: FFFFFF;
     -fx-background-color: firebrick;
     -fx-padding: 0px 0px ;
@@ -57,11 +71,11 @@
     -fx-max-height: 50px;
 }
 
-.PackCell:hover, .SettingsButton:hover {
+.PackCell:hover, .ToolBarButton:hover, .ToolBarButtonSmall:hover{
      -fx-background-color: #661313;
 }
 
-.PackCell:hover, .PackCell:selected, .PackCell:pressed, .SettingsButton:hover, .SettingsButton:selected{
+.PackCell:hover, .PackCell:selected, .PackCell:pressed, .ToolBarButton:hover, .ToolBarButton:selected, .ToolBarButtonSmall:hover, .ToolBarButtonSmall:selected{
      -fx-scale-y: 1.075;
      -fx-scale-x: 1.075;
 }
@@ -74,20 +88,9 @@
 .PackCell:selected {
      -fx-background-color: #FFF0F5 !important ;
      -fx-text-fill: black !important ;
-
-     /* BORDER WIP */ /*
-     -fx-border-color: #D92121;
-     -fx-border-style: solid;
-     -fx-border-radius: 5 ;
-     -fx-padding: 2px 10px ;*/
 }
 
-.SettingsButtonSmall{
-    -fx-background-radius: 5 0 0 5 ;
-    -fx-content-display: GRAPHIC_ONLY ;
-}
-
-.SettingsButton:pressed {
+.ToolBarButton:pressed, .ToolBarButtonSmall:pressed {
      -fx-background-color: #FFF0F5;
      -fx-text-fill: black;
 }
@@ -100,10 +103,123 @@
     -fx-font-size: 14;
 
     -fx-content-display: right;
+}
 
-    /* NOT AVAILABLE IN JAVA 8 */
-    /*-fx-show-duration: 1s;*/
-    /*-fx-show-delay: 1ms;*/
+.ToolBarButtonSmall{
+    -fx-text-fill: FFFFFF;
+    -fx-background-color: firebrick;
+    -fx-padding: 0px 0px ;
+    -fx-background-insets: 0px 0px;
+    -fx-content-display: right ;
+    -fx-background-radius: 5 0 0 5 ;
+    -fx-content-display: GRAPHIC_ONLY ;
+}
 
-    /* -fx-line-spacing: -5 ; Bugged*/
+#PasswordField{
+    -fx-border-radius: 0 0 0 15;
+    -fx-background-radius: 0 0 0 15;
+    -fx-opacity: 1;
+}
+
+#UsernameField{
+    -fx-border-radius: 15 0 00;
+    -fx-background-radius: 15 0 0 0;
+    -fx-opacity: 1;
+}
+
+#UsernameFlow{
+    -fx-border-radius: 15 0 0 15;
+    -fx-background-radius: 15 0 0 15;
+    -fx-background-color: #FFFFFF;
+    -fx-text-alignment: center ;
+    -fx-opacity: 1;
+}
+
+#UsernameField:hover, #PasswordField:hover{
+    -fx-background-color: #DDDDDD;
+}
+#UsernameField:focused, #PasswordField:focused{
+    -fx-background-color: #FFFFFF;
+}
+#UsernameField:authenticated, #PasswordField:authenticated{
+    -fx-background-color: #55AA55;
+     -fx-text-fill: black !important ;
+}
+
+#PlayButton{
+    -fx-border-radius: 00 15 15 00;
+    -fx-background-radius: 00 15 15 00;
+    -fx-opacity: 1;
+    -fx-font-size: 13 ;
+    -fx-font-weight: bold ;
+    -fx-background-color: #BBBB44;
+}
+#LogoutButton{
+    -fx-background-color: #FF8888;
+    -fx-border-radius: 0 15 15 0;
+    -fx-background-radius: 0 15 15 0;
+}
+
+#LogoutButton:hover{
+    -fx-background-color: #DD6666;
+    -fx-border-radius: 0 15 15 0;
+    -fx-background-radius: 0 15 15 0;
+}
+
+#LogoutButton:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 3, 2, 1, 1 );
+}
+
+#PlayButton:authenticated{
+    -fx-border-radius: 15 0 0 15;
+    -fx-background-radius: 15 0 0 15;
+    -fx-font-size: 16 ;
+}
+
+#PlayButton:hover{
+    -fx-background-color: #999922;
+}
+
+#PlayButton:disabled{
+    -fx-background-color: #aaaaaa;
+}
+
+#PlayButton:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 3, 2, 1, 1 );
+    -fx-background-insets: 0;
+    -fx-background-color: #008800;
+    -fx-opacity: 1;
+}
+
+#PlayButton:focused{
+    -fx-background-insets: 0;
+    -fx-background-radius: 00 15 15 00;
+    -fx-padding: 0;
+    -fx-opacity: 1;
+}
+
+#LoginBar{
+    -fx-border-radius: 20 20 20 20;
+    -fx-background-radius: 22 22 22 22;
+    -fx-background-color: #9B1B30 ;
+    -fx-opacity: 0.9;
+}
+
+.LoginArea{
+    -fx-background-insets: 0;
+}
+
+#NotificationBox {
+    -fx-background-color: rgba( 0% , 0% , 0%, 0.75 );
+    -fx-font-size: 14 ;
+    -fx-font-weight: bold ;
+    -fx-text-fill:black;
+    -fx-text-alignment: center ;
+    -fx-padding: 7;
+    -fx-background-insets: 2;
+    -fx-background-radius: 5 5 5 5;
+}
+
+.NotificationBox {
+   -fx-text-fill:white;
 }

@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.nodes;
+package net.dirtcraft.dirtlauncher.nodes.loginarea;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.PseudoClass;
@@ -6,6 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
@@ -13,6 +14,8 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
+import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.stages.Home;
 
 import java.util.Optional;
@@ -34,11 +37,11 @@ public final class LoginBar extends Pane {
         logout = new LogoutButton(this);
 
         //Force the size - otherwise it changes and that's bad..
-        setAbsoluteSize(this ,264.0 ,  74 );
-        setAbsoluteSize(loginContainer,250.0, 59);
+        MiscUtils.setAbsoluteSize(this ,264.0 ,  74 );
+        MiscUtils.setAbsoluteSize(loginContainer,250.0, 59);
 
         setId("LoginBar");
-        getStyleClass().add("LoginArea");
+        getStyleClass().add("loginarea");
         getStyleClass().add( "LoginBar");
         passField.setId("PasswordField");
         usernameField.setId("UsernameField");
@@ -72,6 +75,8 @@ public final class LoginBar extends Pane {
         actionButton.setDisable(true);
         actionButton.setText("Play");
         getChildren().setAll(loginContainer);
+        usernameField.setOnKeyTyped(this::setKeyTypedEvent);
+        passField.setOnKeyPressed(this::setKeyTypedEvent)  ;
 
         SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
         usernameField.focusedProperty().addListener((observable,  oldValue,  newValue) -> {
@@ -82,21 +87,33 @@ public final class LoginBar extends Pane {
         });
     }
 
+    private void setKeyTypedEvent(KeyEvent event) {
+        if (!getActivePackCell().isPresent()) {
+            actionButton.setDisable(true);
+            return;
+        }
+
+        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passField.getText().trim()) || Main.getAccounts().hasSelectedAccount()) {
+            actionButton.setDisable(false);
+            actionButton.setOnAction(e -> getActionButton().fire());
+        } else actionButton.setDisable(true);
+    }
+
     public void setInputs(){
-        Optional<Session> session = Main.getAccounts().getSelectedAccount();
+        Optional<Session> session = Main.getAccounts().getValidSelectedAccount();
         loginContainer.getChildren().clear();
         if (session.isPresent()){
             final int barSize = 252;
             final int logoutSize = 35;
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
             actionButton.setTranslateX(-logoutSize);
-            setAbsoluteSize(actionButton , barSize-logoutSize ,  59 );
-            setAbsoluteSize(logout , logoutSize ,  59 );
+            MiscUtils.setAbsoluteSize(actionButton , barSize-logoutSize ,  59 );
+            MiscUtils.setAbsoluteSize(logout , logoutSize ,  59 );
             loginContainer.add(actionButton, 0, 0,  2, 2);
             loginContainer.add(logout, 0, 0,  2, 2);
             this.actionButton.setType(session.get());
         } else {
-            setAbsoluteSize(actionButton , 58 ,  59 );
+            MiscUtils.setAbsoluteSize(actionButton , 58 ,  59 );
             actionButton.setTranslateX(0);
             loginContainer.add(usernameField, 0, 0, 1, 1);
             loginContainer.add(passField , 0,  1,  1,  1);
@@ -104,12 +121,6 @@ public final class LoginBar extends Pane {
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
             this.actionButton.setType(null);
         }
-    }
-
-    private void setAbsoluteSize(Region node, double width, double height){
-        node.setPrefSize(width, height);
-        node.setMaxSize(width,  height);
-        node.setMinSize(width,  height);
     }
 
     public PlayButton getActionButton() {

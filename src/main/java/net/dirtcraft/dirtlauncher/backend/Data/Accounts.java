@@ -162,9 +162,14 @@ public final class Accounts {
         return selectedAccount != null;
     }
 
-    public Optional<Session> getSelectedAccount() {
+    public Optional<Session> getValidSelectedAccount() {
         if (selectedAccount == null) return Optional.empty();
         if (!isValid(selectedAccount)) return Optional.empty();
+        else return Optional.of(selectedAccount);
+    }
+
+    public Optional<Session> getSelectedAccount() {
+        if (selectedAccount == null) return Optional.empty();
         else return Optional.of(selectedAccount);
     }
 }

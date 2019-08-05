@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.nodes;
+package net.dirtcraft.dirtlauncher.nodes.loginarea;
 
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cydhra.nidhogg.data.Session;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.stages.Home;
 import net.dirtcraft.dirtlauncher.stages.Install;
 import net.dirtcraft.dirtlauncher.Main;
@@ -57,7 +58,7 @@ public final class PlayButton extends Button {
 
     @Override
     public void fire() {
-        Optional<Session> session = Main.getAccounts().getSelectedAccount();
+        Optional<Session> session = Main.getAccounts().getValidSelectedAccount();
         if (session.isPresent())
             switch (type) {
                 case INSTALL:

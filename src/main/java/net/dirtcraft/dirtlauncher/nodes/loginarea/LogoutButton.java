@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.nodes;
+package net.dirtcraft.dirtlauncher.nodes.loginarea;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
-public final class LogoutButton extends Button {
+final class LogoutButton extends Button {
     private final LoginBar loginBar;
     LogoutButton(LoginBar loginBar){
         this.loginBar = loginBar;

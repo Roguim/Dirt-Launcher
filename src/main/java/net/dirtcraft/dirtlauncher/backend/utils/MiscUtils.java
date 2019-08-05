@@ -1,7 +1,12 @@
 package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.common.base.Strings;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import net.dirtcraft.dirtlauncher.Main;
 
 import java.awt.*;
@@ -45,6 +50,32 @@ public class MiscUtils {
             if (Strings.isNullOrEmpty(string)) return true;
         }
         return false;
+    }
+
+    public static void setAbsoluteSize(Region node, double width, double height){
+        node.setMaxSize(width,  height);
+        node.setMinSize(width,  height);
+    }
+
+    public static void setAbsoluteWidth(Region node, double width){
+        node.setMaxWidth(width);
+        node.setMinWidth(width);
+    }
+
+    public static void setAbsoluteHeight(Region node, double height){
+        node.setMaxHeight(height);
+        node.setMinHeight(height);
+    }
+    public static ImageView getGraphic(int size, String... dir) {
+        return getGraphic(size, size, dir);
+    }
+
+    public static ImageView getGraphic(int width, int height, String... dir) {
+        ImageView graphic = new ImageView();
+        graphic.setFitHeight(height);
+        graphic.setFitWidth(width);
+        graphic.setImage(MiscUtils.getImage(dir));
+        return graphic;
     }
 
 }

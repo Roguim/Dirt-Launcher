@@ -9,9 +9,16 @@ public class Constants {
 
     public static final String CSS_CLASS_ACCOUNTLIST = "AccountList";
     public static final String CSS_CLASS_PACKLIST = "PackList";
+    public static final String CSS_CLASS_PACKLIST_SROLL = "PackListScroll";
+    public static final String CSS_CLASS_PACKLIST_BG = "PackListBG";
     public static final String CSS_CLASS_PACK_CELL = "PackCell";
     public static final String CSS_CLASS_PACK_MENU = "PackCellContext";
     public static final String CSS_CLASS_PACK_MENU_OPTION = "PackCellContextOption";
+
+    public static final String CSS_CLASS_TOOLBAR_UPPER = "ToolBarUpper";
+    public static final String CSS_CLASS_TOOLBAR_LOWER = "ToolBarLower";
+    public static final String CSS_CLASS_TOOLBAR_BUTTON = "ToolBarButton";
+    public static final String CSS_CLASS_TOOLBAR_BUTTON_SMALL = "ToolBarButtonSmall";
 
     public static final String CSS_CLASS_SCROLLPANE_VBOX = "AccountListBacking";
     public static final String CSS_CLASS_TITLE = "Title";

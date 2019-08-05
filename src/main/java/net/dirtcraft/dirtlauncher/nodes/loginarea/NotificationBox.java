@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.nodes;
+package net.dirtcraft.dirtlauncher.nodes.loginarea;
 
 import javafx.application.Platform;
 import javafx.geometry.VPos;
@@ -8,10 +8,15 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import net.dirtcraft.dirtlauncher.backend.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
+import net.dirtcraft.dirtlauncher.nodes.Pack;
 
 public final class NotificationBox extends TextFlow{
     private boolean initialized = false;
     private Thread uiCallback;
+
+    public NotificationBox(){
+        setOpacity(0);
+    }
 
     private void Initialize(){
         initialized = true;

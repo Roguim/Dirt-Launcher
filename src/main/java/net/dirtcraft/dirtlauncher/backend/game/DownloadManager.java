@@ -14,7 +14,7 @@ import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
-import net.dirtcraft.dirtlauncher.nodes.PlayButton;
+import net.dirtcraft.dirtlauncher.nodes.loginarea.PlayButton;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
