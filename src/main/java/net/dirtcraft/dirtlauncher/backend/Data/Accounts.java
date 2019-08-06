@@ -15,16 +15,22 @@ import java.nio.file.Path;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public final class Accounts {
 
     private Session selectedAccount;
     final private List<Session> altAccounts;
+    private YggdrasilClient client = null;
     private final File accountDir;
-    final private YggdrasilClient client;
+    private volatile boolean isReady = false;
 
     public Accounts(Path launcherDirectory){
-        client = new YggdrasilClient();
+        CompletableFuture.runAsync(()->{
+            client = new YggdrasilClient();
+            isReady = true;
+        });
         JsonObject accounts;
         accountDir = launcherDirectory.resolve("account.json").toFile();
         try (FileReader reader = new FileReader(accountDir)) {
@@ -124,8 +130,9 @@ public final class Accounts {
                 System.out.println("Session not valid, Attempting to refresh it!");
                 try {
                     client.refresh(session);
-                    if (client.validate(session)) return true;
+                    return true;
                 } catch (Exception e) {
+                    System.out.println(ex.getMessage());
                     System.out.println(e.getMessage());
                 }
             }
@@ -171,5 +178,85 @@ public final class Accounts {
     public Optional<Session> getSelectedAccount() {
         if (selectedAccount == null) return Optional.empty();
         else return Optional.of(selectedAccount);
+    }
+
+    private YggdrasilClient getClient() {
+        return client;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    private class Account{
+        private Session session;
+        Account(Session session){
+            this.session = session;
+        }
+
+        Account(JsonObject jsonObject) {
+            if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
+            if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");
+            if (!jsonObject.has("AccessToken")) throw new JsonParseException("No Access Token");
+            if (!jsonObject.has("ClientToken")) throw new JsonParseException("No Client Token");
+            this.session = new Session(
+                    jsonObject.get("UUID").getAsString(),
+                    jsonObject.get("Alias").getAsString(),
+                    jsonObject.get("AccessToken").getAsString(),
+                    jsonObject.get("ClientToken").getAsString()
+            );
+        }
+
+        public Account(String uuid, String name, String accessToken, String clientToken){
+            this.session = new Session(uuid, name, accessToken, clientToken);
+        }
+
+        JsonObject getSerialized(){
+            if (session == null) return new JsonObject();
+            final JsonObject json = new JsonObject();
+            json.addProperty("UUID", session.getId());
+            json.addProperty("Alias", session.getAlias());
+            json.addProperty("AccessToken", session.getAccessToken());
+            json.addProperty("ClientToken", session.getClientToken());
+            return json;
+        }
+
+        Session getSession() {
+            return session;
+        }
+
+        public String getAlias(){
+            return session.getAlias();
+        }
+
+        public String getAccessToken(){
+            return session.getAccessToken();
+        }
+
+        public String getId(){
+            return session.getId();
+        }
+
+        public String getClientToken(){
+            return session.getId();
+        }
+
+        public UUID getUuid(){
+            return session.getUuid();
+        }
+
+        public boolean isValid(){
+            try {
+                client.validate(session);
+                return true;
+            } catch (Exception e){
+                try {
+                    client.refresh(session);
+                    return true;
+                } catch (Exception refreshException){
+                    throw e;
+                }
+            }
+        }
     }
 }

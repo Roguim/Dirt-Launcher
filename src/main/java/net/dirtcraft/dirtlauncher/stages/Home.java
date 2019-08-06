@@ -40,7 +40,8 @@ public class Home extends Stage {
     private static Home instance;
     private LoginBar loginBar;
     private NotificationBox loginNotification;
-    private Home(Scene scene, LoginBar loginBar, NotificationBox notificationBox){
+    private Home(AnchorPane root, WebView view, Scene scene, LoginBar loginBar, NotificationBox notificationBox){
+        root.getChildren().add(1, view);
         instance = this;
         setScene(scene);
         this.loginBar = loginBar;
@@ -67,19 +68,18 @@ public class Home extends Stage {
     }
 
     public static class Builder{
-        private Scene scene;
+        final private Scene scene;
+        final private AnchorPane root;
         private LoginBar loginBar;
         private NotificationBox loginNotification;
-        private AnchorPane root;
 
         public Builder() {
-            long x = System.currentTimeMillis();
-            FlowPane titleBox = getTitleBox();
-            ScrollPane sidebar = getSidebar();
-            FlowPane actionBox = getActionBox();
-            FlowPane notificationArea = getNotificationArea();
+            final ScrollPane sidebar = getSidebar();
+            final FlowPane titleBox = getTitleBox();
+            final FlowPane actionBox = getActionBox();
+            final FlowPane notificationArea = getNotificationArea();
 
-            FlowPane sidebarBacking = new FlowPane();
+            final FlowPane sidebarBacking = new FlowPane();
             sidebarBacking.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
             sidebarBacking.getStyleClass().add(Constants.CSS_CLASS_PACKLIST_BG);
             MiscUtils.setAbsoluteWidth(sidebarBacking, 300);
@@ -87,15 +87,15 @@ public class Home extends Stage {
             AnchorPane.setLeftAnchor(sidebarBacking, 0d);
             AnchorPane.setBottomAnchor(sidebarBacking, 0d);
 
-            short toolbarUpperWidth = 45;
-            short toolbarLowerWidth = 30;
-            short toolbarUpperHeight = 45;
-            short largeButtonSize = 40;
-            short smallButtonSize = 25;
-            short smallButtonSpacing = 5;
-            short buttonGraphicPadding = 5;
+            final short toolbarUpperWidth = 45;
+            final short toolbarLowerWidth = 30;
+            final short toolbarUpperHeight = 45;
+            final short largeButtonSize = 40;
+            final short smallButtonSize = 25;
+            final short smallButtonSpacing = 5;
+            final short buttonGraphicPadding = 5;
 
-            Button settings = new Button();
+            final Button settings = new Button();
             settings.setGraphic(MiscUtils.getGraphic(largeButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "settings.png"));
             MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
             settings.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_BUTTON);
@@ -112,11 +112,11 @@ public class Home extends Stage {
                 });
             });
 
-            Button accounts = new Button();
+            final Button accounts = new Button();
             accounts.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "account.png"));
             accounts.setOnAction(e -> new AccountList().show());
 
-            Button refresh = new Button();
+            final Button refresh = new Button();
             refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
             refresh.setOnAction(event -> {
                 try {
@@ -126,16 +126,16 @@ public class Home extends Stage {
                 }
             });
 
-            Button info = new Button();
+            final Button info = new Button();
             info.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "info.png"));
 
-            Pane toolbarUpper = new Pane();
+            final Pane toolbarUpper = new Pane();
             toolbarUpper.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_UPPER);
             MiscUtils.setAbsoluteSize(toolbarUpper, toolbarUpperWidth, toolbarUpperHeight);
             toolbarUpper.getChildren().add(settings);
 
 
-            Pane toolbarLower = new Pane();
+            final Pane toolbarLower = new Pane();
             toolbarLower.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_LOWER);
             toolbarLower.setLayoutX(toolbarUpperWidth - toolbarLowerWidth);
             toolbarLower.setLayoutY(toolbarUpperHeight);
@@ -152,9 +152,7 @@ public class Home extends Stage {
                 MiscUtils.setAbsoluteSize(item, smallButtonSize, smallButtonSize);
             }
 
-            System.out.println(System.currentTimeMillis() - x);
-
-            Pane toolbar = new Pane();
+            final Pane toolbar = new Pane();
             toolbar.getChildren().addAll(toolbarUpper, toolbarLower);
             AnchorPane.setTopAnchor(toolbar, 0d);
             AnchorPane.setRightAnchor(toolbar, 0d);
@@ -275,13 +273,11 @@ public class Home extends Stage {
                     packList.getChildren().clear();
                     packList.getChildren().addAll(packs);
                 });
-                if (Constants.VERBOSE) System.out.println("Packlist built!");
             });
         }
 
         public Home build(){
-            Platform.runLater(()->root.getChildren().add(1, webArea()));
-            return new Home(scene, loginBar, loginNotification);
+            return new Home(root, webArea(), scene, loginBar, loginNotification);
         }
     }
 }

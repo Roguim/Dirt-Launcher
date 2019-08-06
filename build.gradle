@@ -60,6 +60,7 @@ jar {
 jfx {
     // minimal requirement for jfxJar-task
     mainClass = 'net.dirtcraft.dirtlauncher.Main'
+    css2bin = true
 
     // minimal requirement for jfxNative-task
     vendor = 'DirtCraft'

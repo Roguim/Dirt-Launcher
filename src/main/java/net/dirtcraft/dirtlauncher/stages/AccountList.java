@@ -20,6 +20,7 @@ import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 final public class AccountList extends Stage {
     private final AccountList instance = this;
@@ -73,7 +74,9 @@ final public class AccountList extends Stage {
         setTitle("Accounts");
 
         final ObservableList<Node> contents = backing.getChildren();
-        sessions.forEach(session -> contents.add(new Account(session)));
+        CompletableFuture.runAsync(()->{
+            sessions.forEach(session -> contents.add(new Account(session)));
+        });
         contents.add(new AddAccountButton());
 
 

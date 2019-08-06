@@ -2,20 +2,12 @@ package net.dirtcraft.dirtlauncher;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.stages.Home;
 import net.dirtcraft.dirtlauncher.stages.Settings;
 import net.dirtcraft.dirtlauncher.stages.Update;
 import net.dirtcraft.dirtlauncher.backend.Data.Accounts;
 import net.dirtcraft.dirtlauncher.backend.Data.Config;
-import net.dirtcraft.dirtlauncher.backend.utils.Constants;
-import net.dirtcraft.dirtlauncher.backend.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,11 +33,7 @@ public class Main extends Application {
     private static volatile Home stage = null;
     private static volatile Home.Builder homeBuilder = null;
     private static long x;
-    private static CompletableFuture accountInit = null;
     private static CompletableFuture stageInit = null;
-    private static CompletableFuture configInit = null;
-    private static CompletableFuture loggerInit = null;
-    private static CompletableFuture settingsInit = null;
 
     public static void main(String[] args) {
         x = System.currentTimeMillis();
@@ -63,45 +51,42 @@ public class Main extends Application {
             // Otherwise, we can assume the host OS is probably linux, so we'll use their application folder
         else launcherDirectory = Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
 
-
-        //pre-init accounts async
-        accountInit = CompletableFuture.runAsync(() -> {
-            accounts = new Accounts(launcherDirectory);
-            System.out.println("Act" + (System.currentTimeMillis() - x));
-            while(!stageInit.isDone()){
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored){
-
-                }
-            }
-            Platform.runLater(()->stage.getLoginBar().setInputs());
-        });
-
         //init landing stage async
         stageInit = CompletableFuture.runAsync(() -> {
             try {
                 homeBuilder = new Home.Builder();
-                System.out.println("Scene" + (System.currentTimeMillis() - x));
+                System.out.println("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
         });
 
+        //pre-init accounts async
+        CompletableFuture.runAsync(() -> {
+            accounts = new Accounts(launcherDirectory);
+                while (!stageInit.isDone() || !accounts.isReady()) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ignored) { }
+                }
+            System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
+            Platform.runLater(()->stage.getLoginBar().setInputs());
+        });
+
         //init config async
-        configInit = CompletableFuture.runAsync(() -> {
+        CompletableFuture.runAsync(() -> {
             config = new Config(launcherDirectory);
         });
 
         //init logger async
-        loggerInit = CompletableFuture.runAsync(() -> {
+        CompletableFuture.runAsync(() -> {
             final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
             final Date date = new Date();
             final String fname = dateFormat.format(date);
             System.setProperty("log4j.saveDirectory", launcherDirectory.resolve("logs").resolve(fname + ".log").toString());
             logger = LogManager.getLogger(Main.class);
-            logger.info("Logger logging, App starting.");
+            System.out.println("Logger initialized @ " + (System.currentTimeMillis() - x) + "ms");
             //Grab a list of log files and delete all but the last 5.
             final List<File> logFiles = Arrays.asList(Objects.requireNonNull(config.getLogDirectory().toFile().listFiles()));
             logFiles.sort(Collections.reverseOrder());
@@ -124,8 +109,10 @@ public class Main extends Application {
         });
 
         //pre-init config async
-        settingsInit = CompletableFuture.runAsync(() -> {
+        //TODO make faster - takes 3s, scene takes 1s. this is a slowdown
+        CompletableFuture.runAsync(() -> {
             Settings.loadSettings();
+            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             try {
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {
@@ -146,15 +133,12 @@ public class Main extends Application {
         instance = this;
         Platform.setImplicitExit(false);
 
-        System.out.println(System.currentTimeMillis() - x);
         while (!stageInit.isDone()){
             Thread.sleep(50);
         }
-        System.out.println(System.currentTimeMillis() - x);
         stage = homeBuilder.build();
-        System.out.println(System.currentTimeMillis() - x);
         stage.show();
-        System.out.println(System.currentTimeMillis() - x);
+        System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     @Override
