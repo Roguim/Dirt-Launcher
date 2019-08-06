@@ -52,7 +52,7 @@ public class LaunchGame {
             args.add("/bin/sh");
             args.add("-c");
         }
-        args.add(SystemUtils.IS_OS_WINDOWS ? "javaw" : "java");
+        args.add(settings.getDefaultRuntime());
 
         // RAM
         args.add("-Xms" + settings.getMinimumRam() + "M");

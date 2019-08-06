@@ -1,9 +1,6 @@
 package net.dirtcraft.dirtlauncher.backend.utils;
 
 import com.google.common.base.Strings;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;

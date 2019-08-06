@@ -7,24 +7,49 @@ import com.sun.management.OperatingSystemMXBean;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 public final class Config {
+    private final Path launcherDirectory;
+    private final boolean hasBundledJre;
+    private final String defaultRuntime;
     private int minimumRam;
     private int maximumRam;
     private String javaArguments;
     private Path gameDirectory;
-    private final transient Path launcherDirectory;
 
-    public Config(Path launcherDirectory){
+    public Config(Path launcherDirectory, List<String> options){
+        hasBundledJre = options.contains("-useBundledRuntime");
+        final String javaExecutable = SystemUtils.IS_OS_WINDOWS ? "javaw" : "java";
+        try {
+            final Path runtimeDirectory;
+            if (hasBundledJre) {
+                runtimeDirectory = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).resolve("Runtime");
+                defaultRuntime = runtimeDirectory
+                        .resolve("8")
+                        .resolve("bin")
+                        .resolve(javaExecutable)
+                        .toFile().getPath();
+            }
+            else {
+                defaultRuntime = javaExecutable;
+            }
+        } catch (URISyntaxException e){
+            e.printStackTrace();
+            throw new Error("Could not get runtime Directory!");
+        }
+        System.out.println(defaultRuntime.toString());
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
         JsonObject config;
@@ -193,5 +218,13 @@ public final class Config {
 
     public Path getGameDirectory() {
         return gameDirectory;
+    }
+
+    public String getDefaultRuntime() {
+        return defaultRuntime;
+    }
+
+    public boolean isHasBundledJre() {
+        return hasBundledJre;
     }
 }

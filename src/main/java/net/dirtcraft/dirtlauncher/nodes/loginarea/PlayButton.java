@@ -92,7 +92,7 @@ public final class PlayButton extends Button {
                 case INSTALL:
                     return "Install";
                 case INITIAL:
-                    return "";
+                    return "Please Select A Pack";
             }
         }
     }

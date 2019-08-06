@@ -76,7 +76,8 @@ public class Main extends Application {
 
         //init config async
         CompletableFuture.runAsync(() -> {
-            config = new Config(launcherDirectory);
+            config = new Config(launcherDirectory, options);
+            System.out.println("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
         });
 
         //init logger async
