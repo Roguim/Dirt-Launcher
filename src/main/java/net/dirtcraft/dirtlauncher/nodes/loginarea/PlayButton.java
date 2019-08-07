@@ -32,12 +32,10 @@ import java.util.Optional;
 public final class PlayButton extends Button {
     private Types type;
     private Pack pack;
-    private LoginBar loginBar;
 
-    public PlayButton(LoginBar loginBar){
+    public PlayButton(){
         this.type = Types.INITIAL;
         setTextOverrun(OverrunStyle.CLIP);
-        this.loginBar = loginBar;
         setFocusTraversable(false);
         setId("PlayButton");
         setCursor(Cursor.HAND);

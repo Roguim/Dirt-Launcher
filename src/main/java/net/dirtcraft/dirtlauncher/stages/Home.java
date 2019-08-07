@@ -206,6 +206,7 @@ public class Home extends Stage {
             notificationArea.getChildren().add(loginNotification);
             notificationArea.setOrientation(Orientation.VERTICAL);
             notificationArea.setAlignment(Pos.TOP_CENTER);
+            notificationArea.setPickOnBounds(false);
             AnchorPane.setTopAnchor(notificationArea, 0d);
             AnchorPane.setLeftAnchor(notificationArea, 300d);
             AnchorPane.setRightAnchor(notificationArea, 00d);
@@ -243,6 +244,7 @@ public class Home extends Stage {
             actionBox.getChildren().add(loginBar);
             actionBox.setOrientation(Orientation.VERTICAL);
             actionBox.setAlignment(Pos.TOP_CENTER);
+            actionBox.setPickOnBounds(false);
             MiscUtils.setAbsoluteHeight(actionBox,115);
             AnchorPane.setLeftAnchor(actionBox, 300d);
             AnchorPane.setRightAnchor(actionBox, 00d);

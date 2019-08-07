@@ -29,7 +29,7 @@ public final class LoginBar extends Pane {
     private Pack activePackCell;
 
     public LoginBar() {
-        actionButton = new PlayButton(this);
+        actionButton = new PlayButton();
         activePackCell = null;//ripblock
         passField = new PasswordField();
         usernameField = new TextField();

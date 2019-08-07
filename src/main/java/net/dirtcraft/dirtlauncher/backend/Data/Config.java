@@ -35,21 +35,18 @@ public final class Config {
         try {
             final Path runtimeDirectory;
             if (hasBundledJre) {
-                runtimeDirectory = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).resolve("Runtime");
+                runtimeDirectory = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().resolve("Runtime");
                 defaultRuntime = runtimeDirectory
                         .resolve("8")
                         .resolve("bin")
                         .resolve(javaExecutable)
                         .toFile().getPath();
-            }
-            else {
+            } else {
                 defaultRuntime = javaExecutable;
             }
         } catch (URISyntaxException e){
-            e.printStackTrace();
             throw new Error("Could not get runtime Directory!");
         }
-        System.out.println(defaultRuntime.toString());
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
         JsonObject config;
