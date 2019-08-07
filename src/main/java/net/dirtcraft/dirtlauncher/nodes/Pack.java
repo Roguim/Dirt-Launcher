@@ -75,7 +75,6 @@ public final class Pack extends Button {
         this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
         this.optionalMods = optionalMods;
 
-        getStyleClass().add(Constants.CSS_CLASS_PACK_CELL);
         contextMenu = new ContextMenu();
         initContextMenu();
         setCursor(Cursor.HAND);
@@ -84,7 +83,6 @@ public final class Pack extends Button {
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
-        tooltip.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
 
         tooltip.setText(String.join("\n", Arrays.asList(
                 "ModPack Name: " + name,
@@ -143,18 +141,10 @@ public final class Pack extends Button {
 
     private void initContextMenu(){
         contextMenu.getItems().clear();
-        contextMenu.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-        contextMenu.setId(Constants.CSS_CLASS_PACK_MENU);
         if (isInstalled()) {
             MenuItem reinstall = new MenuItem("Reinstall");
             MenuItem uninstall = new MenuItem("Uninstall");
             MenuItem openFolder = new MenuItem("Open Folder");
-            reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-            uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-            openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-            reinstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
-            uninstall.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
-            openFolder.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
             contextMenu.getItems().add(reinstall);
             contextMenu.getItems().add(uninstall);
             contextMenu.getItems().add(openFolder);
@@ -194,8 +184,6 @@ public final class Pack extends Button {
         } else {
             MenuItem install = new MenuItem("Install");
             contextMenu.getItems().add(install);
-            install.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU);
-            install.getStyleClass().add(Constants.CSS_CLASS_PACK_MENU_OPTION);
 
             install.setOnAction(e->{
                 LoginBar loginBar = Home.getInstance().getLoginBar();

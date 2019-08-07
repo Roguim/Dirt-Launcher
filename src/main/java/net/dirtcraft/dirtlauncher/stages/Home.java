@@ -80,8 +80,7 @@ public class Home extends Stage {
             final FlowPane notificationArea = getNotificationArea();
 
             final FlowPane sidebarBacking = new FlowPane();
-            sidebarBacking.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
-            sidebarBacking.getStyleClass().add(Constants.CSS_CLASS_PACKLIST_BG);
+            sidebarBacking.setId(Constants.CSS_ID_PACKLIST_BG);
             MiscUtils.setAbsoluteWidth(sidebarBacking, 300);
             AnchorPane.setTopAnchor(sidebarBacking, 100d);
             AnchorPane.setLeftAnchor(sidebarBacking, 0d);
@@ -98,7 +97,6 @@ public class Home extends Stage {
             final Button settings = new Button();
             settings.setGraphic(MiscUtils.getGraphic(largeButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "settings.png"));
             MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
-            settings.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_BUTTON);
             settings.setLayoutX(toolbarUpperWidth - largeButtonSize);
             settings.setOnMouseClicked(event -> {
                 Stage stage = net.dirtcraft.dirtlauncher.stages.Settings.getInstance().getStage();
@@ -128,15 +126,16 @@ public class Home extends Stage {
 
             final Button info = new Button();
             info.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "info.png"));
+            info.setOnAction(event -> new About().show());
 
             final Pane toolbarUpper = new Pane();
-            toolbarUpper.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_UPPER);
+            toolbarUpper.setId(Constants.CSS_ID_TOOLBAR_UPPER);
             MiscUtils.setAbsoluteSize(toolbarUpper, toolbarUpperWidth, toolbarUpperHeight);
             toolbarUpper.getChildren().add(settings);
 
 
             final Pane toolbarLower = new Pane();
-            toolbarLower.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_LOWER);
+            toolbarLower.setId(Constants.CSS_ID_TOOLBAR_LOWER);
             toolbarLower.setLayoutX(toolbarUpperWidth - toolbarLowerWidth);
             toolbarLower.setLayoutY(toolbarUpperHeight);
             toolbarLower.getChildren().addAll(accounts, refresh, info);
@@ -146,7 +145,6 @@ public class Home extends Stage {
             for (int i = 0; i < buttons.size(); i++) {
                 Button item = (Button) buttons.get(i);
                 item.setCursor(Cursor.HAND);
-                item.getStyleClass().add(Constants.CSS_CLASS_TOOLBAR_BUTTON_SMALL);
                 item.setLayoutY((smallButtonSize + smallButtonSpacing) * i);
                 item.setLayoutX(toolbarLowerWidth - smallButtonSize);
                 MiscUtils.setAbsoluteSize(item, smallButtonSize, smallButtonSize);
@@ -158,7 +156,7 @@ public class Home extends Stage {
             AnchorPane.setRightAnchor(toolbar, 0d);
 
             root = new AnchorPane();
-            root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Sidebar.css"));
+            root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Home", "Global.css"));
             root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
 
             scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
@@ -230,8 +228,6 @@ public class Home extends Stage {
             AnchorPane.setTopAnchor(sidebar, 100d);
             AnchorPane.setLeftAnchor(sidebar, 0d);
             AnchorPane.setBottomAnchor(sidebar, 0d);
-            sidebar.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
-            sidebar.getStyleClass().add(Constants.CSS_CLASS_PACKLIST_SROLL);
             sidebar.setContent(packs);
 
             return sidebar;
@@ -270,7 +266,7 @@ public class Home extends Stage {
             return CompletableFuture.runAsync(()-> {
                 ObservableList<Pack> packs = FXCollections.observableArrayList();
                 packs.addAll(PackRegistry.getPacks());
-                packList.getStyleClass().add(Constants.CSS_CLASS_PACKLIST);
+                packList.getStyleClass().add(Constants.CSS_CLASS_VBOX);
                 Platform.runLater(() -> {
                     packList.getChildren().clear();
                     packList.getChildren().addAll(packs);

@@ -32,7 +32,7 @@ final public class AccountList extends Stage {
         final VBox backing = new VBox();
         backing.setBackground(Background.EMPTY);
         backing.setAlignment(Pos.TOP_CENTER);
-        backing.getStyleClass().add(Constants.CSS_CLASS_SCROLLPANE_VBOX);
+        backing.getStyleClass().add(Constants.CSS_CLASS_VBOX);
         backing.setMinHeight(vBoxSize);
 
         final TextFlow title = new TextFlow();
@@ -63,7 +63,6 @@ final public class AccountList extends Stage {
         root.setMaxHeight(vBoxSize + 50);
         root.setBackground(Background.EMPTY);
         root.getChildren().addAll(title, scrollPane);
-        root.getStyleClass().add(Constants.CSS_CLASS_ACCOUNTLIST);
         root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Accounts", "Global.css"));
 
         final Scene scene = new Scene(root, 292, vBoxSize + 50);

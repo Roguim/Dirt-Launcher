@@ -14,6 +14,7 @@ import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.objects.LoginError;
+import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.stages.Home;
@@ -40,9 +41,7 @@ public final class LoginBar extends Pane {
         MiscUtils.setAbsoluteSize(this ,264.0 ,  74 );
         MiscUtils.setAbsoluteSize(loginContainer,250.0, 59);
 
-        setId("LoginBar");
-        getStyleClass().add("loginarea");
-        getStyleClass().add( "LoginBar");
+        setId(Constants.CSS_ID_LOGIN_BAR);
         passField.setId("PasswordField");
         usernameField.setId("UsernameField");
 
