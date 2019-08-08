@@ -14,7 +14,7 @@ import net.dirtcraft.dirtlauncher.backend.jsonutils.JsonFetcher;
 import net.dirtcraft.dirtlauncher.backend.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.nodes.Pack;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
-import net.dirtcraft.dirtlauncher.nodes.loginarea.PlayButton;
+import net.dirtcraft.dirtlauncher.nodes.loginarea.ActionButton;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -129,7 +129,7 @@ public class DownloadManager {
                 if (installStage != null) installStage.setOnCloseRequest(event -> {
                     if (!install.getButtonPane().isVisible()) event.consume();
                 });
-                Home.getInstance().getLoginBar().updatePlayButton(PlayButton.Types.PLAY);
+                Home.getInstance().getLoginBar().updatePlayButton(ActionButton.Types.PLAY);
             }));
     }
 

@@ -24,13 +24,13 @@ import java.util.Optional;
 public final class LoginBar extends Pane {
     private final TextField usernameField;
     private final PasswordField passField;
-    private final PlayButton actionButton;
+    private final ActionButton actionButton;
     private final LogoutButton logout;
     private final GridPane loginContainer;
     private Pack activePackCell;
 
     public LoginBar() {
-        actionButton = new PlayButton();
+        actionButton = new ActionButton();
         activePackCell = null;//ripblock
         passField = new PasswordField();
         usernameField = new TextField();
@@ -122,7 +122,7 @@ public final class LoginBar extends Pane {
         }
     }
 
-    public PlayButton getActionButton() {
+    public ActionButton getActionButton() {
         return actionButton;
     }
 
@@ -141,11 +141,11 @@ public final class LoginBar extends Pane {
 
     public void setActivePackCell(Pack pack) {
         this.activePackCell = pack;
-        PlayButton.Types type;
+        ActionButton.Types type;
 
-        if (!pack.isInstalled()) type = PlayButton.Types.INSTALL;
-        else if (pack.isOutdated()) type = PlayButton.Types.UPDATE;
-        else type = PlayButton.Types.PLAY;
+        if (!pack.isInstalled()) type = ActionButton.Types.INSTALL;
+        else if (pack.isOutdated()) type = ActionButton.Types.UPDATE;
+        else type = ActionButton.Types.PLAY;
 
         this.actionButton.setType(type, pack);
     }
@@ -171,7 +171,7 @@ public final class LoginBar extends Pane {
         setInputs();
     }
 
-    public void updatePlayButton(PlayButton.Types types){
+    public void updatePlayButton(ActionButton.Types types){
         actionButton.setType(types, activePackCell);
     }
 }

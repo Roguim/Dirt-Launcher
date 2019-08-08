@@ -29,11 +29,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
-public final class PlayButton extends Button {
+public final class ActionButton extends Button {
     private Types type;
     private Pack pack;
 
-    public PlayButton(){
+    public ActionButton(){
         this.type = Types.INITIAL;
         setTextOverrun(OverrunStyle.CLIP);
         setFocusTraversable(false);

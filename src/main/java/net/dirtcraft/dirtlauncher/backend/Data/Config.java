@@ -8,7 +8,6 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.backend.utils.Constants;
 import net.dirtcraft.dirtlauncher.backend.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileReader;
@@ -37,7 +36,7 @@ public final class Config {
             if (hasBundledJre) {
                 runtimeDirectory = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().resolve("Runtime");
                 defaultRuntime = runtimeDirectory
-                        .resolve("8")
+                        .resolve(options.contains("-x86")? "jre8_x86" : "jre8_x64")
                         .resolve("bin")
                         .resolve(javaExecutable)
                         .toFile().getPath();
@@ -49,13 +48,11 @@ public final class Config {
         }
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
-        JsonObject config;
+        JsonObject config = null;
         try (FileReader reader = new FileReader(configFile)) {
             JsonParser parser = new JsonParser();
             config = parser.parse(reader).getAsJsonObject();
-        } catch (IOException e){
-            config = null;
-        }
+        } catch (IOException ignored){ }
         if (configFile.exists() && config != null){
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
             else {
@@ -86,7 +83,12 @@ public final class Config {
             maximumRam = getDefaultRecommendedRam() * 1024;
             javaArguments = Constants.DEFAULT_JAVA_ARGS;
             gameDirectory = launcherDirectory;
-            initGameDirectory();
+            try {
+                initGameDirectory();
+            } catch (Exception e){
+                e.printStackTrace();
+                System.exit(-1);
+            }
             saveSettings();
         }
     }
@@ -108,12 +110,11 @@ public final class Config {
     }
 
     private void initGameDirectory(){
-        final Logger logger = Main.getLogger();
-        logger.info(getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
-        logger.info(getInstancesDirectory().mkdirs()?"Successfully created":"Failed to create"+" instances directory");
-        logger.info(getVersionsDirectory().mkdirs()?"Successfully created":"Failed to create"+" versions directory");
-        logger.info(getAssetsDirectory().mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
-        logger.info(getForgeDirectory().mkdirs()?"Successfully created":"Failed to create"+" forge directory.");
+        System.out.println(getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
+        System.out.println(getInstancesDirectory().mkdirs()?"Successfully created":"Failed to create"+" instances directory");
+        System.out.println(getVersionsDirectory().mkdirs()?"Successfully created":"Failed to create"+" versions directory");
+        System.out.println(getAssetsDirectory().mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
+        System.out.println(getForgeDirectory().mkdirs()?"Successfully created":"Failed to create"+" forge directory.");
         // Ensure that the application folders are created
         if(!getDirectoryManifest(getInstancesDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
@@ -195,10 +196,6 @@ public final class Config {
 
     public File getDirectoryManifest(File directory) {
         return directory.toPath().resolve("manifest.json").toFile();
-    }
-
-    public File getAccountJson() {
-        return launcherDirectory.resolve("account.json").toFile();
     }
 
     public int getMinimumRam() {
