@@ -48,7 +48,7 @@ public class LaunchGame {
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
-        if (SystemUtils.IS_OS_UNIX) {
+        if (false && SystemUtils.IS_OS_UNIX) {
             args.add("/bin/sh");
             args.add("-c");
         }
@@ -138,12 +138,15 @@ public class LaunchGame {
         args.add("--versionType");
         args.add("Forge");
 
-        if (SystemUtils.IS_OS_UNIX) {
-            for (int i = 0; i < args.size(); i++) args.set(i, args.get(i).replace(";", ":"));
-        }
-
         Thread gameThread = new Thread(() -> {
             try {
+                if (Constants.VERBOSE){
+                    logger.info("---DIR---");
+                    logger.info(instanceDirectory);
+                    logger.info("---ARG---");
+                    logger.info(args);
+                    logger.info("---END---");
+                }
                 Process minecraft = new ProcessBuilder()
                         .directory(instanceDirectory)
                         //.inheritIO()
@@ -192,6 +195,8 @@ public class LaunchGame {
                 libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
         libs.append(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath());
+
+        if (SystemUtils.IS_OS_UNIX) return libs.toString().replace(";", ":");
         return libs.toString();
     }
 }

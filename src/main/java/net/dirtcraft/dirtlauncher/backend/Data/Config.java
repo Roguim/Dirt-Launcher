@@ -93,7 +93,7 @@ public final class Config {
         }
     }
 
-    public int getDefaultRecommendedRam() {
+    private int getDefaultRecommendedRam() {
         final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
         if (maxMemory > 10000) return 8;
         else if (maxMemory > 7000) return 6;
@@ -102,7 +102,7 @@ public final class Config {
         else return 2;
     }
 
-    public int getDefaultMinimumRam() {
+    private int getDefaultMinimumRam() {
         final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
         if (maxMemory > 5000) return 4;
         else if (maxMemory > 3000) return 3;
