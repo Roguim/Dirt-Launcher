@@ -137,15 +137,16 @@ public class Home extends Stage {
             final Pane toolbarLower = new Pane();
             toolbarLower.setId(Constants.CSS_ID_TOOLBAR_LOWER);
             toolbarLower.setLayoutX(toolbarUpperWidth - toolbarLowerWidth);
-            toolbarLower.setLayoutY(toolbarUpperHeight);
-            toolbarLower.getChildren().addAll(accounts, refresh, info);
+            toolbarLower.setLayoutY(toolbarUpperHeight - 5);
+            //toolbarLower.getChildren().addAll(accounts, refresh, info);
+            toolbarLower.getChildren().addAll(accounts, info);
             ObservableList<Node> buttons = toolbarLower.getChildren();
-            MiscUtils.setAbsoluteSize(toolbarLower, toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size());
+            MiscUtils.setAbsoluteSize(toolbarLower, toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
 
             for (int i = 0; i < buttons.size(); i++) {
                 Button item = (Button) buttons.get(i);
                 item.setCursor(Cursor.HAND);
-                item.setLayoutY((smallButtonSize + smallButtonSpacing) * i);
+                item.setLayoutY((smallButtonSize + smallButtonSpacing) * i + 5);
                 item.setLayoutX(toolbarLowerWidth - smallButtonSize);
                 MiscUtils.setAbsoluteSize(item, smallButtonSize, smallButtonSize);
             }

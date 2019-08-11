@@ -1,3 +1,10 @@
+@font-face {
+    font-family: "Minecrafter Alt";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../../Fonts/MinecrafterAlt.ttf");
+}
+
 .viewport {
    -fx-background-color: transparent;
 }
@@ -31,11 +38,15 @@
 .Title{
     -fx-min-width: 282px;
     -fx-max-width: 282px;
-    -fx-min-height: 20px;
-    -fx-max-height: 20px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
 	-fx-background-color: rgba(255,255,255,0.5);
-    -fx-font-weight: bold ;
-	-fx-text-fill: #ffffff !important ;
-	-fx-font-family: "System Bold" !important ;
-	-fx-font-size: 20 !important ;
+}
+
+.Title > * {
+    -fx-font-family: 'Minecrafter Alt';
+    -fx-fill: #f8f4ff !important;
+	-fx-font-size: 22 !important ;
+    -fx-stroke: black;
+    -fx-stroke-width: 1;	
 }

@@ -9,8 +9,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -35,9 +33,10 @@ final public class AccountList extends Stage {
         backing.getStyleClass().add(Constants.CSS_CLASS_VBOX);
         backing.setMinHeight(vBoxSize);
 
-        final TextFlow title = new TextFlow();
-        title.getChildren().add(new Text("Accounts:"));
-        title.setTextAlignment(TextAlignment.CENTER);
+        final FlowPane title = new FlowPane();
+        title.getChildren().add(new Text("Accounts"));
+        title.getChildren().get(0).setTranslateY(5);
+        title.setAlignment(Pos.CENTER);
         title.getStyleClass().add(Constants.CSS_CLASS_TITLE);
 
         scrollPane = new ScrollPane();
