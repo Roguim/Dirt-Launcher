@@ -172,7 +172,7 @@ public class LaunchGame {
                     while((ln = br.readLine()) != null){
                         buffer.append(ln);
                     }
-                    new ErrorWindow(buffer.toString()).show();
+                    if (buffer.length()>0) new ErrorWindow(buffer.toString()).show();
                 }
                 //Show main stage
                 Platform.runLater(() -> Main.getInstance().getStage().show());

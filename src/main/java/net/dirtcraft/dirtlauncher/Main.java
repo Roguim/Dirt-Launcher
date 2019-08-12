@@ -39,8 +39,11 @@ public class Main extends Application {
         x = System.currentTimeMillis();
         options = Arrays.asList(args);
         final Path launcherDirectory;
-        // If we are using a portable install, we use the current folder.
-        if (options.contains("-portable"))
+            // If we are using a snap install, use the snap data folder.
+        if (SystemUtils.IS_OS_LINUX && options.contains("-installed")){
+            launcherDirectory = Paths.get(System.getenv("SNAP_USER_DATA"),"DirtLauncher");
+        }   // If we are using a portable install, we use the current folder.
+        else if (options.contains("-portable"))
             launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
             // If the host OS is windows, use AppData
         else if (SystemUtils.IS_OS_WINDOWS)

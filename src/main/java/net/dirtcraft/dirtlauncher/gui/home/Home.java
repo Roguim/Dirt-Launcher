@@ -83,7 +83,7 @@ public class Home extends Stage {
             AnchorPane.setRightAnchor(toolbar, 0d);
 
             root = new AnchorPane();
-            root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "home", "Global.css"));
+            root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Home", "Global.css"));
             root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
 
 
