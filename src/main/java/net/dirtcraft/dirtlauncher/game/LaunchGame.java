@@ -164,18 +164,18 @@ public class LaunchGame {
                     //Create system tray icon
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
+                StringBuilder buffer = new StringBuilder();
                 try(InputStreamReader isr = new InputStreamReader(minecraft.getErrorStream());
                     BufferedReader br = new BufferedReader(isr)
                 ){
                     String ln;
-                    StringBuilder buffer = new StringBuilder();
                     while((ln = br.readLine()) != null){
                         buffer.append(ln);
                     }
-                    if (buffer.length()>0) new ErrorWindow(buffer.toString()).show();
                 }
                 //Show main stage
                 Platform.runLater(() -> Main.getInstance().getStage().show());
+                if (buffer.length()>0) Platform.runLater(()->new ErrorWindow(buffer.toString()).show());
 
                 //Close system tray icon
                 SwingUtilities.invokeLater(() -> SystemTray.getIcon().ifPresent(icon -> SystemTray.tray.remove(icon)));
