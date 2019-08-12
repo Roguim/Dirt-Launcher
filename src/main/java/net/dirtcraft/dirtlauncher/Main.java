@@ -3,11 +3,11 @@ package net.dirtcraft.dirtlauncher;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.stages.Home;
-import net.dirtcraft.dirtlauncher.stages.Settings;
-import net.dirtcraft.dirtlauncher.stages.Update;
-import net.dirtcraft.dirtlauncher.backend.Data.Accounts;
-import net.dirtcraft.dirtlauncher.backend.Data.Config;
+import net.dirtcraft.dirtlauncher.gui.home.Home;
+import net.dirtcraft.dirtlauncher.gui.wizards.Settings;
+import net.dirtcraft.dirtlauncher.gui.dialog.Update;
+import net.dirtcraft.dirtlauncher.Data.Accounts;
+import net.dirtcraft.dirtlauncher.Data.Config;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,7 +99,7 @@ public class Main extends Application {
             }
             try {
                 File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-                String bootstrapName = "UpdateBootstrapper.class";
+                String bootstrapName = "net.dirtcraft.dirtlauncher.utils.UpdateBootstrapper.class";
                 final File bootstrap = new File(currentJar, bootstrapName);
                 if (bootstrap.delete()) {
                     updated = true;
