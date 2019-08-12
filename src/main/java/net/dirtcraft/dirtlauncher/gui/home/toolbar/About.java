@@ -76,7 +76,7 @@ final class About extends Stage {
         setScene(scene);
         initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.TRANSPARENT);
-        setTitle("Accounts");
+        setTitle("About");
 
 
         focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {

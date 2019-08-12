@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.cydhra.nidhogg.data.Session;
+import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
@@ -167,9 +168,11 @@ public class LaunchGame {
                     BufferedReader br = new BufferedReader(isr)
                 ){
                     String ln;
+                    StringBuilder buffer = new StringBuilder();
                     while((ln = br.readLine()) != null){
-                        logger.error("!!!" + ln + "!!!");
+                        buffer.append(ln);
                     }
+                    new ErrorWindow(buffer.toString()).show();
                 }
                 //Show main stage
                 Platform.runLater(() -> Main.getInstance().getStage().show());

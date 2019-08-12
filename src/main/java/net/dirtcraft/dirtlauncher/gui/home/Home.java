@@ -58,14 +58,15 @@ public class Home extends Stage {
         return instance;
     }
 
-    public static class Builder{
+    public static class PreInit {
         final private Scene scene;
         final private AnchorPane root;
         private LoginBar loginBar;
         private NotificationBox loginNotification;
 
-        public Builder() {
+        public PreInit() {
             final PackList sidebar = new PackList();
+            sidebar.updatePacksAsync();
             final FlowPane titleBox = getTitleBox();
             final FlowPane actionBox = getActionBox();
             final FlowPane notificationArea = getNotificationArea();
@@ -84,6 +85,7 @@ public class Home extends Stage {
             root = new AnchorPane();
             root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "home", "Global.css"));
             root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
+
 
             scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
 
@@ -167,7 +169,7 @@ public class Home extends Stage {
             return title;
         }
 
-        public Home build(){
+        public Home init(){
             return new Home(root, webArea(), scene, loginBar, loginNotification);
         }
     }

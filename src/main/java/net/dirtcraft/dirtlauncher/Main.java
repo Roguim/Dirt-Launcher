@@ -31,7 +31,7 @@ public class Main extends Application {
     private static boolean updated = false;
     private static volatile Accounts accounts = null;
     private static volatile Home stage = null;
-    private static volatile Home.Builder homeBuilder = null;
+    private static volatile Home.PreInit preInitializedHome = null;
     private static long x;
     private static CompletableFuture stageInit = null;
 
@@ -54,7 +54,7 @@ public class Main extends Application {
         //init landing stage async
         stageInit = CompletableFuture.runAsync(() -> {
             try {
-                homeBuilder = new Home.Builder();
+                preInitializedHome = new Home.PreInit();
                 System.out.println("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -137,7 +137,7 @@ public class Main extends Application {
         while (!stageInit.isDone()){
             Thread.sleep(50);
         }
-        stage = homeBuilder.build();
+        stage = preInitializedHome.init(); //The rest of this class can only be initialized on the main JFX thread.
         stage.show();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }

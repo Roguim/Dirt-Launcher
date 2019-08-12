@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.gui.wizards.Settings;
@@ -45,6 +46,9 @@ final public class ToolBar extends Pane {
         final Button accounts = new Button();
         accounts.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "account.png"));
         accounts.setOnAction(e -> new AccountList().show());
+
+        //final Button debug = new Button();
+        //debug.setOnAction(e -> new ErrorWindow("").show());
 
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));

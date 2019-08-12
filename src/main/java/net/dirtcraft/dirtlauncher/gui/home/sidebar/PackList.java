@@ -10,49 +10,52 @@ import com.google.gson.JsonParser;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class PackList extends ScrollPane {
-
+    private final VBox packs;
     public PackList(){
-        VBox packs = new VBox();
-        updatePacksAsync(packs);
+        packs = new VBox();
+        packs.getStyleClass().add(Constants.CSS_CLASS_VBOX);
         packs.setFocusTraversable(false);
         packs.setAlignment(Pos.TOP_CENTER);
 
-        ScrollPane sidebar = new ScrollPane();
-        sidebar.setFitToWidth(true);
-        sidebar.setFocusTraversable(false);
-        sidebar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        sidebar.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        sidebar.setPannable(true);
-        MiscUtils.setAbsoluteWidth(sidebar, 300);
-        AnchorPane.setTopAnchor(sidebar, 100d);
-        AnchorPane.setLeftAnchor(sidebar, 0d);
-        AnchorPane.setBottomAnchor(sidebar, 0d);
-        sidebar.setContent(packs);
+        setFitToWidth(true);
+        setFocusTraversable(false);
+        setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setPannable(true);
+        MiscUtils.setAbsoluteWidth(this, 300);
+        AnchorPane.setTopAnchor(this, 100d);
+        AnchorPane.setLeftAnchor(this, 0d);
+        AnchorPane.setBottomAnchor(this, 0d);
+        setContent(packs);
     }
 
-    private void updatePacksAsync(VBox packList){
+    public void updatePacksAsync(){
         CompletableFuture.runAsync(()-> {
-            ObservableList<Pack> packs = FXCollections.observableArrayList();
+            List<Pack> packsList = new ArrayList<>();
             JsonElement json = new JsonParser().parse(getStringFromURL());
 
             for (JsonElement element : json.getAsJsonArray()) {
-                packs.add(new Pack(element.getAsJsonObject()));
+                packsList.add(new Pack(element.getAsJsonObject()));
             }
 
-            packs.sort(Comparator.comparing(Pack::getName));
+            packsList.sort(Comparator.comparing(Pack::getName));
             if (Constants.VERBOSE && false) {
                 new Thread(()->{
                     while (Main.getLogger() == null) {
@@ -65,10 +68,9 @@ public class PackList extends ScrollPane {
                     Main.getLogger().info(packs);
                 }).start();
             }
-            packList.getStyleClass().add(Constants.CSS_CLASS_VBOX);
             Platform.runLater(() -> {
-                packList.getChildren().clear();
-                packList.getChildren().addAll(packs);
+                packs.getChildren().clear();
+                packs.getChildren().addAll(packsList);
             });
         });
     }
