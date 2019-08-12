@@ -43,8 +43,8 @@ public class PackList extends ScrollPane {
         sidebar.setContent(packs);
     }
 
-    private CompletableFuture updatePacksAsync(VBox packList){
-        return CompletableFuture.runAsync(()-> {
+    private void updatePacksAsync(VBox packList){
+        CompletableFuture.runAsync(()-> {
             ObservableList<Pack> packs = FXCollections.observableArrayList();
             JsonElement json = new JsonParser().parse(getStringFromURL());
 
@@ -73,7 +73,7 @@ public class PackList extends ScrollPane {
         });
     }
 
-    private static String getStringFromURL() {
+    private String getStringFromURL() {
         String string = null;
         try {
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
