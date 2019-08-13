@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.gui.wizards.Settings;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 
 import java.io.IOException;
