@@ -34,6 +34,7 @@ public class Main extends Application {
     private static volatile Home.PreInit preInitializedHome = null;
     private static long x;
     private static CompletableFuture stageInit = null;
+    private static Settings settingsMenu = null;
 
     public static void main(String[] args) {
         x = System.currentTimeMillis();
@@ -81,6 +82,8 @@ public class Main extends Application {
         CompletableFuture.runAsync(() -> {
             config = new Config(launcherDirectory, options);
             System.out.println("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
+            settingsMenu = new Settings(config);
+            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         });
 
         //init logger async
@@ -112,11 +115,8 @@ public class Main extends Application {
             }
         });
 
-        //pre-init config async
-        //TODO make faster - takes 3s, scene takes 1s. this is a slowdown
+        //check for update async
         CompletableFuture.runAsync(() -> {
-            Settings.loadSettings();
-            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             try {
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {
@@ -130,6 +130,10 @@ public class Main extends Application {
 
     public static Accounts getAccounts() {
         return accounts;
+    }
+
+    public static Settings getSettingsMenu() {
+        return settingsMenu;
     }
 
     @Override

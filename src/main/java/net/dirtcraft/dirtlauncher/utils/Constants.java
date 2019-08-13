@@ -14,11 +14,14 @@ public class Constants {
 
     public static final String CSS_CLASS_VBOX = "v-box";
     public static final String CSS_CLASS_TITLE = "Title";
+    public static final String CSS_CLASS_TEXT = "text";
+    public static final String CSS_ID_ROOT = "Root";
 
     public static final String CSS_ID_PACKLIST_BG = "PackListBG";
     public static final String CSS_ID_LOGIN_BAR = "LoginBar";
     public static final String CSS_ID_TOOLBAR_UPPER = "ToolBarUpper";
     public static final String CSS_ID_TOOLBAR_LOWER = "ToolBarLower";
+    public static final String CSS_ID_SETTINGS_GMDR = "GameLocation";
 
     public final static String JAR_CSS_FXML = "CSS/FXML";
     public final static String JAR_CSS_HTML = "CSS/HTML";

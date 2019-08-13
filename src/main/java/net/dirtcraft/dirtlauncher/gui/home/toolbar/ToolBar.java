@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.gui.wizards.Settings;
@@ -32,15 +31,8 @@ final public class ToolBar extends Pane {
         MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
         settings.setLayoutX(toolbarUpperWidth - largeButtonSize);
         settings.setOnMouseClicked(event -> {
-            Stage stage = Settings.getInstance().getStage();
+            Stage stage = Main.getSettingsMenu().getStage();
             stage.show();
-            stage.setOnCloseRequest(e -> {
-                final int minimumRam = Integer.valueOf(Settings.getInstance().getMinimumRam().getText());
-                final int maximumRam = Integer.valueOf(Settings.getInstance().getMaximumRam().getText());
-                final String gameDirectory = Settings.getInstance().getGameDirectoryField().getText();
-                final String javaArguments = Settings.getInstance().getJavaArguments().getText();
-                Main.getConfig().updateSettings(minimumRam, maximumRam, javaArguments, gameDirectory);
-            });
         });
 
         final Button accounts = new Button();
@@ -48,7 +40,7 @@ final public class ToolBar extends Pane {
         accounts.setOnAction(e -> new AccountList().show());
 
         //final Button debug = new Button();
-        //debug.setOnAction(e -> new ErrorWindow("").show());
+        //debug.setOnAction(e -> new SettingsHC(Main.getConfig()).getStage().show());
 
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
