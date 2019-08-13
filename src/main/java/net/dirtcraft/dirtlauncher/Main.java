@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
-import net.dirtcraft.dirtlauncher.gui.wizards.Settings;
+import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.Data.Accounts;
 import net.dirtcraft.dirtlauncher.Data.Config;
@@ -82,8 +82,6 @@ public class Main extends Application {
         CompletableFuture.runAsync(() -> {
             config = new Config(launcherDirectory, options);
             System.out.println("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
-            settingsMenu = new Settings(config);
-            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         });
 
         //init logger async
@@ -115,8 +113,15 @@ public class Main extends Application {
             }
         });
 
-        //check for update async
+        //pre-load settings menu & check for update async
         CompletableFuture.runAsync(() -> {
+            while (config == null){
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ignored) {}
+            }
+            settingsMenu = new Settings(config);
+            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             try {
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {

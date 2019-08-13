@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.gui.wizards;
+package net.dirtcraft.dirtlauncher.gui.home.toolbar;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -129,13 +130,11 @@ public final class Settings extends Scene {
     public Stage getStage() {
         if (stage == null) {
             stage = new Stage();
-            stage.initOwner(Main.getInstance().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.UTILITY);
             stage.setTitle("Dirt Launcher Settings");
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "settings.png"));
             stage.setScene(this);
-            stage.setTitle("Settings");
             stage.setResizable(false);
             stage.setOnCloseRequest(event -> {
                 final int minimumRam = xmsInput.getAsInt();
