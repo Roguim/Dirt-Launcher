@@ -1,0 +1,58 @@
+@font-face {
+    font-family: "Oleo Script";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../../Fonts/OleoScript-Regular.ttf");
+}
+
+#Title > *{
+    -fx-font-family: 'Oleo Script';
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-underline: true ;  
+    -fx-font-size: 60;
+	-fx-fill: red;
+}
+
+#Root {
+    -fx-background-image: url('../../../Backgrounds/carbon.jpg') ;
+	-fx-opacity: 1;
+}
+
+#Root > * {
+    -fx-min-height: 75px;
+    -fx-max-height: 75px;
+}
+
+#GameLocation .button{
+    -fx-background-radius: 0 3 3 0 ;	
+}
+
+#GameLocation .text-field{
+    -fx-background-radius: 3 0 0 3 ;
+}
+
+.text {
+    -fx-fill: #FFFFFF;
+    -fx-font-family: 'Russo One';
+    -fx-font-weight: bold;
+}
+
+.button{
+	-fx-background-color: #FFFFFF;
+}
+
+.button > *{
+     -fx-fill: #000000;
+}
+
+.button:hover{
+    -fx-background-color: #DDDDDD;
+}
+
+.text-field:hover{
+    -fx-background-color: #DDDDDD;
+}
+
+.text-field:focused{
+    -fx-background-color: #FFFFFF;
+}
