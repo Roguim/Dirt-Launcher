@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 public class UpdateHelper {
     public UpdateHelper() {
-        final String className = "net.dirtcraft.dirtlauncher.utils.UpdateBootstrapper";
+        final String className = "UpdateBootstrapper";
         final String JRE = "javaw";
         File currentDir;
         File currentJar;

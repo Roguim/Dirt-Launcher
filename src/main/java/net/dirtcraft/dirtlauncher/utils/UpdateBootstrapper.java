@@ -1,5 +1,3 @@
-package net.dirtcraft.dirtlauncher.utils;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -56,6 +54,7 @@ public class UpdateBootstrapper {
         cmds.add(jre);
         cmds.add("-jar");
         cmds.add(dest.toString());
+        cmds.add("-postUpdate");
         try {
             Runtime.getRuntime().exec(String.join(" ", cmds));
         } catch (IOException e){

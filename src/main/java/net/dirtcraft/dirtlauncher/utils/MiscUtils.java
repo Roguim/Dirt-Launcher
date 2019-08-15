@@ -31,15 +31,13 @@ public class MiscUtils {
     }
 
     public static InputStream getResourceStream(String... directory){
-        Main main = Main.getInstance();
         String path = "/" + String.join("/", directory);
-        return main.getClass().getResourceAsStream(path);
+        return MiscUtils.class.getResourceAsStream(path);
     }
 
     public static URL getResourceURL(String... directory){
-        Main main = Main.getInstance();
         String path = "/" + String.join("/" , directory);
-        return main.getClass().getResource(path);
+        return MiscUtils.class.getResource(path);
     }
 
     public static boolean isEmptyOrNull(String... strings) {

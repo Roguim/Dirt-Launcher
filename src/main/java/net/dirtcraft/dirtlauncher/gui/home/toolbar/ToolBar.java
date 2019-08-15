@@ -11,6 +11,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
+import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 
 import java.io.IOException;
 
@@ -38,8 +39,8 @@ final public class ToolBar extends Pane {
         accounts.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "account.png"));
         accounts.setOnAction(e -> new AccountList().show());
 
-        //final Button debug = new Button();
-        //debug.setOnAction(e -> new SettingsHC(Main.getConfig()).getStage().show());
+        final Button debug = new Button();
+        debug.setOnAction(e -> new UpdateHelper());
 
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
@@ -66,7 +67,7 @@ final public class ToolBar extends Pane {
         toolbarLower.setLayoutX(toolbarUpperWidth - toolbarLowerWidth);
         toolbarLower.setLayoutY(toolbarUpperHeight - 5);
         //toolbarLower.getChildren().addAll(accounts, refresh, info);
-        toolbarLower.getChildren().addAll(accounts, info);
+        toolbarLower.getChildren().addAll(accounts, info, debug);
         ObservableList<Node> buttons = toolbarLower.getChildren();
         MiscUtils.setAbsoluteSize(toolbarLower, toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
 

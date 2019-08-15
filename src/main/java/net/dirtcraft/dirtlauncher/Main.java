@@ -103,7 +103,7 @@ public class Main extends Application {
             }
             try {
                 File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-                String bootstrapName = "net.dirtcraft.dirtlauncher.utils.UpdateBootstrapper.class";
+                String bootstrapName = "UpdateBootstrapper.class";
                 final File bootstrap = new File(currentJar, bootstrapName);
                 if (bootstrap.delete()) {
                     updated = true;
