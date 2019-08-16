@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
-import net.dirtcraft.dirtlauncher.Main;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -47,20 +46,6 @@ public class MiscUtils {
         return false;
     }
 
-    public static void setAbsoluteSize(Region node, double width, double height){
-        node.setMaxSize(width,  height);
-        node.setMinSize(width,  height);
-    }
-
-    public static void setAbsoluteWidth(Region node, double width){
-        node.setMaxWidth(width);
-        node.setMinWidth(width);
-    }
-
-    public static void setAbsoluteHeight(Region node, double height){
-        node.setMaxHeight(height);
-        node.setMinHeight(height);
-    }
     public static ImageView getGraphic(int size, String... dir) {
         return getGraphic(size, size, dir);
     }
