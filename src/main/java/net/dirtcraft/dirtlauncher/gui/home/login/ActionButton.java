@@ -147,7 +147,7 @@ public final class ActionButton extends Button {
 
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
 
-            stage.setScene(new Scene(root, MiscUtils.screenDimension.getWidth() / 3, MiscUtils.screenDimension.getHeight() / 4));
+            stage.setScene(new Scene(root, Main.screenDimension.getWidth() / 3, Main.screenDimension.getHeight() / 4));
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
 

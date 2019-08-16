@@ -20,8 +20,6 @@ public class MiscUtils {
         return matcher.find();
     }
 
-    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-
     public static Image getImage(String... directory) {
         return new Image(getResourceStream(directory));
     }

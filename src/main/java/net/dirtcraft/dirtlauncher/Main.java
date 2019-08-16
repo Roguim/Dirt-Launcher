@@ -12,6 +12,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
@@ -35,6 +37,7 @@ public class Main extends Application {
     private static long x;
     private static CompletableFuture stageInit = null;
     private static Settings settingsMenu = null;
+    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 
     public static void main(String[] args) {
         x = System.currentTimeMillis();

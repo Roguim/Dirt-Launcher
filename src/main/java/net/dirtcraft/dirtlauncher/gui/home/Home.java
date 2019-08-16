@@ -11,6 +11,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackList;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.ToolBar;
@@ -87,7 +88,7 @@ public class Home extends Stage {
             root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
 
 
-            scene = new Scene(root, MiscUtils.screenDimension.getWidth() / 1.15, MiscUtils.screenDimension.getHeight() / 1.35);
+            scene = new Scene(root, Main.screenDimension.getWidth() / 1.15, Main.screenDimension.getHeight() / 1.35);
 
         }
 
