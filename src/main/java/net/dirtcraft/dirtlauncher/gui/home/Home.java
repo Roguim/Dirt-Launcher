@@ -73,8 +73,7 @@ public class Home extends Stage {
 
             final FlowPane sidebarBacking = new FlowPane();
             sidebarBacking.setId(Constants.CSS_ID_PACKLIST_BG);
-            sidebarBacking.setMinWidth(300);
-            sidebarBacking.setMaxWidth(300);
+            MiscUtils.setAbsoluteWidth(sidebarBacking, 300);
             AnchorPane.setTopAnchor(sidebarBacking, 100d);
             AnchorPane.setLeftAnchor(sidebarBacking, 0d);
             AnchorPane.setBottomAnchor(sidebarBacking, 0d);
@@ -149,8 +148,7 @@ public class Home extends Stage {
             actionBox.setOrientation(Orientation.VERTICAL);
             actionBox.setAlignment(Pos.TOP_CENTER);
             actionBox.setPickOnBounds(false);
-            actionBox.setMinHeight(115);
-            actionBox.setMaxHeight(115);
+            MiscUtils.setAbsoluteHeight(actionBox,115);
             AnchorPane.setLeftAnchor(actionBox, 300d);
             AnchorPane.setRightAnchor(actionBox, 00d);
             AnchorPane.setBottomAnchor(actionBox, 0d);
@@ -163,8 +161,7 @@ public class Home extends Stage {
             FlowPane title = new FlowPane();
             AnchorPane.setTopAnchor(title, 0d);
             AnchorPane.setLeftAnchor(title, 0d);
-            title.setMinSize(300, 100);
-            title.setMaxSize(300, 100);
+            MiscUtils.setAbsoluteSize(title, 300, 100);
             title.getStyleClass().add(Constants.CSS_CLASS_TITLE);
             title.setAlignment(Pos.CENTER);
             title.getChildren().add(new Text("Dirt Launcher"));

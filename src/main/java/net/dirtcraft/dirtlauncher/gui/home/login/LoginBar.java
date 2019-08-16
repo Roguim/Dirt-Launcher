@@ -35,15 +35,11 @@ public final class LoginBar extends Pane {
         passField = new PasswordField();
         usernameField = new TextField();
         loginContainer = new GridPane();
-        System.out.println("1");
         logout = new LogoutButton(this);
-        System.out.println("2");
 
         //Force the size - otherwise it changes and that's bad..
-        setMinSize(264.0 ,  74 );
-        setMaxSize(264.0 ,  74 );
-        loginContainer.setMinSize(250, 59);
-        loginContainer.setMaxSize(250, 59);
+        MiscUtils.setAbsoluteSize(this ,264.0 ,  74 );
+        MiscUtils.setAbsoluteSize(loginContainer,250.0, 59);
 
         setId(Constants.CSS_ID_LOGIN_BAR);
         passField.setId("PasswordField");
@@ -110,16 +106,13 @@ public final class LoginBar extends Pane {
             final int logoutSize = 35;
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
             actionButton.setTranslateX(-logoutSize);
-            actionButton.setMinSize(barSize-logoutSize ,  59 );
-            actionButton.setMaxSize(barSize-logoutSize ,  59 );
-            logout.setMinSize(logoutSize ,  59 );
-            logout.setMaxSize(logoutSize ,  59 );
+            MiscUtils.setAbsoluteSize(actionButton , barSize-logoutSize ,  59 );
+            MiscUtils.setAbsoluteSize(logout , logoutSize ,  59 );
             loginContainer.add(actionButton, 0, 0,  2, 2);
             loginContainer.add(logout, 0, 0,  2, 2);
             this.actionButton.setType(session.get());
         } else {
-            actionButton.setMinSize(58 ,  59 );
-            actionButton.setMaxSize(58 ,  59 );
+            MiscUtils.setAbsoluteSize(actionButton , 58 ,  59 );
             actionButton.setTranslateX(0);
             loginContainer.add(usernameField, 0, 0, 1, 1);
             loginContainer.add(passField , 0,  1,  1,  1);

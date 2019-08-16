@@ -29,8 +29,7 @@ public final class ErrorWindow extends Stage {
         title.getChildren().get(0).setTranslateY(3);
         title.setAlignment(Pos.CENTER);
         title.getStyleClass().add(Constants.CSS_CLASS_TITLE);
-        title.setMinHeight(20);
-        title.setMaxHeight(20);
+        MiscUtils.setAbsoluteHeight(title, 20);
 
         final Text name = new Text("Pack: " + (pack.isPresent() ? pack.get().getName() : "N/A"));
         final Text packVersion = new Text("\tVersion: " + (pack.isPresent() ? pack.get().getVersion() : "N/A"));

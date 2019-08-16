@@ -8,11 +8,17 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,8 +39,7 @@ public class PackList extends ScrollPane {
         setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setPannable(true);
-        setMinWidth(300);
-        setMaxWidth(300);
+        MiscUtils.setAbsoluteWidth(this, 300);
         AnchorPane.setTopAnchor(this, 100d);
         AnchorPane.setLeftAnchor(this, 0d);
         AnchorPane.setBottomAnchor(this, 0d);

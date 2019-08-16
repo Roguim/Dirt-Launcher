@@ -28,8 +28,7 @@ final public class ToolBar extends Pane {
 
         final Button settings = new Button();
         settings.setGraphic(MiscUtils.getGraphic(largeButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "settings.png"));
-        settings.setMinSize(largeButtonSize, largeButtonSize);
-        settings.setMaxSize(largeButtonSize, largeButtonSize);
+        MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
         settings.setLayoutX(toolbarUpperWidth - largeButtonSize);
         settings.setOnMouseClicked(event -> {
             Stage stage = Main.getSettingsMenu().getStage();
@@ -59,8 +58,7 @@ final public class ToolBar extends Pane {
 
         final Pane toolbarUpper = new Pane();
         toolbarUpper.setId(Constants.CSS_ID_TOOLBAR_UPPER);
-        toolbarUpper.setMinSize(toolbarUpperWidth, toolbarUpperHeight);
-        toolbarUpper.setMaxSize(toolbarUpperWidth, toolbarUpperHeight);
+        MiscUtils.setAbsoluteSize(toolbarUpper, toolbarUpperWidth, toolbarUpperHeight);
         toolbarUpper.getChildren().add(settings);
 
 
@@ -71,16 +69,14 @@ final public class ToolBar extends Pane {
         //toolbarLower.getChildren().addAll(accounts, refresh, info);
         toolbarLower.getChildren().addAll(accounts, info, debug);
         ObservableList<Node> buttons = toolbarLower.getChildren();
-        toolbarLower.setMinSize(toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
-        toolbarLower.setMaxSize(toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
+        MiscUtils.setAbsoluteSize(toolbarLower, toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
 
         for (int i = 0; i < buttons.size(); i++) {
             Button item = (Button) buttons.get(i);
             item.setCursor(Cursor.HAND);
             item.setLayoutY((smallButtonSize + smallButtonSpacing) * i + 5);
             item.setLayoutX(toolbarLowerWidth - smallButtonSize);
-            item.setMinSize(smallButtonSize, smallButtonSize);
-            item.setMaxSize(smallButtonSize, smallButtonSize);
+            MiscUtils.setAbsoluteSize(item, smallButtonSize, smallButtonSize);
         }
 
         getChildren().addAll(toolbarUpper, toolbarLower);

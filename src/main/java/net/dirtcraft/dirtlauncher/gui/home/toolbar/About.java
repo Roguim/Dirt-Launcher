@@ -26,8 +26,7 @@ final class About extends Stage {
         title.getChildren().get(0).setTranslateY(3);
         title.setAlignment(Pos.CENTER);
         title.getStyleClass().add(Constants.CSS_CLASS_TITLE);
-        title.setMinHeight(20);
-        title.setMaxHeight(20);
+        MiscUtils.setAbsoluteHeight(title, 20);
 
         StringBuilder EulaText = new StringBuilder();
         try(
