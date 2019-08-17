@@ -7,15 +7,13 @@ import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.Main;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.nio.file.Path;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public final class Accounts {
@@ -27,10 +25,7 @@ public final class Accounts {
     private volatile boolean isReady = false;
 
     public Accounts(Path launcherDirectory){
-        CompletableFuture.runAsync(()->{
-            client = new YggdrasilClient();
-            isReady = true;
-        });
+        boolean saveData = false;
         JsonObject accounts;
         accountDir = launcherDirectory.resolve("account.json").toFile();
         try (FileReader reader = new FileReader(accountDir)) {
@@ -39,6 +34,27 @@ public final class Accounts {
         } catch (IOException e){
             accounts = null;
         }
+
+        String yggdrasilClientToken;
+        try {
+            if (accounts != null && accounts.has("client token")) {
+                yggdrasilClientToken = accounts.get("client token").getAsString();
+            } else {
+                throw new JsonParseException("No Selected Account");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            byte[] bytes = new byte[16];
+            new Random().nextBytes(bytes);
+            yggdrasilClientToken = DatatypeConverter.printHexBinary(bytes);
+            saveData = true;
+        }
+
+        final String finalYggdrasilClientToken = yggdrasilClientToken;
+        CompletableFuture.runAsync(()->{
+            client = new YggdrasilClient(finalYggdrasilClientToken);
+            isReady = true;
+        });
 
         try {
             if (accounts != null && accounts.has("selected account")) {
@@ -74,8 +90,9 @@ public final class Accounts {
             String sessionClientToken = accounts.get("sessionClientToken").getAsString();
 
             selectedAccount = new Session(sessionID, sessionAlias, sessionAccessToken, sessionClientToken);
-            saveData();
+            saveData = true;
         }
+        if (saveData) saveData();
     }
 
     private void saveData(){

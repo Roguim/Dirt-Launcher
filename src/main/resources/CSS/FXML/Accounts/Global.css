@@ -45,8 +45,8 @@
 
 .Title > * {
     -fx-font-family: 'Minecrafter Alt';
-    -fx-fill: #f8f4ff !important;
+    -fx-fill: red !important;
 	-fx-font-size: 22 !important ;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;	
+/*    -fx-stroke: black;
+    -fx-stroke-width: 1;	*/
 }

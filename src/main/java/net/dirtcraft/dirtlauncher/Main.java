@@ -12,6 +12,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -72,12 +73,13 @@ public class Main extends Application {
         //pre-init accounts async
         CompletableFuture.runAsync(() -> {
             accounts = new Accounts(launcherDirectory);
+            System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
                 while (!stageInit.isDone() || !accounts.isReady()) {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException ignored) { }
                 }
-            System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
+            System.out.println("pinging account @ " + (System.currentTimeMillis() - x) + "ms");
             Platform.runLater(()->stage.getLoginBar().setInputs());
         });
 

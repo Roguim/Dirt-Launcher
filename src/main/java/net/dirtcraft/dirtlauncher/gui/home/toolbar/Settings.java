@@ -9,14 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Data.Config;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.genericControls.NumberField;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -40,7 +38,6 @@ public final class Settings extends Scene {
         title.setAlignment(Pos.CENTER);
         title.setId(Constants.CSS_CLASS_TITLE);
         title.getChildren().add(titleText);
-
 
         xmsInput = new NumberField(config.getMinimumRam());
         MiscUtils.setAbsoluteSize(xmsInput, 200, 30);

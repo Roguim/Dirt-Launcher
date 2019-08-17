@@ -139,7 +139,6 @@ public final class ActionButton extends Button {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getName() + "...");
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
-            root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             stage.initOwner(Main.getInstance().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
