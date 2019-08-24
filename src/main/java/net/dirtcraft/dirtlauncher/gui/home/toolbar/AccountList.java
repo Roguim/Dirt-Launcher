@@ -104,7 +104,7 @@ final class AccountList extends Stage {
         @Override
         public void fire() {
             Main.getAccounts().setSelectedAccount(session);
-            Home.getInstance().getLoginBar().setInputs();
+            Main.getHome().getLoginBar().setInputs();
             instance.close();
         }
     }
@@ -125,7 +125,7 @@ final class AccountList extends Stage {
         @Override
         public void fire() {
             Main.getAccounts().clearSelectedAccount();
-            Home.getInstance().getLoginBar().setInputs();
+            Main.getHome().getLoginBar().setInputs();
             instance.close();
         }
     }

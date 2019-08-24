@@ -129,7 +129,7 @@ public final class Pack extends Button {
     }
 
     public void fire() {
-        final LoginBar home = Home.getInstance().getLoginBar();
+        final LoginBar home = Main.getHome().getLoginBar();
         final Button playButton = home.getActionButton();
         home.getActivePackCell().ifPresent(Pack::deactivate);
         home.setActivePackCell(this);
@@ -152,7 +152,7 @@ public final class Pack extends Button {
 
             reinstall.setOnAction(e->{
                 uninstall.fire();
-                LoginBar loginBar = Home.getInstance().getLoginBar();
+                LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<Pack> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
                 loginBar.getActionButton().installPack(this);
@@ -186,7 +186,7 @@ public final class Pack extends Button {
             contextMenu.getItems().add(install);
 
             install.setOnAction(e->{
-                LoginBar loginBar = Home.getInstance().getLoginBar();
+                LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<Pack> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
                 loginBar.getActionButton().installPack(this);

@@ -69,7 +69,7 @@ public final class ActionButton extends Button {
                     launchPack(session.get(), pack);
                     return;
                 default:
-                    Home.getInstance().getNotificationBox().displayError(null, pack);
+                    Main.getHome().getNotificationBox().displayError(null, pack);
                     return;
             }
     }
@@ -140,7 +140,7 @@ public final class ActionButton extends Button {
             stage.setTitle("Installing " + modPack.getName() + "...");
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
 
-            stage.initOwner(Main.getInstance().getStage());
+            stage.initOwner(Main.getHome().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.DECORATED);
 

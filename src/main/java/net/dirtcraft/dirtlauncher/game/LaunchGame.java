@@ -160,7 +160,7 @@ public class LaunchGame {
                     Install.getStage().ifPresent(Stage::close);
 
                     //Minimize the main stage to the task bar
-                    Main.getInstance().getStage().close();
+                    Main.getHome().getStage().close();
                     //Create system tray icon
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
@@ -174,7 +174,7 @@ public class LaunchGame {
                     }
                 }
                 //Show main stage
-                Platform.runLater(() -> Main.getInstance().getStage().show());
+                Platform.runLater(() -> Main.getHome().getStage().show());
                 if (buffer.length()>0) Platform.runLater(()->new ErrorWindow(buffer.toString()).show());
 
                 //Close system tray icon

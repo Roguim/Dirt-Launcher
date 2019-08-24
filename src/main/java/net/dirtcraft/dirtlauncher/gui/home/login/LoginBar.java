@@ -160,11 +160,11 @@ public final class LoginBar extends Pane {
             AccountCredentials credentials = new AccountCredentials(usernameField.getText(), passField.getText());
             Main.getAccounts().setSelectedAccount(credentials);
         } catch (InvalidCredentialsException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
+            Main.getHome().getNotificationBox().displayError(LoginError.INVALID_CREDENTIALS, null);
         } catch (IllegalArgumentException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
+            Main.getHome().getNotificationBox().displayError(LoginError.ILLEGAL_ARGUMENT, null);
         } catch (UserMigratedException e) {
-            Home.getInstance().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
+            Main.getHome().getNotificationBox().displayError(LoginError.USER_MIGRATED, null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

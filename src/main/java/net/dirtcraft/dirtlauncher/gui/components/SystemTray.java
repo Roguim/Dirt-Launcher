@@ -46,7 +46,7 @@ public class SystemTray {
             trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main stage
-            trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getInstance().getStage().show()));
+            trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getHome().getStage().show()));
             // set tooltip on hover
             trayIcon.setToolTip("Playing " + pack.getName());
 

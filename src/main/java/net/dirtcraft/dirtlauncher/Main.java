@@ -12,7 +12,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +32,7 @@ public class Main extends Application {
     private static List<String> options;
     private static boolean updated = false;
     private static volatile Accounts accounts = null;
-    private static volatile Home stage = null;
-    private static volatile Home.PreInit preInitializedHome = null;
+    private static volatile Home home = null;
     private static long x;
     private static CompletableFuture stageInit = null;
     private static Settings settingsMenu = null;
@@ -58,11 +56,12 @@ public class Main extends Application {
             launcherDirectory = Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
             // Otherwise, we can assume the host OS is probably linux, so we'll use their application folder
         else launcherDirectory = Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
+        System.out.println("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
 
-        //init landing stage async
+        //init landing home async
         stageInit = CompletableFuture.runAsync(() -> {
             try {
-                preInitializedHome = new Home.PreInit();
+                home = new Home();
                 System.out.println("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -74,19 +73,19 @@ public class Main extends Application {
         CompletableFuture.runAsync(() -> {
             accounts = new Accounts(launcherDirectory);
             System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
-                while (!stageInit.isDone() || !accounts.isReady()) {
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException ignored) { }
-                }
-            System.out.println("pinging account @ " + (System.currentTimeMillis() - x) + "ms");
-            Platform.runLater(()->stage.getLoginBar().setInputs());
         });
 
-        //init config async
+        //init config, settings menu & update prompt async
         CompletableFuture.runAsync(() -> {
             config = new Config(launcherDirectory, options);
             System.out.println("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
+            settingsMenu = new Settings(config);
+            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
+            try {
+                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         //init logger async
@@ -118,22 +117,6 @@ public class Main extends Application {
             }
         });
 
-        //pre-load settings menu & check for update async
-        CompletableFuture.runAsync(() -> {
-            while (config == null){
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored) {}
-            }
-            settingsMenu = new Settings(config);
-            System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
-            try {
-                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
         // Launch the application
         launch(args);
     }
@@ -154,8 +137,8 @@ public class Main extends Application {
         while (!stageInit.isDone()){
             Thread.sleep(50);
         }
-        stage = preInitializedHome.init(); //The rest of this class can only be initialized on the main JFX thread.
-        stage.show();
+        home.getStage().show();
+        home.reload();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
@@ -164,8 +147,8 @@ public class Main extends Application {
         LogManager.shutdown();
     }
 
-    public Stage getStage() {
-        return stage;
+    public static Home getHome() {
+        return home;
     }
 
     public static Main getInstance() {

@@ -23,6 +23,8 @@ public final class Accounts {
     private YggdrasilClient client = null;
     private final File accountDir;
     private volatile boolean isReady = false;
+    private final String finalYggdrasilClientToken;
+
 
     public Accounts(Path launcherDirectory){
         boolean saveData = false;
@@ -49,8 +51,7 @@ public final class Accounts {
             yggdrasilClientToken = DatatypeConverter.printHexBinary(bytes);
             saveData = true;
         }
-
-        final String finalYggdrasilClientToken = yggdrasilClientToken;
+        finalYggdrasilClientToken = yggdrasilClientToken;
         CompletableFuture.runAsync(()->{
             client = new YggdrasilClient(finalYggdrasilClientToken);
             isReady = true;
@@ -77,21 +78,6 @@ public final class Accounts {
             System.out.println("No Alternate Account List detected");
         }
 
-        //Legacy format pasting. remove this later
-        if (altAccounts.isEmpty() && selectedAccount == null && accounts != null) {
-            if (!accounts.has("sessionID")) throw new JsonParseException("No sessionID");
-            if (!accounts.has("sessionAlias")) throw new JsonParseException("No sessionAlias");
-            if (!accounts.has("sessionAccessToken")) throw new JsonParseException("No sessionAccessToken");
-            if (!accounts.has("sessionClientToken")) throw new JsonParseException("No sessionClientToken");
-
-            String sessionID = accounts.get("sessionID").getAsString();
-            String sessionAlias = accounts.get("sessionAlias").getAsString();
-            String sessionAccessToken = accounts.get("sessionAccessToken").getAsString();
-            String sessionClientToken = accounts.get("sessionClientToken").getAsString();
-
-            selectedAccount = new Session(sessionID, sessionAlias, sessionAccessToken, sessionClientToken);
-            saveData = true;
-        }
         if (saveData) saveData();
     }
 
@@ -104,6 +90,7 @@ public final class Accounts {
         }
         accounts.add("selected account", selected);
         accounts.add("alt account list", alts);
+        accounts.addProperty("client token", finalYggdrasilClientToken);
         try (FileWriter writer = new FileWriter(accountDir)) {
             writer.write(accounts.toString());
         } catch (IOException e) {

@@ -55,9 +55,9 @@ public final class Install {
         buttonPane.setVisible(false);
         getStage().ifPresent(Stage::close);
 
-        LoginBar loginBar = Home.getInstance().getLoginBar();
+        LoginBar loginBar = Main.getHome().getLoginBar();
         Optional<Session> account = Main.getAccounts().getValidSelectedAccount();
-        Optional<Pack> pack = Home.getInstance().getLoginBar().getActivePackCell();
+        Optional<Pack> pack = Main.getHome().getLoginBar().getActivePackCell();
         if (pack.isPresent() && account.isPresent()){
             loginBar.getActionButton().launchPack(account.get(), pack.get());
         }
