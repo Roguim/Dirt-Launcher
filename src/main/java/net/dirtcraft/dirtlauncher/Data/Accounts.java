@@ -9,11 +9,14 @@ import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
-import java.util.*;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public final class Accounts {

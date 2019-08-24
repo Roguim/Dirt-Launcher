@@ -5,29 +5,28 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.css.PseudoClass;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
-import net.dirtcraft.dirtlauncher.gui.home.Home;
-import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.game.objects.Listing;
 import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
+import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
+import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
+import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public final class Pack extends Button {
     private double lastDragY;

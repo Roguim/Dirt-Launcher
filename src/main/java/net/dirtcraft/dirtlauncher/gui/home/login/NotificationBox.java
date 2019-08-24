@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-import net.dirtcraft.dirtlauncher.gui.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.game.objects.LoginError;
+import net.dirtcraft.dirtlauncher.gui.components.ShakeTransition;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 
 public final class NotificationBox extends TextFlow{

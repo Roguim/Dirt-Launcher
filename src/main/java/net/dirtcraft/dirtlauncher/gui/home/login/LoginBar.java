@@ -7,19 +7,19 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import net.cydhra.nidhogg.data.AccountCredentials;
-import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.InvalidCredentialsException;
 import net.cydhra.nidhogg.exception.UserMigratedException;
-import net.dirtcraft.dirtlauncher.Data.Accounts;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.objects.LoginError;
 import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
-import net.dirtcraft.dirtlauncher.gui.home.Home;
 
 import java.util.Optional;
 

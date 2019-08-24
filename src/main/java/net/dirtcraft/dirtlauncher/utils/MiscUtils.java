@@ -4,9 +4,7 @@ import com.google.common.base.Strings;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
-import net.dirtcraft.dirtlauncher.Main;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Matcher;

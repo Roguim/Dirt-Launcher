@@ -3,11 +3,11 @@ package net.dirtcraft.dirtlauncher;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.gui.home.Home;
-import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
-import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.Data.Accounts;
 import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.gui.dialog.Update;
+import net.dirtcraft.dirtlauncher.gui.home.Home;
+import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {

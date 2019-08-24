@@ -15,15 +15,13 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cydhra.nidhogg.data.Session;
-import net.dirtcraft.dirtlauncher.Data.Accounts;
+import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
-import net.dirtcraft.dirtlauncher.game.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.io.IOException;
