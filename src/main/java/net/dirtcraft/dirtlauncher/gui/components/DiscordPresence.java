@@ -16,7 +16,7 @@ public class DiscordPresence {
 
     public static void setState(String state) {
         getPresence().state = state;
-        if (Constants.VERBOSE) {
+        if (Constants.DEBUG) {
             System.out.println("Discord Rich Presence STATE set to \"" + state + "\"");
         }
         refreshPresence();
@@ -24,7 +24,7 @@ public class DiscordPresence {
 
     public static void setDetails(String details) {
         getPresence().details = details;
-        if (Constants.VERBOSE) {
+        if (Constants.DEBUG) {
             System.out.println("Discord Rich Presence DETAILS set to \"" + details + "\"");
         }
         refreshPresence();
@@ -58,7 +58,7 @@ public class DiscordPresence {
         if (handlers != null) return handlers;
         DiscordEventHandlers handlers = new DiscordEventHandlers();
 
-        if (Constants.VERBOSE) {
+        if (Constants.DEBUG) {
             handlers.ready = (user) -> System.out.println("Detected Discord Account: @" + user.username + "#" + user.discriminator);
         }
 

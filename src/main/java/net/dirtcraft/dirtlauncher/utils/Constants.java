@@ -32,6 +32,7 @@ public class Constants {
     public final static String JAR_IMAGES = "Images";
     public final static String JAR_ICONS = "Icons";
 
-    public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
+    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
+    public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
 }

@@ -94,9 +94,6 @@ public class Home extends Scene {
             stage.setTitle("Dirt Launcher");
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "main.png"));
             stage.initStyle(StageStyle.DECORATED);
-            stage.setOnCloseRequest(event -> {
-                if (!LaunchGame.isGameRunning) Platform.exit();
-            });
         }
         return stage;
     }

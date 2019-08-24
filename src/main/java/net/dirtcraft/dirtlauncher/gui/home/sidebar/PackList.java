@@ -51,7 +51,7 @@ public class PackList extends ScrollPane {
             }
 
             packsList.sort(Comparator.comparing(Pack::getName));
-            if (Constants.VERBOSE && false) {
+            if (Constants.DEBUG && false) {
                 new Thread(()->{
                     while (Main.getLogger() == null) {
                         try{

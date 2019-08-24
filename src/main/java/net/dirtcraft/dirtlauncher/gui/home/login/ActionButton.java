@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
-import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
@@ -106,7 +105,7 @@ public final class ActionButton extends Button {
     }
 
     private void updatePack(Pack modPack){
-        if (Constants.VERBOSE) {
+        if (Constants.DEBUG) {
             System.out.println("Updated the game");
         }
         launchInstallScene(modPack);
@@ -120,7 +119,7 @@ public final class ActionButton extends Button {
     }
 
     public void installPack(Pack modPack) {
-        if (Constants.VERBOSE) {
+        if (Constants.DEBUG) {
             System.out.println("Installing the pack");
         }
 

@@ -39,18 +39,19 @@ final public class ToolBar extends Pane {
         accounts.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "account.png"));
         accounts.setOnAction(e -> new AccountList().show());
 
-        final Button debug = new Button();
-        debug.setOnAction(e -> new UpdateHelper());
-
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
         refresh.setOnAction(event -> {
+            Main.getHome().reload();
             try {
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+
+        final Button debug = new Button();
+        debug.setOnAction(e -> new UpdateHelper());
 
         final Button info = new Button();
         info.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "info.png"));
@@ -67,7 +68,9 @@ final public class ToolBar extends Pane {
         toolbarLower.setLayoutX(toolbarUpperWidth - toolbarLowerWidth);
         toolbarLower.setLayoutY(toolbarUpperHeight - 5);
         //toolbarLower.getChildren().addAll(accounts, refresh, info);
-        toolbarLower.getChildren().addAll(accounts, info, debug);
+        toolbarLower.getChildren().addAll(accounts, info, refresh);
+        if (Constants.DEBUG) toolbarLower.getChildren().add(debug);
+
         ObservableList<Node> buttons = toolbarLower.getChildren();
         MiscUtils.setAbsoluteSize(toolbarLower, toolbarLowerWidth, (smallButtonSize + smallButtonSpacing) * buttons.size() + 5 );
 
