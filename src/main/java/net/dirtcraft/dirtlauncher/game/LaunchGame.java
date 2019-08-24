@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.cydhra.nidhogg.data.Session;
+import net.dirtcraft.dirtlauncher.Data.Accounts;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
+import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
@@ -44,7 +46,7 @@ public class LaunchGame {
         serverList.build();
     }
 
-    public static void launchPack(Pack pack, Session session) {
+    public static void launchPack(Pack pack, Account session) {
         Config settings = Main.getConfig();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 

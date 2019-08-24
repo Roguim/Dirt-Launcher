@@ -1,11 +1,11 @@
 package net.dirtcraft.dirtlauncher.Data;
 
 import com.google.gson.*;
-import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
-import net.cydhra.nidhogg.data.Session;
+import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
@@ -18,8 +18,8 @@ import java.util.concurrent.CompletableFuture;
 
 public final class Accounts {
 
-    private Session selectedAccount;
-    final private List<Session> altAccounts;
+    private Account selectedAccount;
+    final private List<Account> altAccounts;
     private YggdrasilClient client = null;
     private final File accountDir;
     private volatile boolean isReady = false;
@@ -59,7 +59,11 @@ public final class Accounts {
 
         try {
             if (accounts != null && accounts.has("selected account")) {
-                selectedAccount = jsonToSession(accounts.getAsJsonObject("selected account"));
+                try {
+                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"), client);
+                } catch (JsonParseException e) {
+                    System.out.println(e.getMessage());
+                }
             } else {
                 throw new JsonParseException("No Selected Account");
             }
@@ -71,8 +75,11 @@ public final class Accounts {
         altAccounts = new ArrayList<>();
         if (accounts != null && accounts.has("alt account list")) {
             for (JsonElement entry : accounts.getAsJsonArray("alt account list")){
-                final Session session = jsonToSession(entry.getAsJsonObject());
-                if (session != null) altAccounts.add(session);
+                try {
+                    final Account session = new Account(entry.getAsJsonObject(), client);
+                } catch (JsonParseException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         } else {
             System.out.println("No Alternate Account List detected");
@@ -83,12 +90,11 @@ public final class Accounts {
 
     private void saveData(){
         final JsonObject accounts = new JsonObject();
-        final JsonObject selected = sessionToJson(selectedAccount);
         final JsonArray alts = new JsonArray();
-        for (Session session : altAccounts){
-            alts.add(sessionToJson(session));
+        for (Account session : altAccounts){
+            alts.add(session.getSerialized());
         }
-        accounts.add("selected account", selected);
+        if (selectedAccount != null) accounts.add("selected account", selectedAccount.getSerialized());
         accounts.add("alt account list", alts);
         accounts.addProperty("client token", finalYggdrasilClientToken);
         try (FileWriter writer = new FileWriter(accountDir)) {
@@ -98,54 +104,8 @@ public final class Accounts {
         }
     }
 
-    private JsonObject sessionToJson(Session session){
-        if (session == null) return new JsonObject();
-        final JsonObject json = new JsonObject();
-        json.addProperty("UUID", session.getId());
-        json.addProperty("Alias", session.getAlias());
-        json.addProperty("AccessToken", session.getAccessToken());
-        json.addProperty("ClientToken", session.getClientToken());
-        return json;
-    }
-
-    private Session jsonToSession(JsonObject jsonObject){
-        try {
-            if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
-            if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");
-            if (!jsonObject.has("AccessToken")) throw new JsonParseException("No Access Token");
-            if (!jsonObject.has("ClientToken")) throw new JsonParseException("No Client Token");
-            return new Session(
-                    jsonObject.get("UUID").getAsString(),
-                    jsonObject.get("Alias").getAsString(),
-                    jsonObject.get("AccessToken").getAsString(),
-                    jsonObject.get("ClientToken").getAsString()
-            );
-        } catch (JsonParseException e){
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
-
-    private boolean isValid(Session session) {
-        if (session != null) {
-            try {
-                if (client.validate(session)) return true;
-            } catch (Exception ex) {
-                System.out.println("Session not valid, Attempting to refresh it!");
-                try {
-                    client.refresh(session);
-                    return true;
-                } catch (Exception e) {
-                    System.out.println(ex.getMessage());
-                    System.out.println(e.getMessage());
-                }
-            }
-        }
-        return false;
-    }
-
-    public void setSelectedAccount(Session newAccount) {
-        if (isValid(newAccount)){
+    public void setSelectedAccount(Account newAccount) {
+        if (newAccount.isValid()){
             if (selectedAccount != null) altAccounts.add(selectedAccount);
             altAccounts.remove(newAccount);
             selectedAccount = newAccount;
@@ -153,8 +113,8 @@ public final class Accounts {
         } else clearSelectedAccount();
     }
 
-    public void setSelectedAccount(AccountCredentials credentials){
-        selectedAccount = client.login(credentials, YggdrasilAgent.MINECRAFT);
+    public void setSelectedAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
+        selectedAccount = new Account(credentials, client);
         saveData();
     }
 
@@ -164,8 +124,8 @@ public final class Accounts {
         saveData();
     }
 
-    public List<Session> getAltAccounts() {
-        altAccounts.removeIf(session -> !isValid(session));
+    public List<Account> getAltAccounts() {
+        altAccounts.removeIf(session -> !session.isValid());
         return altAccounts;
     }
 
@@ -173,13 +133,7 @@ public final class Accounts {
         return selectedAccount != null;
     }
 
-    public Optional<Session> getValidSelectedAccount() {
-        if (selectedAccount == null) return Optional.empty();
-        if (!isValid(selectedAccount)) return Optional.empty();
-        else return Optional.of(selectedAccount);
-    }
-
-    public Optional<Session> getSelectedAccount() {
+    public Optional<Account> getSelectedAccount() {
         if (selectedAccount == null) return Optional.empty();
         else return Optional.of(selectedAccount);
     }
@@ -190,77 +144,5 @@ public final class Accounts {
 
     public boolean isReady() {
         return isReady;
-    }
-
-    private class Account{
-        private Session session;
-        Account(Session session){
-            this.session = session;
-        }
-
-        Account(JsonObject jsonObject) {
-            if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
-            if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");
-            if (!jsonObject.has("AccessToken")) throw new JsonParseException("No Access Token");
-            if (!jsonObject.has("ClientToken")) throw new JsonParseException("No Client Token");
-            this.session = new Session(
-                    jsonObject.get("UUID").getAsString(),
-                    jsonObject.get("Alias").getAsString(),
-                    jsonObject.get("AccessToken").getAsString(),
-                    jsonObject.get("ClientToken").getAsString()
-            );
-        }
-
-        public Account(String uuid, String name, String accessToken, String clientToken){
-            this.session = new Session(uuid, name, accessToken, clientToken);
-        }
-
-        JsonObject getSerialized(){
-            if (session == null) return new JsonObject();
-            final JsonObject json = new JsonObject();
-            json.addProperty("UUID", session.getId());
-            json.addProperty("Alias", session.getAlias());
-            json.addProperty("AccessToken", session.getAccessToken());
-            json.addProperty("ClientToken", session.getClientToken());
-            return json;
-        }
-
-        Session getSession() {
-            return session;
-        }
-
-        public String getAlias(){
-            return session.getAlias();
-        }
-
-        public String getAccessToken(){
-            return session.getAccessToken();
-        }
-
-        public String getId(){
-            return session.getId();
-        }
-
-        public String getClientToken(){
-            return session.getId();
-        }
-
-        public UUID getUuid(){
-            return session.getUuid();
-        }
-
-        public boolean isValid(){
-            try {
-                client.validate(session);
-                return true;
-            } catch (Exception e){
-                try {
-                    client.refresh(session);
-                    return true;
-                } catch (Exception refreshException){
-                    throw e;
-                }
-            }
-        }
     }
 }

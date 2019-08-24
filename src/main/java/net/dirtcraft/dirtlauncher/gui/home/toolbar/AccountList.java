@@ -12,9 +12,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.gui.home.Home;
+import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
@@ -25,7 +24,7 @@ final class AccountList extends Stage {
     private final AccountList instance = this;
     private final ScrollPane scrollPane;
     AccountList(){
-        final List<Session> sessions = Main.getAccounts().getAltAccounts();
+        final List<Account> sessions = Main.getAccounts().getAltAccounts();
         double vBoxSize = (sessions.size() + 1) * (59+5) + 5;
         vBoxSize = vBoxSize > 450 ? 450 : vBoxSize;
         final VBox backing = new VBox();
@@ -74,7 +73,7 @@ final class AccountList extends Stage {
 
         final ObservableList<Node> contents = backing.getChildren();
         CompletableFuture.runAsync(()->{
-            sessions.forEach(session -> contents.add(new Account(session)));
+            sessions.forEach(session -> contents.add(new AccountButton(session)));
         });
         contents.add(new AddAccountButton());
 
@@ -87,10 +86,10 @@ final class AccountList extends Stage {
 
     }
 
-    private class Account extends Button {
-        private final Session session;
+    private class AccountButton extends Button {
+        private final Account session;
         private double lastDragY;
-        Account(Session session){
+        AccountButton(Account session){
             this.session = session;
             setText(session.getAlias());
             setOnMouseDragged(event->{
@@ -108,6 +107,7 @@ final class AccountList extends Stage {
             instance.close();
         }
     }
+
     private class AddAccountButton extends Button {
         private double lastDragY;
 

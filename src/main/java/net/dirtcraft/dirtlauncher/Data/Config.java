@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -21,30 +20,23 @@ import java.util.List;
 
 public final class Config {
     private final Path launcherDirectory;
-    private final boolean hasBundledJre;
     private final String defaultRuntime;
     private int minimumRam;
     private int maximumRam;
     private String javaArguments;
     private Path gameDirectory;
 
-    public Config(Path launcherDirectory, List<String> options){
-        hasBundledJre = options.contains("-useBundledRuntime");
+    public Config(Path launcherDirectory, List<String> options) {
         final String javaExecutable = SystemUtils.IS_OS_WINDOWS ? "javaw" : "java";
-        try {
-            final Path runtimeDirectory;
-            if (hasBundledJre) {
-                runtimeDirectory = Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().resolve("Runtime");
-                defaultRuntime = runtimeDirectory
-                        .resolve(options.contains("-x86")? "jre8_x86" : "jre8_x64")
-                        .resolve("bin")
-                        .resolve(javaExecutable)
-                        .toFile().getPath();
-            } else {
-                defaultRuntime = javaExecutable;
-            }
-        } catch (URISyntaxException e){
-            throw new Error("Could not get runtime Directory!");
+        if (options.contains("-installed") || options.contains("-useBundledRuntime")) {
+            final Path runtimeDirectory = launcherDirectory.resolve("Runtime");
+            defaultRuntime = runtimeDirectory
+                    .resolve(options.contains("-x86") ? "jre8_x86" : "jre8_x64")
+                    .resolve("bin")
+                    .resolve(javaExecutable)
+                    .toFile().getPath();
+        } else {
+            defaultRuntime = javaExecutable;
         }
         File configFile = launcherDirectory.resolve("configuration.json").toFile();
         this.launcherDirectory = launcherDirectory;
@@ -52,8 +44,9 @@ public final class Config {
         try (FileReader reader = new FileReader(configFile)) {
             JsonParser parser = new JsonParser();
             config = parser.parse(reader).getAsJsonObject();
-        } catch (IOException ignored){ }
-        if (configFile.exists() && config != null){
+        } catch (IOException ignored) {
+        }
+        if (configFile.exists() && config != null) {
             if (config.has("minimum-ram")) minimumRam = config.get("minimum-ram").getAsInt();
             else {
                 final int value = getDefaultMinimumRam() * 1024;
@@ -85,7 +78,7 @@ public final class Config {
             gameDirectory = launcherDirectory;
             try {
                 initGameDirectory();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
@@ -216,9 +209,5 @@ public final class Config {
 
     public String getDefaultRuntime() {
         return defaultRuntime;
-    }
-
-    public boolean isHasBundledJre() {
-        return hasBundledJre;
     }
 }

@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.gui.home;
 
-import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -12,7 +11,6 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackList;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.ToolBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
@@ -94,6 +92,7 @@ public class Home extends Scene {
             stage.setTitle("Dirt Launcher");
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "main.png"));
             stage.initStyle(StageStyle.DECORATED);
+            stage.setOnCloseRequest(event -> System.exit(0));
         }
         return stage;
     }

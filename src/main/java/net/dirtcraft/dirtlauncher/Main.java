@@ -26,27 +26,23 @@ import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
 
-    private static volatile Config config = null;
+    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     private static Logger logger = null;
-    private static Main instance;
     private static List<String> options;
     private static boolean updated = false;
-    private static volatile Accounts accounts = null;
-    private static volatile Home home = null;
     private static long x;
     private static CompletableFuture stageInit = null;
+    private static Config config = null;
     private static Settings settingsMenu = null;
-    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    private static Accounts accounts = null;
+    private static Home home = null;
 
     public static void main(String[] args) {
         x = System.currentTimeMillis();
         options = Arrays.asList(args);
         final Path launcherDirectory;
             // If we are using a snap install, use the snap data folder.
-        if (SystemUtils.IS_OS_LINUX && options.contains("-installed")){
-            launcherDirectory = Paths.get(System.getenv("SNAP_USER_DATA"),"DirtLauncher");
-        }   // If we are using a portable install, we use the current folder.
-        else if (options.contains("-portable"))
+        if (options.contains("-installed") || options.contains("-portable"))
             launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
             // If the host OS is windows, use AppData
         else if (SystemUtils.IS_OS_WINDOWS)
@@ -131,9 +127,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        instance = this;
         Platform.setImplicitExit(false);
-
         while (!stageInit.isDone()){
             Thread.sleep(50);
         }
@@ -149,10 +143,6 @@ public class Main extends Application {
 
     public static Home getHome() {
         return home;
-    }
-
-    public static Main getInstance() {
-        return instance;
     }
 
     public static Logger getLogger() {

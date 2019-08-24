@@ -16,6 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cydhra.nidhogg.data.Session;
+import net.dirtcraft.dirtlauncher.Data.Accounts;
+import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.Main;
@@ -40,13 +42,13 @@ public final class ActionButton extends Button {
         setCursor(Cursor.HAND);
     }
 
-    public void setType(Session session) {
+    public void setType(Account session) {
         if (session == null || type != Types.PLAY) setText(type.toString());
         else setText(type.toString() + " As " + session.getAlias());
     }
 
     public void setType(Types type, Pack pack) {
-        Optional<Session> account = Main.getAccounts().getSelectedAccount();
+        Optional<Account> account = Main.getAccounts().getSelectedAccount();
         this.type = type;
         this.pack = pack;
         if (!account.isPresent() || type != Types.PLAY) setText(type.toString());
@@ -55,7 +57,7 @@ public final class ActionButton extends Button {
 
     @Override
     public void fire() {
-        Optional<Session> session = Main.getAccounts().getValidSelectedAccount();
+        Optional<Account> session = Main.getAccounts().getSelectedAccount();
         if (session.isPresent())
             switch (type) {
                 case INSTALL:
@@ -98,7 +100,7 @@ public final class ActionButton extends Button {
         this.pack = pack;
     }
 
-    public void launchPack(Session session, Pack modPack) {
+    public void launchPack(Account session, Pack modPack) {
         LaunchGame.isGameRunning = true;
         LaunchGame.loadServerList(modPack);
         LaunchGame.launchPack(modPack, session);
