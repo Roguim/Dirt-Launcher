@@ -36,21 +36,19 @@ public class Main extends Application {
     private static Settings settingsMenu = null;
     private static Accounts accounts = null;
     private static Home home = null;
+    private static Path launcherDirectory;
 
     public static void main(String[] args) {
-        x = System.currentTimeMillis();
         options = Arrays.asList(args);
-        final Path launcherDirectory;
-            // If we are using a snap install, use the snap data folder.
-        if (options.contains("-installed") || options.contains("-portable"))
-            launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-            // If the host OS is windows, use AppData
-        else if (SystemUtils.IS_OS_WINDOWS)
+        x = System.currentTimeMillis();
+        if (options.contains("-installed") || options.contains("-portable"))// If we are using a snap install, use the snap data folder.
+            try {
+                launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+            } catch (Exception e){ throw new Error(e); }
+        else if (SystemUtils.IS_OS_WINDOWS)// If the host OS is windows, use AppData
             launcherDirectory = Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
-            // If the host OS is linux, use the user's Application Support directory
-        else if (SystemUtils.IS_OS_MAC)
+        else if (SystemUtils.IS_OS_MAC)// If the host OS is mac, use the user's Application Support directory
             launcherDirectory = Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
-            // Otherwise, we can assume the host OS is probably linux, so we'll use their application folder
         else launcherDirectory = Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
         System.out.println("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
 
@@ -60,8 +58,7 @@ public class Main extends Application {
                 home = new Home();
                 System.out.println("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
+                throw new Error(e);
             }
         });
 
@@ -83,6 +80,28 @@ public class Main extends Application {
                 e.printStackTrace();
             }
         });
+
+        // Launch the application
+        launch(args);
+    }
+
+    public static Accounts getAccounts() {
+        return accounts;
+    }
+
+    public static Settings getSettingsMenu() {
+        return settingsMenu;
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Platform.setImplicitExit(false);
+        while (!stageInit.isDone()){
+            Thread.sleep(50);
+        }
+        home.getStage().show();
+        home.reload();
+        System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
 
         //init logger async
         CompletableFuture.runAsync(() -> {
@@ -112,28 +131,6 @@ public class Main extends Application {
                 e.printStackTrace();
             }
         });
-
-        // Launch the application
-        launch(args);
-    }
-
-    public static Accounts getAccounts() {
-        return accounts;
-    }
-
-    public static Settings getSettingsMenu() {
-        return settingsMenu;
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Platform.setImplicitExit(false);
-        while (!stageInit.isDone()){
-            Thread.sleep(50);
-        }
-        home.getStage().show();
-        home.reload();
-        System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     @Override

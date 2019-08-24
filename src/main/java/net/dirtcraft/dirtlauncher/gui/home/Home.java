@@ -132,8 +132,9 @@ public class Home extends Scene {
     }
 
     public void reload(){
-        loginBar.setInputs();
+        Main.getAccounts().refreshSelectedAccount();
         sidebar.updatePacksAsync();
+        loginBar.setInputs();
     }
 
     public LoginBar getLoginBar() {

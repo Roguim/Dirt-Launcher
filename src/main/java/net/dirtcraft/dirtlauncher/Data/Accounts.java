@@ -5,7 +5,6 @@ import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.gui.home.accounts.Account;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
@@ -56,14 +55,16 @@ public final class Accounts {
         }
         finalYggdrasilClientToken = yggdrasilClientToken;
         CompletableFuture.runAsync(()->{
+            long x = System.currentTimeMillis();
             client = new YggdrasilClient(finalYggdrasilClientToken);
+            System.out.println("nidhogg took " + (System.currentTimeMillis() - x));
             isReady = true;
         });
 
         try {
             if (accounts != null && accounts.has("selected account")) {
                 try {
-                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"), client);
+                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"));
                 } catch (JsonParseException e) {
                     System.out.println(e.getMessage());
                 }
@@ -79,7 +80,8 @@ public final class Accounts {
         if (accounts != null && accounts.has("alt account list")) {
             for (JsonElement entry : accounts.getAsJsonArray("alt account list")){
                 try {
-                    final Account session = new Account(entry.getAsJsonObject(), client);
+                    final Account session = new Account(entry.getAsJsonObject());
+                    altAccounts.add(session);
                 } catch (JsonParseException e) {
                     System.out.println(e.getMessage());
                 }
@@ -117,7 +119,7 @@ public final class Accounts {
     }
 
     public void setSelectedAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
-        selectedAccount = new Account(credentials, client);
+        selectedAccount = new Account(credentials);
         saveData();
     }
 
@@ -141,8 +143,19 @@ public final class Accounts {
         else return Optional.of(selectedAccount);
     }
 
-    private YggdrasilClient getClient() {
+    public YggdrasilClient getClient() {
         return client;
+    }
+
+    public void refreshSelectedAccount(){
+        CompletableFuture.runAsync(()->{
+            while(!isReady){
+                try {
+                    Thread.sleep(50);
+                } catch (Exception ignored) {}
+            }
+            if (!selectedAccount.isValid()) selectedAccount = null;
+        });
     }
 
     public boolean isReady() {

@@ -1,27 +1,23 @@
-package net.dirtcraft.dirtlauncher.gui.home.accounts;
-
+package net.dirtcraft.dirtlauncher.Data;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.cydhra.nidhogg.YggdrasilAgent;
-import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.*;
+import net.dirtcraft.dirtlauncher.Main;
 
-import java.util.UUID;
+//import java.util.UUID;
 
 public class Account{
     private Session session;
-    private YggdrasilClient client;
 
-    public Account(AccountCredentials credentials, YggdrasilClient client) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
-        this.client = client;
-        session = client.login(credentials, YggdrasilAgent.MINECRAFT);
+    Account(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
+        session = Main.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
     }
 
-    public Account(JsonObject jsonObject, YggdrasilClient client) {
-        this.client = client;
+    Account(JsonObject jsonObject) {
         if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
         if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");
         if (!jsonObject.has("AccessToken")) throw new JsonParseException("No Access Token");
@@ -34,7 +30,7 @@ public class Account{
         );
     }
 
-    public JsonObject getSerialized(){
+    JsonObject getSerialized(){
         if (session == null) return new JsonObject();
         final JsonObject json = new JsonObject();
         json.addProperty("UUID", session.getId());
@@ -56,6 +52,7 @@ public class Account{
         return session.getId();
     }
 
+    /*
     public String getClientToken(){
         return session.getId();
     }
@@ -63,15 +60,16 @@ public class Account{
     public UUID getUuid(){
         return session.getUuid();
     }
+    */
 
     public boolean isValid(){
         try {
-            client.validate(session);
+            Main.getAccounts().getClient().validate(session);
             return true;
         } catch (Exception e){
             System.out.println("Session not valid, Attempting to refresh it!");
             try {
-                client.refresh(session);
+                Main.getAccounts().getClient().refresh(session);
                 return true;
             } catch (Exception refreshException){
                 System.out.println(e.getMessage());
