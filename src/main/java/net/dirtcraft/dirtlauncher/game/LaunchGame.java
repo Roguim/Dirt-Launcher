@@ -144,7 +144,7 @@ public class LaunchGame {
 
         Thread gameThread = new Thread(() -> {
             try {
-                if (Constants.DEBUG){
+                if (Constants.VERBOSE){
                     logger.info("---DIR---");
                     logger.info(instanceDirectory);
                     logger.info("---ARG---");
