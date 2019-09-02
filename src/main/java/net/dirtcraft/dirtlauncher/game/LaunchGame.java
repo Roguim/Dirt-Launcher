@@ -16,8 +16,6 @@ import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -31,7 +29,6 @@ import java.util.List;
 
 public class LaunchGame {
 
-    private static Logger logger = LogManager.getLogger("Launch Game");
     public static boolean isGameRunning = false;
 
     public static void loadServerList(Pack pack) {
@@ -145,11 +142,11 @@ public class LaunchGame {
         Thread gameThread = new Thread(() -> {
             try {
                 if (Constants.VERBOSE){
-                    logger.info("---DIR---");
-                    logger.info(instanceDirectory);
-                    logger.info("---ARG---");
-                    logger.info(args);
-                    logger.info("---END---");
+                    System.out.println("---DIR---");
+                    System.out.println(instanceDirectory);
+                    System.out.println("---ARG---");
+                    System.out.println(args);
+                    System.out.println("---END---");
                 }
                 Process minecraft = new ProcessBuilder()
                         .directory(instanceDirectory)

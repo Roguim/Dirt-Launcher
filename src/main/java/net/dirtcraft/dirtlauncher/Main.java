@@ -9,7 +9,6 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
 
 import java.awt.*;
 import java.io.File;
@@ -112,11 +111,6 @@ public class Main extends Application {
         home.getStage().show();
         home.reload();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
-    }
-
-    @Override
-    public void stop() {
-        LogManager.shutdown();
     }
 
     public static Home getHome() {

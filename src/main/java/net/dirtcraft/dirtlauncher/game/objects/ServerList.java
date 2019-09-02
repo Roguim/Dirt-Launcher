@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.game.objects;
 
 import net.dirtcraft.dirtlauncher.Main;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -77,7 +76,7 @@ public class ServerList {
             byte[] smlBytes = ArrayUtils.toPrimitive(bigBytes);
             dos.write(smlBytes);
         } catch (IOException e){
-            LogManager.getLogger().error(e);
+            e.printStackTrace();
         }
 
     }
