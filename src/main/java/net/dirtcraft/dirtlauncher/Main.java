@@ -105,9 +105,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(false);
-        while (!stageInit.isDone()){
-            Thread.sleep(50);
-        }
+        stageInit.get();
         home.getStage().show();
         home.reload();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
