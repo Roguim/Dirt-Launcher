@@ -24,7 +24,7 @@ public class WebUtils {
             httpResponse.disconnect();
             return new JsonParser().parse(response).getAsJsonObject();
         } catch (SocketTimeoutException | HttpResponseException exception) {
-            Main.getLogger().warn(exception.getMessage() + "\nRetrying...");
+            System.out.println(exception.getMessage() + "\nRetrying...");
             return getJsonFromUrl(url);
         }
     }

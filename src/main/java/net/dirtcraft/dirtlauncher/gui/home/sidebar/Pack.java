@@ -169,7 +169,7 @@ public final class Pack extends Button {
                 try {
                     FileUtils.deleteDirectory(getInstanceDirectory());
                 } catch (IOException exception){
-                    Main.getLogger().error(exception);
+                    exception.printStackTrace();
                 }
             });
 
@@ -177,7 +177,7 @@ public final class Pack extends Button {
                 try {
                     Desktop.getDesktop().open(getInstanceDirectory());
                 } catch (IOException exception){
-                    Main.getLogger().error(exception);
+                    exception.printStackTrace();
                 }
             });
         } else {

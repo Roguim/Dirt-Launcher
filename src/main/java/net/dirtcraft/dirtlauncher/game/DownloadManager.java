@@ -381,7 +381,8 @@ public class DownloadManager {
 
         switch (pack.getPackType()) {
             default:
-                Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
+                //TODO ERR
+                System.out.println("Could not identify pack type. Please report IMMEDIATELY!");
                 return;
             case CUSTOM:
                 setProgressText("Downloading " + pack.getName() + " Files");
@@ -454,7 +455,8 @@ public class DownloadManager {
 
         switch(pack.getPackType()) {
             default:
-                Main.getLogger().error("Could not identify pack type. Please report IMMEDIATELY!");
+                //TODO ERR
+                System.out.println("Could not identify pack type. Please report IMMEDIATELY!");
                 return;
             case CUSTOM:
 

@@ -159,9 +159,9 @@ public final class Config {
                 org.apache.commons.io.FileUtils.moveDirectory(oldAssetsDir, getAssetsDirectory());
                 org.apache.commons.io.FileUtils.moveDirectory(oldForgeDir, getForgeDirectory());
             } catch (IOException e){
-                Main.getLogger().error(e);
+                e.printStackTrace();
             }
-            Main.getLogger().info(oldGameDir.delete()?"Successfully deleted":"Failed to delete"+" "+oldGameDir);
+            System.out.println(oldGameDir.delete()?"Successfully deleted":"Failed to delete"+" "+oldGameDir);
             initGameDirectory();
         }
         saveSettings();

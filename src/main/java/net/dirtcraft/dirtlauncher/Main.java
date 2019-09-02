@@ -10,7 +10,6 @@ import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.File;
@@ -18,8 +17,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public class Main extends Application {
 
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-    private static Logger logger = null;
     private static List<String> options;
     private static boolean updated = false;
     private static long x;
@@ -81,6 +77,20 @@ public class Main extends Application {
             }
         });
 
+        //init cleanup async
+        CompletableFuture.runAsync(() -> {
+            try {
+                File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+                String bootstrapName = "UpdateBootstrapper.class";
+                final File bootstrap = new File(currentJar, bootstrapName);
+                if (bootstrap.delete()) {
+                    updated = true;
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
+
         // Launch the application
         launch(args);
     }
@@ -102,35 +112,6 @@ public class Main extends Application {
         home.getStage().show();
         home.reload();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
-
-        //init logger async
-        CompletableFuture.runAsync(() -> {
-            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-            final Date date = new Date();
-            final String fname = dateFormat.format(date);
-            System.setProperty("log4j.saveDirectory", launcherDirectory.resolve("logs").resolve(fname + ".log").toString());
-            logger = LogManager.getLogger(Main.class);
-            System.out.println("Logger initialized @ " + (System.currentTimeMillis() - x) + "ms");
-            //Grab a list of log files and delete all but the last 5.
-            final List<File> logFiles = Arrays.asList(Objects.requireNonNull(config.getLogDirectory().toFile().listFiles()));
-            logFiles.sort(Collections.reverseOrder());
-            for (int i = 0; i < logFiles.size(); i++) {
-                if (i >= 5) {
-                    if (!logFiles.get(i).delete())
-                        logger.warn("failed to delete old log file: " + logFiles.get(i).getName());
-                }
-            }
-            try {
-                File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-                String bootstrapName = "UpdateBootstrapper.class";
-                final File bootstrap = new File(currentJar, bootstrapName);
-                if (bootstrap.delete()) {
-                    updated = true;
-                }
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     @Override
@@ -140,10 +121,6 @@ public class Main extends Application {
 
     public static Home getHome() {
         return home;
-    }
-
-    public static Logger getLogger() {
-        return logger;
     }
 
     public static Config getConfig() {

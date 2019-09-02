@@ -105,7 +105,7 @@ public final class Accounts {
         try (FileWriter writer = new FileWriter(accountDir)) {
             writer.write(accounts.toString());
         } catch (IOException e) {
-            Main.getLogger().warn(e);
+            e.printStackTrace();
         }
     }
 
