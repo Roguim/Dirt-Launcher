@@ -113,7 +113,7 @@ public final class LoginBar extends Pane {
             loginContainer.add(actionButton, 0, 0,  2, 2);
             loginContainer.add(logout, 0, 0,  2, 2);
             this.actionButton.setType(session.get());
-            actionButton.setDisable(false);
+            if (activePackCell != null) actionButton.setDisable(false);
         } else {
             MiscUtils.setAbsoluteSize(actionButton , 58 ,  59 );
             actionButton.setTranslateX(0);
