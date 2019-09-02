@@ -75,6 +75,7 @@ public final class Pack extends Button {
         this.optionalMods = optionalMods;
 
         contextMenu = new ContextMenu();
+        contextMenu.getStyleClass().add("context");
         initContextMenu();
         setCursor(Cursor.HAND);
         setFocusTraversable(false);

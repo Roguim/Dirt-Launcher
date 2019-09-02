@@ -5,6 +5,38 @@
     src: url("../../Fonts/MinecrafterAlt.ttf");
 }
 
+.context-menu {
+    -fx-content-display: right;
+    -fx-background-color: #404040;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+    -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+    -fx-opacity: 0.8;
+}
+
+.menu-item .label {
+    -fx-font-size: 12px;
+    -fx-padding: 6 16 8 12;
+    -fx-text-fill: #DCDCDC;
+}
+
+.menu-item {
+    -fx-padding: 0;
+    -fx-pref-height: 20px;
+}
+
+.menu-item:focused {
+    -fx-background-color: transparent;
+}
+
+.menu-item:hover {
+    -fx-background-color: #EAECEF;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: #404040;
+}
+
 .Title {
   -fx-background-color: linear-gradient(to bottom, #ae2929 75%, #595959);
 }
