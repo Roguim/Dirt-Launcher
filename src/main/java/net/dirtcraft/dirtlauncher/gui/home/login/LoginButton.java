@@ -16,6 +16,7 @@ final class LoginButton extends Button {
         setFocusTraversable(false);
         setId("PlayButton");
         setCursor(Cursor.HAND);
+        setDefaultButton(true);
     }
 
     @Override
