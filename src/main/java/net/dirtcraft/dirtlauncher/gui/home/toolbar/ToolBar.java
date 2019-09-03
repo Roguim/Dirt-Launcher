@@ -27,6 +27,7 @@ final public class ToolBar extends Pane {
         final short buttonGraphicPadding = 5;
 
         final Button settings = new Button();
+        settings.setCursor(Cursor.HAND);
         settings.setGraphic(MiscUtils.getGraphic(largeButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "settings.png"));
         MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
         settings.setLayoutX(toolbarUpperWidth - largeButtonSize);
@@ -82,7 +83,7 @@ final public class ToolBar extends Pane {
             MiscUtils.setAbsoluteSize(item, smallButtonSize, smallButtonSize);
         }
 
-        getChildren().addAll(toolbarUpper, toolbarLower);
+        getChildren().addAll(toolbarLower, toolbarUpper);
     }
 
 }
