@@ -96,8 +96,7 @@ public class Home extends Scene {
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "main.png"));
             stage.initStyle(StageStyle.DECORATED);
             stage.setOnCloseRequest(event -> {
-                if (LaunchGame.isGameRunning) event.consume();
-                else Platform.exit();
+                if (!LaunchGame.isGameRunning) Platform.exit();
             });
         }
         return stage;
