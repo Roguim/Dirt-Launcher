@@ -65,7 +65,7 @@ final class AccountList extends Stage {
         root.setMaxHeight(vBoxSize + 50);
         root.setBackground(Background.EMPTY);
         root.getChildren().addAll(title, scrollPane);
-        root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Accounts", "Global.css"));
+        root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "Accounts", "Global.css"));
 
         final Scene scene = new Scene(root, 292, vBoxSize + 50);
         scene.setFill(Paint.valueOf("transparent"));

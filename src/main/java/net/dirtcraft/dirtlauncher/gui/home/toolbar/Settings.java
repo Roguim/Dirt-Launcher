@@ -120,7 +120,7 @@ public final class Settings extends Scene {
         root.setAlignment(Pos.TOP_CENTER);
         root.setOrientation(Orientation.VERTICAL);
         root.setId(Constants.CSS_ID_ROOT);
-        root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Settings", "Global.css"));
+        root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "Settings", "Global.css"));
         root.getChildren().addAll(title, ram, javaArgs, gamesDir);
     }
 

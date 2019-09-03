@@ -83,7 +83,7 @@ public class Home extends Scene {
         AnchorPane.setRightAnchor(toolbar, 0d);
 
         root = (AnchorPane) getRoot();
-        root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "Home", "Global.css"));
+        root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "Home", "Global.css"));
         root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
     }
 
@@ -110,7 +110,7 @@ public class Home extends Scene {
         AnchorPane.setBottomAnchor(webView, 0d);
         webView.setFocusTraversable(false);
         WebEngine webEngine = webView.getEngine();
-        webEngine.setUserStyleSheetLocation(MiscUtils.getResourcePath(Constants.JAR_CSS_HTML, "webEngine.css"));
+        webEngine.setUserStyleSheetLocation(MiscUtils.getCssPath(Constants.JAR_CSS_HTML, "webEngine.css"));
         webEngine.load("https://dirtcraft.net/launcher/");
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (!(newValue == Worker.State.SUCCEEDED)) return;

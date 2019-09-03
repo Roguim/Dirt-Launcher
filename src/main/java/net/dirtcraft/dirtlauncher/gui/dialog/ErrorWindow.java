@@ -65,7 +65,7 @@ public final class ErrorWindow extends Stage {
         AnchorPane.setLeftAnchor(title, 000d);
         AnchorPane.setRightAnchor(title, 000d);
         root.setBackground(Background.EMPTY);
-        root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "ErrorWindow", "Global.css"));
+        root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "ErrorWindow", "Global.css"));
         root.getChildren().addAll(title, contentOuter, contentInner);
 
         textFlow.setMinHeight(contentInner.getHeight());

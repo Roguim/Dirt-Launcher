@@ -68,7 +68,7 @@ final class About extends Stage {
         AnchorPane.setLeftAnchor(title, 000d);
         AnchorPane.setRightAnchor(title, 000d);
         root.setBackground(Background.EMPTY);
-        root.getStylesheets().add(MiscUtils.getResourcePath(Constants.JAR_CSS_FXML, "About", "Global.css"));
+        root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "About", "Global.css"));
         root.getChildren().addAll(title, contentOuter, contentInner);
 
         final Scene scene = new Scene(root, 362, 500);

@@ -36,7 +36,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         options = Arrays.asList(args);
         x = System.currentTimeMillis();
-        if (options.contains("-installed") || options.contains("-portable"))// If we are using a snap install, use the snap data folder.
+        if (options.contains("-installed") || options.contains("-portable"))
             try {
                 launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
             } catch (Exception e){ throw new Error(e); }

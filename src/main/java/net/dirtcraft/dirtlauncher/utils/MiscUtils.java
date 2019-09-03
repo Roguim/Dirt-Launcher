@@ -22,8 +22,16 @@ public class MiscUtils {
         return new Image(getResourceStream(directory));
     }
 
-    public static String getResourcePath(String... directory){
-        return getResourceURL(directory).toString();
+    public static String getCssPath(String... directory){
+        String path = "/" + String.join("/" , directory);
+        try{
+            System.out.println(path);
+            return MiscUtils.class.getResource(path).toString();
+        } catch (Exception e){
+            path = path.replaceAll("\\.css$", ".bss");
+            System.out.println(path);
+            return MiscUtils.class.getResource(path).toString();
+        }
     }
 
     public static InputStream getResourceStream(String... directory){
