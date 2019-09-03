@@ -49,7 +49,7 @@ public class LaunchGame {
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
-        if (false && SystemUtils.IS_OS_UNIX) {
+        if (SystemUtils.IS_OS_UNIX) {
             args.add("/bin/sh");
             args.add("-c");
         }
@@ -181,6 +181,8 @@ public class LaunchGame {
                 SwingUtilities.invokeLater(() -> SystemTray.getIcon().ifPresent(icon -> SystemTray.tray.remove(icon)));
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                LaunchGame.isGameRunning = false;
             }
         });
         gameThread.start();

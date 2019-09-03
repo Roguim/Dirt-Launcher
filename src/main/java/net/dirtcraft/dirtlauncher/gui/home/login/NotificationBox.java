@@ -8,7 +8,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import net.dirtcraft.dirtlauncher.game.objects.LoginError;
 import net.dirtcraft.dirtlauncher.gui.components.ShakeTransition;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 
 public final class NotificationBox extends TextFlow{
     private boolean initialized = false;
@@ -23,7 +22,7 @@ public final class NotificationBox extends TextFlow{
         uiCallback = null;
     }
 
-    public void displayError(LoginError result, Pack modPack) {
+    public void displayError(LoginError result) {
         if (!initialized) Initialize();
         if (uiCallback != null) uiCallback.interrupt();
 
@@ -37,7 +36,7 @@ public final class NotificationBox extends TextFlow{
         ShakeTransition animation = new ShakeTransition(this);
         animation.playFromStart();
 
-        if (result == null) text.setText("Your " + modPack.getName() + " Installation Is Corrupted!");
+        if (result == null) text.setText("There was an unexpected error!");
         else switch (result) {
             case USER_MIGRATED:
                 text.setText("Please use your E-Mail to log in!");

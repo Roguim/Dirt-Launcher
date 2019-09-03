@@ -484,7 +484,7 @@ public class DownloadManager {
                 new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
                 modpackZip.delete();
                 break;
-            case CURSE:
+                case CURSE:
                 // Download modpack
                 FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
                 setProgressText("Extracting " + pack.getName() + " Files");

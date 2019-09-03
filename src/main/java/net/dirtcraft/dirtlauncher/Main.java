@@ -112,6 +112,9 @@ public class Main extends Application {
     }
 
     public static Home getHome() {
+        if (home == null) {
+            home = new Home();
+        }
         return home;
     }
 

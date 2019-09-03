@@ -68,7 +68,7 @@ public final class ActionButton extends Button {
                     launchPack(session.get(), pack);
                     return;
                 default:
-                    Main.getHome().getNotificationBox().displayError(null, pack);
+                    Main.getHome().getNotificationBox().displayError(null);
                     return;
             }
     }
