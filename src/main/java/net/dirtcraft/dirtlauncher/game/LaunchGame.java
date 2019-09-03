@@ -49,10 +49,12 @@ public class LaunchGame {
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
+        /*
         if (SystemUtils.IS_OS_UNIX) {
             args.add("/bin/sh");
             args.add("-c");
         }
+         */
         args.add(settings.getDefaultRuntime());
 
         // RAM
