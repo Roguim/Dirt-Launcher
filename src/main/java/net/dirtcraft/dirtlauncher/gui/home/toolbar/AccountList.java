@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.gui.home.toolbar;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -94,6 +95,7 @@ final class AccountList extends Stage {
         private double lastDragY;
         AccountButton(Account session){
             this.session = session;
+            setCursor(Cursor.HAND);
             setText(session.getAlias());
             setOnMouseDragged(event->{
                 if (event.isPrimaryButtonDown()) {
@@ -115,6 +117,7 @@ final class AccountList extends Stage {
         private double lastDragY;
 
         AddAccountButton() {
+            setCursor(Cursor.HAND);
             setText("Add New Account");
             setOnMouseDragged(event -> {
                 if (event.isPrimaryButtonDown()) {
