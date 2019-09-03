@@ -8,6 +8,7 @@ import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
+import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
@@ -70,6 +71,7 @@ public class Main extends Application {
             settingsMenu = new Settings(config);
             System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
             try {
+                if (options.contains("-update") && Update.hasUpdate()) new UpdateHelper();
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {
                 e.printStackTrace();

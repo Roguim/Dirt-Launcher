@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.awt.*;
@@ -40,17 +41,8 @@ public final class Update {
     @FXML
     private void onClick(MouseEvent event) {
         Object source = event.getSource();
-        if (source == download) {
-            try {
-                Desktop.getDesktop().browse(new URI("https://dirtcraft.net/launcher/download"));
-                Platform.exit();
-            } catch (URISyntaxException | IOException exception) {
-                stage.close();
-                exception.printStackTrace();
-            }
-        } else if (source == cancel) {
-            stage.close();
-        }
+        if (source == download) new UpdateHelper();
+        else if (source == cancel) stage.close();
     }
 
     public static Update getInstance() {
