@@ -33,15 +33,15 @@ public final class LoginBar extends Pane {
 
     public LoginBar() {
         actionButton = new ActionButton();
-        activePackCell = null;//ripblock
+        activePackCell = null;
         passField = new PasswordField();
         usernameField = new TextField();
         loginContainer = new GridPane();
         logout = new LogoutButton(this);
 
         //Force the size - otherwise it changes and that's bad..
-        MiscUtils.setAbsoluteSize(this ,264.0 ,  74 );
-        MiscUtils.setAbsoluteSize(loginContainer,250.0, 59);
+        MiscUtils.setAbsoluteSize(this, 264.0, 74 );
+        MiscUtils.setAbsoluteSize(loginContainer, 250.0, 59);
 
         setId(Constants.CSS_ID_LOGIN_BAR);
         passField.setId("PasswordField");
@@ -52,17 +52,17 @@ public final class LoginBar extends Pane {
         ColumnConstraints y1 = new ColumnConstraints();
         ColumnConstraints y2 = new ColumnConstraints();
         x1.setValignment(VPos.BOTTOM);
-        x2.setValignment ( VPos.TOP );
-        y2.setHalignment( HPos.LEFT );
-        y1.setHalignment(HPos.RIGHT );
+        x2.setValignment(VPos.TOP);
+        y2.setHalignment(HPos.LEFT);
+        y1.setHalignment(HPos.RIGHT);
         x1.setMinHeight(29);
         x1.setMaxHeight(29);        // This is how u make a grid pane without  \\
         x2.setMinHeight(29);        // scene builder. It's hard work but hey,  \\
         x2.setMaxHeight(29);        // It's an honest living. Also this space  \\
         y1.setMinWidth(190);        // was perfect for a comment block because \\
         y1.setMaxWidth(190);        // it just is screaming for someone to put \\
-        y2.setMinWidth( 60);        // something in this exact box shaped area \\
-        y2.setMaxWidth( 60);
+        y2.setMinWidth(60);        // something in this exact box shaped area \\
+        y2.setMaxWidth(60);
         loginContainer.getRowConstraints().add(0, x1);
         loginContainer.getRowConstraints().add(1, x2);
         loginContainer.getColumnConstraints().add(0, y1);
@@ -77,10 +77,10 @@ public final class LoginBar extends Pane {
         actionButton.setText("Play");
         getChildren().setAll(loginContainer);
         usernameField.setOnKeyTyped(this::setKeyTypedEvent);
-        passField.setOnKeyPressed(this::setKeyTypedEvent)  ;
+        passField.setOnKeyPressed(this::setKeyTypedEvent);
 
         SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
-        usernameField.focusedProperty().addListener((observable,  oldValue,  newValue) -> {
+        usernameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue && firstTime.get()){
                 this.requestFocus();
                 firstTime.setValue(false);
@@ -115,11 +115,11 @@ public final class LoginBar extends Pane {
             this.actionButton.setType(session.get());
             if (activePackCell != null) actionButton.setDisable(false);
         } else {
-            MiscUtils.setAbsoluteSize(actionButton , 58 ,  59 );
+            MiscUtils.setAbsoluteSize(actionButton, 58, 59);
             actionButton.setTranslateX(0);
             loginContainer.add(usernameField, 0, 0, 1, 1);
-            loginContainer.add(passField , 0,  1,  1,  1);
-            loginContainer.add(new LoginButton(this), 1, 0,  1, 2);
+            loginContainer.add(passField, 0, 1, 1, 1);
+            loginContainer.add(new LoginButton(this), 1, 0, 1, 2);
             actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
             this.actionButton.setType(null);
             actionButton.setDisable(true);
@@ -139,8 +139,7 @@ public final class LoginBar extends Pane {
     }
 
     public Optional<Pack> getActivePackCell() {
-        if (activePackCell!=null) return Optional.of(activePackCell);
-        else return Optional.empty();
+        return Optional.ofNullable(activePackCell);
     }
 
     public void setActivePackCell(Pack pack) {
@@ -170,6 +169,7 @@ public final class LoginBar extends Pane {
         } catch (UserMigratedException e) {
             Main.getHome().getNotificationBox().displayError(LoginError.USER_MIGRATED);
         } catch (Exception e) {
+            Main.getHome().getNotificationBox().displayError(null);
             System.out.println(e.getMessage());
         }
         setInputs();
