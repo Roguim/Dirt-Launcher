@@ -18,7 +18,6 @@ import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -506,8 +505,8 @@ public class DownloadManager {
 
                 // Build checksum registries
                 setProgressText("Comparing Mod Manifests");
-                List<Pair<Integer, Integer>> modsToDelete = new ArrayList<>();
-                List<Pair<Integer, Integer>> modsToAdd = new ArrayList<>();
+                List<Map.Entry<Integer, Integer>> modsToDelete = new ArrayList<>();
+                List<Map.Entry<Integer, Integer>> modsToAdd = new ArrayList<>();
                 for(JsonElement modElement : oldManifest.getAsJsonArray("files")) {
                     modsToDelete.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
                 }
@@ -516,9 +515,9 @@ public class DownloadManager {
                 }
 
                 // If any mods are the same in both lists, remove them. No need to repeat work
-                ListIterator<Pair<Integer, Integer>> iterator = modsToDelete.listIterator();
+                ListIterator<Map.Entry<Integer, Integer>> iterator = modsToDelete.listIterator();
                 while(iterator.hasNext()) {
-                    Pair<Integer, Integer> iteratorNext = iterator.next();
+                    Map.Entry<Integer, Integer> iteratorNext = iterator.next();
                     if(modsToAdd.contains(iteratorNext)) {
                         modsToAdd.remove(iteratorNext);
                         iterator.remove();
@@ -532,7 +531,7 @@ public class DownloadManager {
                 int totalMods = modsToDelete.size() + modsToAdd.size();
 
                 // Delete old mods
-                for(Pair<Integer, Integer> oldMod : modsToDelete) {
+                for(Map.Entry<Integer, Integer> oldMod : modsToDelete) {
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
                     new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()).delete();
                     completedMods++;
@@ -540,7 +539,7 @@ public class DownloadManager {
                 }
 
                 // Download new mods
-                for(Pair<Integer, Integer> newMod : modsToAdd) {
+                for(Map.Entry<Integer, Integer> newMod : modsToAdd) {
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
                     FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()));
                     completedMods++;
