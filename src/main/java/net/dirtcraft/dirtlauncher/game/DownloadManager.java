@@ -484,7 +484,8 @@ public class DownloadManager {
                 new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
                 modpackZip.delete();
                 break;
-                case CURSE:
+
+            case CURSE:
                 // Download modpack
                 FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
                 setProgressText("Extracting " + pack.getName() + " Files");
@@ -517,8 +518,9 @@ public class DownloadManager {
                 // If any mods are the same in both lists, remove them. No need to repeat work
                 ListIterator<Pair<Integer, Integer>> iterator = modsToDelete.listIterator();
                 while(iterator.hasNext()) {
-                    if(modsToAdd.contains(iterator.next())) {
-                        modsToAdd.remove(iterator.next());
+                    Pair<Integer, Integer> iteratorNext = iterator.next();
+                    if(modsToAdd.contains(iteratorNext)) {
+                        modsToAdd.remove(iteratorNext);
                         iterator.remove();
                     }
                 }
@@ -538,7 +540,7 @@ public class DownloadManager {
                 }
 
                 // Download new mods
-                for(Pair<Integer, Integer> newMod : modsToDelete) {
+                for(Pair<Integer, Integer> newMod : modsToAdd) {
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
                     FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()));
                     completedMods++;
