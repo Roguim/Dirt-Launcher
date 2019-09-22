@@ -229,7 +229,7 @@ public class DownloadManager {
             JsonObject libraryDownloads = library.getAsJsonObject("downloads");
             // Download any standard libraries
             if(libraryDownloads.has("artifact")) {
-                new File(librariesFolder + File.separator + StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
+                new File(librariesFolder, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
                 String filePath = librariesFolder.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
                 FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
                 librariesLaunchCode += filePath;
@@ -243,7 +243,7 @@ public class DownloadManager {
                 if(SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
                 if(libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
                     JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
-                    File outputFile = new File(nativesFolder + File.separator + nativeJson.get("sha1").getAsString());
+                    File outputFile = new File(nativesFolder, nativeJson.get("sha1").getAsString());
                     FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
                     FileUtils.extractJar(outputFile.getPath(), nativesFolder.getPath());
                     outputFile.delete();
@@ -270,8 +270,9 @@ public class DownloadManager {
 
         // Write assets JSON manifest
         JsonObject assetsManifest = WebUtils.getJsonFromUrl(versionManifest.getAsJsonObject("assetIndex").get("url").getAsString());
-        new File(assetsFolder.getPath() + File.separator + "indexes").mkdirs();
-        FileUtils.writeJsonToFile(new File(assetsFolder.getPath() + File.separator + "indexes" + File.separator + versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
+        final File indexes = new File(assetsFolder, "indexes");
+        indexes.mkdirs();
+        FileUtils.writeJsonToFile(new File(indexes, versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
 
         // Download assets
         int completedAssets = 0;
@@ -279,9 +280,9 @@ public class DownloadManager {
         setProgressPercent(completedAssets, totalAssets);
         for(String assetKey : assetsManifest.getAsJsonObject("objects").keySet()) {
             String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
-            File specificAssetFolder = new File(assetsFolder.getPath() + File.separator + "objects" + File.separator + hash.substring(0, 2));
+            File specificAssetFolder = new File(new File(assetsFolder, "objects"), hash.substring(0, 2));
             specificAssetFolder.mkdirs();
-            FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(specificAssetFolder.getPath() + File.separator + hash));
+            FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(specificAssetFolder.getPath(), hash));
             completedAssets++;
             setProgressPercent(completedAssets, totalAssets);
         }
@@ -297,12 +298,12 @@ public class DownloadManager {
     public static void installForge(Pack pack, int completedSteps, int totalSteps) throws IOException {
         final Config settings = Main.getConfig();
         setProgressText("Downloading Forge Installer");
-        File forgeFolder = new File(settings.getForgeDirectory() + File.separator + pack.getForgeVersion());
+        File forgeFolder = new File(settings.getForgeDirectory(), pack.getForgeVersion());
         FileUtils.deleteDirectory(forgeFolder);
         forgeFolder.mkdirs();
 
         // Download Forge Installer
-        File forgeInstaller = new File(forgeFolder.getPath() + File.separator + "installer.jar");
+        File forgeInstaller = new File(forgeFolder, "installer.jar");
         // 1.7 did some strange stuff with forge file names
         if(pack.getGameVersion().equals("1.7.10")) FileUtils.copyURLToFile("https://files.minecraftforge.net/maven/net/minecraftforge/forge/" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-" + pack.getGameVersion() + "/forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-" + pack.getGameVersion() + "-installer.jar", forgeInstaller);
         else FileUtils.copyURLToFile("https://files.minecraftforge.net/maven/net/minecraftforge/forge/" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "/forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-installer.jar", forgeInstaller);
@@ -313,7 +314,7 @@ public class DownloadManager {
         JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder.getPath());
         forgeInstaller.delete();
         setProgressPercent(1, 2);
-        FileUtils.writeJsonToFile(new File(forgeFolder.getPath() + File.separator + pack.getForgeVersion() + ".json"), forgeVersionManifest);
+        FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
 
         // Download forge libraries
         setProgressText("Downloading Forge Libraries");
@@ -370,9 +371,9 @@ public class DownloadManager {
         setProgressText("Downloading ModPack Manifest");
 
         // These values will never change
-        final File modpackFolder = new File(settings.getInstancesDirectory() + File.separator + pack.getName().replaceAll("\\s", "-"));
-        final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
-        final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
+        final File modpackFolder = pack.getInstanceDirectory();
+        final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
+        final File tempDir = new File(modpackFolder.getPath(), "temp");
 
         // Delete directory if exists and make new ones
         FileUtils.deleteDirectory(modpackFolder);
@@ -408,9 +409,9 @@ public class DownloadManager {
                 tempDir.mkdirs();
                 new ZipFile(modpackZip).extractAll(tempDir.getPath());
                 modpackZip.delete();
-                FileUtils.copyDirectory(new File(tempDir.getPath() + File.separator + "overrides"), modpackFolder);
-                JsonObject modpackManifest = FileUtils.readJsonFromFile(new File(tempDir.getPath() + File.separator + "manifest.json"));
-                FileUtils.writeJsonToFile(new File(modpackFolder.getPath() + File.separator + "manifest.json"), modpackManifest);
+                FileUtils.copyDirectory(new File(tempDir.getPath(), "overrides"), modpackFolder);
+                JsonObject modpackManifest = FileUtils.readJsonFromFile(new File(tempDir, "manifest.json"));
+                FileUtils.writeJsonToFile(new File(modpackFolder, "manifest.json"), modpackManifest);
                 FileUtils.deleteDirectory(tempDir);
                 setProgressPercent(0, 0);
                 setTotalProgressPercent(completedSteps + 1, totalSteps);
@@ -419,13 +420,13 @@ public class DownloadManager {
                 setProgressText("Downloading Mods");
                 int completedMods = 0;
                 int totalMods = modpackManifest.getAsJsonArray("files").size();
-                File modsFolder = new File(modpackFolder.getPath() + File.separator + "mods");
+                File modsFolder = new File(modpackFolder.getPath(), "mods");
 
                 for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
 
                     JsonObject mod = modElement.getAsJsonObject();
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder.getPath() + File.separator + apiResponse.get("fileName").getAsString()));
+                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
                     completedMods++;
                     setProgressPercent(completedMods, totalMods);
                 }
@@ -448,9 +449,10 @@ public class DownloadManager {
         setProgressText("Downloading ModPack Manifest");
 
         // Get the modpack directory
-        final File modpackFolder = new File(settings.getInstancesDirectory() + File.separator + pack.getName().replace(" ", "-"));
-        final File modpackZip = new File(modpackFolder.getPath() + File.separator + "modpack.zip");
-        final File tempDir = new File(modpackFolder.getPath() + File.separator + "temp");
+        final File modpackFolder = pack.getInstanceDirectory();
+        final File modpackZip = new File(modpackFolder, "modpack.zip");
+        final File tempDir = new File(modpackFolder, "temp");
+        final File modsDir = new File(modpackFolder, "mods");
 
         switch(pack.getPackType()) {
             default:
@@ -459,12 +461,9 @@ public class DownloadManager {
                 return;
             case CUSTOM:
 
-                //Delete mods and configs directories if exists and make a new directory for the modpack if it does not exist
-                if (!modpackFolder.exists()) modpackFolder.mkdirs();
-                else {
-                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "mods"));
-                    FileUtils.deleteDirectory(new File(modpackFolder.getPath() + "config"));
-                }
+                FileUtils.deleteDirectory(modsDir);
+                FileUtils.deleteDirectory(new File(modpackFolder.getPath(), "config"));
+
 
                 setProgressText("Downloading " + pack.getName() + " Files");
 
@@ -493,10 +492,10 @@ public class DownloadManager {
                 new ZipFile(modpackZip).extractAll(tempDir.getPath());
                 modpackZip.delete();
                 setProgressPercent(1, 2);
-                FileUtils.copyDirectory(new File(tempDir.getPath() + File.separator + "overrides"), modpackFolder);
-                File oldManifestFile = new File(modpackFolder.getPath() + File.separator + "manifest.json");
+                FileUtils.copyDirectory(new File(tempDir, "overrides"), modpackFolder);
+                File oldManifestFile = new File(modpackFolder, "manifest.json");
                 JsonObject oldManifest = FileUtils.readJsonFromFile(oldManifestFile);
-                JsonObject newManifest = FileUtils.readJsonFromFile(new File(tempDir.getPath() + File.separator + "manifest.json"));
+                JsonObject newManifest = FileUtils.readJsonFromFile(new File(tempDir, "manifest.json"));
                 oldManifestFile.delete();
                 FileUtils.writeJsonToFile(oldManifestFile, newManifest);
                 FileUtils.deleteDirectory(tempDir);
@@ -533,7 +532,7 @@ public class DownloadManager {
                 // Delete old mods
                 for(Map.Entry<Integer, Integer> oldMod : modsToDelete) {
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
-                    new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()).delete();
+                    new File(new File(modpackFolder.getPath(), "mods"), apiResponse.get("fileName").getAsString()).delete();
                     completedMods++;
                     setProgressPercent(completedMods, totalMods);
                 }
@@ -541,7 +540,7 @@ public class DownloadManager {
                 // Download new mods
                 for(Map.Entry<Integer, Integer> newMod : modsToAdd) {
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
-                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modpackFolder.getPath() + File.separator + "mods" + File.separator + apiResponse.get("fileName").getAsString()));
+                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsDir, apiResponse.get("fileName").getAsString()));
                     completedMods++;
                     setProgressPercent(completedMods, totalMods);
                 }
