@@ -154,8 +154,8 @@ public final class LoginBar extends Pane {
     }
 
     public void logOut(){
-        setInputs();
         Main.getAccounts().clearSelectedAccount();
+        setInputs();
     }
 
     public void login(){
