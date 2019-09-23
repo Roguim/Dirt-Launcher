@@ -120,6 +120,7 @@ public final class Accounts {
 
     public void setSelectedAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
         selectedAccount = new Account(credentials);
+        altAccounts.removeIf(account -> account.getId().equals(selectedAccount.getId()));
         saveData();
     }
 
