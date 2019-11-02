@@ -7,22 +7,22 @@
 
 .context-menu {
     -fx-content-display: right;
-    -fx-background-color: #404040;
+    -fx-background-color: #FFFAFA;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
     -fx-padding: 4 4 4 4;
-    -fx-opacity: 0.8;
+    -fx-opacity: 0.9;
 }
 
 .menu-item .label {
-    -fx-font-size: 12px;
+    -fx-font-size: 18px;
     -fx-padding: 6 6 6 6;
-    -fx-text-fill: #DCDCDC;
+    -fx-text-fill: #696969;
 }
 
 .menu-item {
     -fx-padding: 0;
-    -fx-pref-height: 20px;
+    -fx-pref-height: 30px;
 }
 
 .menu-item:focused {
@@ -34,7 +34,7 @@
 }
 
 .menu-item:hover .label {
-    -fx-text-fill: #404040;
+    -fx-text-fill: #DC143C;
 }
 
 .Title {
