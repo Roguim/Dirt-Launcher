@@ -103,6 +103,7 @@ public final class LoginBar extends Pane {
     public void setInputs(){
         Optional<Account> session = Main.getAccounts().getSelectedAccount();
         loginContainer.getChildren().clear();
+        actionButton.refresh();
         if (session.isPresent()){
             final int barSize = 252;
             final int logoutSize = 35;

@@ -53,6 +53,10 @@ public final class ActionButton extends Button {
         else setText(type.toString() + " As " + account.get().getAlias());
     }
 
+    public void refresh(){
+        type = Types.fromPack(pack);
+    }
+
     @Override
     public void fire() {
         Optional<Account> session = Main.getAccounts().getSelectedAccount();
@@ -91,6 +95,14 @@ public final class ActionButton extends Button {
                 case INITIAL:
                     return "Please Select A Pack";
             }
+        }
+
+        public static Types fromPack(Pack pack){
+            if (pack == null) return INITIAL;
+            if (!pack.isInstalled()) return INSTALL;
+            if (pack.isOutdated()) return UPDATE;
+            if (pack.isInstalled()) return PLAY;
+            return INSTALL;
         }
     }
 

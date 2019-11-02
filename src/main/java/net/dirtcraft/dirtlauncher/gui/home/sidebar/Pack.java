@@ -17,6 +17,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.objects.Listing;
 import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
+import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -156,6 +157,7 @@ public final class Pack extends Button {
                 loginBar.setActivePackCell(this);
                 loginBar.getActionButton().installPack(this);
                 oldPack.ifPresent(Pack::fire);
+                Main.getHome().getLoginBar().setInputs();
             });
 
             uninstall.setOnAction(e->{
@@ -171,6 +173,7 @@ public final class Pack extends Button {
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
+                Main.getHome().getLoginBar().setInputs();
             });
 
             openFolder.setOnAction(e->{
