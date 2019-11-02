@@ -158,6 +158,7 @@ public final class Pack extends Button {
                 loginBar.getActionButton().installPack(this);
                 oldPack.ifPresent(Pack::fire);
                 Main.getHome().getLoginBar().setInputs();
+                initContextMenu();
             });
 
             uninstall.setOnAction(e->{
@@ -174,6 +175,7 @@ public final class Pack extends Button {
                     exception.printStackTrace();
                 }
                 Main.getHome().getLoginBar().setInputs();
+                initContextMenu();
             });
 
             openFolder.setOnAction(e->{
