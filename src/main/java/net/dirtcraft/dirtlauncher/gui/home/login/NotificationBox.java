@@ -36,18 +36,7 @@ public final class NotificationBox extends TextFlow{
         ShakeTransition animation = new ShakeTransition(this);
         animation.playFromStart();
 
-        if (result == null) text.setText("There was an unexpected error!");
-        else switch (result) {
-            case USER_MIGRATED:
-                text.setText("Please use your E-Mail to log in!");
-                break;
-            case ILLEGAL_ARGUMENT:
-                text.setText("Your username or password contains invalid arguments!");
-                break;
-            case INVALID_CREDENTIALS:
-                text.setText("Your E-Mail or password is invalid!");
-                break;
-        }
+        text.setText(result.toString());
         if (getTextAlignment() != TextAlignment.CENTER) setTextAlignment(TextAlignment.CENTER);
         if (getOpacity() != 0) setOpacity(0);
         getChildren().setAll(text);
