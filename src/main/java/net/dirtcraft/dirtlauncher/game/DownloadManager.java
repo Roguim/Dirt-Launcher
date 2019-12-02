@@ -425,6 +425,7 @@ public class DownloadManager {
                 for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
 
                     JsonObject mod = modElement.getAsJsonObject();
+                    if(mod.has("required") && mod.get("required").getAsBoolean() == false) continue;
                     JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
                     FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
                     completedMods++;
@@ -507,9 +508,11 @@ public class DownloadManager {
                 List<Map.Entry<Integer, Integer>> modsToDelete = new ArrayList<>();
                 List<Map.Entry<Integer, Integer>> modsToAdd = new ArrayList<>();
                 for(JsonElement modElement : oldManifest.getAsJsonArray("files")) {
+                    if(modElement.getAsJsonObject().has("required") && modElement.getAsJsonObject().get("required").getAsBoolean() == false) continue;
                     modsToDelete.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
                 }
                 for(JsonElement modElement : newManifest.getAsJsonArray("files")) {
+                    if(modElement.getAsJsonObject().has("required") && modElement.getAsJsonObject().get("required").getAsBoolean() == false) continue;
                     modsToAdd.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
                 }
 
