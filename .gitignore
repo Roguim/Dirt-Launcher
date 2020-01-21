@@ -1,3 +1,6 @@
+# Included libs
+!libraries/*.jar
+
 # Compiled class file
 *.class
 
