@@ -3,10 +3,7 @@ package net.dirtcraft.dirtlauncher.game.objects;
 import net.dirtcraft.dirtlauncher.Main;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,17 +12,19 @@ import java.util.List;
 public class ServerList {
     private final File serverDat;
     private final List<Server> servers;
+    private final List<String> ips;
 
     public static ServerList builder(String pack){
         return new ServerList(pack);
     }
 
     private ServerList(String packName){
+        ips = new ArrayList<>();
         servers = new ArrayList<>();
         this.serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
     }
     //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
-    private List<Byte> getAsByteArray(){
+    private List<Byte> buildServerList(){
         final List<Byte> compound = new ArrayList<>();
         //Server lists are wrapped in an empty compound tag.
         //As usual, the second two bytes are the size of the
@@ -57,28 +56,70 @@ public class ServerList {
         return compound;
     }
 
-    public ServerList addServer(String ip, String name, String icon){
-        servers.add(new Server(ip, name, icon==null?DIRTCRAFT_ICON:icon));
+    public ServerList addServer(String ip, String name){
+        if (ips.contains(ip.toLowerCase())) return this;
+        ips.add(ip.toLowerCase());
+        servers.add(new Server(ip, name, DIRTCRAFT_ICON));
         return this;
     }
 
-    public ServerList addServer(String ip, String name){
-        servers.add(new Server(ip, name, DIRTCRAFT_ICON));
+    public ServerList addServer(Listing listing){
+        if (ips.contains(listing.getIp().toLowerCase())) return this;
+        ips.add(listing.getIp().toLowerCase());
+        servers.add(new Server(listing.getIp(), listing.getName(), listing.getIcon().isPresent()? listing.getIcon().get() : DIRTCRAFT_ICON));
         return this;
     }
 
     public void build() {
         try (FileOutputStream fos = new FileOutputStream(serverDat);
              DataOutputStream dos = new DataOutputStream(fos)){
-            System.out.println(serverDat.createNewFile());
-            List<Byte> byteList = getAsByteArray();
+            serverDat.createNewFile();
+            List<Byte> byteList = buildServerList();
             Byte[] bigBytes = byteList.toArray(new Byte[0]);
             byte[] smlBytes = ArrayUtils.toPrimitive(bigBytes);
             dos.write(smlBytes);
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static List<Listing> getCurrent(String packName){
+        File serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+        List<Listing> serverList = new ArrayList<>();
+        try(
+                FileInputStream fis = new FileInputStream(serverDat);
+                DataInputStream dis = new DataInputStream(fis)
+                ){
+            dis.skip(16);
+            short servers = dis.readShort();
+            for (short i = 0; i < servers; i++) {
+                dis.skip(5); //We know the key is a string (8) of 2 bytes (0, 2) with the value "IP" (69,70)
+                short ipLength = dis.readShort();
+                String ip = getString(dis, ipLength);
+                dis.skip(7); //Again, String, key 4 char, "NAME"...
+                short nameLength = dis.readShort();
+                String name = getString(dis, nameLength);
+                if (dis.readByte() == 8) {
+                    dis.skip(6); //String, key (4), "ICON"
+                    short iconLength = dis.readShort();
+                    String icon = getString(dis, iconLength);
+                    serverList.add(new Listing(name, ip, icon));
+                    dis.skip(1); //skip the end char.
+                } else {
+                    serverList.add(new Listing(name, ip));
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return serverList;
+    }
+
+    private static String getString(DataInputStream dis, int len) throws IOException{
+        byte[] string = new byte[len];
+        for (short i = 0; i < len; i++) string[i] = dis.readByte();
+        return new String(string);
     }
 
     private final class Server{
