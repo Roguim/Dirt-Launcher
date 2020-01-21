@@ -26,6 +26,7 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.*;
 
@@ -94,15 +95,16 @@ public final class Pack extends Button {
                 "Direct Connect IP: " + (!isPixelmon() ? (code + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
         ));
 
-        final Image image = new Image(MiscUtils.getResourceStream(
-                Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
-                128, 128, false, true);
+        final InputStream imageSource = MiscUtils.getResourceStream(Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png");
+        if (imageSource != null) {
+            final Image image = new Image(imageSource, 128, 128, false, true);
 
-        final ImageView imageView = new ImageView(image);
-        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+            final ImageView imageView = new ImageView(image);
+            imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
-        tooltip.setGraphic(imageView);
-        tooltip.setGraphicTextGap(50);
+            tooltip.setGraphic(imageView);
+            tooltip.setGraphicTextGap(50);
+        }
 
         setTooltip(tooltip);
         setOnMouseDragEntered(e-> lastDragY =  e.getY());

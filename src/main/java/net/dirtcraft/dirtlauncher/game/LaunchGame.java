@@ -39,8 +39,10 @@ public class LaunchGame {
                     serverList.addServer(listing.getIp(), listing.getName());
                 }
             });
-        } else
+        } else {
             serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
+        }
+        serverList.addServer(("DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §dHub");
         serverList.build();
     }
 
