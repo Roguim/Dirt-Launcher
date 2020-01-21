@@ -20,6 +20,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class Update {
 
@@ -76,7 +81,18 @@ public final class Update {
     }
 
     public static boolean hasUpdate() throws IOException {
-        return !WebUtils.getLatestVersion().equalsIgnoreCase(Constants.LAUNCHER_VERSION);
+        List<Integer> webVersion = Arrays.stream(WebUtils.getLatestVersion().split("\\."))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        List<Integer> localVersion = Arrays.stream(Constants.LAUNCHER_VERSION.split("\\."))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        if (localVersion.size() != webVersion.size()) return true;
+        for (int i = 0; i < webVersion.size(); i++) if (webVersion.get(i) > localVersion.get(i)) return true;
+
+        return false;
     }
 
 }
