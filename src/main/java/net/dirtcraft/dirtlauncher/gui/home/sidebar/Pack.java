@@ -17,7 +17,6 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.objects.Listing;
 import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -94,9 +93,15 @@ public final class Pack extends Button {
                 "Direct Connect IP: " + (!isPixelmon() ? (code + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
         ));
 
-        final Image image = new Image(MiscUtils.getResourceStream(
-                Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
-                128, 128, false, true);
+        Image image;
+        try {
+            image = new Image(MiscUtils.getResourceStream(
+                    Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
+                    128, 128, false, true);
+        } catch (Exception exception) {
+            System.out.println("Could not find image @ \"" + getForgeVersion().toLowerCase() + ".png\", requesting from the web...");
+            image = new Image(getLogo(), 128, 128, false, true);
+        }
 
         final ImageView imageView = new ImageView(image);
         imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
