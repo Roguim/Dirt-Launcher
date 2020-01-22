@@ -25,6 +25,7 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.*;
 
@@ -103,11 +104,13 @@ public final class Pack extends Button {
             image = new Image(getLogo(), 128, 128, false, true);
         }
 
-        final ImageView imageView = new ImageView(image);
-        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+        if (image != null) {
+            final ImageView imageView = new ImageView(image);
+            imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
-        tooltip.setGraphic(imageView);
-        tooltip.setGraphicTextGap(50);
+            tooltip.setGraphic(imageView);
+            tooltip.setGraphicTextGap(50);
+        }
 
         setTooltip(tooltip);
         setOnMouseDragEntered(e-> lastDragY =  e.getY());

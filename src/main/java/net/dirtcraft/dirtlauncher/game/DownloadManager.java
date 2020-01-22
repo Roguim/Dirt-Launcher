@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.game;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.therandomlabs.utils.io.NetUtils;
@@ -23,8 +24,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DownloadManager {
+
+    public static final int MAX_DOWNLOAD_ATTEMPTS = 5;
+    public static final int MAX_DOWNLOAD_THREADS = 16;
 
     public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods, boolean isUpdate) throws IOException  {
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
@@ -418,19 +427,9 @@ public class DownloadManager {
 
                 // Download Mods
                 setProgressText("Downloading Mods");
-                int completedMods = 0;
-                int totalMods = modpackManifest.getAsJsonArray("files").size();
                 File modsFolder = new File(modpackFolder.getPath(), "mods");
-
-                for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
-
-                    JsonObject mod = modElement.getAsJsonObject();
-                    if(mod.has("required") && mod.get("required").getAsBoolean() == false) continue;
-                    JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
-                    completedMods++;
-                    setProgressPercent(completedMods, totalMods);
-                }
+                boolean success = downloadMods(modpackManifest, modsFolder);
+                if (!success) throw new IOException("A mod has failed to download!");
 
                 break;
         }
@@ -445,7 +444,47 @@ public class DownloadManager {
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
     }
 
-    public static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
+    private static boolean downloadMods(JsonObject modpackManifest, File modsFolder) {
+        final AtomicInteger completedMods = new AtomicInteger(0);
+        final JsonArray mods = modpackManifest.getAsJsonArray("files");
+
+        final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
+        final List<Future<Boolean>> futures = new ArrayList<>();
+
+        for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
+            Future<Boolean> future = downloadManager.submit(()->downloadMod(modElement, modsFolder, completedMods, mods.size(), 0));
+            futures.add(future);
+        }
+        return futures.stream().noneMatch(DownloadManager::hasFailed);
+    }
+
+    private static boolean hasFailed(Future<Boolean> future){
+        try {
+            return !future.get();
+        } catch (ExecutionException | InterruptedException e){
+            e.printStackTrace();
+            return true;
+        }
+
+    }
+
+    private static boolean downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
+        try {
+            JsonObject mod = modElement.getAsJsonObject();
+            if (mod.has("required") && !mod.get("required").getAsBoolean()) return true;
+            JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
+            FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
+            setProgressPercent(completedMods.incrementAndGet(), maxSz);
+            return true;
+        } catch (IOException e){
+            e.printStackTrace();
+            if (attempts < MAX_DOWNLOAD_ATTEMPTS) return downloadMod(modElement, modsFolder, completedMods, maxSz, attempts+1);
+            else return false;
+        }
+
+    }
+
+    private static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
         final Config settings = Main.getConfig();
         setProgressText("Downloading ModPack Manifest");
 

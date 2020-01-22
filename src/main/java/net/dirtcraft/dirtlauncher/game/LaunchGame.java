@@ -26,21 +26,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LaunchGame {
 
     public static boolean isGameRunning = false;
 
     public static void loadServerList(Pack pack) {
+        List<Listing> servers = ServerList.getCurrent(pack.getName());
         ServerList serverList = ServerList.builder(pack.getName());
-        if (pack.isPixelmon()) {
-            pack.getListings().ifPresent(listings -> {
-                for (Listing listing : listings) {
-                    serverList.addServer(listing.getIp(), listing.getName());
-                }
-            });
-        } else
-            serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
+        pack.getListings().ifPresent(listings -> {
+            for (Listing listing : listings) {
+                serverList.addServer(listing.getIp(), listing.getName());
+            }
+        });
+        if (!pack.isPixelmon()) serverList.addServer((pack.getCode() + ".DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §d" + pack.getName());
+        serverList.addServer(("DIRTCRAFT.GG").toUpperCase(), "§c§lDirtCraft §8- §dHub");
+        servers.forEach(serverList::addServer);
         serverList.build();
     }
 
