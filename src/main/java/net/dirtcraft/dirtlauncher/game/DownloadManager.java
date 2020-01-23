@@ -141,7 +141,6 @@ public class DownloadManager {
 
     public static void installMinecraft(ExecutorService downloadManager, JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         final List<Future<Optional<IOException>>> futures = new ArrayList<>();
-
         final Config settings = Main.getConfig();
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Main.getConfig().getVersionsDirectory(), versionManifest.get("id").getAsString());
@@ -173,6 +172,8 @@ public class DownloadManager {
             futures.add(future);
         }
 
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+
         // Populate Versions Manifest
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
@@ -180,7 +181,6 @@ public class DownloadManager {
         JsonObject versionsManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory()));
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getVersionsDirectory()).getPath()), versionsManifest);
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     private static Optional<Boolean> isUserOs(String os){
@@ -228,7 +228,8 @@ public class DownloadManager {
             String filePath = libDir.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
             FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
             synchronized (launchPaths) {
-                launchPaths.append(filePath).append(";");
+                launchPaths.append(filePath);
+                launchPaths.append(";");
             }
         }
         // Download any natives
@@ -272,13 +273,14 @@ public class DownloadManager {
             futures.add(future);
         }
 
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+
         // Populate Assets Manifest
         JsonObject assetsVersionJsonObject = new JsonObject();
         assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
         JsonObject assetsFolderManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getAssetsDirectory()));
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getAssetsDirectory()).getPath()), assetsFolderManifest);
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     public static Optional<IOException> downloadAsset(JsonObject assetsManifest, String assetKey, File assetsFolder, AtomicInteger completedAssets, int totalAssets, int attempts){
@@ -330,13 +332,14 @@ public class DownloadManager {
             futures.add(future);
         }
 
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+
         JsonObject forgeManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory()));
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", pack.getForgeVersion());
         versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode.toString(), ";"));
         forgeManifest.getAsJsonArray("forgeVersions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getForgeDirectory()).getPath()), forgeManifest);
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     public static Optional<IOException> getForgeLibrary(JsonElement libraryElement, StringBuffer librariesLaunchCode, File forgeFolder, AtomicInteger completedLibraries, int totalLibraries, int attempts){
@@ -445,6 +448,8 @@ public class DownloadManager {
                 break;
         }
 
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+
         JsonObject instanceManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getInstancesDirectory()));
         JsonObject packJson = new JsonObject();
         packJson.addProperty("name", pack.getName());
@@ -453,7 +458,6 @@ public class DownloadManager {
         packJson.addProperty("forgeVersion", pack.getForgeVersion());
         instanceManifest.getAsJsonArray("packs").add(packJson);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     private static Optional<IOException> downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
@@ -575,6 +579,7 @@ public class DownloadManager {
                     future = downloadManager.submit(()->updateMod(newMod, modpackFolder, completedMods, totalMods, 0));
                     futures.add(future);
                 }
+                if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
                 break;
         }
         // Update instance manifest
@@ -601,7 +606,6 @@ public class DownloadManager {
         }
         instanceManifest.getAsJsonArray("packs").add(newPackObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
         pack.updateInstallStatus();
     }
 
