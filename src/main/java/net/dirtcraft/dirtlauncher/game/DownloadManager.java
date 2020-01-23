@@ -35,14 +35,14 @@ public class DownloadManager {
     public static final int MAX_DOWNLOAD_ATTEMPTS = 5;
     public static final int MAX_DOWNLOAD_THREADS = 16;
 
-    public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods, boolean isUpdate) throws IOException  {
-        JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
+    public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods, boolean updatePack) throws IOException  {
+        final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
+        final JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         boolean installMinecraft = true;
         boolean installAssets = true;
         boolean installForge = true;
         boolean installPack = true;
-        boolean updatePack = isUpdate;
         final Config settings = Main.getConfig();
 
         for(JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
@@ -54,7 +54,7 @@ public class DownloadManager {
         for(JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if(jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion())) installForge = false;
         }
-        if(isUpdate) {
+        if(updatePack) {
             installPack = false;
         } else {
             for(JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getInstancesDirectory())).getAsJsonArray("packs")) {
@@ -62,26 +62,13 @@ public class DownloadManager {
             }
         }
 
-        int packStageSteps = 0;
-        if(isUpdate) {
-            switch(pack.getPackType()) {
-                case CURSE:
-                    packStageSteps = 4;
-                    break;
-                case CUSTOM:
-                    packStageSteps = 1;
-                    break;
-            }
-        } else {
-            switch(pack.getPackType()) {
-                case CURSE:
-                    packStageSteps = 2;
-                    break;
-                case CUSTOM:
-                    packStageSteps = 1;
-                    break;
-            }
+        final int packStageSteps;
+        switch (pack.getPackType()){
+            case CURSE: packStageSteps = updatePack? 4 : 2; break;
+            case CUSTOM:
+            default: packStageSteps = 1; break;
         }
+
         int totalSteps = optionalMods.size();
         int completedSteps = 0;
         if(installMinecraft) totalSteps += 2;
@@ -93,31 +80,31 @@ public class DownloadManager {
 
         if(installMinecraft) {
             setProgressPercent(0, 1);
-            installMinecraft(versionManifest, completedSteps, totalSteps);
+            installMinecraft(downloadManager, versionManifest, completedSteps, totalSteps);
             completedSteps += 2;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installAssets) {
             setProgressPercent(0, 1);
-            installAssets(versionManifest, completedSteps, totalSteps);
+            installAssets(downloadManager, versionManifest, completedSteps, totalSteps);
             completedSteps++;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installForge) {
             setProgressPercent(0, 1);
-            installForge(pack, completedSteps, totalSteps);
+            installForge(downloadManager, pack, completedSteps, totalSteps);
             completedSteps += 3;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(installPack) {
             setProgressPercent(0, 1);
-            installPack(pack, completedSteps, totalSteps);
+            installPack(downloadManager, pack, completedSteps, totalSteps);
             completedSteps += packStageSteps;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
         if(updatePack) {
             setProgressPercent(0, 1);
-            updatePack(pack, completedSteps, totalSteps);
+            updatePack(downloadManager, pack, completedSteps, totalSteps);
             completedSteps += packStageSteps;
             setTotalProgressPercent(completedSteps, totalSteps);
         }
@@ -152,8 +139,7 @@ public class DownloadManager {
         Platform.runLater(() -> Install.getInstance().ifPresent(install -> install.getBottomBar().setProgress(((double)completed) / total)));
     }
 
-    public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
-        final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
+    public static void installMinecraft(ExecutorService downloadManager, JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
         final List<Future<Optional<IOException>>> futures = new ArrayList<>();
 
         final Config settings = Main.getConfig();
@@ -187,8 +173,6 @@ public class DownloadManager {
             futures.add(future);
         }
 
-        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
-
         // Populate Versions Manifest
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
@@ -196,6 +180,7 @@ public class DownloadManager {
         JsonObject versionsManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory()));
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getVersionsDirectory()).getPath()), versionsManifest);
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     private static Optional<Boolean> isUserOs(String os){
@@ -232,8 +217,6 @@ public class DownloadManager {
             downloadLib(libraryDownloads, launchPaths, libDir, nativeDir, progress, totalLibs);
             return Optional.empty();
         } catch (IOException e){
-            if (attempts < MAX_DOWNLOAD_ATTEMPTS ) return checkLib(lib, launchPaths, libDir, nativeDir, progress, totalLibs, attempts+1);
-            e.printStackTrace();
             return Optional.of(e);
         }
     }
@@ -266,7 +249,8 @@ public class DownloadManager {
         return;
     }
 
-    public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+    public static void installAssets(ExecutorService downloadManager, JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
         final Config settings = Main.getConfig();
         setProgressText("Downloading Assets");
         File assetsFolder = settings.getAssetsDirectory();
@@ -279,16 +263,13 @@ public class DownloadManager {
         FileUtils.writeJsonToFile(new File(indexes, versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
 
         // Download assets
-        int completedAssets = 0;
+        AtomicInteger completedAssets = new AtomicInteger(0);
         int totalAssets = assetsManifest.getAsJsonObject("objects").keySet().size();
-        setProgressPercent(completedAssets, totalAssets);
+        setProgressPercent(completedAssets.get(), totalAssets);
         for(String assetKey : assetsManifest.getAsJsonObject("objects").keySet()) {
-            String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
-            File specificAssetFolder = new File(new File(assetsFolder, "objects"), hash.substring(0, 2));
-            specificAssetFolder.mkdirs();
-            FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(specificAssetFolder.getPath(), hash));
-            completedAssets++;
-            setProgressPercent(completedAssets, totalAssets);
+            Future<Optional<IOException>> future;
+            future = downloadManager.submit(()->downloadAsset(assetsManifest, assetKey, assetsFolder, completedAssets, totalAssets, 0));
+            futures.add(future);
         }
 
         // Populate Assets Manifest
@@ -297,9 +278,24 @@ public class DownloadManager {
         JsonObject assetsFolderManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getAssetsDirectory()));
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getAssetsDirectory()).getPath()), assetsFolderManifest);
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
-    public static void installForge(Pack pack, int completedSteps, int totalSteps) throws IOException {
+    public static Optional<IOException> downloadAsset(JsonObject assetsManifest, String assetKey, File assetsFolder, AtomicInteger completedAssets, int totalAssets, int attempts){
+        try {
+            String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
+            File specificAssetFolder = new File(new File(assetsFolder, "objects"), hash.substring(0, 2));
+            specificAssetFolder.mkdirs();
+            FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(specificAssetFolder.getPath(), hash));
+            setProgressPercent(completedAssets.incrementAndGet(), totalAssets);
+            return Optional.empty();
+        } catch (IOException e){
+            return Optional.of(e);
+        }
+    }
+
+    public static void installForge(ExecutorService downloadManager, Pack pack, int completedSteps, int totalSteps) throws IOException {
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
         final Config settings = Main.getConfig();
         setProgressText("Downloading Forge Installer");
         File forgeFolder = new File(settings.getForgeDirectory(), pack.getForgeVersion());
@@ -324,18 +320,33 @@ public class DownloadManager {
         setProgressText("Downloading Forge Libraries");
         setTotalProgressPercent(completedSteps + 2, totalSteps);
         setProgressPercent(0, 1);
-        int completedLibraries = 0;
+        AtomicInteger completedLibraries = new AtomicInteger(0);
         int totalLibraries = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries").size() - 1;
-        String librariesLaunchCode = "";
+        StringBuffer librariesLaunchCode = new StringBuffer();
 
         for (JsonElement libraryElement : forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries")) {
+            Future<Optional<IOException>> future;
+            future = downloadManager.submit(()->getForgeLibrary(libraryElement, librariesLaunchCode, forgeFolder, completedLibraries, totalLibraries, 0));
+            futures.add(future);
+        }
+
+        JsonObject forgeManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory()));
+        JsonObject versionJsonObject = new JsonObject();
+        versionJsonObject.addProperty("version", pack.getForgeVersion());
+        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode.toString(), ";"));
+        forgeManifest.getAsJsonArray("forgeVersions").add(versionJsonObject);
+        FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getForgeDirectory()).getPath()), forgeManifest);
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+    }
+
+    public static Optional<IOException> getForgeLibrary(JsonElement libraryElement, StringBuffer librariesLaunchCode, File forgeFolder, AtomicInteger completedLibraries, int totalLibraries, int attempts){
+        try {
             JsonObject library = libraryElement.getAsJsonObject();
             String[] libraryMaven = library.get("name").getAsString().split(":");
             // We already got forge
             if (libraryMaven[1].equals("forge")) {
-                completedLibraries++;
-                setProgressPercent(completedLibraries, totalLibraries);
-                continue;
+                setProgressPercent(completedLibraries.incrementAndGet(), totalLibraries);
+                return Optional.empty();
             }
             File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
             libraryPath.mkdirs();
@@ -357,20 +368,19 @@ public class DownloadManager {
             if (libraryFile.getName().contains(".pack.xz")) {
                 FileUtils.unpackPackXZ(libraryFile);
             }
-            librariesLaunchCode += StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";";
-            completedLibraries++;
-            setProgressPercent(completedLibraries, totalLibraries);
+            synchronized (librariesLaunchCode){
+                librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz"));
+                librariesLaunchCode.append(";");
+            }
+            setProgressPercent(completedLibraries.incrementAndGet(), totalLibraries);
+            return Optional.empty();
+        } catch (IOException e){
+            return Optional.of(e);
         }
-
-        JsonObject forgeManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory()));
-        JsonObject versionJsonObject = new JsonObject();
-        versionJsonObject.addProperty("version", pack.getForgeVersion());
-        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode, ";"));
-        forgeManifest.getAsJsonArray("forgeVersions").add(versionJsonObject);
-        FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getForgeDirectory()).getPath()), forgeManifest);
     }
 
-    public static void installPack(Pack pack, int completedSteps, int totalSteps) throws IOException {
+    public static void installPack(ExecutorService downloadManager, Pack pack, int completedSteps, int totalSteps) throws IOException {
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
         final Config settings = Main.getConfig();
         setProgressText("Downloading ModPack Manifest");
 
@@ -423,9 +433,15 @@ public class DownloadManager {
                 // Download Mods
                 setProgressText("Downloading Mods");
                 File modsFolder = new File(modpackFolder.getPath(), "mods");
-                boolean success = downloadMods(modpackManifest, modsFolder);
-                if (!success) throw new IOException("A mod has failed to download!");
 
+
+                final AtomicInteger completedMods = new AtomicInteger(0);
+                final JsonArray mods = modpackManifest.getAsJsonArray("files");
+
+                for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
+                    Future<Optional<IOException>> future = downloadManager.submit(()->downloadMod(modElement, modsFolder, completedMods, mods.size(), 0));
+                    futures.add(future);
+                }
                 break;
         }
 
@@ -437,30 +453,7 @@ public class DownloadManager {
         packJson.addProperty("forgeVersion", pack.getForgeVersion());
         instanceManifest.getAsJsonArray("packs").add(packJson);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
-    }
-
-    private static boolean downloadMods(JsonObject modpackManifest, File modsFolder) {
-        final AtomicInteger completedMods = new AtomicInteger(0);
-        final JsonArray mods = modpackManifest.getAsJsonArray("files");
-
-        final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
-        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
-
-        for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
-            Future<Optional<IOException>> future = downloadManager.submit(()->downloadMod(modElement, modsFolder, completedMods, mods.size(), 0));
-            futures.add(future);
-        }
-        return futures.stream().noneMatch(DownloadManager::hasFailed);
-    }
-
-    private static boolean hasFailed(Future<Optional<IOException>> future){
-        try {
-            return future.get().isPresent();
-        } catch (ExecutionException | InterruptedException e){
-            e.printStackTrace();
-            return false;
-        }
-
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
     }
 
     private static Optional<IOException> downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
@@ -472,14 +465,13 @@ public class DownloadManager {
             setProgressPercent(completedMods.incrementAndGet(), maxSz);
             return Optional.empty();
         } catch (IOException e){
-            if (attempts < MAX_DOWNLOAD_ATTEMPTS) return downloadMod(modElement, modsFolder, completedMods, maxSz, attempts+1);
-            e.printStackTrace();
             return Optional.of(e);
         }
 
     }
 
-    private static void updatePack(Pack pack, int completedSteps, int totalSteps) throws IOException {
+    private static void updatePack(ExecutorService downloadManager, Pack pack, int completedSteps, int totalSteps) throws IOException {
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
         final Config settings = Main.getConfig();
         setProgressText("Downloading ModPack Manifest");
 
@@ -563,23 +555,25 @@ public class DownloadManager {
                 setTotalProgressPercent(completedSteps + 3, totalSteps);
                 setProgressPercent(0, 0);
                 setProgressText("Updating Mods");
-                int completedMods = 0;
+
+                AtomicInteger completedMods = new AtomicInteger(0);
                 int totalMods = modsToDelete.size() + modsToAdd.size();
 
                 // Delete old mods
                 for(Map.Entry<Integer, Integer> oldMod : modsToDelete) {
-                    JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
-                    new File(new File(modpackFolder.getPath(), "mods"), apiResponse.get("fileName").getAsString()).delete();
-                    completedMods++;
-                    setProgressPercent(completedMods, totalMods);
+                    Future<Optional<IOException>> future;
+                    future = downloadManager.submit(()->deleteMod(oldMod, modsDir, completedMods, totalMods, 0));
+                    futures.add(future);
                 }
+
+                if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
+                else futures.clear();
 
                 // Download new mods
                 for(Map.Entry<Integer, Integer> newMod : modsToAdd) {
-                    JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
-                    FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsDir, apiResponse.get("fileName").getAsString()));
-                    completedMods++;
-                    setProgressPercent(completedMods, totalMods);
+                    Future<Optional<IOException>> future;
+                    future = downloadManager.submit(()->updateMod(newMod, modpackFolder, completedMods, totalMods, 0));
+                    futures.add(future);
                 }
                 break;
         }
@@ -607,6 +601,35 @@ public class DownloadManager {
         }
         instanceManifest.getAsJsonArray("packs").add(newPackObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
         pack.updateInstallStatus();
+    }
+
+    private static Optional<IOException> updateMod(Map.Entry<Integer, Integer> newMod, File modsDir, AtomicInteger completedMods, int totalMods, int attempts){
+        try{
+            JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
+            FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsDir, apiResponse.get("fileName").getAsString()));
+            setProgressPercent(completedMods.incrementAndGet(), totalMods);
+            return Optional.empty();
+        } catch (IOException e){
+            return Optional.of(e);
+        }
+    }
+
+    private static Optional<IOException> deleteMod(Map.Entry<Integer, Integer> oldMod, File modpackFolder, AtomicInteger completedMods, int totalMods, int attempts) {
+        JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
+        new File(new File(modpackFolder.getPath(), "mods"), apiResponse.get("fileName").getAsString()).delete();
+        setProgressPercent(completedMods.incrementAndGet(), totalMods);
+        return Optional.empty();
+    }
+
+    private static boolean hasFailed(Future<Optional<IOException>> future){
+        try {
+            return future.get().isPresent();
+        } catch (ExecutionException | InterruptedException e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

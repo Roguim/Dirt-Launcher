@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.game.DownloadManager;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
@@ -61,8 +62,18 @@ public class FileUtils {
         org.apache.commons.io.FileUtils.deleteDirectory(file);
     }
 
-    public static void copyURLToFile(String URL, File file) throws IOException {
-        org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
+    public static void copyURLToFile(String URL, File file) throws IOException{
+        copyURLToFile(URL, file, 0);
+    }
+
+    private static void copyURLToFile(String URL, File file, int attempts) throws IOException {
+        try {
+            org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
+        } catch (IOException e){
+            e.printStackTrace();
+            if (attempts < DownloadManager.MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
+            else throw e;
+        }
     }
 
     public static void copyDirectory(File src, File dest) throws IOException {
