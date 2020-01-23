@@ -153,6 +153,9 @@ public class DownloadManager {
     }
 
     public static void installMinecraft(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
+        final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
+
         final Config settings = Main.getConfig();
         setProgressText("Installing Minecraft " + versionManifest.get("id").getAsString());
         File versionFolder = new File(Main.getConfig().getVersionsDirectory(), versionManifest.get("id").getAsString());
@@ -169,106 +172,98 @@ public class DownloadManager {
 
         // Download Libraries
         setProgressText("Downloading Libraries");
-        int completedLibraries = 0;
-        int totalLibraries = versionManifest.getAsJsonArray("libraries").size();
-        setProgressPercent(completedLibraries, totalLibraries);
-        File librariesFolder = new File(versionFolder.getPath(), "libraries");
-        librariesFolder.mkdirs();
-        File nativesFolder = new File(versionFolder.getPath(), "natives");
-        nativesFolder.mkdirs();
-        String librariesLaunchCode = "";
+        AtomicInteger progress = new AtomicInteger(0);
+        int totalLibs = versionManifest.getAsJsonArray("libraries").size();
+        setProgressPercent(progress.get(), totalLibs);
+        File libDir = new File(versionFolder.getPath(), "libraries");
+        libDir.mkdirs();
+        File nativeDir = new File(versionFolder.getPath(), "natives");
+        nativeDir.mkdirs();
+        StringBuffer launchPaths = new StringBuffer();
 
-        libraryLoop:
-        for(JsonElement libraryElement : versionManifest.getAsJsonArray("libraries")) {
-            JsonObject library = libraryElement.getAsJsonObject();
-            // Check if the library has conditions
-            if(library.has("rules")) {
-                for(JsonElement rule : library.getAsJsonArray("rules")) {
-                    switch(rule.getAsJsonObject().get("action").getAsString()) {
-                        case "allow":
-                            if(!rule.getAsJsonObject().has("os")) break;
-                            switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
-                                case "windows":
-                                    if(!SystemUtils.IS_OS_WINDOWS) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                                case "osx":
-                                    if(!SystemUtils.IS_OS_MAC) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                                case "linux":
-                                    if(!SystemUtils.IS_OS_LINUX) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case "disallow":
-                            if(!rule.getAsJsonObject().has("os")) break;
-                            switch(rule.getAsJsonObject().getAsJsonObject("os").get("name").getAsString()) {
-                                case "windows":
-                                    if(SystemUtils.IS_OS_WINDOWS) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                                case "osx":
-                                    if(SystemUtils.IS_OS_MAC) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                                case "linux":
-                                    if(SystemUtils.IS_OS_LINUX) {
-                                        completedLibraries++;
-                                        continue libraryLoop;
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                }
-            }
-            // The library is not conditional. Continue with the download.
-            JsonObject libraryDownloads = library.getAsJsonObject("downloads");
-            // Download any standard libraries
-            if(libraryDownloads.has("artifact")) {
-                new File(librariesFolder, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
-                String filePath = librariesFolder.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
-                FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
-                librariesLaunchCode += filePath;
-                librariesLaunchCode += ";";
-            }
-            // Download any natives
-            if(libraryDownloads.has("classifiers")) {
-                String nativesType = "";
-                if(SystemUtils.IS_OS_WINDOWS) nativesType = "natives-windows";
-                if(SystemUtils.IS_OS_MAC) nativesType = "natives-osx";
-                if(SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
-                if(libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
-                    JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
-                    File outputFile = new File(nativesFolder, nativeJson.get("sha1").getAsString());
-                    FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
-                    FileUtils.extractJar(outputFile.getPath(), nativesFolder.getPath());
-                    outputFile.delete();
-                }
-            }
-            completedLibraries++;
-            setProgressPercent(completedLibraries, totalLibraries);
+        for(JsonElement lib : versionManifest.getAsJsonArray("libraries")) {
+            Future<Optional<IOException>> future;
+            future = downloadManager.submit(()-> checkLib(lib, launchPaths, libDir, nativeDir, progress, totalLibs, 0));
+            futures.add(future);
         }
+
+        if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
 
         // Populate Versions Manifest
         JsonObject versionJsonObject = new JsonObject();
         versionJsonObject.addProperty("version", versionManifest.get("id").getAsString());
-        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(librariesLaunchCode, ";"));
+        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(launchPaths.toString(), ";"));
         JsonObject versionsManifest = FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory()));
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getVersionsDirectory()).getPath()), versionsManifest);
+    }
+
+    private static Optional<Boolean> isUserOs(String os){
+        switch(os) {
+            case "windows": return Optional.of(SystemUtils.IS_OS_WINDOWS);
+            case "osx": return Optional.of(SystemUtils.IS_OS_MAC);
+            case "linux": return Optional.of(SystemUtils.IS_OS_LINUX);
+            default: {
+                System.out.println("Tried checking for OS:" + os + ". Did not match Pattern (win/osx/linux).");
+                return Optional.empty();
+            }
+        }
+    }
+
+    private static Optional<IOException> checkLib(JsonElement lib, StringBuffer launchPaths, File libDir, File nativeDir, AtomicInteger progress, int totalLibs, int attempts){
+        JsonObject library = lib.getAsJsonObject();
+        // Check if the library has conditions
+        if (library.has("rules")) {
+            for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
+                final JsonObject rule = ruleElement.getAsJsonObject();
+                final String action = rule.get("action").getAsString();
+
+                if (!(rule.has("os") && (action.equals("allow") || action.equals("disallow")))) continue;
+                final String os = rule.getAsJsonObject("os").get("name").getAsString();
+
+                if (!isUserOs(os).map(b -> b == (action.equals("allow"))).orElse(true)) continue;
+                progress.incrementAndGet();
+                return Optional.empty();
+            }
+        }
+        // The library is not conditional. Continue with the download.
+        JsonObject libraryDownloads = library.getAsJsonObject("downloads");
+        try {
+            downloadLib(libraryDownloads, launchPaths, libDir, nativeDir, progress, totalLibs);
+            return Optional.empty();
+        } catch (IOException e){
+            if (attempts < MAX_DOWNLOAD_ATTEMPTS ) return checkLib(lib, launchPaths, libDir, nativeDir, progress, totalLibs, attempts+1);
+            e.printStackTrace();
+            return Optional.of(e);
+        }
+    }
+
+    private static void downloadLib(JsonObject libraryDownloads, StringBuffer launchPaths, File libDir, File nativeDir, AtomicInteger progress, int totalLibs) throws IOException {
+        // Download any standard libraries
+        if (libraryDownloads.has("artifact")) {
+            new File(libDir, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
+            String filePath = libDir.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
+            FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
+            synchronized (launchPaths) {
+                launchPaths.append(filePath).append(";");
+            }
+        }
+        // Download any natives
+        if (libraryDownloads.has("classifiers")) {
+            String nativesType = "";
+            if (SystemUtils.IS_OS_WINDOWS) nativesType = "natives-windows";
+            if (SystemUtils.IS_OS_MAC) nativesType = "natives-osx";
+            if (SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
+            if (libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
+                JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
+                File outputFile = new File(nativeDir, nativeJson.get("sha1").getAsString());
+                FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
+                FileUtils.extractJar(outputFile.getPath(), nativeDir.getPath());
+                outputFile.delete();
+            }
+        }
+        setProgressPercent(progress.incrementAndGet(), totalLibs);
+        return;
     }
 
     public static void installAssets(JsonObject versionManifest, int completedSteps, int totalSteps) throws IOException {
@@ -449,37 +444,37 @@ public class DownloadManager {
         final JsonArray mods = modpackManifest.getAsJsonArray("files");
 
         final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);
-        final List<Future<Boolean>> futures = new ArrayList<>();
+        final List<Future<Optional<IOException>>> futures = new ArrayList<>();
 
         for (JsonElement modElement : modpackManifest.getAsJsonArray("files")) {
-            Future<Boolean> future = downloadManager.submit(()->downloadMod(modElement, modsFolder, completedMods, mods.size(), 0));
+            Future<Optional<IOException>> future = downloadManager.submit(()->downloadMod(modElement, modsFolder, completedMods, mods.size(), 0));
             futures.add(future);
         }
         return futures.stream().noneMatch(DownloadManager::hasFailed);
     }
 
-    private static boolean hasFailed(Future<Boolean> future){
+    private static boolean hasFailed(Future<Optional<IOException>> future){
         try {
-            return !future.get();
+            return future.get().isPresent();
         } catch (ExecutionException | InterruptedException e){
             e.printStackTrace();
-            return true;
+            return false;
         }
 
     }
 
-    private static boolean downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
+    private static Optional<IOException> downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
         try {
             JsonObject mod = modElement.getAsJsonObject();
-            if (mod.has("required") && !mod.get("required").getAsBoolean()) return true;
+            if (mod.has("required") && !mod.get("required").getAsBoolean()) return Optional.empty();
             JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
             FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
             setProgressPercent(completedMods.incrementAndGet(), maxSz);
-            return true;
+            return Optional.empty();
         } catch (IOException e){
-            e.printStackTrace();
             if (attempts < MAX_DOWNLOAD_ATTEMPTS) return downloadMod(modElement, modsFolder, completedMods, maxSz, attempts+1);
-            else return false;
+            e.printStackTrace();
+            return Optional.of(e);
         }
 
     }
