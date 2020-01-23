@@ -19,6 +19,8 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static net.dirtcraft.dirtlauncher.utils.Constants.*;
+
 public class FileUtils {
 
     public static String getFileSha1(File file) throws IOException {
@@ -71,7 +73,7 @@ public class FileUtils {
             org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
         } catch (IOException e){
             e.printStackTrace();
-            if (attempts < DownloadManager.MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
+            if (attempts < MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
             else throw e;
         }
     }

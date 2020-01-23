@@ -30,10 +30,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DownloadManager {
+import static net.dirtcraft.dirtlauncher.utils.Constants.*;
 
-    public static final int MAX_DOWNLOAD_ATTEMPTS = 5;
-    public static final int MAX_DOWNLOAD_THREADS = 16;
+public class DownloadManager {
 
     public static void completePackSetup(Pack pack, List<OptionalMod> optionalMods, boolean updatePack) throws IOException  {
         final ExecutorService downloadManager = Executors.newFixedThreadPool(MAX_DOWNLOAD_THREADS);

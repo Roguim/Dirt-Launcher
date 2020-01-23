@@ -35,4 +35,7 @@ public class Constants {
     public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
     public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
+    public static final int MAX_DOWNLOAD_ATTEMPTS = 8;
+    public static final int MAX_DOWNLOAD_THREADS = 24;
+
 }
