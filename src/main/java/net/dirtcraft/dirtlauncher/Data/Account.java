@@ -8,6 +8,8 @@ import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
 
+import java.util.concurrent.CompletableFuture;
+
 //import java.util.UUID;
 
 public class Account{
@@ -70,6 +72,26 @@ public class Account{
             System.out.println("Session not valid, Attempting to refresh it!");
             try {
                 Main.getAccounts().getClient().refresh(session);
+                CompletableFuture.runAsync(Main.getAccounts()::saveData);
+                return true;
+            } catch (Exception refreshException){
+                System.out.println(e.getMessage());
+                System.out.println(refreshException.getMessage());
+                System.out.println("Session not valid.");
+            }
+        }
+        return false;
+    }
+
+    public boolean isValid(boolean save){
+        try {
+            Main.getAccounts().getClient().validate(session);
+            return true;
+        } catch (Exception e){
+            System.out.println("Session not valid, Attempting to refresh it!");
+            try {
+                Main.getAccounts().getClient().refresh(session);
+                if (save) CompletableFuture.runAsync(Main.getAccounts()::saveData);
                 return true;
             } catch (Exception refreshException){
                 System.out.println(e.getMessage());

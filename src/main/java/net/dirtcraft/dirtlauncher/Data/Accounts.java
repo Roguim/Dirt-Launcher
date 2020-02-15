@@ -39,6 +39,21 @@ public final class Accounts {
             accounts = null;
         }
 
+        try {
+            if (accounts != null && accounts.has("selected account")) {
+                try {
+                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"));
+                } catch (JsonParseException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                throw new JsonParseException("No Selected Account");
+            }
+        } catch (JsonParseException e){
+            System.out.println(e.getMessage());
+            selectedAccount = null;
+        }
+
         String yggdrasilClientToken;
         try {
             if (accounts != null && accounts.has("client token")) {
@@ -61,21 +76,6 @@ public final class Accounts {
             isReady = true;
         });
 
-        try {
-            if (accounts != null && accounts.has("selected account")) {
-                try {
-                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"));
-                } catch (JsonParseException e) {
-                    System.out.println(e.getMessage());
-                }
-            } else {
-                throw new JsonParseException("No Selected Account");
-            }
-        } catch (JsonParseException e){
-            System.out.println(e.getMessage());
-            selectedAccount = null;
-        }
-
         altAccounts = new ArrayList<>();
         if (accounts != null && accounts.has("alt account list")) {
             for (JsonElement entry : accounts.getAsJsonArray("alt account list")){
@@ -93,7 +93,7 @@ public final class Accounts {
         if (saveData) saveData();
     }
 
-    private void saveData(){
+    public synchronized void saveData(){
         final JsonObject accounts = new JsonObject();
         final JsonArray alts = new JsonArray();
         for (Account session : altAccounts){
@@ -131,7 +131,8 @@ public final class Accounts {
     }
 
     public List<Account> getAltAccounts() {
-        altAccounts.removeIf(session -> !session.isValid());
+        altAccounts.removeIf(session -> !session.isValid(false));
+        CompletableFuture.runAsync(this::saveData);
         return altAccounts;
     }
 
