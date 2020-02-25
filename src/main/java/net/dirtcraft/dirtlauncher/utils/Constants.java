@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.utils;
 import net.dirtcraft.dirtlauncher.Main;
 
 public class Constants {
-    public static final String LAUNCHER_VERSION = "2.0.10";
+    public static final String LAUNCHER_VERSION = "2.0.11";
     public static final String AUTHORS = "ShinyAfro, Julian & TechDG";
     public static final String HELPERS = "Lordomus";
 
