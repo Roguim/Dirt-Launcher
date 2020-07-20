@@ -19,6 +19,8 @@ import net.dirtcraft.dirtlauncher.Data.Account;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
+import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
+import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
@@ -138,8 +140,9 @@ public final class ActionButton extends Button {
         launchInstallScene(modPack);
         new Thread(() -> {
             try {
-                DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
-            } catch (IOException e) {
+                //DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
+                InstallationManager.getInstance().installPack(modPack, Collections.emptyList());
+            } catch (IOException | InvalidManifestException e) {
                 e.printStackTrace();
             }
         }).start();

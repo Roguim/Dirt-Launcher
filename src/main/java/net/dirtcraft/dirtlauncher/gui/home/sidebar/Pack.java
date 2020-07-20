@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 public final class Pack extends Button {
     private double lastDragY;
@@ -263,20 +264,23 @@ public final class Pack extends Button {
     }
 
     public boolean isInstalled() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs")) {
-            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName())) return true;
-        }
-        return false;
+        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
+                .map(JsonElement::getAsJsonObject)
+                .map(obj -> obj.get("name"))
+                .map(JsonElement::getAsString)
+                .anyMatch(name -> name.equals(getName()));
     }
 
     public boolean isOutdated() {
-        for(JsonElement jsonElement : FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs")) {
-            if(jsonElement.getAsJsonObject().get("name").getAsString().equals(getName()) && jsonElement.getAsJsonObject().get("version").getAsString().equals(getVersion())) return false;
-        }
-        return true;
+        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
+                .map(JsonElement::getAsJsonObject)
+                .filter(obj -> obj.get("name").getAsString().equals(getName()))
+                .map(obj -> obj.get("version"))
+                .map(JsonElement::getAsString)
+                .noneMatch(version -> version.equals(getVersion()));
     }
     public enum PackType {
-        CURSE, CUSTOM
+        CURSE, FTB, CUSTOM
     }
 
 }

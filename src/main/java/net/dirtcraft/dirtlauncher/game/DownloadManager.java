@@ -9,6 +9,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.installation.Pair;
 import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
@@ -18,7 +19,6 @@ import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.File;
 import java.io.IOException;
@@ -391,7 +391,7 @@ public class DownloadManager {
         final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
         final File tempDir = new File(modpackFolder.getPath(), "temp");
 
-        // Delete directory if exists and make new ones
+        // Delete directory if exists and make new ones`
         FileUtils.deleteDirectory(modpackFolder);
         modpackFolder.mkdirs();
 
@@ -534,21 +534,21 @@ public class DownloadManager {
 
                 // Build checksum registries
                 setProgressText("Comparing Mod Manifests");
-                List<Map.Entry<Integer, Integer>> modsToDelete = new ArrayList<>();
-                List<Map.Entry<Integer, Integer>> modsToAdd = new ArrayList<>();
+                List<Pair<Integer, Integer>> modsToDelete = new ArrayList<>();
+                List<Pair<Integer, Integer>> modsToAdd = new ArrayList<>();
                 for(JsonElement modElement : oldManifest.getAsJsonArray("files")) {
                     if(modElement.getAsJsonObject().has("required") && modElement.getAsJsonObject().get("required").getAsBoolean() == false) continue;
-                    modsToDelete.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
+                    modsToDelete.add(new Pair(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
                 }
                 for(JsonElement modElement : newManifest.getAsJsonArray("files")) {
                     if(modElement.getAsJsonObject().has("required") && modElement.getAsJsonObject().get("required").getAsBoolean() == false) continue;
-                    modsToAdd.add(new ImmutablePair<>(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
+                    modsToAdd.add(new Pair(modElement.getAsJsonObject().get("projectID").getAsInt(), modElement.getAsJsonObject().get("fileID").getAsInt()));
                 }
 
                 // If any mods are the same in both lists, remove them. No need to repeat work
-                ListIterator<Map.Entry<Integer, Integer>> iterator = modsToDelete.listIterator();
+                ListIterator<Pair<Integer, Integer>> iterator = modsToDelete.listIterator();
                 while(iterator.hasNext()) {
-                    Map.Entry<Integer, Integer> iteratorNext = iterator.next();
+                    Pair<Integer, Integer> iteratorNext = iterator.next();
                     if(modsToAdd.contains(iteratorNext)) {
                         modsToAdd.remove(iteratorNext);
                         iterator.remove();
@@ -563,7 +563,7 @@ public class DownloadManager {
                 int totalMods = modsToDelete.size() + modsToAdd.size();
 
                 // Delete old mods
-                for(Map.Entry<Integer, Integer> oldMod : modsToDelete) {
+                for(Pair<Integer, Integer> oldMod : modsToDelete) {
                     Future<Optional<IOException>> future;
                     future = downloadManager.submit(()->deleteMod(oldMod, modsDir, completedMods, totalMods, 0));
                     futures.add(future);
@@ -573,7 +573,7 @@ public class DownloadManager {
                 else futures.clear();
 
                 // Download new mods
-                for(Map.Entry<Integer, Integer> newMod : modsToAdd) {
+                for(Pair<Integer, Integer> newMod : modsToAdd) {
                     Future<Optional<IOException>> future;
                     future = downloadManager.submit(()->updateMod(newMod, modpackFolder, completedMods, totalMods, 0));
                     futures.add(future);
@@ -608,9 +608,9 @@ public class DownloadManager {
         pack.updateInstallStatus();
     }
 
-    private static Optional<IOException> updateMod(Map.Entry<Integer, Integer> newMod, File modsDir, AtomicInteger completedMods, int totalMods, int attempts){
+    private static Optional<IOException> updateMod(Pair<Integer, Integer> newMod, File modsDir, AtomicInteger completedMods, int totalMods, int attempts){
         try{
-            JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getKey() + "/file/" + newMod.getValue());
+            JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + newMod.getFirst() + "/file/" + newMod.getSecond());
             FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsDir, apiResponse.get("fileName").getAsString()));
             setProgressPercent(completedMods.incrementAndGet(), totalMods);
             return Optional.empty();
@@ -619,8 +619,8 @@ public class DownloadManager {
         }
     }
 
-    private static Optional<IOException> deleteMod(Map.Entry<Integer, Integer> oldMod, File modpackFolder, AtomicInteger completedMods, int totalMods, int attempts) {
-        JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
+    private static Optional<IOException> deleteMod(Pair<Integer, Integer> oldMod, File modpackFolder, AtomicInteger completedMods, int totalMods, int attempts) {
+        JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getFirst() + "/file/" + oldMod.getSecond());
         new File(new File(modpackFolder.getPath(), "mods"), apiResponse.get("fileName").getAsString()).delete();
         setProgressPercent(completedMods.incrementAndGet(), totalMods);
         return Optional.empty();

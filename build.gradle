@@ -42,7 +42,7 @@ dependencies {
     //provided 'org.jfxtras:jmetro:5.3'
     //provided 'org.tukaani:xz:1.8'
     provided 'org.apache.commons:commons-compress:1.18'
-    provided "com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"
+    //provided "com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"
     //provided "com.therandomlabs.utils.io:TRLUtils-IO:1.0.1"
     provided 'net.lingala.zip4j:zip4j:2.1.0'
     provided "org.tukaani:xz:1.8"

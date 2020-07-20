@@ -8,7 +8,8 @@ public class Constants {
     public static final String HELPERS = "Lordomus";
 
     public static final String UPDATE_URL = "https://dirtcraft.net/launcher/Dirt-Launcher.jar";
-    public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
+    //public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
+    public static final String PACK_JSON_URL = "http://localhost/packs.json";
 
     public static final String DEFAULT_JAVA_ARGS = "-XX:+UseG1GC -Dfml.readTimeout=180 -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 

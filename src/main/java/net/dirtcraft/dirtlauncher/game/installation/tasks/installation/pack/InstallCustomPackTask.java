@@ -1,0 +1,69 @@
+package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
+
+import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
+import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.lingala.zip4j.ZipFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+
+public class InstallCustomPackTask implements IInstallationTask {
+
+    private final Pack pack;
+
+    public InstallCustomPackTask(Pack pack) {
+        this.pack = pack;
+    }
+
+    public int getNumberSteps() {
+        return 2;
+    }
+
+    @Override
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+        // Update Progress
+        progressContainer.setProgressText("Downloading Modpack Manifest");
+        progressContainer.setNumMinorSteps(2);
+
+        // Prepare Folders
+        final File modpackFolder = pack.getInstanceDirectory();
+        final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
+
+        FileUtils.deleteDirectory(modpackFolder);
+        modpackFolder.mkdirs();
+
+        progressContainer.completeMinorStep();
+
+        // Update Progress
+        progressContainer.setProgressText(String.format("Downloading %s Files", pack.getName()));
+        progressContainer.setNumMinorSteps(pack.getFileSize().orElse(1));
+
+        // Update UI On Interval
+        Timer timer = new Timer();
+        pack.getFileSize().ifPresent(fileSize ->
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        progressContainer.setMinorStepsCompleted((int) (modpackZip.length() / 1024 / 1024));
+                    }
+                }, 0, 1000));
+
+        // Download the Pack
+        FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+        timer.cancel();
+        progressContainer.completeMajorStep();
+
+        // Extract the pack
+        progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
+        new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
+        modpackZip.delete();
+
+        progressContainer.completeMajorStep();
+    }
+}

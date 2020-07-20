@@ -51,12 +51,6 @@ public class LaunchGame {
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
-        /*
-        if (SystemUtils.IS_OS_UNIX) {
-            args.add("/bin/sh");
-            args.add("-c");
-        }
-         */
         args.add(settings.getDefaultRuntime());
 
         // RAM
@@ -123,12 +117,6 @@ public class LaunchGame {
         // Access Token
         args.add("--accessToken");
         args.add(session.getAccessToken());
-
-        // Auto Join
-        /*command.append("--server ");
-        if (pack.isPixelmon()) command.append(pack.getCode() + ".dirtcraft.gg");
-        else command.append("pixelmon.gg");
-        command.append(" ");*/
 
         // User Type
         args.add("--userType");
