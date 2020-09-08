@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.dirtcraft.dirtlauncher.game.DownloadManager;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
@@ -19,7 +18,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import static net.dirtcraft.dirtlauncher.utils.Constants.*;
+import static net.dirtcraft.dirtlauncher.utils.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
 public class FileUtils {
 
@@ -113,7 +112,7 @@ public class FileUtils {
         Enumeration enumEntries = jar.entries();
         while(enumEntries.hasMoreElements()) {
             JarEntry file = (JarEntry) enumEntries.nextElement();
-            if(file.getName().contains(".jar")) {
+            if (file.getName().contains(".jar")) {
                 File f = new File(destDir + File.separator + file.getName().replace("-1.7.10-universal", "-universal"));
                 InputStream is = jar.getInputStream(file);
                 FileOutputStream fos = new FileOutputStream(f);

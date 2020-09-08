@@ -575,7 +575,7 @@ public class DownloadManager {
                 // Download new mods
                 for(Map.Entry<Integer, Integer> newMod : modsToAdd) {
                     Future<Optional<IOException>> future;
-                    future = downloadManager.submit(()->updateMod(newMod, modpackFolder, completedMods, totalMods, 0));
+                    future = downloadManager.submit(()->updateMod(newMod, modsDir, completedMods, totalMods, 0));
                     futures.add(future);
                 }
                 if (futures.stream().anyMatch(DownloadManager::hasFailed)) throw new IOException();
@@ -619,9 +619,9 @@ public class DownloadManager {
         }
     }
 
-    private static Optional<IOException> deleteMod(Map.Entry<Integer, Integer> oldMod, File modpackFolder, AtomicInteger completedMods, int totalMods, int attempts) {
+    private static Optional<IOException> deleteMod(Map.Entry<Integer, Integer> oldMod, File modsDir, AtomicInteger completedMods, int totalMods, int attempts) {
         JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + oldMod.getKey() + "/file/" + oldMod.getValue());
-        new File(new File(modpackFolder.getPath(), "mods"), apiResponse.get("fileName").getAsString()).delete();
+        new File(modsDir, apiResponse.get("fileName").getAsString()).delete();
         setProgressPercent(completedMods.incrementAndGet(), totalMods);
         return Optional.empty();
     }
