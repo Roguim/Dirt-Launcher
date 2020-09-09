@@ -106,14 +106,20 @@ public class FileUtils {
         jar.close();
     }
 
-    public static JsonObject extractForgeJar(File jarFile, String destDir) throws IOException {
+    public static JsonObject extractForgeJar(File jarFile, File destDir) throws IOException {
         JsonObject output = new JsonObject();
         JarFile jar = new JarFile(jarFile);
         Enumeration enumEntries = jar.entries();
         while(enumEntries.hasMoreElements()) {
             JarEntry file = (JarEntry) enumEntries.nextElement();
+            File f = new File(destDir + File.separator + file.getName());
+            if (file.isDirectory()) {
+                f.mkdir();
+                continue;
+            }
             if (file.getName().contains(".jar")) {
-                File f = new File(destDir + File.separator + file.getName().replace("-1.7.10-universal", "-universal"));
+                f = new File(destDir + File.separator + file.getName().replace("-1.7.10-universal", "-universal"));
+
                 InputStream is = jar.getInputStream(file);
                 FileOutputStream fos = new FileOutputStream(f);
                 while(is.available() > 0) {
@@ -130,6 +136,7 @@ public class FileUtils {
                 is.close();
             }
         }
+        jar.close();
         return output;
     }
 

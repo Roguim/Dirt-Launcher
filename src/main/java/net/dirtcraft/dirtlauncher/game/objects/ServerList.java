@@ -84,13 +84,13 @@ public class ServerList {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static List<Listing> getCurrent(String packName){
-        File serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+    public static List<Listing> getCurrent(String packName) {
         List<Listing> serverList = new ArrayList<>();
-        try(
-                FileInputStream fis = new FileInputStream(serverDat);
-                DataInputStream dis = new DataInputStream(fis)
-                ){
+        try {
+            File serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(), packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+            if (!serverDat.exists()) serverDat.createNewFile();
+            FileInputStream fis = new FileInputStream(serverDat);
+            DataInputStream dis = new DataInputStream(fis);
             dis.skip(16);
             short servers = dis.readShort();
             for (short i = 0; i < servers; i++) {
@@ -110,8 +110,8 @@ public class ServerList {
                     serverList.add(new Listing(name, ip));
                 }
             }
-        }catch (IOException e){
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         return serverList;
     }
@@ -122,7 +122,7 @@ public class ServerList {
         return new String(string);
     }
 
-    private final class Server{
+    private final class Server {
         private final String name;
         private final String ip;
         private final String icon;

@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static net.dirtcraft.dirtlauncher.utils.Constants.*;
+import static net.dirtcraft.dirtlauncher.utils.Constants.MAX_DOWNLOAD_THREADS;
 
 public class DownloadManager {
 
@@ -312,7 +312,7 @@ public class DownloadManager {
         // Extract Forge Installer & Write forge JSON manifest
         setProgressText("Extracting Forge Installer");
         setTotalProgressPercent(completedSteps + 1, totalSteps);
-        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder.getPath());
+        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder);
         forgeInstaller.delete();
         setProgressPercent(1, 2);
         FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
@@ -322,10 +322,18 @@ public class DownloadManager {
         setTotalProgressPercent(completedSteps + 2, totalSteps);
         setProgressPercent(0, 1);
         AtomicInteger completedLibraries = new AtomicInteger(0);
-        int totalLibraries = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries").size() - 1;
+
+        JsonArray libraries;
+        try {
+            libraries = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
+        } catch (NullPointerException e) {
+            libraries = forgeVersionManifest.getAsJsonArray("libraries");
+        }
+         int totalLibraries = libraries.size() - 1;
+
         StringBuffer librariesLaunchCode = new StringBuffer();
 
-        for (JsonElement libraryElement : forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries")) {
+        for (JsonElement libraryElement : libraries) {
             Future<Optional<IOException>> future;
             future = downloadManager.submit(()->getForgeLibrary(libraryElement, librariesLaunchCode, forgeFolder, completedLibraries, totalLibraries, 0));
             futures.add(future);
@@ -352,26 +360,37 @@ public class DownloadManager {
             }
             File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
             libraryPath.mkdirs();
-            String url = "https://libraries.minecraft.net/";
+            String url = "https://modloaders.forgecdn.net/647622546";
             if (library.has("url")) {
                 url = library.get("url").getAsString();
+                url += libraryMaven[0].replace(".", "/") + "/" + libraryMaven[1] + "/" + libraryMaven[2] + "/" + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
+            } else if (library.has("downloads")) {
+                JsonObject artifact = library.get("downloads").getAsJsonObject().get("artifact").getAsJsonObject();
+                if (artifact.has("url")) url = artifact.get("url").getAsString();
+                else {
+                    url += libraryMaven[0].replace(".", "/") + "/" + libraryMaven[1] + "/" + libraryMaven[2] + "/" + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
+                }
             }
-            url += libraryMaven[0].replace(".", "/") + "/" + libraryMaven[1] + "/" + libraryMaven[2] + "/" + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
 
             String fileName = libraryPath + File.separator + libraryMaven[1] + "-" + libraryMaven[2] + ".jar";
-            // Typesafe does some weird crap
-            if (libraryMaven[0].contains("typesafe")) {
-                url += ".pack.xz";
-                fileName += ".pack.xz";
-            }
-
             File libraryFile = new File(fileName);
             FileUtils.copyURLToFile(url, libraryFile);
+
+            /*
+            if (!library.has("downloads")) {
+                // Typesafe does some weird crap
+                if (libraryMaven[0].contains("typesafe")) {
+                    url += ".pack.xz";
+                    fileName += ".pack.xz";
+                }
+            }
+
             if (libraryFile.getName().contains(".pack.xz")) {
                 FileUtils.unpackPackXZ(libraryFile);
-            }
+            }*/
+
             synchronized (librariesLaunchCode){
-                librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz"));
+                librariesLaunchCode.append(libraryFile.getPath());
                 librariesLaunchCode.append(";");
             }
             setProgressPercent(completedLibraries.incrementAndGet(), totalLibraries);
@@ -459,18 +478,27 @@ public class DownloadManager {
         FileUtils.writeJsonToFile(new File(settings.getDirectoryManifest(settings.getInstancesDirectory()).getPath()), instanceManifest);
     }
 
-    private static Optional<IOException> downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts){
-        try {
-            JsonObject mod = modElement.getAsJsonObject();
-            if (mod.has("required") && !mod.get("required").getAsBoolean()) return Optional.empty();
-            JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
-            FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
-            setProgressPercent(completedMods.incrementAndGet(), maxSz);
-            return Optional.empty();
-        } catch (IOException e){
-            return Optional.of(e);
-        }
+    private static Optional<IOException> downloadMod(JsonElement modElement, File modsFolder, AtomicInteger completedMods, int maxSz, int attempts) {
+        JsonObject mod = modElement.getAsJsonObject();
+        if (mod.has("required") && !mod.get("required").getAsBoolean()) return Optional.empty();
+        JsonObject apiResponse = WebUtils.getJsonFromUrl("https://addons-ecs.forgesvc.net/api/v2/addon/" + mod.get("projectID").getAsString() + "/file/" + mod.get("fileID").getAsString());
+        Optional<IOException> optional = downloadSuccessful(apiResponse, modsFolder);
+        if (optional.isPresent()) return optional;
+        setProgressPercent(completedMods.incrementAndGet(), maxSz);
+        return Optional.empty();
+    }
 
+    private static Optional<IOException> downloadSuccessful(JsonObject apiResponse, File modsFolder) {
+        try {
+            FileUtils.copyURLToFile(apiResponse.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, apiResponse.get("fileName").getAsString()));
+            return Optional.empty();
+        } catch (IOException exception) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {}
+            downloadSuccessful(apiResponse, modsFolder);
+            return Optional.of(exception);
+        }
     }
 
     private static void updatePack(ExecutorService downloadManager, Pack pack, int completedSteps, int totalSteps) throws IOException {
