@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Data.Account;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
@@ -125,8 +124,8 @@ public final class ActionButton extends Button {
         launchInstallScene(modPack);
         new Thread(() -> {
             try {
-                DownloadManager.completePackSetup(modPack, Collections.emptyList(), true);
-            } catch (IOException e) {
+                InstallationManager.getInstance().updatePack(modPack, Collections.emptyList());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
