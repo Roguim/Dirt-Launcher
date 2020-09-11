@@ -55,7 +55,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setProgressText("Extracting Forge Installer");
         progressContainer.setNumMinorSteps(2);
 
-        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder.getPath());
+        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder);
         forgeInstaller.delete();
         progressContainer.setNumMinorSteps(1);
 
