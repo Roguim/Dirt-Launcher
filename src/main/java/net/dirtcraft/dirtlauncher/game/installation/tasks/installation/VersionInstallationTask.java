@@ -44,7 +44,7 @@ public class VersionInstallationTask implements IInstallationTask {
         versionFolder.mkdirs();
 
         // Write the version JSON manifest
-        FileUtils.writeJsonToFile(new File(versionFolder.getPath() + version + ".json"), versionManifest);
+        FileUtils.writeJsonToFile(versionFolder.toPath().resolve(version + ".json").toFile(), versionManifest);
         progressContainer.completeMinorStep();
 
         // Download jar

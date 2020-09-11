@@ -129,6 +129,7 @@ public class InstallationManager {
         // Execute each task in sequence. The subtasks are multithreaded, but the major tasks are sequential intentionally.
         for(IInstallationTask task : installationTasks) {
             System.out.println("L");
+            System.out.println(task.getClass());
             task.executeTask(downloadManager, progressContainer, config);
         }
 

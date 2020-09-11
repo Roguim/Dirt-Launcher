@@ -126,15 +126,18 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         String fileName = String.format("%s%s%s-%s.jar", libraryPath, File.separator, libraryMaven[1], libraryMaven[2]);
 
-        // Typesafe does some weird stuff
-        if (libraryMaven[0].contains("typesafe")) {
+        // Install the library
+        File libraryFile;
+        try {
+            libraryFile = new File(fileName);
+            FileUtils.copyURLToFile(url, libraryFile);
+        } catch (Exception e){
+            // Typesafe does some weird stuff
             url += ".pack.xz";
             fileName += ".pack.xz";
+            libraryFile = new File(fileName);
+            FileUtils.copyURLToFile(url, libraryFile);
         }
-
-        // Install the library
-        File libraryFile = new File(fileName);
-        FileUtils.copyURLToFile(url, libraryFile);
         if (libraryFile.getName().contains(".pack.xz")) FileUtils.unpackPackXZ(libraryFile);
         librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";");
 
