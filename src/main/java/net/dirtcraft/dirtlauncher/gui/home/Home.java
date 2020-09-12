@@ -28,6 +28,7 @@ import org.w3c.dom.html.HTMLAnchorElement;
 
 import java.awt.*;
 import java.net.URI;
+import java.util.Objects;
 
 public class Home extends Scene {
     private Stage stage;
