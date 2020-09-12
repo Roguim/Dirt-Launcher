@@ -56,7 +56,7 @@ public class Main extends Application {
         Platform.setImplicitExit(false);
         stageInit.get();
         home.getStage().show();
-        home.reload();
+        home.update();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
@@ -73,6 +73,10 @@ public class Main extends Application {
 
     public static List<String> getOptions(){
         return options;
+    }
+
+    public static Path getLauncherDirectory(){
+        return launcherDirectory;
     }
 
     public static void preInitHome(){

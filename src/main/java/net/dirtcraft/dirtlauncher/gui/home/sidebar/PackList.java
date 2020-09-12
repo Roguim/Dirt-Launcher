@@ -9,14 +9,13 @@ import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class PackList extends ScrollPane {
-    private Future<List<Pack>> listPreload;
+    private Future<List<PackSelector>> listPreload;
     private final VBox packs;
     public PackList(){
         packs = new VBox();
@@ -28,8 +27,8 @@ public class PackList extends ScrollPane {
         listPreload = CompletableFuture.supplyAsync(()-> {
             ModpackManager manager = ModpackManager.getInstance();
             return manager.getModpacks().stream()
-                    .map(Pack::new)
-                    .sorted(Comparator.comparing(Pack::getName))
+                    .map(PackSelector::new)
+                    .sorted(PackSelector::compareTo)
                     .collect(Collectors.toList());
         });
 
@@ -60,14 +59,18 @@ public class PackList extends ScrollPane {
                 return;
             }
 
-            List<Pack> packsList = ModpackManager.getInstance().getModpacks().stream()
-                        .map(Pack::new)
-                        .sorted(Comparator.comparing(Pack::getName))
+            List<PackSelector> packsList = ModpackManager.getInstance().getModpacks().stream()
+                        .map(PackSelector::new)
+                        .sorted(PackSelector::compareTo)
                         .collect(Collectors.toList());
             Platform.runLater(() -> {
                 packs.getChildren().clear();
                 packs.getChildren().addAll(packsList);
             });
         });
+    }
+
+    public void update(){
+        updatePacksAsync();
     }
 }

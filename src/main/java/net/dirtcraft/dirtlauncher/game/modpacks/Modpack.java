@@ -35,6 +35,7 @@ public class Modpack {
     private final List<OptionalMod> optionalMods;
     private final Integer fileSize;
     private final List<Listing> listings;
+    boolean favourite = false;
 
     Modpack(JsonObject json) {
         final List<OptionalMod> optionalMods = new ArrayList<>();
@@ -137,6 +138,15 @@ public class Modpack {
                 .map(obj -> obj.get("version"))
                 .map(JsonElement::getAsString)
                 .noneMatch(version -> version.equals(getVersion()));
+    }
+
+    public boolean isFavourite(){
+        return favourite;
+    }
+
+    public void toggleFavourite(){
+        this.favourite = !this.favourite;
+        ModpackManager.getInstance().saveAsync();
     }
 
     public String getName() {

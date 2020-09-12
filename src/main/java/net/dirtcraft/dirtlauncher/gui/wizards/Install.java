@@ -11,7 +11,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public final class Install {
         getStage().ifPresent(Stage::close);
 
         Optional<Account> account = Main.getAccounts().getSelectedAccount();
-        Optional<Pack> pack = Main.getHome().getLoginBar().getActivePackCell();
+        Optional<PackSelector> pack = Main.getHome().getLoginBar().getActivePackCell();
         if (pack.isPresent() && account.isPresent()){
             pack.get().getModpack().launch();
         }

@@ -43,7 +43,7 @@ final public class ToolBar extends Pane {
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
         refresh.setOnAction(event -> {
-            Main.getHome().reload();
+            Main.getHome().update();
             try {
                 if (Update.hasUpdate()) Platform.runLater(Update::showStage);
             } catch (IOException e) {
