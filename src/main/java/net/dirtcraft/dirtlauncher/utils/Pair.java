@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.game.installation;
+package net.dirtcraft.dirtlauncher.utils;
 
 public class Pair<T, V> {
 

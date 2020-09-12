@@ -16,7 +16,8 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.login.NotificationBox;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackList;
+import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackListerino;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.ToolBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -34,12 +35,12 @@ public class Home extends Scene {
     final private LoginBar loginBar;
     final private NotificationBox loginNotification;
     final private AnchorPane root;
-    final private PackList sidebar;
+    final private PackListerino sidebar;
 
     public Home() {
         super(new AnchorPane(), Main.screenDimension.getWidth() / 1.15, Main.screenDimension.getHeight() / 1.35);
         stage = null;
-        sidebar = new PackList();
+        sidebar = new PackListerino();
 
         final FlowPane titleBox = new FlowPane();
         AnchorPane.setTopAnchor(titleBox, 0d);

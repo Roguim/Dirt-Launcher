@@ -1,31 +1,24 @@
 package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
-public class PackList extends ScrollPane {
+public class PackListerino extends ScrollPane {
     private Future<List<Pack>> listPreload;
     private final VBox packs;
-    public PackList(){
+    public PackListerino(){
         packs = new VBox();
         packs.getStyleClass().add(Constants.CSS_CLASS_VBOX);
         packs.setFocusTraversable(false);
@@ -33,15 +26,11 @@ public class PackList extends ScrollPane {
 
 
         listPreload = CompletableFuture.supplyAsync(()-> {
-            List<Pack> packsList = new ArrayList<>();
-            JsonElement json = new JsonParser().parse(getStringFromURL());
-
-            for (JsonElement element : json.getAsJsonArray()) {
-                packsList.add(new Pack(element.getAsJsonObject()));
-            }
-
-            packsList.sort(Comparator.comparing(Pack::getName));
-            return packsList;
+            ModpackManager manager = ModpackManager.getInstance();
+            return manager.getModpacks().stream()
+                    .map(Pack::new)
+                    .sorted(Comparator.comparing(Pack::getName))
+                    .collect(Collectors.toList());
         });
 
         setFitToWidth(true);
@@ -70,32 +59,15 @@ public class PackList extends ScrollPane {
                 });
                 return;
             }
-            List<Pack> packsList = new ArrayList<>();
-            JsonElement json = new JsonParser().parse(getStringFromURL());
 
-            for (JsonElement element : json.getAsJsonArray()) {
-                packsList.add(new Pack(element.getAsJsonObject()));
-            }
-
-            packsList.sort(Comparator.comparing(Pack::getName));
+            List<Pack> packsList = ModpackManager.getInstance().getModpacks().stream()
+                        .map(Pack::new)
+                        .sorted(Comparator.comparing(Pack::getName))
+                        .collect(Collectors.toList());
             Platform.runLater(() -> {
                 packs.getChildren().clear();
                 packs.getChildren().addAll(packsList);
             });
         });
-    }
-
-    private String getStringFromURL() {
-        String string = null;
-        try {
-            HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
-            HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(Constants.PACK_JSON_URL));
-            HttpResponse response = request.execute();
-            string = response.parseAsString();
-            response.disconnect();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return string;
     }
 }

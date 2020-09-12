@@ -9,7 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Data.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
@@ -54,11 +54,10 @@ public final class Install {
         buttonPane.setVisible(false);
         getStage().ifPresent(Stage::close);
 
-        LoginBar loginBar = Main.getHome().getLoginBar();
         Optional<Account> account = Main.getAccounts().getSelectedAccount();
         Optional<Pack> pack = Main.getHome().getLoginBar().getActivePackCell();
         if (pack.isPresent() && account.isPresent()){
-            loginBar.getActionButton().launchPack(account.get(), pack.get());
+            pack.get().getModpack().launch();
         }
     }
 

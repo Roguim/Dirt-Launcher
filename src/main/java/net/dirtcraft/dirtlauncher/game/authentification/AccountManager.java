@@ -1,14 +1,11 @@
-package net.dirtcraft.dirtlauncher.Data;
+package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.gson.*;
 import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.exception.*;
-import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.objects.LoginError;
 import net.dirtcraft.dirtlauncher.utils.Function;
 
-import javax.security.auth.login.LoginException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileReader;
@@ -154,6 +151,10 @@ public final class AccountManager {
     public Optional<Account> getSelectedAccount() {
         if (selectedAccount == null) return Optional.empty();
         else return Optional.of(selectedAccount);
+    }
+
+    public Account getSelectedAccountUnchecked() {
+        return selectedAccount;
     }
 
     public YggdrasilClient getClient() {

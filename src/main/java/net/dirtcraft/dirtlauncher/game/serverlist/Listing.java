@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.game.objects;
+package net.dirtcraft.dirtlauncher.game.serverlist;
 
 import com.google.gson.JsonObject;
 

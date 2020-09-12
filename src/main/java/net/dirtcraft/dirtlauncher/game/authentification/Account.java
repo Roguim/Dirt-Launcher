@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.Data;
+package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

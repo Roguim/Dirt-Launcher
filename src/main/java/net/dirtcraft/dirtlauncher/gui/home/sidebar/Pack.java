@@ -14,9 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.objects.Listing;
-import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
+import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
+import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -25,84 +27,44 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
 public final class Pack extends Button {
     private double lastDragY;
-    private String version;
     private final ContextMenu contextMenu;
-    private final String name;
-    private final String code;
-    private final PackType packType;
-    private final String link;
-    private final String splash;
-    private final String logo;
-    private final String gameVersion;
-    private final int requiredRam;
-    private final int recommendedRam;
-    private final String forgeVersion;
-    private final List<OptionalMod> optionalMods;
-    private final Integer fileSize;
-    private final List<Listing> listings;
+    private final Modpack modpack;
 
-    Pack(JsonObject json) {
-        final List<OptionalMod> optionalMods = new ArrayList<>();
-        for (JsonElement mods : json.get("optionalMods").getAsJsonArray()) {
-            optionalMods.add(new OptionalMod(mods.getAsJsonObject()));
-        }
-        if (!json.has("serverList")) this.listings = null;
-        else {
-            final List<Listing> listings = new ArrayList<>();
-            for (JsonElement servers : json.get("serverList").getAsJsonArray()) {
-                listings.add(new Listing(servers.getAsJsonObject()));
-            }
-            this.listings = listings;
-        }
-        final String packType = json.get("packType").getAsString().trim();
-        this.name = json.get("name").getAsString().trim();
-        this.version = json.get("version").getAsString();
-        this.code = json.get("code").getAsString();
-        this.packType = packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
-        this.link = json.get("link").getAsString();
-        this.splash = json.get("splash").getAsString();
-        this.logo = json.get("logo").getAsString();
-        this.gameVersion = json.get("gameVersion").getAsString();
-        this.requiredRam = json.get("requiredRam").getAsInt();
-        this.recommendedRam = json.get("recommendedRam").getAsInt();
-        this.forgeVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
-        this.optionalMods = optionalMods;
-
+    Pack(Modpack modpack) {
+        this.modpack = modpack;
         contextMenu = new ContextMenu();
         initContextMenu();
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
-        setText(name);
+        setText(modpack.getName());
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
 
         tooltip.setText(String.join("\n", Arrays.asList(
-                "ModPack Name: " + name,
-                "ModPack Version: " + version,
-                "Minecraft Version: " + gameVersion,
-                "Forge Version: " + forgeVersion,
-                "Minimum Ram: " + requiredRam + " GB",
-                "Recommended Ram: " + recommendedRam + " GB",
-                "Direct Connect IP: " + (!isPixelmon() ? (code + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
+                "ModPack Name: " + modpack.getName(),
+                "ModPack Version: " + modpack.getVersion(),
+                "Minecraft Version: " + modpack.getGameVersion(),
+                "Forge Version: " + modpack.getForgeVersion(),
+                "Minimum Ram: " + modpack.getRequiredRam() + " GB",
+                "Recommended Ram: " + modpack.getRecommendedRam() + " GB",
+                "Direct Connect IP: " + (!modpack.isPixelmon() ? (modpack.getCode() + ".DIRTCRAFT").toUpperCase() : "PIXELMON") + ".GG")
         ));
 
         Image image;
         try {
             image = new Image(MiscUtils.getResourceStream(
-                    Constants.JAR_PACK_IMAGES, getFormattedName().toLowerCase() + ".png"),
+                    Constants.JAR_PACK_IMAGES, modpack.getFormattedName().toLowerCase() + ".png"),
                     128, 128, false, true);
         } catch (Exception exception) {
-            System.out.println("Could not find image @ \"" + getForgeVersion().toLowerCase() + ".png\", requesting from the web...");
-            image = new Image(getLogo(), 128, 128, false, true);
+            System.out.println("Could not find image @ \"" + modpack.getForgeVersion().toLowerCase() + ".png\", requesting from the web...");
+            image = new Image(modpack.getLogo(), 128, 128, false, true);
         }
 
         if (image != null) {
@@ -143,14 +105,14 @@ public final class Pack extends Button {
         home.getActivePackCell().ifPresent(Pack::deactivate);
         home.setActivePackCell(this);
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
-        DiscordPresence.setDetails("Playing " + name);
+        DiscordPresence.setDetails("Playing " + modpack.getName());
 
         if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
     }
 
     private void initContextMenu(){
         contextMenu.getItems().clear();
-        if (isInstalled()) {
+        if (modpack.isInstalled()) {
             MenuItem reinstall = new MenuItem("Reinstall");
             MenuItem uninstall = new MenuItem("Uninstall");
             MenuItem openFolder = new MenuItem("Open Folder");
@@ -164,7 +126,7 @@ public final class Pack extends Button {
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<Pack> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                loginBar.getActionButton().installPack(this);
+                getModpack().install().thenRun(this::updateInstallStatus);
                 oldPack.ifPresent(Pack::fire);
                 Main.getHome().getLoginBar().setInputs();
                 initContextMenu();
@@ -175,11 +137,11 @@ public final class Pack extends Button {
                 if (instanceManifest == null || !instanceManifest.has("packs")) return;
                 JsonArray packs = instanceManifest.getAsJsonArray("packs");
                 for (int i = 0; i < packs.size(); i++){
-                    if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), name)) packs.remove(i);
+                    if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), modpack.getName())) packs.remove(i);
                 }
                 FileUtils.writeJsonToFile(new File(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()).getPath()), instanceManifest);
                 try {
-                    FileUtils.deleteDirectory(getInstanceDirectory());
+                    FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
@@ -189,7 +151,7 @@ public final class Pack extends Button {
 
             openFolder.setOnAction(e->{
                 try {
-                    Desktop.getDesktop().open(getInstanceDirectory());
+                    Desktop.getDesktop().open(modpack.getInstanceDirectory());
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
@@ -202,85 +164,18 @@ public final class Pack extends Button {
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<Pack> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                loginBar.getActionButton().installPack(this);
+                getModpack().install().thenRun(this::updateInstallStatus);
                 oldPack.ifPresent(Pack::fire);
             });
         }
     }
 
-    public String getName() {
-        return name;
-    }
-    public String getFormattedName() { return name.replaceAll("\\s+", "-"); }
-    public String getVersion() {
-        return version;
-    }
-    public PackType getPackType() {
-        return packType;
-    }
-    public String getLink() {
-        return link;
-    }
-    public String getSplash() { return splash; }
-    public String getLogo() { return logo; }
-    public String getGameVersion() { return gameVersion; }
-    public int getRequiredRam() {
-        return requiredRam;
-    }
-    public int getRecommendedRam() {
-        return recommendedRam;
-    }
-    public String getForgeVersion() {
-        return forgeVersion;
-    }
-    public List<OptionalMod> getOptionalMods() {
-        return optionalMods;
-    }
-    public String getCode() {
-        return code;
+    public Modpack getModpack(){
+        return modpack;
     }
 
-    //Gets file size of custom pack in megabytes
-    public Optional<Integer> getFileSize() {
-        if (fileSize == null) return Optional.empty();
-        else return Optional.of(fileSize);
-    }
-
-    public Optional<List<Listing>> getListings() {
-        if (listings == null) return Optional.empty();
-        else return Optional.of(listings);
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public File getInstanceDirectory() {
-        return new File(Main.getConfig().getInstancesDirectory().getPath(), getFormattedName());
-    }
-
-    public boolean isPixelmon() {
-        return this.getCode().equalsIgnoreCase("PIXEL");
-    }
-
-    public boolean isInstalled() {
-        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .map(obj -> obj.get("name"))
-                .map(JsonElement::getAsString)
-                .anyMatch(name -> name.equals(getName()));
-    }
-
-    public boolean isOutdated() {
-        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .filter(obj -> obj.get("name").getAsString().equals(getName()))
-                .map(obj -> obj.get("version"))
-                .map(JsonElement::getAsString)
-                .noneMatch(version -> version.equals(getVersion()));
-    }
-    public enum PackType {
-        CURSE, FTB, CUSTOM
+    public String getName(){
+        return modpack.getName();
     }
 
 }

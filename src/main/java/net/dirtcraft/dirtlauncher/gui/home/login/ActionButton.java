@@ -15,18 +15,15 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Data.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
-import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 public final class ActionButton extends Button {
@@ -60,21 +57,22 @@ public final class ActionButton extends Button {
 
     @Override
     public void fire() {
-        Optional<Account> session = Main.getAccounts().getSelectedAccount();
-        if (session.isPresent())
+        if (Main.getAccounts().hasSelectedAccount())
             switch (type) {
                 case INSTALL:
-                    installPack(pack);
+                    launchInstallScene(pack);
+                    pack.getModpack().install().thenRun(pack::updateInstallStatus);
                     return;
                 case UPDATE:
-                    updatePack(pack);
+                    launchInstallScene(pack);
+                    pack.getModpack().update().thenRun(pack::updateInstallStatus);
                     return;
                 case PLAY:
-                    launchPack(session.get(), pack);
+                    launchInstallScene(pack);
+                    pack.getModpack().launch();
                     return;
                 default:
                     Main.getHome().getNotificationBox().displayError(null);
-                    return;
             }
     }
     public enum Types{
@@ -98,11 +96,12 @@ public final class ActionButton extends Button {
             }
         }
 
-        public static Types fromPack(Pack pack){
-            if (pack == null) return INITIAL;
-            if (!pack.isInstalled()) return INSTALL;
-            if (pack.isOutdated()) return UPDATE;
-            if (pack.isInstalled()) return PLAY;
+        public static Types fromPack(Pack selected){
+            if (selected == null) return INITIAL;
+            Modpack modpack = selected.getModpack();
+            if (!modpack.isInstalled()) return INSTALL;
+            if (modpack.isOutdated()) return UPDATE;
+            if (modpack.isInstalled()) return PLAY;
             return INSTALL;
         }
     }
@@ -111,46 +110,10 @@ public final class ActionButton extends Button {
         this.pack = pack;
     }
 
-    public void launchPack(Account session, Pack modPack) {
-        LaunchGame.isGameRunning = true;
-        LaunchGame.loadServerList(modPack);
-        LaunchGame.launchPack(modPack, session);
-    }
-
-    private void updatePack(Pack modPack){
-        if (Constants.DEBUG) {
-            System.out.println("Updated the game");
-        }
-        launchInstallScene(modPack);
-        new Thread(() -> {
-            try {
-                InstallationManager.getInstance().updatePack(modPack, Collections.emptyList());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public void installPack(Pack modPack) {
-        if (Constants.DEBUG) {
-            System.out.println("Installing the pack");
-        }
-
-        launchInstallScene(modPack);
-        new Thread(() -> {
-            try {
-                //DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
-                InstallationManager.getInstance().installPack(modPack, Collections.emptyList());
-            } catch (IOException | InvalidManifestException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
     private void launchInstallScene(Pack modPack) {
         try {
             Stage stage = new Stage();
-            stage.setTitle("Installing " + modPack.getName() + "...");
+            stage.setTitle("Installing " + modPack.getModpack().getName() + "...");
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
 
             stage.initOwner(Main.getHome().getStage());

@@ -3,15 +3,15 @@ package net.dirtcraft.dirtlauncher.game;
 import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Data.Account;
-import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.objects.Listing;
-import net.dirtcraft.dirtlauncher.game.objects.ServerList;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
+import net.dirtcraft.dirtlauncher.game.serverlist.ServerList;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -26,13 +26,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LaunchGame {
 
     public static boolean isGameRunning = false;
 
-    public static void loadServerList(Pack pack) {
+    public static void loadServerList(Modpack pack) {
         List<Listing> servers = ServerList.getCurrent(pack.getName());
         ServerList serverList = ServerList.builder(pack.getName());
         pack.getListings().ifPresent(listings -> {
@@ -46,7 +45,7 @@ public class LaunchGame {
         serverList.build();
     }
 
-    public static void launchPack(Pack pack, Account session) {
+    public static void launchPack(Modpack pack, Account session) {
         Config settings = Main.getConfig();
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
@@ -180,7 +179,7 @@ public class LaunchGame {
         gameThread.start();
     }
 
-    private static String getLibs(Pack pack) {
+    private static String getLibs(Modpack pack) {
         Config settings = Main.getConfig();
         StringBuilder libs = new StringBuilder();
         for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {

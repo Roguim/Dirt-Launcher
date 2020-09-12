@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.game.objects;
+package net.dirtcraft.dirtlauncher.game.serverlist;
 
 import net.dirtcraft.dirtlauncher.Main;
 import org.apache.commons.lang3.ArrayUtils;

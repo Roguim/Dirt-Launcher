@@ -1,9 +1,10 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 
-import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.lingala.zip4j.ZipFile;
@@ -16,9 +17,9 @@ import java.util.concurrent.ExecutorService;
 
 public class InstallCustomPackTask implements IInstallationTask {
 
-    private final Pack pack;
+    private final Modpack pack;
 
-    public InstallCustomPackTask(Pack pack) {
+    public InstallCustomPackTask(Modpack pack) {
         this.pack = pack;
     }
 

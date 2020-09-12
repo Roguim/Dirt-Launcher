@@ -5,17 +5,17 @@ import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.*;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCustomPackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallFTBPackTask;
-import net.dirtcraft.dirtlauncher.game.objects.OptionalMod;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
@@ -27,11 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class InstallationManager {
@@ -54,7 +51,7 @@ public class InstallationManager {
         return InstallationManagerLoader.INSTANCE;
     }
 
-    public void installPack(Pack pack, List<OptionalMod> optionalMods) throws IOException, InvalidManifestException {
+    public void installPack(Modpack pack, List<OptionalMod> optionalMods) throws IOException, InvalidManifestException {
         System.out.println("-1");
         IInstallationTask packInstallTask;
 
@@ -81,7 +78,7 @@ public class InstallationManager {
         installOrUpdatePack(pack, packInstallTask);
     }
 
-    public void updatePack(Pack pack, List<OptionalMod> optionalMods) throws Exception, InvalidManifestException {
+    public void updatePack(Modpack pack, List<OptionalMod> optionalMods) throws Exception, InvalidManifestException {
         //IInstallationTask packUpdateTask;
 
         // Assigns the proper update task based on the pack type.
@@ -103,7 +100,7 @@ public class InstallationManager {
     }
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
-    private void installOrUpdatePack(Pack pack, IInstallationTask packInstallTask) throws IOException {
+    private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
         System.out.println("F");
         List<IInstallationTask> installationTasks = new ArrayList();
         // Fetch the game version manifest from Mojang
@@ -174,7 +171,6 @@ public class InstallationManager {
          */
 
         System.out.println("M");
-        pack.updateInstallStatus();
 
         // Update the UI and allow the user to launch the pack/
         Platform.runLater(() ->

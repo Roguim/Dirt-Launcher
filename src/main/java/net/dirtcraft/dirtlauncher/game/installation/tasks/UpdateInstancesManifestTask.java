@@ -3,8 +3,9 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -14,9 +15,9 @@ import java.util.concurrent.ExecutorService;
 
 public class UpdateInstancesManifestTask implements IInstallationTask {
 
-    private final Pack pack;
+    private final Modpack pack;
 
-    public UpdateInstancesManifestTask(Pack pack) {
+    public UpdateInstancesManifestTask(Modpack pack) {
         this.pack = pack;
     }
 

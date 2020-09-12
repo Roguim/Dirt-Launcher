@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks;
 
-import net.dirtcraft.dirtlauncher.Data.Config;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 
 import java.io.IOException;

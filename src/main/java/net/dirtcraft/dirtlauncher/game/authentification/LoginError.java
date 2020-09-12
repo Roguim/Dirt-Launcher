@@ -1,7 +1,6 @@
-package net.dirtcraft.dirtlauncher.game.objects;
+package net.dirtcraft.dirtlauncher.game.authentification;
 
 import net.cydhra.nidhogg.exception.*;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 
 public enum LoginError {

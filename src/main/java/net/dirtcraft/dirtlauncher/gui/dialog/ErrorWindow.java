@@ -32,9 +32,9 @@ public final class ErrorWindow extends Stage {
         MiscUtils.setAbsoluteHeight(title, 20);
 
         final Text name = new Text("Pack: " + (pack.isPresent() ? pack.get().getName() : "N/A"));
-        final Text packVersion = new Text("\tVersion: " + (pack.isPresent() ? pack.get().getVersion() : "N/A"));
-        final Text gameVersion = new Text("\nGame Version: " + (pack.isPresent() ? pack.get().getGameVersion() : "N/A"));
-        final Text forgeVersion = new Text("\tForge Version: " + (pack.isPresent() ? pack.get().getForgeVersion() : "N/A"));
+        final Text packVersion = new Text("\tVersion: " + (pack.isPresent() ? pack.get().getModpack().getVersion() : "N/A"));
+        final Text gameVersion = new Text("\nGame Version: " + (pack.isPresent() ? pack.get().getModpack().getGameVersion() : "N/A"));
+        final Text forgeVersion = new Text("\tForge Version: " + (pack.isPresent() ? pack.get().getModpack().getForgeVersion() : "N/A"));
         final Text osType = new Text("\nOperating System: " + SystemUtils.OS_NAME);
         final Text javaCheck = new Text("\tJRE8 Detected: " + SystemUtils.IS_JAVA_1_8);
         final Text errorOutput = new Text("\n\n" + error);

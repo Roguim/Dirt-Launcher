@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.gui.components;
 
 import javafx.application.Platform;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -23,7 +24,7 @@ public class SystemTray {
         return Optional.of(icon);
     }
 
-    public static void createIcon(Pack pack) {
+    public static void createIcon(Modpack pack) {
         try {
             // ensure awt toolkit is initialized.
             Toolkit.getDefaultToolkit();
