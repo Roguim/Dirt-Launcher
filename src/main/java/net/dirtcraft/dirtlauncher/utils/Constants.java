@@ -16,6 +16,7 @@ public class Constants {
     public static final String CSS_CLASS_VBOX = "v-box";
     public static final String CSS_CLASS_TITLE = "Title";
     public static final String CSS_CLASS_TEXT = "text";
+    public static final String CSS_CLASS_INDICATOR = "indicator";
     public static final String CSS_ID_ROOT = "Root";
 
     public static final String CSS_ID_PACKLIST_BG = "PackListBG";
@@ -37,6 +38,6 @@ public class Constants {
     public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
     public static final int MAX_DOWNLOAD_ATTEMPTS = 8;
-    public static final int MAX_DOWNLOAD_THREADS = 36;
+    public static final int MAX_DOWNLOAD_THREADS = 24;
 
 }

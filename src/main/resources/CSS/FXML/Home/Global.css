@@ -76,7 +76,7 @@
     -fx-padding: 0px 0px ;
     -fx-background-insets: 0px 0px;
     -fx-background-radius: 0 0 0 15 ;
-    -fx-content-display: right ;
+    -fx-content-display: center ;
 }
 
 .scroll-pane .button{
@@ -232,4 +232,31 @@
     -fx-background-insets: 2;
     -fx-background-radius: 5 5 5 5;
    -fx-text-fill:white;
+}
+
+.indicator{
+    -fx-background-radius: 5 5 5 5 ;
+    -fx-background-color: gray;
+
+    -fx-width: 20;
+    -fx-min-width: -fx-width;
+    -fx-max-width: -fx-width;
+
+    -fx-height: 25;
+    -fx-min-height: -fx-height;
+    -fx-max-height: -fx-height;
+
+    -fx-translate-x: 129;
+}
+
+.indicator:installed{
+    -fx-background-color: green;
+}
+
+.indicator:pinned{
+    -fx-background-color: blue;
+}
+
+.indicator:update{
+    -fx-background-color: yellow;
 }

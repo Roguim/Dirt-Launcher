@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -12,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -33,14 +33,16 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
     private double lastDragY;
     private final ContextMenu contextMenu;
     private final Modpack modpack;
+    private final Region indicator;
 
     PackSelector(Modpack modpack) {
         this.modpack = modpack;
         contextMenu = new ContextMenu();
-        initContextMenu();
+        setGraphic(indicator = getIndicator());
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
         setText(modpack.getName());
+        update();
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
@@ -95,6 +97,9 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
 
     public void update(){
         initContextMenu();
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("installed"), modpack.isInstalled());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("pinned"), modpack.isFavourite());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("update"), modpack.isInstalled() && modpack.isOutdated());
     }
 
     public void fire() {
@@ -193,5 +198,11 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         if (o.isFavourite() != isFavourite()) return isFavourite()? -1 : 1;
         else if (o.getModpack().isInstalled() != getModpack().isInstalled()) return modpack.isInstalled()? -1 : 1;
         else return getName().compareTo(o.getName());
+    }
+
+    public Region getIndicator(){
+        Region rectangle = new Region();
+        rectangle.getStyleClass().add(Constants.CSS_CLASS_INDICATOR);
+        return rectangle;
     }
 }
