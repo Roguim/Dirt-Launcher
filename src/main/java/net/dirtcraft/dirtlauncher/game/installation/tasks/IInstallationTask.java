@@ -14,4 +14,6 @@ public interface IInstallationTask {
     // Execute the task.
     void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException;
 
+    InstallationStages getRequiredStage();
+
 }

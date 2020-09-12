@@ -153,17 +153,12 @@ public final class LoginBar extends Pane {
     }
 
     public void logOut(){
-        Main.getAccounts().clearSelectedAccount();
+        Main.getAccounts().logout();
         setInputs();
     }
 
     public void login(){
-        try {
-            AccountCredentials credentials = new AccountCredentials(usernameField.getText(), passField.getText());
-            Main.getAccounts().setSelectedAccount(credentials);
-        } catch (Exception e) {
-            Main.getHome().getNotificationBox().displayError(LoginError.from(e));
-        }
+        Main.getAccounts().login(usernameField.getText(), passField.getText(), LoginError::from);
         setInputs();
     }
 

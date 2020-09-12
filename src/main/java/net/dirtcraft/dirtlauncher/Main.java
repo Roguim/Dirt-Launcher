@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Data.Accounts;
+import net.dirtcraft.dirtlauncher.Data.AccountManager;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -30,7 +30,7 @@ public class Main extends Application {
     private static CompletableFuture stageInit = null;
     private static Config config = null;
     private static Settings settingsMenu = null;
-    private static Accounts accounts = null;
+    private static AccountManager accounts = null;
     private static Home home = null;
     private static Path launcherDirectory;
 
@@ -60,7 +60,7 @@ public class Main extends Application {
 
         //pre-init accounts async
         CompletableFuture.runAsync(() -> {
-            accounts = new Accounts(launcherDirectory);
+            accounts = new AccountManager(launcherDirectory);
             System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
         });
 
@@ -96,7 +96,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static Accounts getAccounts() {
+    public static AccountManager getAccounts() {
         return accounts;
     }
 

@@ -9,6 +9,7 @@ import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.*;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
@@ -26,8 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class InstallationManager {
@@ -126,7 +130,39 @@ public class InstallationManager {
         ProgressContainer progressContainer = new ProgressContainer(installationTasks);
 
         System.out.println("K");
+
+        /*
+        Async installer. Currently commented out due to the GUI not really supporting it, also could use some cleaning as it looks a bit derp.
+
+        for(InstallationStages stage : InstallationStages.values()){
+            System.out.println(stage);
+            List<IInstallationTask> tasks = installationTasks.stream().filter(task->task.getRequiredStage() == stage).collect(Collectors.toList());
+            List<CompletableFuture<Optional<Exception>>> exceptions = new ArrayList<>();
+            tasks.forEach(task->exceptions.add(CompletableFuture.supplyAsync(()->{
+                try{
+                    System.out.println("L");
+                    System.out.println(task.getClass());
+                    task.executeTask(downloadManager, progressContainer, config);
+                    return Optional.empty();
+                } catch (Exception e){
+                    return Optional.of(e);
+                }
+            })));
+            for (CompletableFuture<Optional<Exception>> exception : exceptions){
+                try {
+                    Optional<Exception> optionalException = exception.get();
+                    if (optionalException.isPresent()) throw optionalException.get();
+                } catch (IOException e){
+                    throw e;
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+         */
+
         // Execute each task in sequence. The subtasks are multithreaded, but the major tasks are sequential intentionally.
+
         for(IInstallationTask task : installationTasks) {
             System.out.println("L");
             System.out.println(task.getClass());

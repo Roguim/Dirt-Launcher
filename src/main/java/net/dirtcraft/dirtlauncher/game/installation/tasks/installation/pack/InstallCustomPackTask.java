@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.lingala.zip4j.ZipFile;
@@ -65,5 +66,10 @@ public class InstallCustomPackTask implements IInstallationTask {
         modpackZip.delete();
 
         progressContainer.completeMajorStep();
+    }
+
+    @Override
+    public InstallationStages getRequiredStage() {
+        return InstallationStages.INSTALL;
     }
 }

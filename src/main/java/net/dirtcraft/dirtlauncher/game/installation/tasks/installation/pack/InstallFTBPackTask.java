@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 
 import java.io.IOException;
@@ -24,5 +25,10 @@ public class InstallFTBPackTask implements IInstallationTask {
     @Override
     public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
 
+    }
+
+    @Override
+    public InstallationStages getRequiredStage() {
+        return InstallationStages.INSTALL;
     }
 }

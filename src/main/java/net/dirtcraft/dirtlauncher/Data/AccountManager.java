@@ -5,7 +5,10 @@ import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.objects.LoginError;
+import net.dirtcraft.dirtlauncher.utils.Function;
 
+import javax.security.auth.login.LoginException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileReader;
@@ -18,7 +21,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
-public final class Accounts {
+public final class AccountManager {
 
     private Account selectedAccount;
     final private List<Account> altAccounts;
@@ -28,7 +31,7 @@ public final class Accounts {
     private final String finalYggdrasilClientToken;
 
 
-    public Accounts(Path launcherDirectory){
+    public AccountManager(Path launcherDirectory){
         boolean saveData = false;
         JsonObject accounts;
         accountDir = launcherDirectory.resolve("account.json").toFile();
@@ -115,7 +118,7 @@ public final class Accounts {
             altAccounts.remove(newAccount);
             selectedAccount = newAccount;
             saveData();
-        } else clearSelectedAccount();
+        } else logout();
     }
 
     public void setSelectedAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
@@ -124,10 +127,18 @@ public final class Accounts {
         saveData();
     }
 
-    public void clearSelectedAccount(){
+    public void logout(){
         if (selectedAccount != null) altAccounts.add(selectedAccount);
         selectedAccount = null;
         saveData();
+    }
+
+    public void login(String email, String password, Function<Exception> onFailure) {
+        try {
+            setSelectedAccount(new AccountCredentials(email, password));
+        } catch (Exception e) {
+            onFailure.run(e);
+        }
     }
 
     public List<Account> getAltAccounts() {

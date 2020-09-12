@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -156,5 +157,10 @@ public class VersionInstallationTask implements IInstallationTask {
                 return Optional.empty();
             }
         }
+    }
+
+    @Override
+    public InstallationStages getRequiredStage() {
+        return InstallationStages.INSTALL;
     }
 }

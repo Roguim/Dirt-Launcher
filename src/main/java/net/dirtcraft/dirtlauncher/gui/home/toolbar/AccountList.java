@@ -130,7 +130,7 @@ final class AccountList extends Stage {
 
         @Override
         public void fire() {
-            Main.getAccounts().clearSelectedAccount();
+            Main.getAccounts().logout();
             Main.getHome().getLoginBar().setInputs();
             instance.close();
         }

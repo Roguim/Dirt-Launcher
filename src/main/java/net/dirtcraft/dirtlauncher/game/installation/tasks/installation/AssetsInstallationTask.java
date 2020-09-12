@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
@@ -90,5 +91,10 @@ public class AssetsInstallationTask implements IInstallationTask {
         assetFolder.mkdirs();
         FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(assetFolder.getPath(), hash));
         progressContainer.completeMinorStep();
+    }
+
+    @Override
+    public InstallationStages getRequiredStage() {
+        return InstallationStages.INSTALL;
     }
 }

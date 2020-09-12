@@ -5,16 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Data.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class UpdateInstancesManifestTask implements IInstallationTask {
 
@@ -56,5 +52,10 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
 
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
+    }
+
+    @Override
+    public InstallationStages getRequiredStage() {
+        return InstallationStages.POST_INSTALL;
     }
 }
