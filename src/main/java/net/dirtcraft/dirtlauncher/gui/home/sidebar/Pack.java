@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.css.PseudoClass;
 import javafx.scene.Cursor;
@@ -15,10 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
-import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
-import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -27,9 +23,9 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.*;
-import java.util.stream.StreamSupport;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 public final class Pack extends Button {
     private double lastDragY;

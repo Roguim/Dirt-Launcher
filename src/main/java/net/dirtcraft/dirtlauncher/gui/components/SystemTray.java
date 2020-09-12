@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.gui.components;
 import javafx.application.Platform;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;

@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.cydhra.nidhogg.data.Session;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -14,8 +13,10 @@ import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.StreamSupport;
 

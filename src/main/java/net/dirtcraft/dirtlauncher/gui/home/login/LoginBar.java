@@ -11,8 +11,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
@@ -149,11 +149,6 @@ public final class LoginBar extends Pane {
         else type = ActionButton.Types.PLAY;
 
         this.actionButton.setType(type, pack);
-    }
-
-    public void logOut(){
-        Main.getAccounts().logout();
-        setInputs();
     }
 
     public void login(){

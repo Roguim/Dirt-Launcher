@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.gui.dialog;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,13 +15,8 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 

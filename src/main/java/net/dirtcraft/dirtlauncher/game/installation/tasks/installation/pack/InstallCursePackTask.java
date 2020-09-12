@@ -9,7 +9,6 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;

@@ -3,8 +3,8 @@ package net.dirtcraft.dirtlauncher;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {

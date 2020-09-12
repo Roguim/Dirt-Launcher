@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.gui.home.login;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
@@ -22,6 +23,7 @@ final class LogoutButton extends Button {
 
     @Override
     public void fire() {
-        loginBar.logOut();
+        Main.getAccounts().logout();
+        loginBar.setInputs();
     }
 }

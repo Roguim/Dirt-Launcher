@@ -15,10 +15,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-public class PackListerino extends ScrollPane {
+public class PackList extends ScrollPane {
     private Future<List<Pack>> listPreload;
     private final VBox packs;
-    public PackListerino(){
+    public PackList(){
         packs = new VBox();
         packs.getStyleClass().add(Constants.CSS_CLASS_VBOX);
         packs.setFocusTraversable(false);
