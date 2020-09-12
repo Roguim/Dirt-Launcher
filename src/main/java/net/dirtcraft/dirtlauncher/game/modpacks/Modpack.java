@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.StreamSupport;
 
 public class Modpack {
-    private String version;
+    private final String version;
     private final String name;
     private final String code;
     private final PackType packType;
@@ -75,10 +75,6 @@ public class Modpack {
     public Optional<List<Listing>> getListings() {
         if (listings == null) return Optional.empty();
         else return Optional.of(listings);
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public File getInstanceDirectory() {

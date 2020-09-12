@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -127,7 +128,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 loginBar.setActivePackCell(this);
                 getModpack().install().thenRun(this::update);
                 oldPack.ifPresent(PackSelector::fire);
-                Main.getHome().getLoginBar().setInputs();
+                Main.getHome().update();
                 initContextMenu();
             });
 
@@ -144,7 +145,8 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
-                Main.getHome().getLoginBar().setInputs();
+                if (isFavourite()) modpack.toggleFavourite();
+                Main.getHome().update();
                 initContextMenu();
             });
 
