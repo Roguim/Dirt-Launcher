@@ -23,7 +23,10 @@ public abstract class ConfigBase<T> {
         this.type = type;
     }
 
-    public abstract void load();
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public void load(){
+        configBase = FileUtils.parseJson(path, type).get();
+    }
 
     public void saveAsync(){
         if (!saveLock.tryAcquire()) pendingSave.set(true);

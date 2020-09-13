@@ -32,10 +32,6 @@ public class InstallCursePackTask implements IInstallationTask {
         this.pack = pack;
     }
 
-    public int getNumberSteps() {
-        return 4;
-    }
-
     @Override
     public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
         // Update Progress
@@ -72,8 +68,10 @@ public class InstallCursePackTask implements IInstallationTask {
 
         // Sort out the files
         FileUtils.copyDirectory(new File(tempDir.getPath(), "overrides"), modpackFolder);
-        JsonObject modpackManifest = FileUtils.readJsonFromFile(new File(tempDir, "manifest.json"));
-        FileUtils.writeJsonToFile(new File(modpackFolder, "manifest.json"), modpackManifest);
+        File tempManifest = new File(tempDir, "manifest.json");
+        JsonObject modpackManifest = FileUtils.readJsonFromFile(tempManifest);
+        org.apache.commons.io.FileUtils.copyFile(tempManifest, new File(modpackFolder, "manifest.json"));
+        //FileUtils.writeJsonToFile(new File(modpackFolder, "manifest.json"), modpackManifest);
         progressContainer.completeMinorStep();
 
         // Delete the temporary files
@@ -149,6 +147,11 @@ public class InstallCursePackTask implements IInstallationTask {
         }
 
         progressContainer.completeMajorStep();
+    }
+
+    @Override
+    public int getNumberSteps() {
+        return 4;
     }
 
     @Override

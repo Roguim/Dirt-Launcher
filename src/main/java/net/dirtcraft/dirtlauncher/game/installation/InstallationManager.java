@@ -7,7 +7,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
+import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.AssetsInstallationTask;
@@ -16,9 +16,11 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.VersionIn
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCustomPackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallFTBPackTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCursePackTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCustomPackTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateFTBPackTask;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
-import net.dirtcraft.dirtlauncher.gui.home.login.ActionButton;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -64,9 +66,9 @@ public class InstallationManager {
                 packInstallTask = new InstallCursePackTask(pack);
                 System.out.println("C");
                 break;
-            case FTB:
-                packInstallTask = new InstallFTBPackTask(pack);
-                break;
+            //case FTB:
+            //    packInstallTask = new InstallFTBPackTask(pack);
+            //    break;
             case CUSTOM:
                 packInstallTask = new InstallCustomPackTask(pack);
                 break;
@@ -80,24 +82,28 @@ public class InstallationManager {
     }
 
     public void updatePack(Modpack pack, List<OptionalMod> optionalMods) throws Exception, InvalidManifestException {
-        //IInstallationTask packUpdateTask;
+        IInstallationTask packUpdateTask;
 
         // Assigns the proper update task based on the pack type.
         switch(pack.getPackType()) {
             case CURSE:
-                //packUpdateTask = new UpdateCursePackTask(pack);
+                packUpdateTask = new UpdateCursePackTask(pack);
                 break;
-            case FTB:
-                //packUpdateTask = new UpdateFTBPackTask(pack);
-                break;
+            //case FTB:
+            //    packUpdateTask = new UpdateFTBPackTask(pack);
+            //    break;
             case CUSTOM:
-                //packUpdateTask = new UpdateCustomPackTask(pack);
+                packUpdateTask = new UpdateCustomPackTask(pack);
                 break;
             default:
                 throw new InvalidManifestException("Invalid Pack Type!");
         }
 
-        //installOrUpdatePack(pack, packUpdateTask);
+        try {
+            installOrUpdatePack(pack, packUpdateTask);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.

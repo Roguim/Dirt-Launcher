@@ -1,15 +1,14 @@
-package net.dirtcraft.dirtlauncher.configuration.manifests;
+package net.dirtcraft.dirtlauncher.game.installation.manifests;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.LauncherManifest;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("UnstableApiUsage")
-public class InstanceManifest extends LauncherManifest<InstanceManifest.Entry> {
+public class InstanceManifest extends InstallationManifest<InstanceManifest.Entry> {
 
     public InstanceManifest(){
         super(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()), new TypeToken<ArrayList<Entry>>(){});

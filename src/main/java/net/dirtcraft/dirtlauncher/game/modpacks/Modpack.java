@@ -6,7 +6,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
-import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
+import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.utils.Manifests;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 import net.dirtcraft.dirtlauncher.utils.Constants;

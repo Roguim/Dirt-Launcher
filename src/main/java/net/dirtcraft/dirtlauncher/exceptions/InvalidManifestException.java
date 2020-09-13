@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.game.installation.exceptions;
+package net.dirtcraft.dirtlauncher.exceptions;
 
 public class InvalidManifestException extends Exception {
 
