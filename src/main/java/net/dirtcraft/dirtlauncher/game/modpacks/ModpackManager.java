@@ -7,7 +7,6 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -31,15 +30,13 @@ public class ModpackManager {
     private static ModpackManager instance = new ModpackManager();
     private final File jsonPath;
     private final Gson gson;
-    private final Semaphore semaphore = new Semaphore(1);
+    private final Semaphore saveLock = new Semaphore(1);
     private final AtomicBoolean pendingSave = new AtomicBoolean(false);
     private List<Modpack> modpacks;
 
     public ModpackManager() {
         jsonPath = Main.getLauncherDirectory().resolve("packs.json").toFile();
-        gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        gson = Main.gson;
         if (!jsonPath.exists()) {
             try {
                 List<Modpack> packsList = new ArrayList<>();
@@ -85,8 +82,8 @@ public class ModpackManager {
     }
 
     public void saveAsync(){
-        if (!semaphore.tryAcquire()) pendingSave.set(true);
-        else CompletableFuture.runAsync(this::save).whenComplete((v, e)->semaphore.release());
+        if (!saveLock.tryAcquire()) pendingSave.set(true);
+        else CompletableFuture.runAsync(this::save).whenComplete((v, e)-> saveLock.release());
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -95,6 +92,7 @@ public class ModpackManager {
                 FileWriter fw = new FileWriter(jsonPath);
                 JsonWriter jw = new JsonWriter(fw);
         ){
+            jw.setIndent("  ");
             gson.toJson(modpacks, new TypeToken<ArrayList<Modpack>>(){}.getType(), jw);
         }catch (IOException ignored){
         }

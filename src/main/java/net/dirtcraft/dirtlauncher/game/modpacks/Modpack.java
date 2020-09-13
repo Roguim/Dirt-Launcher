@@ -7,9 +7,9 @@ import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.game.installation.exceptions.InvalidManifestException;
+import net.dirtcraft.dirtlauncher.utils.Manifests;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 import net.dirtcraft.dirtlauncher.utils.Constants;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.StreamSupport;
 
 public class Modpack {
     private final String version;
@@ -120,20 +119,13 @@ public class Modpack {
     }
 
     public boolean isInstalled() {
-        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .map(obj -> obj.get("name"))
-                .map(JsonElement::getAsString)
-                .anyMatch(name -> name.equals(getName()));
+        return Manifests.INSTANCE.stream()
+                .anyMatch(pack->pack.name.equals(getName()));
     }
 
     public boolean isOutdated() {
-        return StreamSupport.stream(FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory())).getAsJsonArray("packs").spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .filter(obj -> obj.get("name").getAsString().equals(getName()))
-                .map(obj -> obj.get("version"))
-                .map(JsonElement::getAsString)
-                .noneMatch(version -> version.equals(getVersion()));
+        return Manifests.INSTANCE.stream()
+                .noneMatch(pack->pack.version.equals(getVersion()));
     }
 
     public boolean isFavourite(){

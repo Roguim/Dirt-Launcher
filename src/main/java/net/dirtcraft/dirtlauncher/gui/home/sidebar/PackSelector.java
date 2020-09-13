@@ -3,7 +3,12 @@ package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.css.PseudoClass;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.VPos;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -12,11 +17,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
+import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -131,7 +143,8 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                getModpack().install().thenRun(this::update);
+                launchInstallScene();
+                getModpack().install();
                 oldPack.ifPresent(PackSelector::fire);
                 Main.getHome().update();
                 initContextMenu();
@@ -175,7 +188,8 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                getModpack().install().thenRun(this::update);
+                launchInstallScene();
+                getModpack().install();
                 oldPack.ifPresent(PackSelector::fire);
             });
         }
@@ -204,5 +218,41 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         Region rectangle = new Region();
         rectangle.getStyleClass().add(Constants.CSS_CLASS_INDICATOR);
         return rectangle;
+    }
+
+    private void launchInstallScene() {
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Installing " + this.getModpack().getName() + "...");
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
+
+            stage.initOwner(Main.getHome().getStage());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
+
+            stage.setScene(new Scene(root, Main.screenDimension.getWidth() / 3, Main.screenDimension.getHeight() / 4));
+            stage.setResizable(false);
+            stage.setOnCloseRequest(Event::consume);
+
+            stage.show();
+
+            Install.getInstance().ifPresent(install -> {
+                TextFlow notificationArea = install.getNotificationText();
+                Text notification = new Text("Beginning Download...");
+                notification.setFill(Color.WHITE);
+                notification.setTextOrigin(VPos.CENTER);
+                notification.setTextAlignment(TextAlignment.CENTER);
+                notificationArea.getChildren().add(notification);
+
+                notification.setText("Preparing To Install...");
+                install.setStage(stage);
+            });
+
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 }

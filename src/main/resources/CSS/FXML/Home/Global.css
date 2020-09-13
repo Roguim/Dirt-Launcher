@@ -235,18 +235,18 @@
 }
 
 .indicator{
-    -fx-background-radius: 5 5 5 5 ;
+    -fx-background-radius: 0 5 5 0 ;
     -fx-background-color: gray;
 
-    -fx-width: 20;
+    -fx-width: 15;
     -fx-min-width: -fx-width;
     -fx-max-width: -fx-width;
 
-    -fx-height: 25;
+    -fx-height: 50;
     -fx-min-height: -fx-height;
     -fx-max-height: -fx-height;
 
-    -fx-translate-x: 129;
+    -fx-translate-x: 131;
 }
 
 .indicator:installed{

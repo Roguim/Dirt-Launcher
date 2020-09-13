@@ -1,7 +1,12 @@
 package net.dirtcraft.dirtlauncher.utils;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import net.dirtcraft.dirtlauncher.Main;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
@@ -15,6 +20,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -54,6 +60,61 @@ public class FileUtils {
         try (FileWriter writer = new FileWriter(file, false)) {
             writer.write(jsonObject.toString());
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> parseJson(File file, TypeToken<T> type, Function<JsonObject, T> migrate) {
+        try {
+            return Optional.ofNullable(parseJsonUnchecked(file, type));
+        } catch (Exception e){
+            final Optional<T> optionalT = Optional.ofNullable(tryMigrate(file, migrate));
+            optionalT.ifPresent(t->toJson(file, t, type));
+            return optionalT;
+        }
+    }
+
+    private static @Nullable <T> T tryMigrate(File file, Function<JsonObject, T> migrate){
+        if (!file.exists()) return null;
+        try{
+            JsonObject jsonObject = readJsonFromFile(file);
+            return migrate.execute(jsonObject);
+        } catch (Exception ignored){
+            return null;
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> parseJson(File file, TypeToken<T> type) {
+        try {
+            return Optional.ofNullable(parseJsonUnchecked(file, type));
+        } catch (Exception e){
+            return Optional.empty();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> T parseJsonUnchecked(File file, TypeToken<T> type) throws IOException{
+        final Gson gson = Main.gson;
+        try(
+                FileReader fileReader = new FileReader(file);
+                JsonReader jsonReader = new JsonReader(fileReader)
+        ){
+            return gson.fromJson(jsonReader, type.getType());
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> void toJson(File file, T t, TypeToken<T> type){
+        final Gson gson = Main.gson;
+        try(
+                FileWriter fileWriter = new FileWriter(file);
+                JsonWriter jsonWriter = new JsonWriter(fileWriter)
+        ){
+            jsonWriter.setIndent("  ");
+            gson.toJson(t, type.getType(), jsonWriter);
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
