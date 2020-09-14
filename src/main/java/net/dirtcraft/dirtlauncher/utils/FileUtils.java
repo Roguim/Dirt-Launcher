@@ -14,17 +14,21 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static net.dirtcraft.dirtlauncher.utils.Constants.MAX_DOWNLOAD_ATTEMPTS;
+import static org.apache.commons.io.FileUtils.ONE_MB;
 
 public class FileUtils {
 
@@ -124,6 +128,15 @@ public class FileUtils {
         org.apache.commons.io.FileUtils.deleteDirectory(file);
     }
 
+    // Mirrors just in case the file imports this instead of the commons-io FileUtils. Makes things easier than using paths every declaration...
+    public static void deleteDirectoryUnchecked(File file) {
+        try {
+            org.apache.commons.io.FileUtils.deleteDirectory(file);
+        } catch (Exception ignored){
+
+        }
+    }
+
     public static void copyURLToFile(String URL, File file) throws IOException{
         copyURLToFile(URL, file, 0);
     }
@@ -139,7 +152,8 @@ public class FileUtils {
     }
 
     public static void copyDirectory(File src, File dest) throws IOException {
-        org.apache.commons.io.FileUtils.copyDirectory(src, dest);
+        //org.apache.commons.io.FileUtils.copyDirectory(src, dest);
+        copyOrReplaceDirectory(src, dest);
     }
 
     public static void moveDirectory(File src, File dest, boolean createDir) throws IOException {
@@ -232,6 +246,98 @@ public class FileUtils {
         packIn.close();
         packBufferedIn.close();
         packFileIn.close();
+    }
+
+    //A modified version of the apache copyDirectory code.
+    private static void copyOrReplaceDirectory(File srcDir, File destDir) throws IOException{
+        if (!srcDir.isDirectory()) {
+            throw new IOException("Source '" + srcDir + "' exists but is not a directory");
+        }
+        if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
+            throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
+        }
+
+        // Cater for destination being directory within the source directory (see IO-141)
+        List<String> exclusionList = null;
+        if (destDir.getCanonicalPath().startsWith(srcDir.getCanonicalPath())) {
+            final File[] srcFiles =  srcDir.listFiles();
+            if (srcFiles != null && srcFiles.length > 0) {
+                exclusionList = new ArrayList<>(srcFiles.length);
+                for (final File srcFile : srcFiles) {
+                    final File copiedFile = new File(destDir, srcFile.getName());
+                    exclusionList.add(copiedFile.getCanonicalPath());
+                }
+            }
+        }
+        doCopyDirectory(srcDir, destDir, exclusionList);
+
+    }
+
+    //A modified version of the apache copyDirectory code.
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void doCopyDirectory(final File srcDir, final File destDir, final List<String> exclusionList)
+            throws IOException {
+        // recurse
+        final File[] srcFiles = srcDir.listFiles();
+        if (srcFiles == null) {  // null if abstract pathname does not denote a directory, or if an I/O error occurs
+            throw new IOException("Failed to list contents of " + srcDir);
+        }
+        if (destDir.exists()) {
+            if (!destDir.isDirectory()) {
+                throw new IOException("Destination '" + destDir + "' exists but is not a directory");
+            }
+        } else {
+            if (!destDir.mkdirs() && !destDir.isDirectory()) {
+                throw new IOException("Destination '" + destDir + "' directory cannot be created");
+            }
+        }
+        if (!destDir.canWrite()) {
+            throw new IOException("Destination '" + destDir + "' cannot be written to");
+        }
+        for (final File srcFile : srcFiles) {
+            final File dstFile = new File(destDir, srcFile.getName());
+            if (exclusionList == null || !exclusionList.contains(srcFile.getCanonicalPath())) {
+                if (srcFile.isDirectory()) {
+                    doCopyDirectory(srcFile, dstFile, exclusionList);
+                } else {
+                    if (dstFile.exists()) dstFile.delete();
+                    doCopyFile(srcFile, dstFile);
+                }
+            }
+        }
+    }
+
+    //A modified version of the apache copyDirectory code.
+    private static void doCopyFile(final File srcFile, final File destFile)
+            throws IOException {
+        if (destFile.exists() && destFile.isDirectory()) {
+            throw new IOException("Destination '" + destFile + "' exists but is a directory");
+        }
+
+        try (FileInputStream fis = new FileInputStream(srcFile);
+             FileChannel input = fis.getChannel();
+             FileOutputStream fos = new FileOutputStream(destFile);
+             FileChannel output = fos.getChannel()) {
+            final long size = input.size(); // TODO See IO-386
+            long pos = 0;
+            long count = 0;
+            while (pos < size) {
+                final long remain = size - pos;
+                count = Math.min(remain, ONE_MB * 30);
+                final long bytesCopied = output.transferFrom(input, pos, count);
+                if (bytesCopied == 0) { // IO-385 - can happen if file is truncated after caching the size
+                    break; // ensure we don't loop forever
+                }
+                pos += bytesCopied;
+            }
+        }
+
+        final long srcLen = srcFile.length(); // TODO See IO-386
+        final long dstLen = destFile.length(); // TODO See IO-386
+        if (srcLen != dstLen) {
+            throw new IOException("Failed to copy full contents from '" +
+                    srcFile + "' to '" + destFile + "' Expected length: " + srcLen + " Actual: " + dstLen);
+        }
     }
 
 }

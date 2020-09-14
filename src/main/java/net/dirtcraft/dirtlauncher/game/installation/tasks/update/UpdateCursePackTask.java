@@ -34,6 +34,7 @@ public class UpdateCursePackTask implements IUpdateTask {
         this.modpackFolder = pack.getInstanceDirectory();
         this.modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
         this.tempDir = new File(modpackFolder.getPath(), "temp");
+        if (tempDir.exists()) FileUtils.deleteDirectoryUnchecked(tempDir);
     }
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
@@ -44,7 +45,6 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare Folders
-
         modpackFolder.mkdirs();
         tempDir.mkdirs();
 

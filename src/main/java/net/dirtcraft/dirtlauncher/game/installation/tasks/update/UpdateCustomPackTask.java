@@ -29,6 +29,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
         this.tempDir =      new File(modpackFolder, "temp");
         this.modsDir =      new File(modpackFolder, "mods");
         this.configsDir = new File(modpackFolder, "config");
+        if (tempDir.exists()) tempDir.delete();
     }
 
     @Override
