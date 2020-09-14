@@ -11,6 +11,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -135,7 +136,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
         libraryPath.mkdirs();
         String url;
-        JsonElement urlElement = getJsonElement(library, "downloads", "artifact", "url").orElse(JsonNull.INSTANCE);
+        JsonElement urlElement = JsonUtils.getJsonElement(library, "downloads", "artifact", "url").orElse(JsonNull.INSTANCE);
         if (!urlElement.isJsonNull()) url = urlElement.getAsString();
         else {
             url = library.has("url")
@@ -167,17 +168,6 @@ public class ForgeInstallationTask implements IInstallationTask {
         librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";");
 
         progressContainer.completeMinorStep();
-    }
-
-    public Optional<JsonElement> getJsonElement(JsonObject json, String... keys){
-        if (keys.length == 0) return Optional.empty();
-        JsonObject jsonObject = json;
-        for(int i = 0; i < keys.length - 2;i++){
-            String key = keys[i];
-            if (!jsonObject.has(key) || !json.get(key).isJsonObject()) return Optional.empty();
-            jsonObject = jsonObject.getAsJsonObject(key);
-        }
-        return jsonObject.has(keys[keys.length-1]) ? Optional.ofNullable(jsonObject.get(keys[keys.length-1])) : Optional.empty();
     }
 
     @Override
