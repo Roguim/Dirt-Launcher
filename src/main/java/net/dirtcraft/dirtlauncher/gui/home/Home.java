@@ -136,9 +136,18 @@ public class Home extends Scene {
         return webView;
     }
 
-    public void reload(){
+    public void update(){
         Main.getAccounts().refreshSelectedAccount();
         sidebar.updatePacksAsync();
+        loginBar.setInputs();
+    }
+
+    public void updateModpacks(){
+        sidebar.update();
+    }
+
+    public void updateLogin(){
+        Main.getAccounts().refreshSelectedAccount();
         loginBar.setInputs();
     }
 

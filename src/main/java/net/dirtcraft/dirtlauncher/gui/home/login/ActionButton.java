@@ -18,7 +18,7 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -28,7 +28,7 @@ import java.util.Optional;
 
 public final class ActionButton extends Button {
     private Types type;
-    private Pack pack;
+    private PackSelector pack;
 
     public ActionButton(){
         this.type = Types.INITIAL;
@@ -43,7 +43,7 @@ public final class ActionButton extends Button {
         else setText(type.toString() + " As " + session.getAlias());
     }
 
-    public void setType(Types type, Pack pack) {
+    public void setType(Types type, PackSelector pack) {
         Optional<Account> account = Main.getAccounts().getSelectedAccount();
         this.type = type;
         this.pack = pack;
@@ -61,11 +61,11 @@ public final class ActionButton extends Button {
             switch (type) {
                 case INSTALL:
                     launchInstallScene(pack);
-                    pack.getModpack().install().thenRun(pack::updateInstallStatus);
+                    pack.getModpack().install().thenRun(pack::update);
                     return;
                 case UPDATE:
                     launchInstallScene(pack);
-                    pack.getModpack().update().thenRun(pack::updateInstallStatus);
+                    pack.getModpack().update().thenRun(pack::update);
                     return;
                 case PLAY:
                     launchInstallScene(pack);
@@ -96,7 +96,7 @@ public final class ActionButton extends Button {
             }
         }
 
-        public static Types fromPack(Pack selected){
+        public static Types fromPack(PackSelector selected){
             if (selected == null) return INITIAL;
             Modpack modpack = selected.getModpack();
             if (!modpack.isInstalled()) return INSTALL;
@@ -106,11 +106,11 @@ public final class ActionButton extends Button {
         }
     }
 
-    public void setPack(Pack pack){
+    public void setPack(PackSelector pack){
         this.pack = pack;
     }
 
-    private void launchInstallScene(Pack modPack) {
+    private void launchInstallScene(PackSelector modPack) {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + modPack.getModpack().getName() + "...");

@@ -1,5 +1,5 @@
 package net.dirtcraft.dirtlauncher.utils;
 
-public interface Function<T> {
-    void run(T t);
+public interface Function<T,E> {
+    E execute(T t);
 }
