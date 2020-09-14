@@ -25,9 +25,15 @@ import java.util.stream.Collectors;
 public class UpdateCursePackTask implements IUpdateTask {
 
     private final Modpack pack;
+    private final File modpackFolder;
+    private final File modpackZip;
+    private final File tempDir;
 
     public UpdateCursePackTask(Modpack pack) {
         this.pack = pack;
+        this.modpackFolder = pack.getInstanceDirectory();
+        this.modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
+        this.tempDir = new File(modpackFolder.getPath(), "temp");
     }
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
@@ -38,9 +44,6 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare Folders
-        final File modpackFolder = pack.getInstanceDirectory();
-        final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
-        final File tempDir = new File(modpackFolder.getPath(), "temp");
 
         modpackFolder.mkdirs();
         tempDir.mkdirs();
@@ -50,11 +53,11 @@ public class UpdateCursePackTask implements IUpdateTask {
         // Download Modpack Zip
         FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
 
         // Update Progress
+        progressContainer.completeMajorStep();
         progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
-        progressContainer.setNumMinorSteps(4);
+        progressContainer.setNumMinorSteps(3);
 
         // Extract Modpack Zip
         new ZipFile(modpackZip).extractAll(tempDir.getPath());
@@ -72,15 +75,23 @@ public class UpdateCursePackTask implements IUpdateTask {
         CurseManifest oldManifest = FileUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseManifest>() {});
         CurseManifest newManifest = FileUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<CurseManifest>() {});
         modsFolder.mkdirs();
+        progressContainer.completeMinorStep();
+
+        // Update Progress
+        progressContainer.completeMajorStep();
+        progressContainer.setProgressText("Calculating Changes");
+        progressContainer.setNumMinorSteps(oldManifest.files.size() + newManifest.files.size());
 
         //Work out what changes need to be made to the mods and remove / add them.
         List<CurseManifest.CurseMetadataReference> toRemove = new ArrayList<>();
-        List<CurseManifest.CurseMetadataReference> toInstall = newManifest.files.stream()
+        List<CurseManifest.CurseMetadataReference> toInstall = newManifest.files.parallelStream()
+                .peek(e->progressContainer.completeMinorStep())
                 .filter(file->oldManifest.files.stream().noneMatch(file::equals))
                 .filter(file->file.required)
                 .collect(Collectors.toList());
 
         for (CurseManifest.CurseMetadataReference oldFile : oldManifest.files) {
+            progressContainer.completeMinorStep();
             Optional<CurseManifest.CurseMetadataReference> optNewFile = newManifest.files.stream()
                     .filter(oldFile::equals)
                     .findAny();
@@ -94,20 +105,38 @@ public class UpdateCursePackTask implements IUpdateTask {
             }
         }
 
-        toRemove.stream()
+        // Update Progress
+        progressContainer.completeMajorStep();
+        progressContainer.setProgressText("Removing old mods");
+        progressContainer.setNumMinorSteps(toRemove.size());
+
+        //remove old mods
+        toRemove.parallelStream()
                 .map(m->m.getManifestAsync(threadService))
                 .map(this::getFutureUnchecked)
                 .map(m->m.fileName)
                 .peek(fn->System.out.println("removed: " + fn))
                 .map(m->new File(modsFolder, m))
-                .forEach(File::delete);
+                .peek(File::delete)
+                .forEach(t->progressContainer.completeMinorStep());
 
+        // Update Progress
+        progressContainer.completeMajorStep();
+        progressContainer.setProgressText("Adding new mods");
+        progressContainer.setNumMinorSteps(toInstall.size());
+
+        //install new mods
         toInstall.stream()
                 .map(m->m.getManifestAsync(threadService))
                 .map(this::getFutureUnchecked)
                 .peek(fn->System.out.println("added: " + fn.fileName))
-                .forEach(m->m.downloadAsync(modsFolder, threadService));
+                .forEach(m->m.downloadAsync(modsFolder, threadService).whenComplete((t,e)->progressContainer.completeMinorStep()));
 
+
+        // Update Progress
+        progressContainer.completeMajorStep();
+        progressContainer.setProgressText("Cleaning up");
+        progressContainer.setNumMinorSteps(1);
         org.apache.commons.io.FileUtils.copyFile(tempManifestFile, currentManifestFile);
 
         // Delete the temporary files
@@ -126,7 +155,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
     @Override
     public int getNumberSteps() {
-        return 4;
+        return 6;
     }
 
     @Override

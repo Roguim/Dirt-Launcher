@@ -61,14 +61,14 @@ public class InstallationManager {
         System.out.println("A");
         // Assigns the proper installation task based on the pack type.
         switch(pack.getPackType()) {
+            //case FTB:
+            //    packInstallTask = new InstallFTBPackTask(pack);
+            //    break;
             case CURSE:
                 System.out.println("B");
                 packInstallTask = new InstallCursePackTask(pack);
                 System.out.println("C");
                 break;
-            //case FTB:
-            //    packInstallTask = new InstallFTBPackTask(pack);
-            //    break;
             case CUSTOM:
                 packInstallTask = new InstallCustomPackTask(pack);
                 break;
@@ -86,12 +86,12 @@ public class InstallationManager {
 
         // Assigns the proper update task based on the pack type.
         switch(pack.getPackType()) {
-            case CURSE:
-                packUpdateTask = new UpdateCursePackTask(pack);
-                break;
             //case FTB:
             //    packUpdateTask = new UpdateFTBPackTask(pack);
             //    break;
+            case CURSE:
+                packUpdateTask = new UpdateCursePackTask(pack);
+                break;
             case CUSTOM:
                 packUpdateTask = new UpdateCustomPackTask(pack);
                 break;
