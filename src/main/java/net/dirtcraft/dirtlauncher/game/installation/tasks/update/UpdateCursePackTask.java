@@ -115,7 +115,7 @@ public class UpdateCursePackTask implements IUpdateTask {
                 .map(m->m.getManifestAsync(threadService))
                 .map(this::getFutureUnchecked)
                 .map(m->m.fileName)
-                .peek(fn->System.out.println("removed: " + fn))
+                //.peek(fn->System.out.println("removed: " + fn))
                 .map(m->new File(modsFolder, m))
                 .peek(File::delete)
                 .forEach(t->progressContainer.completeMinorStep());
@@ -129,7 +129,7 @@ public class UpdateCursePackTask implements IUpdateTask {
         toInstall.stream()
                 .map(m->m.getManifestAsync(threadService))
                 .map(this::getFutureUnchecked)
-                .peek(fn->System.out.println("added: " + fn.fileName))
+                //.peek(fn->System.out.println("added: " + fn.fileName))
                 .forEach(m->m.downloadAsync(modsFolder, threadService).whenComplete((t,e)->progressContainer.completeMinorStep()));
 
 

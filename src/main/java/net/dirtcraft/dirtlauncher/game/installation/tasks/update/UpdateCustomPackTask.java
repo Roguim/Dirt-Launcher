@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.therandomlabs.utils.io.ZipFile;
+import javafx.application.Application;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;

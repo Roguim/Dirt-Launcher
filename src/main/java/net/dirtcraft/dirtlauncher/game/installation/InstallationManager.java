@@ -55,29 +55,23 @@ public class InstallationManager {
     }
 
     public void installPack(Modpack pack, List<OptionalMod> optionalMods) throws IOException, InvalidManifestException {
-        System.out.println("-1");
         IInstallationTask packInstallTask;
 
-        System.out.println("A");
         // Assigns the proper installation task based on the pack type.
         switch(pack.getPackType()) {
             //case FTB:
             //    packInstallTask = new InstallFTBPackTask(pack);
             //    break;
             case CURSE:
-                System.out.println("B");
                 packInstallTask = new InstallCursePackTask(pack);
-                System.out.println("C");
                 break;
             case CUSTOM:
                 packInstallTask = new InstallCustomPackTask(pack);
                 break;
             default:
-                System.out.println("D");
                 throw new InvalidManifestException("Invalid Pack Type!");
         }
 
-        System.out.println("E");
         installOrUpdatePack(pack, packInstallTask);
     }
 
@@ -108,32 +102,24 @@ public class InstallationManager {
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
     private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
-        System.out.println("F");
         List<IInstallationTask> installationTasks = new ArrayList();
         // Fetch the game version manifest from Mojang
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
-        System.out.println("G");
         // Add tasks for any missing game or forge components
         if(!verifyGameComponentVersion(pack.getGameVersion(), config.getVersionsDirectory(), "versions")) installationTasks.add(new VersionInstallationTask(versionManifest));
-        System.out.println("Uno");
         if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
-        System.out.println("Dos");
         if(!verifyGameComponentVersion(pack.getForgeVersion(), config.getForgeDirectory(), "forgeVersions")) installationTasks.add(new ForgeInstallationTask(pack));
 
-        System.out.println("H");
         // Add the pack task as the next task
         installationTasks.add(packInstallTask);
 
-        System.out.println("I");
         // Add the manifest update task as the last task.
         installationTasks.add(new UpdateInstancesManifestTask(pack));
 
-        System.out.println("J");
         // Tracks the completion of the installation process and updates the progress bar and output text.
         ProgressContainer progressContainer = new ProgressContainer(installationTasks);
 
-        System.out.println("K");
 
         /*
         Async installer. Currently commented out due to the GUI not really supporting it, also could use some cleaning as it looks a bit derp.
@@ -168,8 +154,6 @@ public class InstallationManager {
         // Execute each task in sequence. The subtasks are multithreaded, but the major tasks are sequential intentionally.
 
         for(IInstallationTask task : installationTasks) {
-            System.out.println("L");
-            System.out.println(task.getClass());
             task.executeTask(downloadManager, progressContainer, config);
         }
 
@@ -177,7 +161,6 @@ public class InstallationManager {
             --- Installation Completed ---
          */
 
-        System.out.println("M");
 
         // Update the UI and allow the user to launch the pack/
         Platform.runLater(() ->
