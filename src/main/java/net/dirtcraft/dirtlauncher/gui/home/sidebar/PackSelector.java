@@ -154,12 +154,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
             });
 
             uninstall.setOnAction(e->{
-                Iterator<InstanceManifest.Entry> modpackIterator = Manifests.INSTANCE.listIterator();
-                while (modpackIterator.hasNext()){
-                    if (!modpackIterator.next().name.equals(modpack.getName())) continue;
-                    modpackIterator.remove();
-                    break;
-                }
+                Manifests.INSTANCE.remove(this.modpack);
                 try {
                     FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){
