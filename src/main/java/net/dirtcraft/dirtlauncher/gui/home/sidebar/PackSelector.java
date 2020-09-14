@@ -25,12 +25,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.Manifests;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +40,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -151,13 +154,12 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
             });
 
             uninstall.setOnAction(e->{
-                JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()));
-                if (instanceManifest == null || !instanceManifest.has("packs")) return;
-                JsonArray packs = instanceManifest.getAsJsonArray("packs");
-                for (int i = 0; i < packs.size(); i++){
-                    if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), modpack.getName())) packs.remove(i);
+                Iterator<InstanceManifest.Entry> modpackIterator = Manifests.INSTANCE.listIterator();
+                while (modpackIterator.hasNext()){
+                    if (!modpackIterator.next().name.equals(modpack.getName())) continue;
+                    modpackIterator.remove();
+                    break;
                 }
-                FileUtils.writeJsonToFile(new File(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()).getPath()), instanceManifest);
                 try {
                     FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){

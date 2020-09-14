@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -62,6 +64,13 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(1);
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
+
+        FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
+        progressContainer.completeMinorStep();
+        progressContainer.completeMajorStep();
+
+        // Download the Forge Libraries
+        progressContainer.setProgressText("Downloading Forge Libraries");
         JsonArray librariesArray;
         if (forgeVersionManifest.has("versionInfo")) librariesArray = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
         else {
@@ -70,13 +79,6 @@ public class ForgeInstallationTask implements IInstallationTask {
                     String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion()),
                     new File(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar"));
         }
-
-        FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
-        progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
-
-        // Download the Forge Libraries
-        progressContainer.setProgressText("Downloading Forge Libraries");
         StringBuffer librariesLaunchCode = new StringBuffer();
         progressContainer.setNumMinorSteps(librariesArray.size());
 
@@ -87,7 +89,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                         .map(library -> CompletableFuture.runAsync(() -> {
                             try {
                                 installLibrary(library, forgeFolder, librariesLaunchCode, progressContainer);
-                            } catch (IOException e) {
+                            } catch (Throwable e) {
                                 throw new CompletionException(e);
                             }
                         }, threadService))
@@ -133,7 +135,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
         libraryPath.mkdirs();
         String url;
-        JsonElement urlElement = library.getAsJsonObject("downloads").getAsJsonObject("artifact").get("url");
+        JsonElement urlElement = getJsonElement(library, "downloads", "artifact", "url").orElse(JsonNull.INSTANCE);
         if (!urlElement.isJsonNull()) url = urlElement.getAsString();
         else {
             url = library.has("url")
@@ -165,6 +167,17 @@ public class ForgeInstallationTask implements IInstallationTask {
         librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";");
 
         progressContainer.completeMinorStep();
+    }
+
+    public Optional<JsonElement> getJsonElement(JsonObject json, String... keys){
+        if (keys.length == 0) return Optional.empty();
+        JsonObject jsonObject = json;
+        for(int i = 0; i < keys.length - 2;i++){
+            String key = keys[i];
+            if (!jsonObject.has(key) || !json.get(key).isJsonObject()) return Optional.empty();
+            jsonObject = jsonObject.getAsJsonObject(key);
+        }
+        return jsonObject.has(keys[keys.length-1]) ? Optional.ofNullable(jsonObject.get(keys[keys.length-1])) : Optional.empty();
     }
 
     @Override
