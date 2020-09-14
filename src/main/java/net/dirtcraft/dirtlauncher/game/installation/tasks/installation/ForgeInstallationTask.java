@@ -8,6 +8,7 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,13 +61,22 @@ public class ForgeInstallationTask implements IInstallationTask {
         forgeInstaller.delete();
         progressContainer.setNumMinorSteps(1);
 
+        // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
+        JsonArray librariesArray;
+        if (forgeVersionManifest.has("versionInfo")) librariesArray = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
+        else {
+            librariesArray = forgeVersionManifest.getAsJsonArray("libraries");
+            FileUtils.copyURLToFile(
+                    String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion()),
+                    new File(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar"));
+        }
+
         FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
         // Download the Forge Libraries
         progressContainer.setProgressText("Downloading Forge Libraries");
-        JsonArray librariesArray = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
         StringBuffer librariesLaunchCode = new StringBuffer();
         progressContainer.setNumMinorSteps(librariesArray.size());
 
@@ -113,17 +123,24 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         // We already installed forge, no need to do it again.
         if (libraryMaven[1].equals("forge")) {
+            if (Constants.DEBUG) System.out.println("Skipping forge library because Forge is already installed!");
             progressContainer.completeMinorStep();
             return;
         }
+        if (Constants.DEBUG) System.out.println("Installing library: " + libraryMaven[1]);
 
         // Establish paths
         File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
         libraryPath.mkdirs();
-        String url = library.has("url")
-                ? library.get("url").getAsString()
-                : "https://libraries.minecraft.net/";
-        url += String.format("%s/%s/%s/%s-%s.jar", libraryMaven[0].replace(".", "/"), libraryMaven[1], libraryMaven[2], libraryMaven[1], libraryMaven[2]);
+        String url;
+        JsonElement urlElement = library.getAsJsonObject("downloads").getAsJsonObject("artifact").get("url");
+        if (!urlElement.isJsonNull()) url = urlElement.getAsString();
+        else {
+            url = library.has("url")
+                    ? library.get("url").getAsString()
+                    : "https://libraries.minecraft.net/";
+            url += String.format("%s/%s/%s/%s-%s.jar", libraryMaven[0].replace(".", "/"), libraryMaven[1], libraryMaven[2], libraryMaven[1], libraryMaven[2]);
+        }
 
         String fileName = String.format("%s%s%s-%s.jar", libraryPath, File.separator, libraryMaven[1], libraryMaven[2]);
 
@@ -131,11 +148,16 @@ public class ForgeInstallationTask implements IInstallationTask {
         File libraryFile;
         try {
             libraryFile = new File(fileName);
+            if (Constants.DEBUG) System.out.println("Downloading " + url);
             FileUtils.copyURLToFile(url, libraryFile);
         } catch (Exception e){
+            try {Thread.sleep(2000);} catch(InterruptedException ex) {}
             // Typesafe does some weird stuff
-            url += ".pack.xz";
-            fileName += ".pack.xz";
+            if (library.has("downloads")) e.printStackTrace();
+            else {
+                url += ".pack.xz";
+                fileName += ".pack.xz";
+            }
             libraryFile = new File(fileName);
             FileUtils.copyURLToFile(url, libraryFile);
         }

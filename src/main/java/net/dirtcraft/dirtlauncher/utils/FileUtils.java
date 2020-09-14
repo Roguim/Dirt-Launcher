@@ -110,6 +110,7 @@ public class FileUtils {
         JsonObject output = new JsonObject();
         JarFile jar = new JarFile(jarFile);
         Enumeration enumEntries = jar.entries();
+        if (Constants.DEBUG) System.out.println("Extracing Jar: " + jar.getName());
         while(enumEntries.hasMoreElements()) {
             JarEntry file = (JarEntry) enumEntries.nextElement();
             File f = new File(destDir + File.separator + file.getName());
