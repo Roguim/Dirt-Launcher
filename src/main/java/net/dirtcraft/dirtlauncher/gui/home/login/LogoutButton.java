@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.utils.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 final class LogoutButton extends Button {

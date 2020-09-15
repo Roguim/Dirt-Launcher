@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.utils;
+package net.dirtcraft.dirtlauncher.configuration;
 
 import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
 

@@ -18,7 +18,7 @@ import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.login.NotificationBox;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackList;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.ToolBar;
-import net.dirtcraft.dirtlauncher.utils.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;

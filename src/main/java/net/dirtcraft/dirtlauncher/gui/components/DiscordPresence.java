@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.gui.components;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
-import net.dirtcraft.dirtlauncher.utils.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 
 public class DiscordPresence {
 

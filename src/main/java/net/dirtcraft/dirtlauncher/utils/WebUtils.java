@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 
-import static net.dirtcraft.dirtlauncher.utils.Constants.MAX_DOWNLOAD_ATTEMPTS;
+import static net.dirtcraft.dirtlauncher.configuration.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
 public class WebUtils {
 

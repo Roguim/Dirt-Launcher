@@ -7,9 +7,9 @@ import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
-import net.dirtcraft.dirtlauncher.utils.Manifests;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
-import net.dirtcraft.dirtlauncher.utils.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 
 import java.io.File;
 import java.io.IOException;

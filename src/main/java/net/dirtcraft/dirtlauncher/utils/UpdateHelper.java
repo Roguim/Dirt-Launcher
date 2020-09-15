@@ -1,5 +1,7 @@
 package net.dirtcraft.dirtlauncher.utils;
 
+import net.dirtcraft.dirtlauncher.configuration.Constants;
+
 import java.io.*;
 import java.net.URISyntaxException;
 

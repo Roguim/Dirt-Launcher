@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
-import net.dirtcraft.dirtlauncher.utils.Manifests;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 
 import java.io.File;
 import java.util.ArrayList;
