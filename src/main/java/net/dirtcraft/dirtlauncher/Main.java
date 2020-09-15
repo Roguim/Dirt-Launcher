@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -37,6 +38,7 @@ public class Main extends Application {
     public static Gson gson;
 
     public static void main(String[] args) {
+        System.out.println(Constants.LAUNCHER_VERSION);
         gson = new GsonBuilder().setPrettyPrinting().create();
         options = Arrays.asList(args);
         initLauncherDirectory();
