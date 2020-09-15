@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class JsonUtils {
 
@@ -97,7 +98,7 @@ public class JsonUtils {
         if (!file.exists()) return null;
         try{
             JsonObject jsonObject = readJsonFromFile(file);
-            return migrate.execute(jsonObject);
+            return migrate.apply(jsonObject);
         } catch (Exception ignored){
             return null;
         }
