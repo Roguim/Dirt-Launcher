@@ -3,7 +3,12 @@ package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.css.PseudoClass;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.VPos;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -11,34 +16,48 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
+import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.Manifests;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class Pack extends Button {
+public final class PackSelector extends Button implements Comparable<PackSelector> {
     private double lastDragY;
     private final ContextMenu contextMenu;
     private final Modpack modpack;
+    private final Region indicator;
 
-    Pack(Modpack modpack) {
+    PackSelector(Modpack modpack) {
         this.modpack = modpack;
         contextMenu = new ContextMenu();
-        initContextMenu();
+        setGraphic(indicator = getIndicator());
         setCursor(Cursor.HAND);
         setFocusTraversable(false);
         setText(modpack.getName());
+        update();
 
         final Tooltip tooltip = new Tooltip();
         tooltip.setTextAlignment(TextAlignment.LEFT);
@@ -91,14 +110,17 @@ public final class Pack extends Button {
         }
     }
 
-    public void updateInstallStatus(){
+    public void update(){
         initContextMenu();
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("installed"), modpack.isInstalled());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("pinned"), modpack.isFavourite());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("update"), modpack.isInstalled() && modpack.isOutdated());
     }
 
     public void fire() {
         final LoginBar home = Main.getHome().getLoginBar();
         final Button playButton = home.getActionButton();
-        home.getActivePackCell().ifPresent(Pack::deactivate);
+        home.getActivePackCell().ifPresent(PackSelector::deactivate);
         home.setActivePackCell(this);
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + modpack.getName());
@@ -112,6 +134,8 @@ public final class Pack extends Button {
             MenuItem reinstall = new MenuItem("Reinstall");
             MenuItem uninstall = new MenuItem("Uninstall");
             MenuItem openFolder = new MenuItem("Open Folder");
+            MenuItem favourite = new MenuItem(modpack.isFavourite()? "Unpin" : "Pin");
+            contextMenu.getItems().add(favourite);
             contextMenu.getItems().add(reinstall);
             contextMenu.getItems().add(uninstall);
             contextMenu.getItems().add(openFolder);
@@ -120,28 +144,24 @@ public final class Pack extends Button {
             reinstall.setOnAction(e->{
                 uninstall.fire();
                 LoginBar loginBar = Main.getHome().getLoginBar();
-                Optional<Pack> oldPack = loginBar.getActivePackCell();
+                Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                getModpack().install().thenRun(this::updateInstallStatus);
-                oldPack.ifPresent(Pack::fire);
-                Main.getHome().getLoginBar().setInputs();
+                launchInstallScene();
+                getModpack().install();
+                oldPack.ifPresent(PackSelector::fire);
+                Main.getHome().update();
                 initContextMenu();
             });
 
             uninstall.setOnAction(e->{
-                JsonObject instanceManifest = FileUtils.readJsonFromFile(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()));
-                if (instanceManifest == null || !instanceManifest.has("packs")) return;
-                JsonArray packs = instanceManifest.getAsJsonArray("packs");
-                for (int i = 0; i < packs.size(); i++){
-                    if (Objects.equals(packs.get(i).getAsJsonObject().get("name").getAsString(), modpack.getName())) packs.remove(i);
-                }
-                FileUtils.writeJsonToFile(new File(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()).getPath()), instanceManifest);
+                Manifests.INSTANCE.remove(this.modpack);
                 try {
                     FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
-                Main.getHome().getLoginBar().setInputs();
+                if (isFavourite()) modpack.toggleFavourite();
+                Main.getHome().update();
                 initContextMenu();
             });
 
@@ -152,16 +172,22 @@ public final class Pack extends Button {
                     exception.printStackTrace();
                 }
             });
+
+            favourite.setOnAction(e->{
+                modpack.toggleFavourite();
+                Main.getHome().updateModpacks();
+            });
         } else {
             MenuItem install = new MenuItem("Install");
             contextMenu.getItems().add(install);
 
             install.setOnAction(e->{
                 LoginBar loginBar = Main.getHome().getLoginBar();
-                Optional<Pack> oldPack = loginBar.getActivePackCell();
+                Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                getModpack().install().thenRun(this::updateInstallStatus);
-                oldPack.ifPresent(Pack::fire);
+                launchInstallScene();
+                getModpack().install();
+                oldPack.ifPresent(PackSelector::fire);
             });
         }
     }
@@ -170,8 +196,60 @@ public final class Pack extends Button {
         return modpack;
     }
 
+    public boolean isFavourite(){
+        return modpack.isFavourite();
+    }
+
     public String getName(){
         return modpack.getName();
     }
 
+    @Override
+    public int compareTo(@NotNull PackSelector o) {
+        if (o.isFavourite() != isFavourite()) return isFavourite()? -1 : 1;
+        else if (o.getModpack().isInstalled() != getModpack().isInstalled()) return modpack.isInstalled()? -1 : 1;
+        else return getName().compareTo(o.getName());
+    }
+
+    public Region getIndicator(){
+        Region rectangle = new Region();
+        rectangle.getStyleClass().add(Constants.CSS_CLASS_INDICATOR);
+        return rectangle;
+    }
+
+    private void launchInstallScene() {
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Installing " + this.getModpack().getName() + "...");
+            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
+
+            stage.initOwner(Main.getHome().getStage());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+
+            stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
+
+            stage.setScene(new Scene(root, Main.screenDimension.getWidth() / 3, Main.screenDimension.getHeight() / 4));
+            stage.setResizable(false);
+            stage.setOnCloseRequest(Event::consume);
+
+            stage.show();
+
+            Install.getInstance().ifPresent(install -> {
+                TextFlow notificationArea = install.getNotificationText();
+                Text notification = new Text("Beginning Download...");
+                notification.setFill(Color.WHITE);
+                notification.setTextOrigin(VPos.CENTER);
+                notification.setTextAlignment(TextAlignment.CENTER);
+                notificationArea.getChildren().add(notification);
+
+                notification.setText("Preparing To Install...");
+                install.setStage(stage);
+            });
+
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 }

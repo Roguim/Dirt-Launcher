@@ -5,26 +5,51 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.dirtcraft.dirtlauncher.Main;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Optional;
 
 public class WebUtils {
 
+    private static String jsonVersion = null;
+
     public static JsonObject getJsonFromUrl(String url) {
+        try {
+            return new JsonParser().parse(getJsonStringFromUrl(url)).getAsJsonObject();
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage() + "\nRetrying...");
+            return getJsonFromUrl(url);
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> getGsonFromUrl(String url, TypeToken<T> type) {
+        try {
+            return Optional.ofNullable(Main.gson.fromJson(getJsonStringFromUrl(url), type.getType()));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public static String getJsonStringFromUrl(String url) {
+        HttpResponse httpResponse = null;
         try {
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
             HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(url));
-            HttpResponse httpResponse = httpRequest.execute();
-            String response = httpResponse.parseAsString();
-            httpResponse.disconnect();
-            return new JsonParser().parse(response).getAsJsonObject();
+            httpResponse = httpRequest.execute();
+            return httpResponse.parseAsString();
         } catch (Exception exception) {
             System.out.println(exception.getMessage() + "\nRetrying...");
-            try { Thread.sleep(2000); } catch (InterruptedException ignore) {}
-            return getJsonFromUrl(url);
+            return getJsonStringFromUrl(url);
+        } finally {
+            if (httpResponse != null) try{httpResponse.disconnect();}catch (IOException ignored){};
         }
     }
 
@@ -39,7 +64,9 @@ public class WebUtils {
     }
 
     public static String getLatestVersion() {
+        if (jsonVersion != null) return jsonVersion;
         JsonObject versionJson = getJsonFromUrl("http://164.132.201.67/launcher/version.json");
-        return versionJson.get("version").getAsString();
+        jsonVersion = versionJson.get("version").getAsString();
+        return jsonVersion;
     }
 }

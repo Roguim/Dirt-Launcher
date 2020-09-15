@@ -45,7 +45,7 @@ public class InstallCustomPackTask implements IInstallationTask {
         progressContainer.setProgressText(String.format("Downloading %s Files", pack.getName()));
         progressContainer.setNumMinorSteps(pack.getFileSize().orElse(1));
 
-        // Update UI On Interval
+        // Update UI On Interval Todo make better
         Timer timer = new Timer();
         pack.getFileSize().ifPresent(fileSize ->
                 timer.scheduleAtFixedRate(new TimerTask() {

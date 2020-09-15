@@ -4,7 +4,6 @@ import com.google.gson.*;
 import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.exception.*;
-import net.dirtcraft.dirtlauncher.utils.Function;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public final class AccountManager {
 
@@ -130,11 +130,11 @@ public final class AccountManager {
         saveData();
     }
 
-    public void login(String email, String password, Function<Exception> onFailure) {
+    public void login(String email, String password, Consumer<Exception> onFailure) {
         try {
             setSelectedAccount(new AccountCredentials(email, password));
         } catch (Exception e) {
-            onFailure.run(e);
+            onFailure.accept(e);
         }
     }
 

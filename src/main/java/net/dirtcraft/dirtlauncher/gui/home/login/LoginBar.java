@@ -14,7 +14,7 @@ import javafx.scene.layout.RowConstraints;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
-import net.dirtcraft.dirtlauncher.gui.home.sidebar.Pack;
+import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
@@ -26,7 +26,7 @@ public final class LoginBar extends Pane {
     private final ActionButton actionButton;
     private final LogoutButton logout;
     private final GridPane loginContainer;
-    private Pack activePackCell;
+    private PackSelector activePackCell;
 
     public LoginBar() {
         actionButton = new ActionButton();
@@ -136,11 +136,11 @@ public final class LoginBar extends Pane {
         return usernameField;
     }
 
-    public Optional<Pack> getActivePackCell() {
+    public Optional<PackSelector> getActivePackCell() {
         return Optional.ofNullable(activePackCell);
     }
 
-    public void setActivePackCell(Pack pack) {
+    public void setActivePackCell(PackSelector pack) {
         this.activePackCell = pack;
         ActionButton.Types type;
 

@@ -1,15 +1,12 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
+import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
+import net.dirtcraft.dirtlauncher.utils.Manifests;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
-import java.io.File;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 public class UpdateInstancesManifestTask implements IInstallationTask {
@@ -26,32 +23,35 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
     }
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
     public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) {
-        // Update Progress
-        progressContainer.setProgressText("Updating Instances Manifest");
-        progressContainer.setNumMinorSteps(2);
+        try {
+            // Update Progress
+            progressContainer.setProgressText("Updating Instances Manifest");
+            progressContainer.setNumMinorSteps(2);
 
-        JsonObject instanceManifest = FileUtils.readJsonFromFile(config.getDirectoryManifest(config.getInstancesDirectory()));
-        JsonArray packsArray = instanceManifest.getAsJsonArray("packs");
+            InstanceManifest instanceManifest = Manifests.INSTANCE;
 
-        // Delete Old Entries
-        Iterator<JsonElement> jsonIterator = packsArray.iterator();
-        while(jsonIterator.hasNext()) {
-            if(jsonIterator.next().getAsJsonObject().get("name").getAsString().equals(pack.getName())) jsonIterator.remove();
+            InstanceManifest.Entry updated = new InstanceManifest.Entry(pack.getName(), pack.getVersion(), pack.getGameVersion(), pack.getForgeVersion());
+            ListIterator<InstanceManifest.Entry> manifestIterator = instanceManifest.listIterator();
+
+            while (true) {
+                if (!manifestIterator.hasNext()) manifestIterator.add(updated);
+                else if (manifestIterator.next().name.equals(pack.getName())) manifestIterator.set(updated);
+                else continue;
+                break;
+            }
+
+            progressContainer.completeMinorStep();
+
+            // Update Instances Manifest
+            instanceManifest.saveAsync();
+
+            progressContainer.completeMinorStep();
+            progressContainer.completeMajorStep();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        progressContainer.completeMinorStep();
-
-        // Update Instances Manifest
-        JsonObject packJson = new JsonObject();
-        packJson.addProperty("name", pack.getName());
-        packJson.addProperty("version", pack.getVersion());
-        packJson.addProperty("gameVersion", pack.getGameVersion());
-        packJson.addProperty("forgeVersion", pack.getForgeVersion());
-        packsArray.add(packJson);
-        FileUtils.writeJsonToFile(new File(config.getDirectoryManifest(config.getInstancesDirectory()).getPath()), instanceManifest);
-
-        progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
     }
 
     @Override

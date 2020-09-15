@@ -1,5 +1,7 @@
 package net.dirtcraft.dirtlauncher;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -32,8 +34,10 @@ public class Main extends Application {
     private static AccountManager accounts = null;
     private static Home home = null;
     private static Path launcherDirectory;
+    public static Gson gson;
 
     public static void main(String[] args) {
+        gson = new GsonBuilder().setPrettyPrinting().create();
         options = Arrays.asList(args);
         initLauncherDirectory();
         stageInit = CompletableFuture.runAsync(Main::preInitHome);
@@ -56,7 +60,7 @@ public class Main extends Application {
         Platform.setImplicitExit(false);
         stageInit.get();
         home.getStage().show();
-        home.reload();
+        home.update();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
@@ -73,6 +77,10 @@ public class Main extends Application {
 
     public static List<String> getOptions(){
         return options;
+    }
+
+    public static Path getLauncherDirectory(){
+        return launcherDirectory;
     }
 
     public static void preInitHome(){
