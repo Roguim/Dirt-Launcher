@@ -13,7 +13,7 @@ import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -107,7 +107,7 @@ public class LaunchGame {
 
         // Assets Index
         File assetsVersionJsonFile = Paths.get(settings.getVersionsDirectory().getPath(), pack.getGameVersion(), pack.getGameVersion() + ".json").toFile();
-        String assetsVersion = FileUtils.readJsonFromFile(assetsVersionJsonFile).get("assets").getAsString();
+        String assetsVersion = JsonUtils.readJsonFromFile(assetsVersionJsonFile).get("assets").getAsString();
         args.add("--assetIndex");
         args.add(assetsVersion);
         // UUID
@@ -182,11 +182,11 @@ public class LaunchGame {
     private static String getLibs(Modpack pack) {
         Config settings = Main.getConfig();
         StringBuilder libs = new StringBuilder();
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
+        for (JsonElement jsonElement : JsonUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        for (JsonElement jsonElement : FileUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
+        for (JsonElement jsonElement : JsonUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getVersionsDirectory())).getAsJsonArray("versions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getGameVersion()))
                 libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }

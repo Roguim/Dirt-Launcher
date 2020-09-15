@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;
 
@@ -50,7 +51,7 @@ public class InstallCursePackTask implements IInstallationTask {
         progressContainer.completeMinorStep();
 
         // Download Modpack Zip
-        FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
+        WebUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -69,7 +70,7 @@ public class InstallCursePackTask implements IInstallationTask {
         // Sort out the files
         FileUtils.copyDirectory(new File(tempDir.getPath(), "overrides"), modpackFolder);
         File tempManifest = new File(tempDir, "manifest.json");
-        JsonObject modpackManifest = FileUtils.readJsonFromFile(tempManifest);
+        JsonObject modpackManifest = JsonUtils.readJsonFromFile(tempManifest);
         org.apache.commons.io.FileUtils.copyFile(tempManifest, new File(modpackFolder, "manifest.json"));
         //FileUtils.writeJsonToFile(new File(modpackFolder, "manifest.json"), modpackManifest);
         progressContainer.completeMinorStep();
@@ -125,7 +126,7 @@ public class InstallCursePackTask implements IInstallationTask {
                         .map(mod -> CompletableFuture.runAsync(() -> {
                             try {
                                 // Download the mod
-                                FileUtils.copyURLToFile(mod.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, mod.get("fileName").getAsString()));
+                                WebUtils.copyURLToFile(mod.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, mod.get("fileName").getAsString()));
 
                                 // Update progress
                                 progressContainer.addMinorStepsCompleted(mod.get("fileLength").getAsInt());

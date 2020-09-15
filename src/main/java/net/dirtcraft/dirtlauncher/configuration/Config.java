@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.management.OperatingSystemMXBean;
 import net.dirtcraft.dirtlauncher.utils.Constants;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -110,17 +110,17 @@ public final class Config {
         if(!getDirectoryManifest(getVersionsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("versions", new JsonArray());
-            FileUtils.writeJsonToFile(getDirectoryManifest(getVersionsDirectory()), emptyManifest);
+            JsonUtils.writeJsonToFile(getDirectoryManifest(getVersionsDirectory()), emptyManifest);
         }
         if(!getDirectoryManifest(getAssetsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("assets", new JsonArray());
-            FileUtils.writeJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
+            JsonUtils.writeJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
         }
         if(!getDirectoryManifest(getForgeDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("forgeVersions", new JsonArray());
-            FileUtils.writeJsonToFile(getDirectoryManifest(getForgeDirectory()), emptyManifest);
+            JsonUtils.writeJsonToFile(getDirectoryManifest(getForgeDirectory()), emptyManifest);
         }
     }
 
@@ -131,7 +131,7 @@ public final class Config {
         config.addProperty("maximum-ram", maximumRam);
         config.addProperty("java-arguments", javaArguments);
         config.addProperty("game-directory", gameDirectory.toString());
-        FileUtils.writeJsonToFile(configFile, config);
+        JsonUtils.writeJsonToFile(configFile, config);
     }
 
     public void updateSettings(int minimumRam, int maximumRam, String javaArguments, String gameDirectory){

@@ -12,8 +12,12 @@ import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.Main;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
+
+import static net.dirtcraft.dirtlauncher.utils.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
 public class WebUtils {
 
@@ -69,5 +73,19 @@ public class WebUtils {
         JsonObject versionJson = getJsonFromUrl("http://164.132.201.67/launcher/version.json");
         jsonVersion = versionJson.get("version").getAsString();
         return jsonVersion;
+    }
+
+    public static void copyURLToFile(String URL, File file) throws IOException{
+        copyURLToFile(URL, file, 0);
+    }
+
+    private static void copyURLToFile(String URL, File file, int attempts) throws IOException {
+        try {
+            org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
+        } catch (IOException e){
+            e.printStackTrace();
+            if (attempts < MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
+            else throw e;
+        }
     }
 }

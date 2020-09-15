@@ -5,7 +5,7 @@ import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         JsonObject assetsManifest = WebUtils.getJsonFromUrl(versionManifest.getAsJsonObject("assetIndex").get("url").getAsString());
         File indexes = new File(assetsFolder, "indexes");
         indexes.mkdirs();
-        FileUtils.writeJsonToFile(new File(indexes, versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
+        JsonUtils.writeJsonToFile(new File(indexes, versionManifest.get("assets").getAsString() + ".json"), assetsManifest);
         progressContainer.completeMinorStep();
 
         // Download Assets
@@ -78,9 +78,9 @@ public class AssetsInstallationTask implements IInstallationTask {
         assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
 
         File assetsFolderManifestFile = config.getDirectoryManifest(config.getAssetsDirectory());
-        JsonObject assetsFolderManifest = FileUtils.readJsonFromFile(assetsFolderManifestFile);
+        JsonObject assetsFolderManifest = JsonUtils.readJsonFromFile(assetsFolderManifestFile);
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
-        FileUtils.writeJsonToFile(assetsFolderManifestFile, assetsFolderManifest);
+        JsonUtils.writeJsonToFile(assetsFolderManifestFile, assetsFolderManifest);
 
         progressContainer.completeMajorStep();
     }
@@ -89,7 +89,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
         File assetFolder = new File(new File(assetsFolder, "objects"), hash.substring(0, 2));
         assetFolder.mkdirs();
-        FileUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(assetFolder.getPath(), hash));
+        WebUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(assetFolder.getPath(), hash));
         progressContainer.completeMinorStep();
     }
 

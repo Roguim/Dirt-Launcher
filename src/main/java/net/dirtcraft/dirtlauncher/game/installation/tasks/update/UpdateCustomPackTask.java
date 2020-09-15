@@ -1,13 +1,13 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.therandomlabs.utils.io.ZipFile;
-import javafx.application.Application;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(1);
 
         //Download update
-        FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+        WebUtils.copyURLToFile(pack.getLink(), modpackZip);
         progressContainer.completeMinorStep();
 
         // Update Progress

@@ -49,80 +49,6 @@ public class FileUtils {
         return null;
     }
 
-    @Nullable
-    public static JsonObject readJsonFromFile(File file) {
-        try (FileReader reader = new FileReader(file)) {
-            JsonParser parser = new JsonParser();
-            return parser.parse(reader).getAsJsonObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void writeJsonToFile(File file, JsonObject jsonObject) {
-        try (FileWriter writer = new FileWriter(file, false)) {
-            writer.write(jsonObject.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static <T> Optional<T> parseJson(File file, TypeToken<T> type, Function<JsonObject, T> migrate) {
-        try {
-            return Optional.ofNullable(parseJsonUnchecked(file, type));
-        } catch (Exception e){
-            final Optional<T> optionalT = Optional.ofNullable(tryMigrate(file, migrate));
-            optionalT.ifPresent(t->toJson(file, t, type));
-            return optionalT;
-        }
-    }
-
-    private static @Nullable <T> T tryMigrate(File file, Function<JsonObject, T> migrate){
-        if (!file.exists()) return null;
-        try{
-            JsonObject jsonObject = readJsonFromFile(file);
-            return migrate.execute(jsonObject);
-        } catch (Exception ignored){
-            return null;
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static <T> Optional<T> parseJson(File file, TypeToken<T> type) {
-        try {
-            return Optional.ofNullable(parseJsonUnchecked(file, type));
-        } catch (Exception e){
-            return Optional.empty();
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static <T> T parseJsonUnchecked(File file, TypeToken<T> type) throws IOException{
-        final Gson gson = Main.gson;
-        try(
-                FileReader fileReader = new FileReader(file);
-                JsonReader jsonReader = new JsonReader(fileReader)
-        ){
-            return gson.fromJson(jsonReader, type.getType());
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static <T> void toJson(File file, T t, TypeToken<T> type){
-        final Gson gson = Main.gson;
-        try(
-                FileWriter fileWriter = new FileWriter(file);
-                JsonWriter jsonWriter = new JsonWriter(fileWriter)
-        ){
-            jsonWriter.setIndent("  ");
-            gson.toJson(t, type.getType(), jsonWriter);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
     // Mirrors just in case the file imports this instead of the commons-io FileUtils. Makes things easier than using paths every declaration...
     public static void deleteDirectory(File file) throws IOException {
         org.apache.commons.io.FileUtils.deleteDirectory(file);
@@ -134,20 +60,6 @@ public class FileUtils {
             org.apache.commons.io.FileUtils.deleteDirectory(file);
         } catch (Exception ignored){
 
-        }
-    }
-
-    public static void copyURLToFile(String URL, File file) throws IOException{
-        copyURLToFile(URL, file, 0);
-    }
-
-    private static void copyURLToFile(String URL, File file, int attempts) throws IOException {
-        try {
-            org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), file);
-        } catch (IOException e){
-            e.printStackTrace();
-            if (attempts < MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
-            else throw e;
         }
     }
 

@@ -12,11 +12,11 @@ import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.Constants;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +52,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         String url = pack.getGameVersion().equals("1.7.10")
                 ? String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s-%s/forge-%s-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion())
                 : String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
-        FileUtils.copyURLToFile(url, forgeInstaller);
+        WebUtils.copyURLToFile(url, forgeInstaller);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -66,7 +66,7 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
 
-        FileUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
+        JsonUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -76,7 +76,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         if (forgeVersionManifest.has("versionInfo")) librariesArray = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
         else {
             librariesArray = forgeVersionManifest.getAsJsonArray("libraries");
-            FileUtils.copyURLToFile(
+            WebUtils.copyURLToFile(
                     String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion()),
                     new File(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar"));
         }
@@ -114,9 +114,9 @@ public class ForgeInstallationTask implements IInstallationTask {
         forgeVersionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode.toString(), ";"));
 
         File forgeVersionsManifestFile = config.getDirectoryManifest(config.getForgeDirectory());
-        JsonObject forgeManifest = FileUtils.readJsonFromFile(forgeVersionsManifestFile);
+        JsonObject forgeManifest = JsonUtils.readJsonFromFile(forgeVersionsManifestFile);
         forgeManifest.getAsJsonArray("forgeVersions").add(forgeVersionJsonObject);
-        FileUtils.writeJsonToFile(forgeVersionsManifestFile, forgeManifest);
+        JsonUtils.writeJsonToFile(forgeVersionsManifestFile, forgeManifest);
 
         progressContainer.completeMajorStep();
     }
@@ -152,7 +152,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         try {
             libraryFile = new File(fileName);
             if (Constants.DEBUG) System.out.println("Downloading " + url);
-            FileUtils.copyURLToFile(url, libraryFile);
+            WebUtils.copyURLToFile(url, libraryFile);
         } catch (Exception e){
             try {Thread.sleep(2000);} catch(InterruptedException ex) {}
             // Typesafe does some weird stuff
@@ -162,7 +162,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                 fileName += ".pack.xz";
             }
             libraryFile = new File(fileName);
-            FileUtils.copyURLToFile(url, libraryFile);
+            WebUtils.copyURLToFile(url, libraryFile);
         }
         if (libraryFile.getName().contains(".pack.xz")) FileUtils.unpackPackXZ(libraryFile);
         librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";");

@@ -21,7 +21,7 @@ import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.Constants;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -185,7 +185,7 @@ public class InstallationManager {
     }
 
     private JsonObject getJsonFromManifest(File folder) {
-        return FileUtils.readJsonFromFile(config.getDirectoryManifest(folder));
+        return JsonUtils.readJsonFromFile(config.getDirectoryManifest(folder));
     }
 
 }

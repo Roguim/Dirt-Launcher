@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.manifests.platforms;
 
 import com.google.common.reflect.TypeToken;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import javax.annotation.Nonnull;
@@ -81,7 +80,7 @@ public class CurseManifest {
 
         private void download(File modsFolder){
             try{
-                FileUtils.copyURLToFile(downloadUrl.replaceAll("\\s", "%20"), new File(modsFolder, fileName));
+                WebUtils.copyURLToFile(downloadUrl.replaceAll("\\s", "%20"), new File(modsFolder, fileName));
             } catch (Exception e){
                 e.printStackTrace();
             }

@@ -8,6 +8,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class InstallCustomPackTask implements IInstallationTask {
         });
 
         // Download the Pack
-        FileUtils.copyURLToFile(pack.getLink(), modpackZip);
+        WebUtils.copyURLToFile(pack.getLink(), modpackZip);
         timer.cancel();
         progressContainer.setNumMinorSteps(2);
         progressContainer.completeMajorStep();

@@ -7,6 +7,8 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -45,11 +47,11 @@ public class VersionInstallationTask implements IInstallationTask {
         versionFolder.mkdirs();
 
         // Write the version JSON manifest
-        FileUtils.writeJsonToFile(versionFolder.toPath().resolve(version + ".json").toFile(), versionManifest);
+        JsonUtils.writeJsonToFile(versionFolder.toPath().resolve(version + ".json").toFile(), versionManifest);
         progressContainer.completeMinorStep();
 
         // Download jar
-        FileUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), new File(versionFolder.getPath(), version + ".jar"));
+        WebUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), new File(versionFolder.getPath(), version + ".jar"));
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -94,9 +96,9 @@ public class VersionInstallationTask implements IInstallationTask {
         versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(launchPaths.toString(), ";"));
 
         File versionsManifestFile = config.getDirectoryManifest(config.getVersionsDirectory());
-        JsonObject versionsManifest = FileUtils.readJsonFromFile(versionsManifestFile);
+        JsonObject versionsManifest = JsonUtils.readJsonFromFile(versionsManifestFile);
         versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
-        FileUtils.writeJsonToFile(versionsManifestFile, versionsManifest);
+        JsonUtils.writeJsonToFile(versionsManifestFile, versionsManifest);
 
         progressContainer.completeMajorStep();
     }
@@ -125,7 +127,7 @@ public class VersionInstallationTask implements IInstallationTask {
         if (libraryDownloads.has("artifact")) {
             new File(libDir, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
             String filePath = libDir.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
-            FileUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
+            WebUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
             launchPaths.append(filePath + ";");
         }
         // Download any natives
@@ -138,7 +140,7 @@ public class VersionInstallationTask implements IInstallationTask {
             if (libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
                 JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
                 File outputFile = new File(nativeDir, nativeJson.get("sha1").getAsString());
-                FileUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
+                WebUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
                 FileUtils.extractJar(outputFile.getPath(), nativeDir.getPath());
                 outputFile.delete();
             }

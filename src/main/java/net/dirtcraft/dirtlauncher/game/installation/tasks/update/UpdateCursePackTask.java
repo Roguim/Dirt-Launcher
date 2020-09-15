@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonArray;
 import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -10,6 +9,8 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.completeMinorStep();
 
         // Download Modpack Zip
-        FileUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
+        WebUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
         progressContainer.completeMinorStep();
 
         // Update Progress
@@ -72,8 +73,8 @@ public class UpdateCursePackTask implements IUpdateTask {
         File modsFolder = new File(modpackFolder.getPath(), "mods");
         File tempManifestFile = new File(tempDir, "manifest.json");
         File currentManifestFile = new File(modpackFolder, "manifest.json");
-        CurseManifest oldManifest = FileUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseManifest>() {});
-        CurseManifest newManifest = FileUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<CurseManifest>() {});
+        CurseManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseManifest>() {});
+        CurseManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<CurseManifest>() {});
         modsFolder.mkdirs();
         progressContainer.completeMinorStep();
 

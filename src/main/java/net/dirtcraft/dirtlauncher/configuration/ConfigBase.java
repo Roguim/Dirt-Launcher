@@ -1,7 +1,7 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
 import com.google.common.reflect.TypeToken;
-import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -25,7 +25,7 @@ public abstract class ConfigBase<T> {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void load(){
-        configBase = FileUtils.parseJson(path, type).get();
+        configBase = JsonUtils.parseJson(path, type).get();
     }
 
     public void saveAsync(){
@@ -34,7 +34,7 @@ public abstract class ConfigBase<T> {
     }
 
     private void save(){
-        FileUtils.toJson(path, configBase, type);
+        JsonUtils.toJson(path, configBase, type);
         if (pendingSave.getAndSet(false)) save();
     }
 }
