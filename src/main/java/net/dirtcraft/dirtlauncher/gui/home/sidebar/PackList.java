@@ -53,6 +53,8 @@ public class PackList extends ScrollPane {
                         packs.getChildren().addAll(listPreload.get());
                     } catch (Exception e){
                         e.printStackTrace();
+                        updatePacksAsync();
+                        return;
                     }
                     listPreload = null;
                 });

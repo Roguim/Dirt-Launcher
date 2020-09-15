@@ -1,10 +1,12 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 
+import javafx.application.Platform;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.lingala.zip4j.ZipFile;
 
@@ -34,7 +36,7 @@ public class InstallCustomPackTask implements IInstallationTask {
 
         // Prepare Folders
         final File modpackFolder = pack.getInstanceDirectory();
-        final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
+        final File modpackZip = new File(modpackFolder, "modpack.zip");
 
         FileUtils.deleteDirectory(modpackFolder);
         modpackFolder.mkdirs();
@@ -47,17 +49,19 @@ public class InstallCustomPackTask implements IInstallationTask {
 
         // Update UI On Interval Todo make better
         Timer timer = new Timer();
-        pack.getFileSize().ifPresent(fileSize ->
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        progressContainer.setMinorStepsCompleted((int) (modpackZip.length() / 1024 / 1024));
-                    }
-                }, 0, 1000));
+        pack.getFileSize().ifPresent(fileSize -> {
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> Install.getInstance().ifPresent(instance -> instance.getLoadingBar().setProgress(((double) ((modpackZip.length() / 1024 / 1024)) / fileSize))));
+                }
+            }, 0, 1000);
+        });
 
         // Download the Pack
         FileUtils.copyURLToFile(pack.getLink(), modpackZip);
         timer.cancel();
+        progressContainer.setNumMinorSteps(2);
         progressContainer.completeMajorStep();
 
         // Extract the pack

@@ -28,14 +28,13 @@ import org.w3c.dom.html.HTMLAnchorElement;
 
 import java.awt.*;
 import java.net.URI;
-import java.util.Objects;
 
 public class Home extends Scene {
     private Stage stage;
     final private LoginBar loginBar;
     final private NotificationBox loginNotification;
     final private AnchorPane root;
-    final private PackList sidebar;
+    private PackList sidebar;
 
     public Home() {
         super(new AnchorPane(), Main.screenDimension.getWidth() / 1.15, Main.screenDimension.getHeight() / 1.35);
@@ -85,7 +84,12 @@ public class Home extends Scene {
 
         root = (AnchorPane) getRoot();
         root.getStylesheets().add(MiscUtils.getCssPath(Constants.JAR_CSS_FXML, "Home", "Global.css"));
-        root.getChildren().addAll(titleBox, sidebarBacking, sidebar, actionBox, notificationArea, toolbar);
+        root.getChildren().addAll(titleBox, sidebarBacking, getSidebar(), actionBox, notificationArea, toolbar);
+    }
+
+    private PackList getSidebar() {
+        if (sidebar == null) sidebar = new PackList();
+        return sidebar;
     }
 
     public Stage getStage(){
@@ -138,12 +142,12 @@ public class Home extends Scene {
 
     public void update(){
         Main.getAccounts().refreshSelectedAccount();
-        sidebar.updatePacksAsync();
+        getSidebar().updatePacksAsync();
         loginBar.setInputs();
     }
 
     public void updateModpacks(){
-        sidebar.update();
+        getSidebar().update();
     }
 
     public void updateLogin(){

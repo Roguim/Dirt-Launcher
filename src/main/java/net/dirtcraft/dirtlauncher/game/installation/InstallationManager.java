@@ -15,10 +15,8 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInst
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.VersionInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCustomPackTask;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallFTBPackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCustomPackTask;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateFTBPackTask;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
@@ -156,6 +154,8 @@ public class InstallationManager {
         for(IInstallationTask task : installationTasks) {
             task.executeTask(downloadManager, progressContainer, config);
         }
+
+        progressContainer.completeMajorStep();
 
         /*
             --- Installation Completed ---
