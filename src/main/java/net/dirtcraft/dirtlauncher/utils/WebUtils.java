@@ -46,6 +46,7 @@ public class WebUtils {
             httpResponse = httpRequest.execute();
             return httpResponse.parseAsString();
         } catch (Exception exception) {
+            try {Thread.sleep(2000);} catch (InterruptedException ignored) {}
             System.out.println(exception.getMessage() + "\nRetrying...");
             return getJsonStringFromUrl(url);
         } finally {

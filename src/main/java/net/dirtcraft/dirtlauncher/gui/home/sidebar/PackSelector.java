@@ -1,7 +1,5 @@
 package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import javafx.css.PseudoClass;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +23,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
@@ -37,11 +34,8 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 
 public final class PackSelector extends Button implements Comparable<PackSelector> {
@@ -82,13 +76,11 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
             image = new Image(modpack.getLogo(), 128, 128, false, true);
         }
 
-        if (image != null) {
-            final ImageView imageView = new ImageView(image);
-            imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+        final ImageView imageView = new ImageView(image);
+        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
-            tooltip.setGraphic(imageView);
-            tooltip.setGraphicTextGap(50);
-        }
+        tooltip.setGraphic(imageView);
+        tooltip.setGraphicTextGap(50);
 
         setTooltip(tooltip);
         setOnMouseDragEntered(e-> lastDragY =  e.getY());
@@ -128,7 +120,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
     }
 
-    private void initContextMenu(){
+    private void initContextMenu() {
         contextMenu.getItems().clear();
         if (modpack.isInstalled()) {
             MenuItem reinstall = new MenuItem("Reinstall");
