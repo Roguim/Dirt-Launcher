@@ -13,8 +13,6 @@ import javax.annotation.Nullable;
 
 public class WebUtils {
 
-    private static String jsonVersion = null;
-
     public static JsonObject getJsonFromUrl(String url) {
         try {
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
@@ -25,6 +23,7 @@ public class WebUtils {
             return new JsonParser().parse(response).getAsJsonObject();
         } catch (Exception exception) {
             System.out.println(exception.getMessage() + "\nRetrying...");
+            try { Thread.sleep(2000); } catch (InterruptedException ignore) {}
             return getJsonFromUrl(url);
         }
     }
@@ -40,9 +39,7 @@ public class WebUtils {
     }
 
     public static String getLatestVersion() {
-        if (jsonVersion != null) return jsonVersion;
         JsonObject versionJson = getJsonFromUrl("http://164.132.201.67/launcher/version.json");
-        jsonVersion = versionJson.get("version").getAsString();
-        return jsonVersion;
+        return versionJson.get("version").getAsString();
     }
 }

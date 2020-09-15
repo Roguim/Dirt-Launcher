@@ -75,13 +75,19 @@ public final class Update {
     }
 
     public static boolean hasUpdate() throws IOException {
-        List<Integer> webVersion = Arrays.stream(WebUtils.getLatestVersion().split("\\."))
+        final String webVersionString = WebUtils.getLatestVersion();
+        List<Integer> webVersion = Arrays.stream(webVersionString.split("\\."))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
 
         List<Integer> localVersion = Arrays.stream(Constants.LAUNCHER_VERSION.split("\\."))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
+
+        if (Constants.DEBUG) {
+            System.out.println("Installed Version: " + Constants.LAUNCHER_VERSION);
+            System.out.println("Latest Version: " + webVersionString);
+        }
 
         if (localVersion.size() != webVersion.size()) return true;
         for (int i = 0; i < webVersion.size(); i++) if (webVersion.get(i) > localVersion.get(i)) return true;
