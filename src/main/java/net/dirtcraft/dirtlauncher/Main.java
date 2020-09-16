@@ -118,7 +118,7 @@ public class Main extends Application {
     public static void postUpdateCleanup(){
         try {
             File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-            String bootstrapName = "UpdateBootstrapper.class";
+            String bootstrapName = Constants.BOOTSTRAP_JAR;
             final File bootstrap = new File(currentJar, bootstrapName);
             final boolean updated = bootstrap.delete();
         } catch (URISyntaxException e) {
