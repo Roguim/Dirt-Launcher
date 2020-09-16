@@ -11,7 +11,6 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 
 import java.io.IOException;
 
@@ -52,7 +51,7 @@ final public class ToolBar extends Pane {
         });
 
         final Button debug = new Button();
-        debug.setOnAction(e -> new UpdateHelper());
+        debug.setOnAction(e -> MiscUtils.updateLauncher());
 
         final Button info = new Button();
         info.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "info.png"));

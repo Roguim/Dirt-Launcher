@@ -22,6 +22,7 @@ apply plugin: 'javafx-gradle-plugin'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+def bootstrapJar = "Dirt-Bootstrap-Updater:$bootstrapVersion"
 
 repositories {
     jcenter()
@@ -32,7 +33,7 @@ repositories {
 
 dependencies {
     provided fileTree(dir: 'libraries', include: '*.jar')
-    packaged 'com.github.Dirt-Craft:Dirt-Bootstrap-Updater:6b63768193'
+    packaged "com.github.Dirt-Craft:$bootstrapJar"
     provided 'com.github.Cydhra:Nidhogg:1.3'
     provided 'com.google.guava:guava:28.0-jre'
     provided 'com.google.code.gson:gson:2.8.5'
@@ -75,8 +76,12 @@ jfx {
 
 task processSource(type: Sync) {
     from sourceSets.main.java
-    inputs.property 'version', version
-    filter(ReplaceTokens, tokens: [VERSION: version])
+    inputs.properties(
+            version: version,
+            bootstrap: bootstrapJar)
+    filter(ReplaceTokens, tokens: [
+            VERSION  : version,
+            BOOTSTRAP: bootstrapJar.replace(":", "-") + ".jar"])
     into "$buildDir/src"
 }
 

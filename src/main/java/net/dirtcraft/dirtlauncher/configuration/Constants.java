@@ -5,12 +5,13 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 public class Constants {
     public static final String LAUNCHER_VERSION = "@VERSION@";
+    public static final String BOOTSTRAP_JAR = "@BOOTSTRAP@";
+
     public static final String AUTHORS = "ShinyAfro, Julian & TechDG";
     public static final String HELPERS = "Lordomus";
 
     public static final String UPDATE_URL = "https://dirtcraft.net/launcher/Dirt-Launcher.jar";
     public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
-    //public static final String PACK_JSON_URL = "http://localhost/packs.json";
 
     public static final String DEFAULT_JAVA_ARGS = "-XX:+UseG1GC -Dfml.readTimeout=180 -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 
@@ -35,7 +36,8 @@ public class Constants {
     public final static String JAR_IMAGES = "Images";
     public final static String JAR_ICONS = "Icons";
 
-    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
+    @SuppressWarnings("ConstantConditions") //Tokens will replace this on jfxjar / build, but will not when ran using IntelliJ's IDEA application run build script.
+    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug") || LAUNCHER_VERSION.equals("@VERSION@"));
     public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
     public static final int MAX_DOWNLOAD_ATTEMPTS = 8;

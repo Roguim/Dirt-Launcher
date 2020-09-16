@@ -11,7 +11,7 @@ import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
-import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
@@ -39,6 +39,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         System.out.println(Constants.LAUNCHER_VERSION);
+        System.out.println(Constants.BOOTSTRAP_JAR);
+        System.out.println(Constants.UPDATE_URL);
+        System.out.println(Constants.PACK_JSON_URL);
         gson = new GsonBuilder().setPrettyPrinting().create();
         options = Arrays.asList(args);
         initLauncherDirectory();
@@ -105,7 +108,7 @@ public class Main extends Application {
         settingsMenu = new Settings(config);
         System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         try {
-            if (options.contains("-update") && Update.hasUpdate()) new UpdateHelper();
+            if (options.contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
             if (Update.hasUpdate()) Platform.runLater(Update::showStage);
         } catch (IOException e) {
             e.printStackTrace();

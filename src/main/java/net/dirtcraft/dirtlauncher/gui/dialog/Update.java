@@ -12,7 +12,6 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.utils.UpdateHelper;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.IOException;
@@ -40,7 +39,7 @@ public final class Update {
     @FXML
     private void onClick(MouseEvent event) {
         Object source = event.getSource();
-        if (source == download) new UpdateHelper();
+        if (source == download) MiscUtils.updateLauncher();
         else if (source == cancel) stage.close();
     }
 

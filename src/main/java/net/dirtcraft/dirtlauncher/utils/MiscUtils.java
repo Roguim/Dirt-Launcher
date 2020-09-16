@@ -4,9 +4,17 @@ import com.google.common.base.Strings;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
+import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +81,48 @@ public class MiscUtils {
         graphic.setFitWidth(width);
         graphic.setImage(MiscUtils.getImage(dir));
         return graphic;
+    }
+
+    public static void updateLauncher() {
+        final File currentJar = getCurrentJar();
+        final File currentDir = currentJar.getParentFile();
+        final File bootstrapper = new File(currentDir, getBootstrapJar());
+        try(
+                InputStream is = Main.class.getClassLoader().getResourceAsStream(getBootstrapJar());
+                BufferedInputStream bis = new BufferedInputStream(Objects.requireNonNull(is));
+        ){
+            final boolean cleaned = bootstrapper.delete();
+            Files.copy(bis, bootstrapper.toPath());
+            List<String> args = Arrays.asList(getRuntime(), "-jar", bootstrapper.toString(), getRuntime(), currentJar.toString(), getUpdateUrl());
+            args = new ArrayList<>(args);
+            args.addAll(Main.getOptions());
+            new ProcessBuilder(args.toArray(new String[0]))
+                    .inheritIO()
+                    .start();
+            System.exit(0);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static File getCurrentJar(){
+        try {
+            return new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        } catch (URISyntaxException e) {
+            throw new Error(e);
+        }
+    }
+
+    private static String getRuntime(){
+        return Main.getConfig().getDefaultRuntime();
+    }
+
+    private static String getBootstrapJar(){
+        return Constants.BOOTSTRAP_JAR;
+    }
+
+    private static String getUpdateUrl(){
+        return Constants.UPDATE_URL;
     }
 
 }
