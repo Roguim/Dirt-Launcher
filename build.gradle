@@ -10,19 +10,25 @@ buildscript {
         jcenter()
     }
 }
-configurations {
-    packaged
-    provided
-    compile.extendsFrom(provided)
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
 }
 
 apply plugin: 'java'
 apply plugin: 'java-library'
 apply plugin: 'javafx-gradle-plugin'
 
+configurations {
+    packaged
+    shaded
+    compile.extendsFrom(shaded)
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 def bootstrapJar = "Dirt-Bootstrap-Updater:$bootstrapVersion"
+def outputJar = "${project.name}.jar"
 
 repositories {
     jcenter()
@@ -32,37 +38,37 @@ repositories {
 }
 
 dependencies {
-    provided fileTree(dir: 'libraries', include: '*.jar')
     packaged "com.github.Dirt-Craft:$bootstrapJar"
-    provided 'com.github.Cydhra:Nidhogg:1.3'
-    provided 'com.google.guava:guava:28.0-jre'
-    provided 'com.google.code.gson:gson:2.8.5'
-    provided 'com.google.http-client:google-http-client:1.23.0'
-    provided 'org.apache.commons:commons-lang3:3.9'
-    provided 'org.apache.commons:commons-compress:1.18'
-    provided 'commons-io:commons-io:2.6'
-    provided 'club.minnced:java-discord-rpc:2.0.2'
-    provided 'net.lingala.zip4j:zip4j:2.1.0'
-    provided "org.tukaani:xz:1.8"
-    //provided 'com.jfoenix:jfoenix:8.0.8'
-    //provided 'org.apache.commons:commons-text:1.7'
-    //provided 'org.jfxtras:jmetro:5.3'
-    //provided 'org.tukaani:xz:1.8'
-    //provided "com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"
-    //provided "com.therandomlabs.utils.io:TRLUtils-IO:1.0.1"
+
+    shaded fileTree(dir: 'libraries', include: '*.jar')
+    shaded 'com.github.Cydhra:Nidhogg:1.3'
+    shaded 'com.google.guava:guava:28.0-jre'
+    shaded 'com.google.code.gson:gson:2.8.5'
+    shaded 'com.google.http-client:google-http-client:1.23.0'
+    shaded 'org.apache.commons:commons-lang3:3.9'
+    shaded 'org.apache.commons:commons-compress:1.18'
+    shaded 'commons-io:commons-io:2.6'
+    shaded 'club.minnced:java-discord-rpc:2.0.2'
+    shaded 'net.lingala.zip4j:zip4j:2.1.0'
+    shaded "org.tukaani:xz:1.8"
 }
 
 
 jar {
-    archiveName = "${project.name}.jar"
+    archiveName = outputJar
     manifest {
         attributes(
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
                 'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
         )
     }
-    from configurations.provided.asFileTree.files.collect {zipTree(it)}
     from configurations.packaged.copy()
+}
+
+shadowJar {
+    configurations = [project.configurations.shaded]
+    archiveFileName = outputJar
+    minimize()
 }
 
 jfx {
@@ -97,4 +103,6 @@ sourceSets.main {
     }
 }
 
+jfxJar.dependsOn(shadowJar)
+build.dependsOn(shadowJar)
 compileJava.options.encoding = 'UTF-8'
