@@ -68,7 +68,7 @@ jar {
 shadowJar {
     configurations = [project.configurations.shaded]
     archiveFileName = outputJar
-    minimize()
+    //minimize() todo: not break shit
 }
 
 jfx {
