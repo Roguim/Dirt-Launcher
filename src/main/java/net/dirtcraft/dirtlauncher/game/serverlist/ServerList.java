@@ -22,6 +22,11 @@ public class ServerList {
         ips = new ArrayList<>();
         servers = new ArrayList<>();
         this.serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+        try {
+            serverDat.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     //§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
     private List<Byte> buildServerList(){

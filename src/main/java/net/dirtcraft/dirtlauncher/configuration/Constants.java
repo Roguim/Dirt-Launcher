@@ -10,7 +10,7 @@ public class Constants {
     public static final String AUTHORS = "ShinyAfro, Julian & TechDG";
     public static final String HELPERS = "Lordomus";
 
-    public static final String UPDATE_URL = "https://dirtcraft.net/launcher/Dirt-Launcher.jar";
+    public static final String UPDATE_URL = "http://164.132.201.67/launcher/Dirt-Launcher.jar";
     public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
     public static final String CURSE_API_URL = "https://addons-ecs.forgesvc.net/api/v2/addon/";
 

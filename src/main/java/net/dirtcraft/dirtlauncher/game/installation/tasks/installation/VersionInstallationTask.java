@@ -15,7 +15,6 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -107,7 +106,7 @@ public class VersionInstallationTask implements IInstallationTask {
     private void installLibrary(JsonObject library, StringBuffer launchPaths, File libDir, File nativeDir, ProgressContainer progress) throws IOException {
         // Check if the library has conditions
         if (library.has("rules")) {
-           rulesLoop: for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
+           for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
                 final JsonObject rule = ruleElement.getAsJsonObject();
                 final String action = rule.get("action").getAsString();
 
@@ -116,14 +115,9 @@ public class VersionInstallationTask implements IInstallationTask {
                 final String os = rule.getAsJsonObject("os").get("name").getAsString();
 
                 // If the user isn't using the OS the rule is for, skip it.
-                switch (action) {
-                    case "allow":
-                        if (!isUserOs(os).orElse(true)) continue rulesLoop;
-                        break;
-                    case "disallow":
-                        if (isUserOs(os).orElse(false)) continue rulesLoop;
-                        break;
-                }
+               if (action.equals("allow") && isUserOs(os)) continue;
+               if (!(action.equals("dissallow") && isUserOs(os))) continue;
+
                 progress.completeMinorStep();
                 if (Constants.DEBUG) System.out.println("Skipping library: " + library.get("name").getAsString());
                 return;
@@ -158,14 +152,15 @@ public class VersionInstallationTask implements IInstallationTask {
         progress.completeMinorStep();
     }
 
-    private static Optional<Boolean> isUserOs(String os){
+    private static boolean isUserOs(String os){
+        if (Constants.DEBUG) System.out.println("Is Mac: " + SystemUtils.IS_OS_MAC);
         switch(os) {
-            case "windows": return Optional.of(SystemUtils.IS_OS_WINDOWS);
-            case "osx": return Optional.of(SystemUtils.IS_OS_MAC);
-            case "linux": return Optional.of(SystemUtils.IS_OS_LINUX);
+            case "windows": return SystemUtils.IS_OS_WINDOWS;
+            case "osx": return SystemUtils.IS_OS_MAC;
+            case "linux": return SystemUtils.IS_OS_LINUX;
             default: {
                 System.out.println("Tried checking for OS:" + os + ". Did not match Pattern (win/osx/linux).");
-                return Optional.empty();
+                return false;
             }
         }
     }
