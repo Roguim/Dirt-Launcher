@@ -5,8 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.util.List;

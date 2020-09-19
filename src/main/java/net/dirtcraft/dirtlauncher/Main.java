@@ -11,6 +11,8 @@ import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
+import net.dirtcraft.dirtlauncher.providers.CurseProvider;
+import net.dirtcraft.dirtlauncher.providers.IPackProvider;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -18,11 +20,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
@@ -67,6 +71,14 @@ public class Main extends Application {
         home.getStage().show();
         home.update();
         System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
+        //testMethodPleaseIgnore();
+    }
+
+    private void testMethodPleaseIgnore() throws Exception{
+        CurseProvider curseProvider = IPackProvider.InstanceManager.getInstance(CurseProvider.class).orElseThrow(RuntimeException::new);
+        Optional<? extends IPackProvider.Instance> i = curseProvider.getFromUrl(new URL("https://www.curseforge.com/minecraft/modpacks/rlcraft"));
+        System.out.println(i);
+        i.ifPresent(e->System.out.println(((CurseProvider.CurseInstance)e).id));
     }
 
     public static Home getHome() {

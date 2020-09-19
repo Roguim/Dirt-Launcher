@@ -7,7 +7,9 @@ import javafx.scene.layout.Region;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;

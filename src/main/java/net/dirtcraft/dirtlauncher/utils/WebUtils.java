@@ -10,10 +10,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.Main;
+import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
@@ -87,5 +91,30 @@ public class WebUtils {
             if (attempts < MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
             else throw e;
         }
+    }
+
+    public static void copyURLToFileAsBrowser(URL url, File file) throws Exception{
+        System.out.println("Downloading new update, Please wait...");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
+        FileUtils.copyInputStreamToFile(con.getInputStream(), file);
+    }
+
+    public static String executeGet(URL url) {
+        String ret = "";
+        try {
+
+            HttpsURLConnection con;
+            con = (HttpsURLConnection) url.openConnection();
+            con.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
+            ret = con.getContent().toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
     }
 }

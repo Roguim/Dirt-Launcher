@@ -53,10 +53,8 @@ public class ModpackManager {
             }
         } else {
             load();
-            updateToLatestAsync();
+            updateToLatestAsync().whenComplete((t,e)->saveAsync());
         }
-
-        saveAsync();
     }
 
     private String getStringFromURL() {
@@ -111,39 +109,39 @@ public class ModpackManager {
         }
     }
 
-    public void updateToLatestAsync() {
-        CompletableFuture.runAsync(this::updateToLatest);
+    public CompletableFuture<Void> updateToLatestAsync() {
+        return CompletableFuture.runAsync(this::updateToLatest);
     }
 
     private void updateToLatest(){
-        ArrayList<Modpack> modpacks = new ArrayList<>(this.modpacks);
-        JsonElement json;
-        try {
-            json = new JsonParser().parse(getStringFromURL());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        List<Modpack> remoteList = new ArrayList<>();
-
-        for (JsonElement element : json.getAsJsonArray()) {
-            remoteList.add(new Modpack(element.getAsJsonObject()));
-        }
-
-        for (Modpack remote : remoteList) {
-            ListIterator<Modpack> iterator = modpacks.listIterator();
-            boolean replaced = false;
-            while (iterator.hasNext() && !replaced) {
-                Modpack local = iterator.next();
-                if (local.getName().equals(remote.getName())) {
-                    remote.favourite = local.isFavourite();
-                    iterator.set(remote);
-                    replaced = true;
-                }
+            ArrayList<Modpack> modpacks = new ArrayList<>(this.modpacks);
+            JsonElement json;
+            try {
+                json = new JsonParser().parse(getStringFromURL());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
             }
-            if (!replaced) modpacks.add(remote);
-        }
-        this.modpacks = modpacks;
-        Platform.runLater(Main.getHome()::updateModpacks);
+            List<Modpack> remoteList = new ArrayList<>();
+
+            for (JsonElement element : json.getAsJsonArray()) {
+                remoteList.add(new Modpack(element.getAsJsonObject()));
+            }
+
+            for (Modpack remote : remoteList) {
+                ListIterator<Modpack> iterator = modpacks.listIterator();
+                boolean replaced = false;
+                while (iterator.hasNext() && !replaced) {
+                    Modpack local = iterator.next();
+                    if (local.getName().equals(remote.getName())) {
+                        remote.favourite = local.isFavourite();
+                        iterator.set(remote);
+                        replaced = true;
+                    }
+                }
+                if (!replaced) modpacks.add(remote);
+            }
+            this.modpacks = modpacks;
+            Platform.runLater(Main.getHome()::updateModpacks);
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
@@ -20,7 +21,6 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCustomPac
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 

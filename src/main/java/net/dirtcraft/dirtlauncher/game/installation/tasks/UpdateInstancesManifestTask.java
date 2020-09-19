@@ -1,12 +1,12 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks;
 
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.manifests.InstanceManifest;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
-import java.util.*;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
 
 public class UpdateInstancesManifestTask implements IInstallationTask {

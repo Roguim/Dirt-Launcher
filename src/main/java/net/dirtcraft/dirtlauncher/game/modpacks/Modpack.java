@@ -5,11 +5,10 @@ import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
-import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
-import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static net.dirtcraft.dirtlauncher.utils.JsonUtils.getJsonElement;
 public class Modpack {
     private final String version;
     private final String name;
@@ -39,7 +39,6 @@ public class Modpack {
     private final ModLoader modLoader;
     boolean favourite = false;
 
-    @SuppressWarnings("ConstantConditions")
     Modpack(JsonObject json) {
         final List<OptionalMod> optionalMods = new ArrayList<>();
         for (JsonElement mods : json.get("optionalMods").getAsJsonArray()) {
@@ -53,21 +52,15 @@ public class Modpack {
             }
             this.listings = listings;
         }
-        final Optional<PackType> packType = JsonUtils.getJsonElement(json, "packType")
-                .map(JsonElement::getAsString)
-                .map(PackType::valueOf);
-        final Optional<UpdateTracker> updateTracker = JsonUtils.getJsonElement(json, "updateTracker")
-                .map(JsonElement::getAsString)
-                .map(UpdateTracker::valueOf);
-        final Optional<ModLoader> modLoader = JsonUtils.getJsonElement(json, "modLoader")
-                .map(JsonElement::getAsString)
-                .map(ModLoader::valueOf);
+        final Optional<String> packType = getJsonElement(json, JsonElement::getAsString, "packType");
+        final Optional<String> updateTracker = getJsonElement(json, JsonElement::getAsString, "updateTracker");
+        final Optional<String> modLoader = getJsonElement(json, JsonElement::getAsString, "modLoader");
         this.name = json.get("name").getAsString().trim();
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
-        this.packType = packType.orElse(PackType.CUSTOM);
-        this.updateTracker = updateTracker.orElse(UpdateTracker.DIRTCRAFT);
-        this.modLoader = modLoader.orElse(ModLoader.FORGE);
+        this.packType = packType.map(PackType::valueOf).orElse(PackType.CUSTOM);
+        this.updateTracker = updateTracker.map(UpdateTracker::valueOf).orElse(UpdateTracker.DIRTCRAFT);
+        this.modLoader = modLoader.map(ModLoader::valueOf).orElse(ModLoader.FORGE);
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
         this.logo = json.get("logo").getAsString();
@@ -75,7 +68,7 @@ public class Modpack {
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.modloaderVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
+        this.fileSize = getJsonElement(json, JsonElement::getAsInt).orElse(null);
         this.optionalMods = optionalMods;
     }
 
@@ -104,7 +97,6 @@ public class Modpack {
         }
         return CompletableFuture.runAsync(() -> {
             try {
-                //DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
                 InstallationManager.getInstance().installPack(this, Collections.emptyList());
             } catch (IOException | InvalidManifestException e) {
                 e.printStackTrace();

@@ -19,6 +19,10 @@ import java.util.function.Function;
 
 public class JsonUtils {
 
+    public static <T> Optional<T> getJsonElement(JsonObject json, Function<JsonElement, T> function, String... keys){
+        return getJsonElement(json, keys).map(function);
+    }
+
     public static Optional<JsonElement> getJsonElement(JsonObject json, String... keys){
         if (keys.length == 0) return Optional.empty();
         JsonObject jsonObject = json;

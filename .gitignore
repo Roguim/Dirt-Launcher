@@ -35,6 +35,9 @@ options.txt
 config/*
 photoshop/
 todo.txt
+lib sources
+lib sources/
+lib sources/*
 
 build
 

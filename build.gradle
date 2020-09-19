@@ -21,7 +21,9 @@ apply plugin: 'javafx-gradle-plugin'
 
 configurations {
     packaged
+    provided
     shaded
+    compile.extendsFrom(provided)
     compile.extendsFrom(shaded)
 }
 
@@ -40,17 +42,17 @@ repositories {
 dependencies {
     packaged "com.github.Dirt-Craft:$bootstrapJar"
 
-    shaded fileTree(dir: 'libraries', include: '*.jar')
-    shaded 'com.github.Cydhra:Nidhogg:1.3'
-    shaded 'com.google.guava:guava:28.0-jre'
-    shaded 'com.google.code.gson:gson:2.8.5'
-    shaded 'com.google.http-client:google-http-client:1.23.0'
-    shaded 'org.apache.commons:commons-lang3:3.9'
-    shaded 'org.apache.commons:commons-compress:1.18'
-    shaded 'commons-io:commons-io:2.6'
-    shaded 'club.minnced:java-discord-rpc:2.0.2'
-    shaded 'net.lingala.zip4j:zip4j:2.1.0'
-    shaded "org.tukaani:xz:1.8"
+    provided fileTree(dir: 'libraries', include: '*.jar')
+    provided 'com.google.code.gson:gson:2.8.5'
+    provided 'com.google.http-client:google-http-client:1.23.0'
+    provided 'com.github.Cydhra:Nidhogg:1.3'
+    provided 'com.google.guava:guava:28.0-jre'
+    provided 'org.apache.commons:commons-lang3:3.9'
+    provided 'commons-io:commons-io:2.6'
+    provided 'club.minnced:java-discord-rpc:2.0.2'
+    provided 'org.apache.commons:commons-compress:1.18'
+    provided 'net.lingala.zip4j:zip4j:2.1.0'
+    provided "org.tukaani:xz:1.8"
 }
 
 
@@ -62,13 +64,14 @@ jar {
                 'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
         )
     }
+    from configurations.provided.asFileTree.files.collect {zipTree(it)}
     from configurations.packaged.copy()
 }
 
 shadowJar {
     configurations = [project.configurations.shaded]
     archiveFileName = outputJar
-    minimize()
+    //minimize() todo: not break shit
 }
 
 jfx {
@@ -103,6 +106,6 @@ sourceSets.main {
     }
 }
 
-jfxJar.dependsOn(shadowJar)
-build.dependsOn(shadowJar)
+//jfxJar.dependsOn(shadowJar)
+//build.dependsOn(shadowJar)
 compileJava.options.encoding = 'UTF-8'
