@@ -156,8 +156,12 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        Main.getAccounts().login(usernameField.getText(), passField.getText(), LoginError::from);
+        Main.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
         setInputs();
+    }
+
+    private void onError(Exception e){
+        Main.getHome().getNotificationBox().displayError(LoginError.from(e));
     }
 
     public void updatePlayButton(ActionButton.Types types){
