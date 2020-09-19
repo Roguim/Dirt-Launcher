@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -106,17 +107,25 @@ public class VersionInstallationTask implements IInstallationTask {
     private void installLibrary(JsonObject library, StringBuffer launchPaths, File libDir, File nativeDir, ProgressContainer progress) throws IOException {
         // Check if the library has conditions
         if (library.has("rules")) {
-            for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
+           rulesLoop: for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
                 final JsonObject rule = ruleElement.getAsJsonObject();
                 final String action = rule.get("action").getAsString();
 
                 // Ensure the rule is valid
-                if (!(rule.has("os") && (action.equals("allow") || action.equals("disallow")))) continue;
+                if (!rule.has("os")) continue;
                 final String os = rule.getAsJsonObject("os").get("name").getAsString();
 
                 // If the user isn't using the OS the rule is for, skip it.
-                if (!isUserOs(os).map(b -> b == (action.equals("allow"))).orElse(true)) continue;
+                switch (action) {
+                    case "allow":
+                        if (!isUserOs(os).orElse(true)) continue rulesLoop;
+                        break;
+                    case "disallow":
+                        if (isUserOs(os).orElse(false)) continue rulesLoop;
+                        break;
+                }
                 progress.completeMinorStep();
+                if (Constants.DEBUG) System.out.println("Skipping library: " + library.get("name").getAsString());
                 return;
             }
         }

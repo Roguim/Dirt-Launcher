@@ -37,7 +37,7 @@ public class Constants {
     public final static String JAR_ICONS = "Icons";
 
     @SuppressWarnings("ConstantConditions") //Tokens will replace this on jfxjar / build, but will not when ran using IntelliJ's IDEA application run build script.
-    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug") || LAUNCHER_VERSION.equals("@VERSION@"));
+    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
     public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
     public static final int MAX_DOWNLOAD_ATTEMPTS = 8;
