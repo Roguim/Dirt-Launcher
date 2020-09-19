@@ -7,15 +7,16 @@ import javafx.geometry.VPos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.util.Optional;
@@ -43,6 +44,9 @@ public final class LoginBar extends Pane {
         setId(Constants.CSS_ID_LOGIN_BAR);
         passField.setId("PasswordField");
         usernameField.setId("UsernameField");
+
+        setTextDrag(passField);
+        setTextDrag(usernameField);
 
         RowConstraints x1 = new RowConstraints();
         RowConstraints x2 = new RowConstraints();
@@ -152,11 +156,31 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        Main.getAccounts().login(usernameField.getText(), passField.getText(), LoginError::from);
+        Main.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
         setInputs();
+    }
+
+    private void onError(Exception e){
+        Main.getHome().getNotificationBox().displayError(LoginError.from(e));
     }
 
     public void updatePlayButton(ActionButton.Types types){
         actionButton.setType(types, activePackCell);
+    }
+
+    public void setTextDrag(TextField node){
+        node.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()){
+                event.acceptTransferModes(TransferMode.ANY);
+            }
+            event.consume();
+        });
+
+        node.setOnDragDropped(event -> {
+            if (event.getDragboard().hasString()){
+                node.setText(event.getDragboard().getString());
+            }
+            event.consume();
+        });
     }
 }

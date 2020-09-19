@@ -3,13 +3,13 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
-import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static net.dirtcraft.dirtlauncher.utils.JsonUtils.getJsonElement;
 public class Modpack {
     private final String version;
     private final String name;
@@ -30,10 +31,12 @@ public class Modpack {
     private final String gameVersion;
     private final int requiredRam;
     private final int recommendedRam;
-    private final String forgeVersion;
+    private final String modloaderVersion;
     private final List<OptionalMod> optionalMods;
     private final Integer fileSize;
     private final List<Listing> listings;
+    private final UpdateTracker updateTracker;
+    private final ModLoader modLoader;
     boolean favourite = false;
 
     Modpack(JsonObject json) {
@@ -49,19 +52,23 @@ public class Modpack {
             }
             this.listings = listings;
         }
-        final String packType = json.get("packType").getAsString().trim();
+        final Optional<String> packType = getJsonElement(json, JsonElement::getAsString, "packType");
+        final Optional<String> updateTracker = getJsonElement(json, JsonElement::getAsString, "updateTracker");
+        final Optional<String> modLoader = getJsonElement(json, JsonElement::getAsString, "modLoader");
         this.name = json.get("name").getAsString().trim();
         this.version = json.get("version").getAsString();
         this.code = json.get("code").getAsString();
-        this.packType = packType.equalsIgnoreCase("CURSE") ? PackType.CURSE : PackType.CUSTOM;
+        this.packType = packType.map(PackType::valueOf).orElse(PackType.CUSTOM);
+        this.updateTracker = updateTracker.map(UpdateTracker::valueOf).orElse(UpdateTracker.DIRTCRAFT);
+        this.modLoader = modLoader.map(ModLoader::valueOf).orElse(ModLoader.FORGE);
         this.link = json.get("link").getAsString();
         this.splash = json.get("splash").getAsString();
         this.logo = json.get("logo").getAsString();
         this.gameVersion = json.get("gameVersion").getAsString();
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
-        this.forgeVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = (this.packType == PackType.CUSTOM) ? json.get("fileSize").getAsInt() : null;
+        this.modloaderVersion = json.get("forgeVersion").getAsString();
+        this.fileSize = getJsonElement(json, JsonElement::getAsInt).orElse(null);
         this.optionalMods = optionalMods;
     }
 
@@ -90,7 +97,6 @@ public class Modpack {
         }
         return CompletableFuture.runAsync(() -> {
             try {
-                //DownloadManager.completePackSetup(modPack, Collections.emptyList(), false);
                 InstallationManager.getInstance().installPack(this, Collections.emptyList());
             } catch (IOException | InvalidManifestException e) {
                 e.printStackTrace();
@@ -178,7 +184,7 @@ public class Modpack {
     }
 
     public String getForgeVersion() {
-        return forgeVersion;
+        return modloaderVersion;
     }
 
     public List<OptionalMod> getOptionalMods() {
@@ -191,5 +197,13 @@ public class Modpack {
 
     public enum PackType {
         CURSE, FTB, CUSTOM
+    }
+
+    public enum UpdateTracker{
+        CURSE, DIRTCRAFT, NONE
+    }
+
+    public enum ModLoader{
+        FORGE, NONE
     }
 }
