@@ -134,7 +134,7 @@ public final class AccountManager {
         try {
             setSelectedAccount(new AccountCredentials(email, password));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             onFailure.accept(e);
         }
     }
