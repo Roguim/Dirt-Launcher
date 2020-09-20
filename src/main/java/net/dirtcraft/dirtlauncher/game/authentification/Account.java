@@ -16,7 +16,7 @@ public class Account{
     private Session session;
 
     Account(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
-        session = Main.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
+        this.session = Main.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
     }
 
     Account(JsonObject jsonObject) {
