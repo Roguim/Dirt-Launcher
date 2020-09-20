@@ -46,7 +46,7 @@ public class WebUtils {
         }
     }
 
-    public static String getJsonStringFromUrl(String url) {
+    public static String getStringFromUrl(String url) {
         HttpResponse httpResponse = null;
         try {
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
@@ -56,10 +56,14 @@ public class WebUtils {
         } catch (Exception exception) {
             try {Thread.sleep(2000);} catch (InterruptedException ignored) {}
             System.out.println(exception.getMessage() + "\nRetrying...");
-            return getJsonStringFromUrl(url);
+            return getStringFromUrl(url);
         } finally {
             if (httpResponse != null) try{httpResponse.disconnect();}catch (IOException ignored){};
         }
+    }
+
+    public static String getJsonStringFromUrl(String url) {
+        return getStringFromUrl(url);
     }
 
     @Nullable

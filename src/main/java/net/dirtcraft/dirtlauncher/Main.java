@@ -11,8 +11,7 @@ import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
-import net.dirtcraft.dirtlauncher.providers.CurseProvider;
-import net.dirtcraft.dirtlauncher.providers.IPackProvider;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -20,13 +19,11 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
@@ -42,10 +39,6 @@ public class Main extends Application {
     public static Gson gson;
 
     public static void main(String[] args) {
-        System.out.println(Constants.LAUNCHER_VERSION);
-        System.out.println(Constants.BOOTSTRAP_JAR);
-        System.out.println(Constants.UPDATE_URL);
-        System.out.println(Constants.PACK_JSON_URL);
         gson = new GsonBuilder().setPrettyPrinting().create();
         options = Arrays.asList(args);
         initLauncherDirectory();
@@ -70,15 +63,10 @@ public class Main extends Application {
         stageInit.get();
         home.getStage().show();
         home.update();
-        System.out.println("Launching @ " + (System.currentTimeMillis() - x) + "ms");
-        //testMethodPleaseIgnore();
+        Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     private void testMethodPleaseIgnore() throws Exception{
-        CurseProvider curseProvider = IPackProvider.InstanceManager.getInstance(CurseProvider.class).orElseThrow(RuntimeException::new);
-        Optional<? extends IPackProvider.Instance> i = curseProvider.getFromUrl(new URL("https://www.curseforge.com/minecraft/modpacks/rlcraft"));
-        System.out.println(i);
-        i.ifPresent(e->System.out.println(((CurseProvider.CurseInstance)e).id));
     }
 
     public static Home getHome() {
@@ -103,7 +91,7 @@ public class Main extends Application {
     public static void preInitHome(){
         try {
             home = new Home();
-            System.out.println("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
+            Logger.INSTANCE.debug("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         } catch (Exception e) {
             throw new Error(e);
         }
@@ -111,14 +99,14 @@ public class Main extends Application {
 
     public static void initAccountManager() {
         accounts = new AccountManager(launcherDirectory);
-        System.out.println("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
+        Logger.INSTANCE.debug("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     public static void initSettingsAndUpdater(){
         config = new Config(launcherDirectory, options);
-        System.out.println("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
+        Logger.INSTANCE.debug("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
         settingsMenu = new Settings(config);
-        System.out.println("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
+        Logger.INSTANCE.debug("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         try {
             if (options.contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
             if (Update.hasUpdate()) Platform.runLater(Update::showStage);
@@ -148,7 +136,15 @@ public class Main extends Application {
         else if (SystemUtils.IS_OS_MAC)// If the host OS is mac, use the user's Application Support directory
             launcherDirectory = Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
         else launcherDirectory = Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
-        System.out.println("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
+        Logger.INSTANCE.debug("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
+    }
+
+    private static void logInfo(){
+        final Logger logger = Logger.getInstance();
+        logger.debug("Launcher Version: " + Constants.LAUNCHER_VERSION);
+        logger.debug("Bootstrap Version: " + Constants.BOOTSTRAP_JAR);
+        logger.debug("Update Source: " + Constants.UPDATE_URL);
+        logger.debug("Modpack Service: " + Constants.PACK_JSON_URL);
     }
 
     private void run(Runnable runnable) {

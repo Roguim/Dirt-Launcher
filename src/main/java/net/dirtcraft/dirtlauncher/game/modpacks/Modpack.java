@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,9 +93,7 @@ public class Modpack {
     }
 
     public CompletableFuture<Void> install(){
-        if (Constants.DEBUG) {
-            System.out.println("Installing the pack");
-        }
+        Logger.INSTANCE.debug("Installing the pack");
         return CompletableFuture.runAsync(() -> {
             try {
                 InstallationManager.getInstance().installPack(this, Collections.emptyList());
@@ -105,9 +104,7 @@ public class Modpack {
     }
 
     public CompletableFuture<Void> update(){
-        if (Constants.DEBUG) {
-            System.out.println("Updated the game");
-        }
+        Logger.INSTANCE.debug("Updated the game");
         return CompletableFuture.runAsync(() -> {
             try {
                 InstallationManager.getInstance().updatePack(this, Collections.emptyList());

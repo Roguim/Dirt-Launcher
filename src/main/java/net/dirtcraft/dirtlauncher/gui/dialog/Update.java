@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
@@ -83,10 +84,8 @@ public final class Update {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
 
-        if (Constants.DEBUG) {
-            System.out.println("Installed Version: " + Constants.LAUNCHER_VERSION);
-            System.out.println("Latest Version: " + webVersionString);
-        }
+        Logger.INSTANCE.debug("Installed Version: " + Constants.LAUNCHER_VERSION);
+        Logger.INSTANCE.debug("Latest Version: " + webVersionString);
 
         if (localVersion.size() != webVersion.size()) return true;
         for (int i = 0; i < webVersion.size(); i++) if (webVersion.get(i) > localVersion.get(i)) return true;

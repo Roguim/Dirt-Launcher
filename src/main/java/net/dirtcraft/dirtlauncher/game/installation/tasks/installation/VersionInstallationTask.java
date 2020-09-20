@@ -7,6 +7,7 @@ import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
@@ -119,7 +120,7 @@ public class VersionInstallationTask implements IInstallationTask {
                if (!(action.equals("dissallow") && isUserOs(os))) continue;
 
                 progress.completeMinorStep();
-                if (Constants.DEBUG) System.out.println("Skipping library: " + library.get("name").getAsString());
+               Logger.INSTANCE.debug("Skipping library: " + library.get("name").getAsString());
                 return;
             }
         }
@@ -153,13 +154,13 @@ public class VersionInstallationTask implements IInstallationTask {
     }
 
     private static boolean isUserOs(String os){
-        if (Constants.DEBUG) System.out.println("Is Mac: " + SystemUtils.IS_OS_MAC);
+        Logger.INSTANCE.debug("Is Mac: " + SystemUtils.IS_OS_MAC);
         switch(os) {
             case "windows": return SystemUtils.IS_OS_WINDOWS;
             case "osx": return SystemUtils.IS_OS_MAC;
             case "linux": return SystemUtils.IS_OS_LINUX;
             default: {
-                System.out.println("Tried checking for OS:" + os + ". Did not match Pattern (win/osx/linux).");
+                Logger.INSTANCE.info("Tried checking for OS:" + os + ". Did not match Pattern (win/osx/linux).");
                 return false;
             }
         }

@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
@@ -89,7 +90,7 @@ public class FileUtils {
         JsonObject output = new JsonObject();
         JarFile jar = new JarFile(jarFile);
         Enumeration enumEntries = jar.entries();
-        if (Constants.DEBUG) System.out.println("Extracing Jar: " + jar.getName());
+        Logger.INSTANCE.debug("Extracing Jar: " + jar.getName());
         while(enumEntries.hasMoreElements()) {
             JarEntry file = (JarEntry) enumEntries.nextElement();
             File f = new File(destDir + File.separator + file.getName());

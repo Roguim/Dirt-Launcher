@@ -4,6 +4,7 @@ import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 
 public class DiscordPresence {
 
@@ -16,17 +17,13 @@ public class DiscordPresence {
 
     public static void setState(String state) {
         getPresence().state = state;
-        if (Constants.DEBUG) {
-            System.out.println("Discord Rich Presence STATE set to \"" + state + "\"");
-        }
+        Logger.INSTANCE.debug("Discord Rich Presence STATE set to \"" + state + "\"");
         refreshPresence();
     }
 
     public static void setDetails(String details) {
         getPresence().details = details;
-        if (Constants.DEBUG) {
-            System.out.println("Discord Rich Presence DETAILS set to \"" + details + "\"");
-        }
+        Logger.INSTANCE.debug("Discord Rich Presence DETAILS set to \"" + details + "\"");
         refreshPresence();
     }
 

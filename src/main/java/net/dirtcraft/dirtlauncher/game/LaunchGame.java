@@ -13,6 +13,7 @@ import net.dirtcraft.dirtlauncher.game.serverlist.ServerList;
 import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -132,13 +133,12 @@ public class LaunchGame {
 
         Thread gameThread = new Thread(() -> {
             try {
-                if (Constants.VERBOSE){
-                    System.out.println("---DIR---");
-                    System.out.println(instanceDirectory);
-                    System.out.println("---ARG---");
-                    System.out.println(args);
-                    System.out.println("---END---");
-                }
+                Logger.INSTANCE.verbose("---DIR---");
+                Logger.INSTANCE.verbose(instanceDirectory);
+                Logger.INSTANCE.verbose("---ARG---");
+                Logger.INSTANCE.verbose(args);
+                Logger.INSTANCE.verbose("---END---");
+
                 Process minecraft = new ProcessBuilder()
                         .directory(instanceDirectory)
                         //.inheritIO()
@@ -156,17 +156,17 @@ public class LaunchGame {
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
                 StringBuilder buffer = new StringBuilder();
-                try(InputStreamReader isr = new InputStreamReader(minecraft.getErrorStream());
-                    BufferedReader br = new BufferedReader(isr)
-                ){
+                try (InputStreamReader isr = new InputStreamReader(minecraft.getErrorStream());
+                     BufferedReader br = new BufferedReader(isr)
+                ) {
                     String ln;
-                    while((ln = br.readLine()) != null){
+                    while ((ln = br.readLine()) != null) {
                         buffer.append(ln);
                     }
                 }
                 //Show main stage
                 Platform.runLater(() -> Main.getHome().getStage().show());
-                if (buffer.length()>0) Platform.runLater(()->new ErrorWindow(buffer.toString()).show());
+                if (buffer.length() > 0) Platform.runLater(() -> new ErrorWindow(buffer.toString()).show());
 
                 //Close system tray icon
                 SwingUtilities.invokeLater(() -> SystemTray.getIcon().ifPresent(icon -> SystemTray.tray.remove(icon)));

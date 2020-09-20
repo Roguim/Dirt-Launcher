@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface IPackProvider {
     boolean isOutdated(Modpack modpack);
-    Optional<? extends Instance> getFromUrl(URL url);
+    //Optional<? extends Instance> getFromUrl(URL url);
 
     interface Instance{
         String getGameVersion();
