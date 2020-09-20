@@ -55,16 +55,8 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static AccountManager getAccounts() {
-        return accounts.join();
-    }
-
-    public static Settings getSettingsMenu() {
-        return settingsMenu.join();
-    }
-
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         Platform.setImplicitExit(false);
         Home home = Main.home.join();
         home.getStage().show();
@@ -73,23 +65,36 @@ public class Main extends Application {
         //testMethodPleaseIgnore();
     }
 
-    private void testMethodPleaseIgnore() throws Exception{
-        CurseProvider.InstanceManager.getInstance(CurseProvider.class).ifPresent(curseProvider -> {
-            try {
-                CompletableFuture<Optional<Modpack>> a = curseProvider.getModpackFromUrlAsync(new URL("https://www.curseforge.com/minecraft/modpacks/infinityevolved-reloaded"));
-                a.whenComplete((z,b)->System.out.println("!!!"));
-            } catch (MalformedURLException e){
-                e.printStackTrace();
-            }
-        });
+    public static AccountManager getAccounts() {
+        try {
+            return accounts.get();
+        } catch (Throwable e){
+            throw new Error(e);
+        }
+    }
+
+    public static Settings getSettingsMenu() {
+        try {
+            return settingsMenu.get();
+        } catch (Throwable e) {
+            throw new Error(e);
+        }
     }
 
     public static Home getHome() {
-        return home.join();
+        try {
+            return home.get();
+        } catch (Throwable e) {
+            throw new Error(e);
+        }
     }
 
     public static Config getConfig() {
-        return config.join();
+        try {
+            return config.get();
+        } catch (Throwable e) {
+            throw new Error(e);
+        }
     }
 
     public static List<String> getOptions(){
@@ -100,7 +105,7 @@ public class Main extends Application {
         return launcherDirectory;
     }
 
-    public static Home preInitHome(){
+    private static Home preInitHome(){
         try {
             Home home = new Home();
             Logger.INSTANCE.debug("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
@@ -110,24 +115,24 @@ public class Main extends Application {
         }
     }
 
-    public static AccountManager initAccountManager() {
+    private static AccountManager initAccountManager() {
         AccountManager accounts = new AccountManager(launcherDirectory);
         Logger.INSTANCE.debug("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
         return accounts;
     }
 
-    public static Config initConfig() {
+    private static Config initConfig() {
         Config config = new Config(launcherDirectory, options);
         Logger.INSTANCE.debug("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
         return config;
     }
-    public static Settings initSettings(Config config) {
+    private static Settings initSettings(Config config) {
         Settings settingsMenu = new Settings(config);
         Logger.INSTANCE.debug("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         return settingsMenu;
     }
 
-    public static void checkUpdate(){
+    private static void checkUpdate(){
         try {
             if (options.contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
             if (Update.hasUpdate()) Platform.runLater(Update::showStage);
@@ -136,7 +141,7 @@ public class Main extends Application {
         }
     }
 
-    public static void postUpdateCleanup(){
+    private static void postUpdateCleanup(){
         try {
             File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
             String bootstrapName = Constants.BOOTSTRAP_JAR;
@@ -147,7 +152,7 @@ public class Main extends Application {
         }
     }
 
-    public static void initLauncherDirectory(){
+    private static void initLauncherDirectory(){
         if (options.contains("-installed") || options.contains("-portable"))
             try {
                 launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
@@ -176,5 +181,16 @@ public class Main extends Application {
         else {
             Platform.runLater(runnable);
         }
+    }
+
+    private void testMethodPleaseIgnore() {
+        CurseProvider.InstanceManager.getInstance(CurseProvider.class).ifPresent(curseProvider -> {
+            try {
+                CompletableFuture<Optional<Modpack>> a = curseProvider.getModpackFromUrlAsync(new URL("https://www.curseforge.com/minecraft/modpacks/infinityevolved-reloaded"));
+                a.whenComplete((z,b)->System.out.println("!!!"));
+            } catch (MalformedURLException e){
+                e.printStackTrace();
+            }
+        });
     }
 }
