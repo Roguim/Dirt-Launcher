@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.data;
 
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;

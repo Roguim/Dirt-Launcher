@@ -4,8 +4,6 @@ package net.dirtcraft.dirtlauncher.data;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
-import java.io.InvalidObjectException;
-import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 

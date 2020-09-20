@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 public class Constants {
     public static final String LAUNCHER_VERSION = "@VERSION@";

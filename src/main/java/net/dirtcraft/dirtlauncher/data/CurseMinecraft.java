@@ -1,7 +1,5 @@
 package net.dirtcraft.dirtlauncher.data;
 
-import net.dirtcraft.dirtlauncher.data.CurseModLoader;
-
 import java.util.List;
 
 public class CurseMinecraft {

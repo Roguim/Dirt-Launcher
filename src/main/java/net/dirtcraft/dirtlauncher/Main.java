@@ -32,40 +32,41 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
-    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-    private static List<String> options;
     private static long x = System.currentTimeMillis();
-    private static CompletableFuture<Void> stageInit = null;
-    private static Config config = null;
-    private static Settings settingsMenu = null;
-    private static AccountManager accounts = null;
-    private static Home home = null;
+    public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     private static Path launcherDirectory;
+    private static List<String> options;
+    private static CompletableFuture<Home> home = null;
+    private static CompletableFuture<Config> config = null;
+    private static CompletableFuture<Settings> settingsMenu = null;
+    private static CompletableFuture<AccountManager> accounts = null;
     public static Gson gson;
 
     public static void main(String[] args) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         options = Arrays.asList(args);
         initLauncherDirectory();
-        stageInit = CompletableFuture.runAsync(Main::preInitHome);
-        CompletableFuture.runAsync(Main::initAccountManager);
-        CompletableFuture.runAsync(Main::initSettingsAndUpdater);
+        home = CompletableFuture.supplyAsync(Main::preInitHome);
+        accounts = CompletableFuture.supplyAsync(Main::initAccountManager);
+        config = CompletableFuture.supplyAsync(Main::initConfig);
+        settingsMenu = config.thenApply(Main::initSettings);
+        settingsMenu.thenRun(Main::checkUpdate);
         CompletableFuture.runAsync(Main::postUpdateCleanup);
         launch(args);
     }
 
     public static AccountManager getAccounts() {
-        return accounts;
+        return accounts.join();
     }
 
     public static Settings getSettingsMenu() {
-        return settingsMenu;
+        return settingsMenu.join();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(false);
-        stageInit.get();
+        Home home = Main.home.join();
         home.getStage().show();
         home.update();
         Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
@@ -84,14 +85,11 @@ public class Main extends Application {
     }
 
     public static Home getHome() {
-        if (home == null) {
-            home = new Home();
-        }
-        return home;
+        return home.join();
     }
 
     public static Config getConfig() {
-        return config;
+        return config.join();
     }
 
     public static List<String> getOptions(){
@@ -102,25 +100,34 @@ public class Main extends Application {
         return launcherDirectory;
     }
 
-    public static void preInitHome(){
+    public static Home preInitHome(){
         try {
-            home = new Home();
+            Home home = new Home();
             Logger.INSTANCE.debug("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
+            return home;
         } catch (Exception e) {
             throw new Error(e);
         }
     }
 
-    public static void initAccountManager() {
-        accounts = new AccountManager(launcherDirectory);
+    public static AccountManager initAccountManager() {
+        AccountManager accounts = new AccountManager(launcherDirectory);
         Logger.INSTANCE.debug("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
+        return accounts;
     }
 
-    public static void initSettingsAndUpdater(){
-        config = new Config(launcherDirectory, options);
+    public static Config initConfig() {
+        Config config = new Config(launcherDirectory, options);
         Logger.INSTANCE.debug("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
-        settingsMenu = new Settings(config);
+        return config;
+    }
+    public static Settings initSettings(Config config) {
+        Settings settingsMenu = new Settings(config);
         Logger.INSTANCE.debug("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
+        return settingsMenu;
+    }
+
+    public static void checkUpdate(){
         try {
             if (options.contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
             if (Update.hasUpdate()) Platform.runLater(Update::showStage);

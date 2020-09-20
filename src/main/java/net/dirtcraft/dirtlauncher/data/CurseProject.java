@@ -6,7 +6,6 @@ import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;

@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;

@@ -1,8 +1,5 @@
 package net.dirtcraft.dirtlauncher.data;
 
-import net.dirtcraft.dirtlauncher.data.CurseMetaFileReference;
-import net.dirtcraft.dirtlauncher.data.CurseMinecraft;
-
 import java.util.List;
 
 public class CurseModpackManifest {

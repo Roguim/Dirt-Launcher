@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.providers;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.data.CurseProject;

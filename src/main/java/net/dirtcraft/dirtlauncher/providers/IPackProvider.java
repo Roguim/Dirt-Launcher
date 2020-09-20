@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.providers;
 
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Optional;
 

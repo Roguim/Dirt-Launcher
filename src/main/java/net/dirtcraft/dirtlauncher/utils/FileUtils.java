@@ -2,7 +2,6 @@ package net.dirtcraft.dirtlauncher.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
