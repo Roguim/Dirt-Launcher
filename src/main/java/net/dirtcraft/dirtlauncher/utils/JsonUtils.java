@@ -46,6 +46,16 @@ public class JsonUtils {
     }
 
     @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> parseJson(File file, Class<T> clazz) {
+        try {
+            return Optional.ofNullable(parseJsonUnchecked(file, clazz));
+        } catch (Exception e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> parseJson(File file, TypeToken<T> type) {
         try {
             return Optional.ofNullable(parseJsonUnchecked(file, type));
@@ -62,6 +72,17 @@ public class JsonUtils {
                 JsonReader jsonReader = new JsonReader(fileReader)
         ){
             return gson.fromJson(jsonReader, type.getType());
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> T parseJsonUnchecked(File file, Class<T> clazz) throws IOException {
+        final Gson gson = Main.gson;
+        try(
+                FileReader fileReader = new FileReader(file);
+                JsonReader jsonReader = new JsonReader(fileReader)
+        ){
+            return gson.fromJson(jsonReader, clazz);
         }
     }
 

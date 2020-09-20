@@ -8,22 +8,27 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.providers.CurseProvider;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
@@ -64,9 +69,18 @@ public class Main extends Application {
         home.getStage().show();
         home.update();
         Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
+        //testMethodPleaseIgnore();
     }
 
     private void testMethodPleaseIgnore() throws Exception{
+        CurseProvider.InstanceManager.getInstance(CurseProvider.class).ifPresent(curseProvider -> {
+            try {
+                CompletableFuture<Optional<Modpack>> a = curseProvider.getModpackFromUrlAsync(new URL("https://www.curseforge.com/minecraft/modpacks/infinityevolved-reloaded"));
+                a.whenComplete((z,b)->System.out.println("!!!"));
+            } catch (MalformedURLException e){
+                e.printStackTrace();
+            }
+        });
     }
 
     public static Home getHome() {

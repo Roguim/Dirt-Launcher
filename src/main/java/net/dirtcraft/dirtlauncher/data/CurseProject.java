@@ -1,17 +1,21 @@
 package net.dirtcraft.dirtlauncher.data;
 
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InvalidObjectException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class CurseProject {
-    private CurseProject(int i) throws InvalidObjectException {
-        throw new InvalidObjectException("This is a data class intended to only be constructed by GSON.");
+    private CurseProject(int i) throws InstantiationException {
+        throw new InstantiationException("This is a data class intended to only be constructed by GSON.");
     }
+
     public final long id;
     public final String name;
     public final String summary;
@@ -19,13 +23,27 @@ public class CurseProject {
     public final long defaultFileId;
     public final URL websiteUrl;
 
-    private Optional<URL> getLatest(String projectId, String fileId){
+    public CompletableFuture<Void> getLatestFileAsync(File location) {
+        return CompletableFuture.runAsync(() -> getLatestFile(location));
+    }
+
+    public CompletableFuture<String> getLatestFileUrl(){
+        return CompletableFuture.supplyAsync(()->getLatestFileUrl(id, defaultFileId));
+    }
+
+    private String getLatestFileUrl(long projectId, long fileId) {
         final String link = String.format(Constants.CURSE_API_URL + "%s/file/%s/download-url", projectId, fileId);
+        return WebUtils.getStringFromUrl(link);
+    }
+
+    private void getLatestFile(File location){
         try {
-            return Optional.of(new URL(link));
-        } catch (MalformedURLException e){
-            return Optional.empty();
+            String url = getLatestFileUrl(id, defaultFileId);
+            WebUtils.copyURLToFile(url, location);
+        } catch (IOException e) {
+            Logger.INSTANCE.error(e);
         }
+
     }
 }
 

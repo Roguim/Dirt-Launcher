@@ -4,7 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.manifests.platforms.CurseManifest;
+import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -73,8 +74,8 @@ public class UpdateCursePackTask implements IUpdateTask {
         File modsFolder = new File(modpackFolder.getPath(), "mods");
         File tempManifestFile = new File(tempDir, "manifest.json");
         File currentManifestFile = new File(modpackFolder, "manifest.json");
-        CurseManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseManifest>() {});
-        CurseManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<CurseManifest>() {});
+        CurseModpackManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseModpackManifest>() {});
+        CurseModpackManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<CurseModpackManifest>() {});
         modsFolder.mkdirs();
         progressContainer.completeMinorStep();
 
@@ -84,20 +85,20 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(oldManifest.files.size() + newManifest.files.size());
 
         //Work out what changes need to be made to the mods and remove / add them.
-        List<CurseManifest.CurseMetadataReference> toRemove = new ArrayList<>();
-        List<CurseManifest.CurseMetadataReference> toInstall = newManifest.files.parallelStream()
+        List<CurseMetaFileReference> toRemove = new ArrayList<>();
+        List<CurseMetaFileReference> toInstall = newManifest.files.parallelStream()
                 .peek(e->progressContainer.completeMinorStep())
                 .filter(file->oldManifest.files.stream().noneMatch(file::equals))
                 .filter(file->file.required)
                 .collect(Collectors.toList());
 
-        for (CurseManifest.CurseMetadataReference oldFile : oldManifest.files) {
+        for (CurseMetaFileReference oldFile : oldManifest.files) {
             progressContainer.completeMinorStep();
-            Optional<CurseManifest.CurseMetadataReference> optNewFile = newManifest.files.stream()
+            Optional<CurseMetaFileReference> optNewFile = newManifest.files.stream()
                     .filter(oldFile::equals)
                     .findAny();
             if (optNewFile.isPresent()) {
-                CurseManifest.CurseMetadataReference newFile = optNewFile.get();
+                CurseMetaFileReference newFile = optNewFile.get();
                 if (newFile.required == oldFile.required) continue;
                 else if (newFile.required) toInstall.add(newFile);
                 else toRemove.add(oldFile);
