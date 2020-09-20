@@ -32,6 +32,11 @@ public final class AccountManager {
         boolean saveData = false;
         JsonObject accounts;
         accountDir = launcherDirectory.resolve("account.json").toFile();
+        try {
+            accountDir.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try (FileReader reader = new FileReader(accountDir)) {
             JsonParser parser = new JsonParser();
             accounts = parser.parse(reader).getAsJsonObject();
@@ -134,7 +139,6 @@ public final class AccountManager {
         try {
             setSelectedAccount(new AccountCredentials(email, password));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             onFailure.accept(e);
         }
     }

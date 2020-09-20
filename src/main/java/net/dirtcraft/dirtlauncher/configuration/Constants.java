@@ -10,7 +10,7 @@ public class Constants {
     public static final String AUTHORS = "ShinyAfro, Julian & TechDG";
     public static final String HELPERS = "Lordomus";
 
-    public static final String UPDATE_URL = "https://dirtcraft.net/launcher/Dirt-Launcher.jar";
+    public static final String UPDATE_URL = "http://164.132.201.67/launcher/Dirt-Launcher.jar";
     public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
     public static final String CURSE_API_URL = "https://addons-ecs.forgesvc.net/api/v2/addon/";
 
@@ -38,7 +38,7 @@ public class Constants {
     public final static String JAR_ICONS = "Icons";
 
     @SuppressWarnings("ConstantConditions") //Tokens will replace this on jfxjar / build, but will not when ran using IntelliJ's IDEA application run build script.
-    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug") || LAUNCHER_VERSION.equals("@VERSION@"));
+    public static final boolean DEBUG = (MiscUtils.inIde() || Main.getOptions().contains("-debug"));
     public static final boolean VERBOSE = (MiscUtils.inIde() || Main.getOptions().contains("-verbose"));
 
     public static final int MAX_DOWNLOAD_ATTEMPTS = 8;
