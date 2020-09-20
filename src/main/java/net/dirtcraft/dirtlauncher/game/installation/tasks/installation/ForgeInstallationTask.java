@@ -5,11 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
@@ -126,11 +126,11 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         // We already installed forge, no need to do it again.
         if (libraryMaven[1].equals("forge")) {
-            if (Constants.DEBUG) System.out.println("Skipping forge library because Forge is already installed!");
+            Logger.INSTANCE.debug("Skipping forge library because Forge is already installed!");
             progressContainer.completeMinorStep();
             return;
         }
-        if (Constants.DEBUG) System.out.println("Installing library: " + libraryMaven[1]);
+        Logger.INSTANCE.debug("Installing library: " + libraryMaven[1]);
 
         // Establish paths
         File libraryPath = new File(forgeFolder + File.separator + "libraries" + File.separator + libraryMaven[0].replace(".", File.separator) + File.separator + libraryMaven[1] + File.separator + libraryMaven[2]);
@@ -151,7 +151,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         File libraryFile;
         try {
             libraryFile = new File(fileName);
-            if (Constants.DEBUG) System.out.println("Downloading " + url);
+            Logger.INSTANCE.debug("Downloading " + url);
             WebUtils.copyURLToFile(url, libraryFile);
         } catch (Exception e){
             try {Thread.sleep(2000);} catch(InterruptedException ex) {}

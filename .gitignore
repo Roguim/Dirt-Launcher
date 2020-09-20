@@ -33,11 +33,9 @@ logs
 concheckrmd
 options.txt
 config/*
-photoshop/
-todo.txt
-lib sources
-lib sources/
-lib sources/*
+untracked
+untracked/
+untracked/*
 
 build
 

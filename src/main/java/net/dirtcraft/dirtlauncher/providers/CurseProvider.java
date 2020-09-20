@@ -2,13 +2,21 @@ package net.dirtcraft.dirtlauncher.providers;
 
 import com.google.common.reflect.TypeToken;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.CurseProject;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
+import net.lingala.zip4j.ZipFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class CurseProvider implements IPackProvider {
     @Override
@@ -16,45 +24,63 @@ public class CurseProvider implements IPackProvider {
         return false;
     }
 
-    @Override
-    public Optional<? extends Instance> getFromUrl(URL url) {
-        final String name = url.getPath().replaceAll("/minecraft/modpacks/(.*)/?", "$1");
-        final String pattern = "(?i)^" + name.replaceAll("-", "[-. ]") + "$";
-        final Optional<ArrayList<CurseInstance>> optListing = oof(name);
-        if (!optListing.isPresent()) return Optional.empty();
+    public CompletableFuture<Optional<Modpack>> getModpackFromUrlAsync(URL url){
+        return CompletableFuture.supplyAsync(()->getModpackFromUrl(url));
+    }
 
-        final List<CurseInstance> listing = optListing.get();
-        return listing.stream().filter(i->i.name.matches(pattern)).findFirst();
+    private Optional<Modpack> getModpackFromUrl(URL url){
+        File tempFile = null;
+        File tempDir = null;
+        try {
+            tempFile = File.createTempFile("Dirt-Launcher-", null);
+            tempDir = new File(tempFile.getAbsolutePath().replace(".tmp", ""));
+            CurseProject project = getProjectFromUrl(url).orElseThrow(InvalidParameterException::new);
+            CompletableFuture<String> latestFile = project.getLatestFileUrl();
+            project.getLatestFileAsync(tempFile).join();
+
+            tempDir.mkdirs();
+            ZipFile zipFile = new ZipFile(tempFile);
+            zipFile.extractAll(tempDir.getPath());
+
+            File tempManifest = new File(tempDir, "manifest.json");
+            CurseModpackManifest manifest = JsonUtils.parseJson(tempManifest, CurseModpackManifest.class).orElseThrow(InvalidParameterException::new);
+
+            return Optional.of(new Modpack(manifest, latestFile.join()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return Optional.empty();
+        } finally {
+            if (tempFile != null) tempFile.delete();
+            if (tempDir != null) FileUtils.deleteDirectoryUnchecked(tempDir);
+        }
+    }
+
+    public CompletableFuture<Boolean> getLatestFileFromUrl(URL url, File file){
+        final Optional<CurseProject> project = getProjectFromUrl(url);
+        final boolean $ = file.delete();
+        if (project.isPresent()) return project.get().getLatestFileAsync(file).thenApply(v->file.exists());
+        else return CompletableFuture.supplyAsync(()->false);
+    }
+
+    private Optional<CurseProject> getProjectFromUrl(URL url) {
+        final String name = url.getPath().replaceAll("/minecraft/modpacks/(.*)/?", "$1");
+        final String pattern = "^(?i)" + name.replaceAll("[-. ]", "") + "$";
+        final Optional<ArrayList<CurseProject>> optListing = getProjectsMatching(name);
+        Optional<CurseProject> optProject = optListing.flatMap(curseProjects -> curseProjects.stream()
+                .filter(i -> i.name.replaceAll("[-. ]", "").matches(pattern))
+                .findFirst());
+
+        return optProject;
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private Optional<ArrayList<CurseInstance>> oof(String name){
+    private Optional<ArrayList<CurseProject>> getProjectsMatching(String name){
         try {
             final String query = Constants.CURSE_API_URL + "search?categoryId=0&gameId=432&gameVersion=&index=0&pageSize=2500&searchFilter=" + name + "&sectionId=4471&sort=0";
-            return WebUtils.getGsonFromUrl(query, new TypeToken<ArrayList<CurseInstance>>(){});
+            return WebUtils.getGsonFromUrl(query, new TypeToken<ArrayList<CurseProject>>(){});
         } catch (Exception e){
             return Optional.empty();
         }
     }
 
-    public static class CurseInstance implements Instance{
-        public final long id;
-        public final String name;
-
-
-        @Override
-        public String getGameVersion() {
-            return null;
-        }
-
-        @Override
-        public Modpack get() {
-            return null;
-        }
-
-        //pseudo-constructor. Not to be used, like ever.
-        private CurseInstance(int i){
-            throw new Error();
-        }
-    }
 }

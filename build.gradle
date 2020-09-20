@@ -42,7 +42,7 @@ repositories {
 dependencies {
     packaged "com.github.Dirt-Craft:$bootstrapJar"
 
-    provided fileTree(dir: 'libraries', include: '*.jar')
+    provided fileTree(dir: 'src/main/libraries', include: '*.jar')
     provided 'com.google.code.gson:gson:2.8.5'
     provided 'com.google.http-client:google-http-client:1.23.0'
     provided 'com.github.Cydhra:Nidhogg:1.3'

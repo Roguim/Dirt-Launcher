@@ -2,13 +2,12 @@ package net.dirtcraft.dirtlauncher.providers;
 
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Optional;
 
 public interface IPackProvider {
     boolean isOutdated(Modpack modpack);
-    Optional<? extends Instance> getFromUrl(URL url);
+    //Optional<? extends Instance> getFromUrl(URL url);
 
     interface Instance{
         String getGameVersion();
