@@ -88,19 +88,17 @@ public class Modpack {
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.modloaderVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = getJsonElement(json, JsonElement::getAsInt).orElse(null);
+        this.fileSize = getJsonElement(json, JsonElement::getAsInt, "fileSize").orElse(0);
         this.optionalMods = optionalMods;
     }
 
     //Gets file size of custom pack in megabytes
     public Optional<Integer> getFileSize() {
-        if (fileSize == null) return Optional.empty();
-        else return Optional.of(fileSize);
+        return Optional.ofNullable(fileSize);
     }
 
     public Optional<List<Listing>> getListings() {
-        if (listings == null) return Optional.empty();
-        else return Optional.of(listings);
+        return Optional.ofNullable(listings);
     }
 
     public File getInstanceDirectory() {

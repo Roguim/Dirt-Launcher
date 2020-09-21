@@ -27,7 +27,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModpackManager {
-    private static ModpackManager instance = new ModpackManager();
+    private static ModpackManager instance = null;
     private final File jsonPath;
     private final Gson gson;
     private final Semaphore saveLock = new Semaphore(1);
@@ -76,6 +76,7 @@ public class ModpackManager {
     }
 
     public static ModpackManager getInstance(){
+        if (instance == null) instance = new ModpackManager();
         return instance;
     }
 
