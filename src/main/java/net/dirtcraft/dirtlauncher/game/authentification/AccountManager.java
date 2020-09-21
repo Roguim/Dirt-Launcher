@@ -37,27 +37,37 @@ public final class AccountManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try (FileReader reader = new FileReader(accountDir)) {
-            JsonParser parser = new JsonParser();
-            accounts = parser.parse(reader).getAsJsonObject();
-        } catch (IOException e){
-            accounts = null;
+
+        if (accountDir.length() == 0) {
+            accounts = new JsonObject();
+
+            System.out.println("No Selected Account");
+            selectedAccount = null;
+        } else {
+            try (FileReader reader = new FileReader(accountDir)) {
+                JsonParser parser = new JsonParser();
+                accounts = parser.parse(reader).getAsJsonObject();
+            } catch (IOException e){
+                accounts = null;
+            }
+
+            try {
+                if (accounts != null && accounts.has("selected account")) {
+                    try {
+                        selectedAccount = new Account(accounts.getAsJsonObject("selected account"));
+                    } catch (JsonParseException e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    throw new JsonParseException("No Selected Account");
+                }
+            } catch (JsonParseException e){
+                System.out.println(e.getMessage());
+                selectedAccount = null;
+            }
         }
 
-        try {
-            if (accounts != null && accounts.has("selected account")) {
-                try {
-                    selectedAccount = new Account(accounts.getAsJsonObject("selected account"));
-                } catch (JsonParseException e) {
-                    System.out.println(e.getMessage());
-                }
-            } else {
-                throw new JsonParseException("No Selected Account");
-            }
-        } catch (JsonParseException e){
-            System.out.println(e.getMessage());
-            selectedAccount = null;
-        }
+
 
         String yggdrasilClientToken;
         try {
