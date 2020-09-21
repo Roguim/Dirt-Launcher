@@ -55,13 +55,14 @@ public class InstallCustomPackTask implements IInstallationTask {
 
             // Update UI On Interval Todo make better
             timer = new Timer();
+            System.out.println("Starting timer");
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     Install.getInstance().ifPresent(instance -> progressContainer.setMinorStepsCompleted((int) ((modpackZip.length() / 1024 / 1024))));
                 }
             }, 0, 1000);
-        }
+        } else progressContainer.setNumMinorSteps(1);
 
         // Download the Pack
         WebUtils.copyURLToFile(pack.getLink(), modpackZip);

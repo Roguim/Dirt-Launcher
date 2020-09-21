@@ -48,6 +48,7 @@ public class ProgressContainer {
 
     public void setMinorStepsCompleted(int setMinorStepsCompleted) {
         minorStepsCompleted.set(setMinorStepsCompleted);
+        updateMinorStepsUI();
     }
 
     public void addMinorStepsCompleted(int minorStepsCompleted) {

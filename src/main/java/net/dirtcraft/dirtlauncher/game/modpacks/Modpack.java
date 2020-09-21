@@ -35,7 +35,7 @@ public class Modpack {
     private final ModLoader modLoader;
     private final String modloaderVersion;
     private final List<OptionalMod> optionalMods;
-    private final Integer fileSize;
+    private final int fileSize;
     private final List<Listing> listings;
     private final UpdateTracker updateTracker;
     boolean favourite = false;
@@ -88,7 +88,7 @@ public class Modpack {
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.modloaderVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = getJsonElement(json, JsonElement::getAsInt, "fileSize").orElse(0);
+        this.fileSize = getJsonElement(json, JsonElement::getAsInt, "fileSize").orElse(-1);
         this.optionalMods = optionalMods;
     }
 
