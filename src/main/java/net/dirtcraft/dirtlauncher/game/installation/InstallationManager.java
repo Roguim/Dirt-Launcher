@@ -102,7 +102,7 @@ public class InstallationManager {
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
     private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
-        List<IInstallationTask> installationTasks = new ArrayList();
+        List<IInstallationTask> installationTasks = new ArrayList<>();
         // Fetch the game version manifest from Mojang
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
