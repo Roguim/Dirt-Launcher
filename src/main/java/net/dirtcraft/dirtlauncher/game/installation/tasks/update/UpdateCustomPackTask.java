@@ -51,7 +51,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Deleting old files...");
+        progressContainer.setProgressText("Deleting Old Files...");
         progressContainer.setNumMinorSteps(2);
 
         // Delete the existing mods and configs
@@ -63,7 +63,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Adding updated files...");
+        progressContainer.setProgressText("Adding Updated Files...");
         progressContainer.setNumMinorSteps(1);
 
         // Place in the new mods and configs
@@ -73,7 +73,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Cleaning up...");
+        progressContainer.setProgressText("Cleaning Up...");
         progressContainer.setNumMinorSteps(1);
 
         // Delete the temporary files

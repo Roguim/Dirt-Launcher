@@ -41,8 +41,8 @@ public class InstallCursePackTask implements IInstallationTask {
 
         // Prepare Folders
         final File modpackFolder = pack.getInstanceDirectory();
-        final File modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
-        final File tempDir = new File(modpackFolder.getPath(), "temp");
+        final File modpackZip = new File(modpackFolder, "modpack.zip");
+        final File tempDir = new File(modpackFolder, "temp");
 
         FileUtils.deleteDirectory(modpackFolder);
         modpackFolder.mkdirs();
@@ -87,7 +87,7 @@ public class InstallCursePackTask implements IInstallationTask {
         progressContainer.setProgressText("Preparing Mod Manifests");
         progressContainer.setNumMinorSteps(mods.size());
 
-        List<JsonObject> modManifests = Collections.synchronizedList(new ArrayList());
+        List<JsonObject> modManifests = Collections.synchronizedList(new ArrayList<>());
 
         // Download Mod Manifests
         CompletableFuture.allOf(
@@ -116,8 +116,8 @@ public class InstallCursePackTask implements IInstallationTask {
         }
 
         // Install Mods
-        File modsFolder = new File(modpackFolder.getPath(), "mods");
-        modsFolder.mkdirs();
+            File modsFolder = new File(modpackFolder.getPath(), "mods");
+            modsFolder.mkdirs();
 
         synchronized (modManifests) {
             try {

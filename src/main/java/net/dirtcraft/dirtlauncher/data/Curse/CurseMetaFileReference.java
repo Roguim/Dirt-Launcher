@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.data;
+package net.dirtcraft.dirtlauncher.data.Curse;
 
 import com.google.common.reflect.TypeToken;
 import net.dirtcraft.dirtlauncher.configuration.Constants;

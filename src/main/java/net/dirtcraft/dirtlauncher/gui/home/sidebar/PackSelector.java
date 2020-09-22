@@ -44,7 +44,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
     private final Modpack modpack;
     private final Region indicator;
 
-    PackSelector(Modpack modpack) {
+    public PackSelector(Modpack modpack) {
         this.modpack = modpack;
         contextMenu = new ContextMenu();
         setGraphic(indicator = getIndicator());
@@ -209,7 +209,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         return rectangle;
     }
 
-    private void launchInstallScene() {
+    public void launchInstallScene() {
         try {
             Stage stage = new Stage();
             stage.setTitle("Installing " + this.getModpack().getName() + "...");

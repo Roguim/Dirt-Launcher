@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.data;
+package net.dirtcraft.dirtlauncher.data.Curse;
 
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 

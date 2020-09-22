@@ -2,8 +2,8 @@ package net.dirtcraft.dirtlauncher.providers;
 
 import com.google.common.reflect.TypeToken;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
-import net.dirtcraft.dirtlauncher.data.CurseProject;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseProject;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;

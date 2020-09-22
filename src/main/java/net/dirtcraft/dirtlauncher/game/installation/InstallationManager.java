@@ -16,8 +16,10 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInst
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.VersionInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCustomPackTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallFTBPackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateCustomPackTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateFTBPackTask;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
@@ -57,9 +59,9 @@ public class InstallationManager {
 
         // Assigns the proper installation task based on the pack type.
         switch(pack.getPackType()) {
-            //case FTB:
-            //    packInstallTask = new InstallFTBPackTask(pack);
-            //    break;
+            case FTB:
+                packInstallTask = new InstallFTBPackTask(pack);
+                break;
             case CURSE:
                 packInstallTask = new InstallCursePackTask(pack);
                 break;
@@ -78,9 +80,9 @@ public class InstallationManager {
 
         // Assigns the proper update task based on the pack type.
         switch(pack.getPackType()) {
-            //case FTB:
-            //    packUpdateTask = new UpdateFTBPackTask(pack);
-            //    break;
+            case FTB:
+                packUpdateTask = new UpdateFTBPackTask(pack);
+                break;
             case CURSE:
                 packUpdateTask = new UpdateCursePackTask(pack);
                 break;

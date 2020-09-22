@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
-import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;

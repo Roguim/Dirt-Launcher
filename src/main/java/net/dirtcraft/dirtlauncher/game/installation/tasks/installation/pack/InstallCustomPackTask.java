@@ -55,7 +55,6 @@ public class InstallCustomPackTask implements IInstallationTask {
 
             // Update UI On Interval Todo make better
             timer = new Timer();
-            System.out.println("Starting timer");
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {

@@ -3,8 +3,8 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 import com.google.common.reflect.TypeToken;
 import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.data.CurseMetaFileReference;
-import net.dirtcraft.dirtlauncher.data.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -34,8 +34,8 @@ public class UpdateCursePackTask implements IUpdateTask {
     public UpdateCursePackTask(Modpack pack) {
         this.pack = pack;
         this.modpackFolder = pack.getInstanceDirectory();
-        this.modpackZip = new File(modpackFolder.getPath(), "modpack.zip");
-        this.tempDir = new File(modpackFolder.getPath(), "temp");
+        this.modpackZip = new File(modpackFolder, "modpack.zip");
+        this.tempDir = new File(modpackFolder, "temp");
         if (tempDir.exists()) FileUtils.deleteDirectoryUnchecked(tempDir);
     }
 
@@ -70,8 +70,8 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.completeMinorStep();
 
         // Sort out the files
-        FileUtils.copyDirectory(new File(tempDir.getPath(), "overrides"), modpackFolder);
-        File modsFolder = new File(modpackFolder.getPath(), "mods");
+        FileUtils.copyDirectory(new File(tempDir, "overrides"), modpackFolder);
+        File modsFolder = new File(modpackFolder, "mods");
         File tempManifestFile = new File(tempDir, "manifest.json");
         File currentManifestFile = new File(modpackFolder, "manifest.json");
         CurseModpackManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<CurseModpackManifest>() {});
@@ -102,14 +102,12 @@ public class UpdateCursePackTask implements IUpdateTask {
                 if (newFile.required == oldFile.required) continue;
                 else if (newFile.required) toInstall.add(newFile);
                 else toRemove.add(oldFile);
-            } else {
-                toRemove.add(oldFile);
-            }
+            } else toRemove.add(oldFile);
         }
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Removing old mods");
+        progressContainer.setProgressText("Removing Old Mods");
         progressContainer.setNumMinorSteps(toRemove.size());
 
         //remove old mods
@@ -124,7 +122,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Adding new mods");
+        progressContainer.setProgressText("Adding New Mods");
         progressContainer.setNumMinorSteps(toInstall.size());
 
         //install new mods
@@ -137,7 +135,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
         // Update Progress
         progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Cleaning up");
+        progressContainer.setProgressText("Cleaning Up");
         progressContainer.setNumMinorSteps(1);
         org.apache.commons.io.FileUtils.copyFile(tempManifestFile, currentManifestFile);
 

@@ -32,6 +32,7 @@ public class WebUtils {
             return new JsonParser().parse(getJsonStringFromUrl(url)).getAsJsonObject();
         } catch (Exception exception) {
             System.out.println(exception.getMessage() + "\nRetrying...");
+            try { Thread.sleep(2000); } catch (Exception ignored) {}
             return getJsonFromUrl(url);
         }
     }
