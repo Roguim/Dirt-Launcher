@@ -36,13 +36,21 @@ public class JsonUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> parseJson(File file, TypeToken<T> type, Function<JsonObject, T> migrate) {
-        try {
-            return Optional.ofNullable(parseJsonUnchecked(file, type));
-        } catch (Exception e){
-            final Optional<T> optionalT = Optional.ofNullable(tryMigrate(file, migrate));
-            optionalT.ifPresent(t->toJson(file, t, type));
-            return optionalT;
+        return parseJson(file, type, migrate, t->true);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> parseJson(File file, TypeToken<T> type, Function<JsonObject, T> migrate, Function<T, Boolean> validator) {
+        T t = null;
+        try{
+            t = parseJsonUnchecked(file, type);
+        } catch (Exception ignored){
         }
+        if (t == null || !validator.apply(t)){
+            t = tryMigrate(file, migrate);
+            if (t != null) toJson(file, t, type);
+        }
+        return Optional.ofNullable(t);
     }
 
     @SuppressWarnings("UnstableApiUsage")

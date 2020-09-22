@@ -18,7 +18,6 @@ public abstract class InstallationManifest<T> extends ConfigBase<ArrayList<T>> {
 
     public InstallationManifest(File path, TypeToken<ArrayList<T>> type){
         super(path, type);
-        load();
     }
 
     public ListIterator<T> listIterator(){

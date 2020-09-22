@@ -32,16 +32,6 @@ public class Account{
         );
     }
 
-    JsonObject getSerialized(){
-        if (session == null) return new JsonObject();
-        final JsonObject json = new JsonObject();
-        json.addProperty("UUID", session.getId());
-        json.addProperty("Alias", session.getAlias());
-        json.addProperty("AccessToken", session.getAccessToken());
-        json.addProperty("ClientToken", session.getClientToken());
-        return json;
-    }
-
     public String getAlias(){
         return session.getAlias();
     }
@@ -54,16 +44,6 @@ public class Account{
         return session.getId();
     }
 
-    /*
-    public String getClientToken(){
-        return session.getId();
-    }
-
-    public UUID getUuid(){
-        return session.getUuid();
-    }
-    */
-
     public boolean isValid(){
         try {
             Main.getAccounts().getClient().validate(session);
@@ -72,7 +52,7 @@ public class Account{
             System.out.println("Session not valid, Attempting to refresh it!");
             try {
                 Main.getAccounts().getClient().refresh(session);
-                CompletableFuture.runAsync(Main.getAccounts()::saveData);
+                Main.getAccounts().saveAsync();
                 return true;
             } catch (Exception refreshException){
                 System.out.println(e.getMessage());
@@ -91,7 +71,7 @@ public class Account{
             System.out.println("Session not valid, Attempting to refresh it!");
             try {
                 Main.getAccounts().getClient().refresh(session);
-                if (save) CompletableFuture.runAsync(Main.getAccounts()::saveData);
+                if (save) Main.getAccounts().saveAsync();
                 return true;
             } catch (Exception refreshException){
                 System.out.println(e.getMessage());

@@ -12,6 +12,7 @@ public class InstanceManifest extends InstallationManifest<InstanceManifest.Entr
 
     public InstanceManifest(){
         super(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()), new TypeToken<ArrayList<Entry>>(){});
+        load();
     }
 
     @Override
