@@ -8,8 +8,6 @@ import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
 
-import java.util.concurrent.CompletableFuture;
-
 //import java.util.UUID;
 
 public class Account{
