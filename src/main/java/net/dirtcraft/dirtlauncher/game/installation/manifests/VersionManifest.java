@@ -35,10 +35,12 @@ public class VersionManifest extends InstallationManifest<Multimap<String, Strin
                     .map(JsonElement::getAsJsonObject)
                     .forEach(versionManifest -> {
                         final String version = versionManifest.get("version").getAsString();
-                        final List<String> libraries = Arrays.asList(versionManifest.get("classpathLibraries").getAsString().split(";"));
-                        libraries.forEach(lib-> Paths.get(lib).relativize(parent));
+                        final List<String> libraries = Arrays.stream(versionManifest.get("classpathLibraries").getAsString().split(";"))
+                                .map(Paths::get)
+                                .map(parent::relativize)
+                                .map(Path::toString)
+                                .collect(Collectors.toList());
                         multimap.putAll(version, libraries);
-
                     });
         } catch (Exception e){
             Logger.INSTANCE.error(e);
@@ -57,7 +59,8 @@ public class VersionManifest extends InstallationManifest<Multimap<String, Strin
 
     public void addLibs(String version, Collection<File> files){
         files.stream()
-                .map(f->f.toPath().relativize(parent))
+                .map(File::toPath)
+                .map(parent::relativize)
                 .map(Path::toString)
                 .forEach(s->configBase.put(version, s));
     }
