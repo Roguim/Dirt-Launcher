@@ -4,14 +4,19 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.stream.Stream;
 
 @SuppressWarnings("UnstableApiUsage")
-public class InstanceManifest extends InstallationManifest<InstanceManifest.Entry> {
+public class InstanceManifest extends InstallationManifest<ArrayList<InstanceManifest.Entry>> {
 
     public InstanceManifest(){
-        super(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()), new TypeToken<ArrayList<Entry>>(){});
+        super(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()), new TypeToken<ArrayList<Entry>>(){}, ArrayList::new);
         load();
     }
 
@@ -27,6 +32,32 @@ public class InstanceManifest extends InstallationManifest<InstanceManifest.Entr
             packs.add(new Entry(name, version, gameVersion, forgeVersion));
         }
         return packs;
+    }
+
+    public Stream<Entry> stream(){
+        return configBase.stream();
+    }
+
+    public void remove(Modpack modpack){
+        Iterator<Entry> modpackIterator = configBase.listIterator();
+        while (modpackIterator.hasNext()){
+            if (!modpackIterator.next().name.equals(modpack.getName())) continue;
+            modpackIterator.remove();
+            break;
+        }
+        saveAsync();
+    }
+
+    public void update(Modpack pack){
+        InstanceManifest.Entry updated = new InstanceManifest.Entry(pack.getName(), pack.getVersion(), pack.getGameVersion(), pack.getForgeVersion());
+        ListIterator<Entry> modpackIterator = configBase.listIterator();
+        while (true) {
+            if (!modpackIterator.hasNext()) modpackIterator.add(updated);
+            else if (modpackIterator.next().name.equals(pack.getName())) modpackIterator.set(updated);
+            else continue;
+            break;
+        }
+        saveAsync();
     }
 
     public static class Entry{

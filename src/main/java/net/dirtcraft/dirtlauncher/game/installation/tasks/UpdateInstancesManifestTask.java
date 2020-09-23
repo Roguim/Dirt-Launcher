@@ -32,15 +32,7 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
 
             InstanceManifest instanceManifest = Manifests.INSTANCE;
 
-            InstanceManifest.Entry updated = new InstanceManifest.Entry(pack.getName(), pack.getVersion(), pack.getGameVersion(), pack.getForgeVersion());
-            ListIterator<InstanceManifest.Entry> manifestIterator = instanceManifest.listIterator();
-
-            while (true) {
-                if (!manifestIterator.hasNext()) manifestIterator.add(updated);
-                else if (manifestIterator.next().name.equals(pack.getName())) manifestIterator.set(updated);
-                else continue;
-                break;
-            }
+            instanceManifest.update(pack);
 
             progressContainer.completeMinorStep();
 

@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
@@ -109,7 +110,7 @@ public class InstallationManager {
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         // Add tasks for any missing game or forge components
-        if(!verifyGameComponentVersion(pack.getGameVersion(), config.getVersionsDirectory(), "versions")) installationTasks.add(new VersionInstallationTask(versionManifest));
+        if (!Manifests.VERSION.isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
         if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
         if(!verifyGameComponentVersion(pack.getForgeVersion(), config.getForgeDirectory(), "forgeVersions")) installationTasks.add(new ForgeInstallationTask(pack));
 

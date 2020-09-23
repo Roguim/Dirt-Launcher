@@ -3,7 +3,9 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
+import net.dirtcraft.dirtlauncher.game.installation.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.logging.Logger;
@@ -15,6 +17,10 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -63,20 +69,21 @@ public class VersionInstallationTask implements IInstallationTask {
         libsDir.mkdirs();
         File nativesDir = new File(versionFolder.getPath(), "natives");
         nativesDir.mkdirs();
-        StringBuffer launchPaths = new StringBuffer();
+        List<File> files = Collections.synchronizedList(new ArrayList<>());
 
         try {
             CompletableFuture.allOf(
                     StreamSupport.stream(versionManifest.getAsJsonArray("libraries").spliterator(), false)
-                        .map(JsonElement::getAsJsonObject)
-                        .map(library -> CompletableFuture.runAsync(() -> {
-                            try {
-                                installLibrary(library, launchPaths, libsDir, nativesDir, progressContainer);
-                            } catch (IOException e) {
-                                throw new CompletionException(e);
-                            }
-                        }, threadService))
-                        .toArray(CompletableFuture[]::new))
+                            .map(JsonElement::getAsJsonObject)
+                            .map(library -> CompletableFuture.runAsync(() -> {
+                                try {
+                                    Optional<File> optPath = installLibrary(library, libsDir, nativesDir, progressContainer);
+                                    optPath.ifPresent(files::add);
+                                } catch (IOException e) {
+                                    throw new CompletionException(e);
+                                }
+                            }, threadService))
+                            .toArray(CompletableFuture[]::new))
                     .join();
         } catch (CompletionException e) {
             try {
@@ -91,22 +98,18 @@ public class VersionInstallationTask implements IInstallationTask {
         // Update Versions Manifest
         progressContainer.setProgressText("Updating Versions Manifest");
 
-        JsonObject versionJsonObject = new JsonObject();
-        versionJsonObject.addProperty("version", version);
-        versionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(launchPaths.toString(), ";"));
-
-        File versionsManifestFile = config.getDirectoryManifest(config.getVersionsDirectory());
-        JsonObject versionsManifest = JsonUtils.readJsonFromFile(versionsManifestFile);
-        versionsManifest.getAsJsonArray("versions").add(versionJsonObject);
-        JsonUtils.writeJsonToFile(versionsManifestFile, versionsManifest);
+        VersionManifest manifest = Manifests.VERSION;
+        manifest.addLibs(version, files);
+        manifest.saveAsync();
 
         progressContainer.completeMajorStep();
     }
 
-    private void installLibrary(JsonObject library, StringBuffer launchPaths, File libDir, File nativeDir, ProgressContainer progress) throws IOException {
+    private Optional<File> installLibrary(JsonObject library, File libDir, File nativeDir, ProgressContainer progress) throws IOException {
+        File f = null;
         // Check if the library has conditions
         if (library.has("rules")) {
-           for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
+            for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
                 final JsonObject rule = ruleElement.getAsJsonObject();
                 final String action = rule.get("action").getAsString();
 
@@ -115,12 +118,12 @@ public class VersionInstallationTask implements IInstallationTask {
                 final String os = rule.getAsJsonObject("os").get("name").getAsString();
 
                 // If the user isn't using the OS the rule is for, skip it.
-               if (action.equals("allow") && isUserOs(os)) continue;
-               if (!(action.equals("dissallow") && isUserOs(os))) continue;
+                if (action.equals("allow") && isUserOs(os)) continue;
+                if (!(action.equals("dissallow") && isUserOs(os))) continue;
 
                 progress.completeMinorStep();
-               Logger.INSTANCE.debug("Skipping library: " + library.get("name").getAsString());
-                return;
+                Logger.INSTANCE.debug("Skipping library: " + library.get("name").getAsString());
+                return Optional.empty();
             }
         }
 
@@ -131,7 +134,7 @@ public class VersionInstallationTask implements IInstallationTask {
             new File(libDir, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
             String filePath = libDir.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
             WebUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
-            launchPaths.append(filePath + ";");
+            f = new File(filePath);
         }
         // Download any natives
         if (libraryDownloads.has("classifiers")) {
@@ -150,6 +153,7 @@ public class VersionInstallationTask implements IInstallationTask {
         }
 
         progress.completeMinorStep();
+        return Optional.ofNullable(f);
     }
 
     private static boolean isUserOs(String os){

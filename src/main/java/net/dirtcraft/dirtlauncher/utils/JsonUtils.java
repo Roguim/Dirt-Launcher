@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -103,6 +104,8 @@ public class JsonUtils {
         ){
             jsonWriter.setIndent("  ");
             gson.toJson(t, type.getType(), jsonWriter);
+
+            System.out.println("!");
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -133,6 +136,7 @@ public class JsonUtils {
             JsonObject jsonObject = readJsonFromFile(file);
             return migrate.apply(jsonObject);
         } catch (Exception ignored){
+            Logger.INSTANCE.error(ignored);
             return null;
         }
     }

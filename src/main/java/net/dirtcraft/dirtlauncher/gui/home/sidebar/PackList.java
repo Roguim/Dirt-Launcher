@@ -1,7 +1,9 @@
 package net.dirtcraft.dirtlauncher.gui.home.sidebar;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -49,8 +51,10 @@ public class PackList extends ScrollPane {
             if (listPreload != null) {
                 Platform.runLater(()->{
                     try {
-                        packs.getChildren().clear();
-                        packs.getChildren().addAll(listPreload.get());
+                        ObservableList<Node> nodes = packs.getChildren();
+                        List<PackSelector> packs = listPreload.get();
+                        nodes.clear();
+                        nodes.addAll(packs);
                     } catch (Exception e){
                         e.printStackTrace();
                         updatePacksAsync();

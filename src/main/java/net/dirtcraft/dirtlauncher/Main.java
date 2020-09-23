@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.application.Application;
@@ -7,6 +8,7 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
@@ -43,7 +45,13 @@ public class Main extends Application {
     public static Gson gson;
 
     public static void main(String[] args) {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        //noinspection rawtypes
+        gson = new GsonBuilder()
+                .serializeNulls()
+                .setPrettyPrinting()
+                .enableComplexMapKeySerialization()
+                .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
+                .create();
         options = Arrays.asList(args);
         initLauncherDirectory();
         home = CompletableFuture.supplyAsync(Main::preInitHome);
