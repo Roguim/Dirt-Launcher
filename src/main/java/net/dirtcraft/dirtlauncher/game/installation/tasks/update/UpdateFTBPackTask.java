@@ -1,7 +1,11 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.therandomlabs.utils.io.NetUtils;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
@@ -11,20 +15,24 @@ import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class UpdateFTBPackTask implements IUpdateTask {
 
@@ -47,7 +55,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException, PackInstallException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);
@@ -56,15 +64,13 @@ public class UpdateFTBPackTask implements IUpdateTask {
         modpackFolder.mkdirs();
         tempDir.mkdirs();
 
-        progressContainer.completeMinorStep();
-
         // Sort out the files
         File modsFolder = new File(modpackFolder, "mods");
         File tempManifestFile = new File(tempDir, "manifest.json");
         File currentManifestFile = new File(modpackFolder, "manifest.json");
 
         // Check if old manifest is in use (Used to be a curse pack)
-        JsonObject currentJson = JsonUtils.readJsonFromFile(tempManifestFile);
+        JsonObject currentJson = JsonUtils.readJsonFromFile(currentManifestFile);
         if (currentJson != null) {
             if (currentJson.has("projectID") || currentJson.has("overrides")) {
                 Manifests.INSTANCE.remove(pack);
@@ -74,17 +80,41 @@ public class UpdateFTBPackTask implements IUpdateTask {
                     exception.printStackTrace();
                 }
                 if (pack.isFavourite()) pack.toggleFavourite();
-                LoginBar loginBar = Main.getHome().getLoginBar();
-                PackSelector packSelector = new PackSelector(pack);
-                loginBar.setActivePackCell(packSelector);
-                Install.getStage().ifPresent(Stage::close);
-                packSelector.launchInstallScene();
-                packSelector.getModpack().install();
-                Main.getHome().update();
-                return;
+                Platform.runLater(() -> {
+                            LoginBar loginBar = Main.getHome().getLoginBar();
+                            PackSelector packSelector = new PackSelector(pack);
+                            loginBar.setActivePackCell(packSelector);
+                            Install.getStage().ifPresent(Stage::close);
+                            packSelector.launchInstallScene();
+                            packSelector.getModpack().install();
+                            Main.getHome().update();
+                        });
+                throw new PackInstallException("Previously a Curse pack type, Converting to a FTB pack type...");
             }
         }
 
+        //Prepare Modpack Manifests
+        JsonObject packJson = WebUtils.getJsonFromUrl(pack.getLink());
+
+        // Find Correct Modpack Version
+        JsonArray versions = packJson.getAsJsonArray("versions");
+        Optional<JsonElement> version = StreamSupport.stream(versions
+                .spliterator(), false)
+                .filter(v -> v.getAsJsonObject().get("name").getAsString().equalsIgnoreCase(pack.getVersion()))
+                .findFirst();
+        int latestVersionId = version.map(jsonElement -> jsonElement.getAsJsonObject().get("id").getAsInt())
+                .orElseGet(() -> StreamSupport.stream(versions.spliterator(), false)
+                        .filter(v -> v.getAsJsonObject().get("type").getAsString().equalsIgnoreCase("release"))
+                        .collect(Collectors.toList()).get(0).getAsJsonObject().get("id").getAsInt());
+        final String packLink = NetUtils.getRedirectedURL(new URL(pack.getLink() + "/" + latestVersionId)).toString();
+
+        progressContainer.completeMinorStep();
+
+        // Write New Json Manifest To Temp Folder
+        JsonObject newJson = WebUtils.getJsonFromUrl(packLink);
+        JsonUtils.writeJsonToFile(tempManifestFile, newJson);
+
+        // Modpack Manifest to GSON
         FTBModpackManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<FTBModpackManifest>() {});
         FTBModpackManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<FTBModpackManifest>() {});
         modsFolder.mkdirs();

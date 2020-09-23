@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
+import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -47,14 +48,17 @@ public class InstallFTBPackTask implements IInstallationTask {
         final File modpackFolder = pack.getInstanceDirectory();
 
         FileUtils.deleteDirectory(modpackFolder);
+        File modpackManifestFile = new File(pack.getInstanceDirectory(), "manifest.json");
         modpackFolder.mkdirs();
+        modpackManifestFile.createNewFile();
 
         progressContainer.completeMinorStep();
 
         //Prepare Modpack Manifests
         JsonObject packJson = WebUtils.getJsonFromUrl(pack.getLink());
-        JsonArray versions = packJson.getAsJsonArray("versions");
 
+        // Find Correct Modpack Version
+        JsonArray versions = packJson.getAsJsonArray("versions");
         Optional<JsonElement> version = StreamSupport.stream(versions
                 .spliterator(), false)
                 .filter(v -> v.getAsJsonObject().get("name").getAsString().equalsIgnoreCase(pack.getVersion()))
@@ -64,9 +68,10 @@ public class InstallFTBPackTask implements IInstallationTask {
                 .filter(v -> v.getAsJsonObject().get("type").getAsString().equalsIgnoreCase("release"))
                 .collect(Collectors.toList()).get(0).getAsJsonObject().get("id").getAsInt());
 
-        String packLink = NetUtils.getRedirectedURL(new URL(pack.getLink() + "/" + latestVersionId)).toString();
+        final String packLink = NetUtils.getRedirectedURL(new URL(pack.getLink() + "/" + latestVersionId)).toString();
 
         JsonObject modpackManifest = WebUtils.getJsonFromUrl(packLink);
+        JsonUtils.writeJsonToFile(modpackManifestFile, modpackManifest);
         JsonArray filesArray = modpackManifest.getAsJsonArray("files");
         List<JsonObject> files = Collections.synchronizedList(new ArrayList<>());
         for (JsonElement fileElement : filesArray) files.add(fileElement.getAsJsonObject());

@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.AssetsInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInstallationTask;
@@ -23,6 +24,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateFTBPackTa
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
@@ -153,8 +155,13 @@ public class InstallationManager {
 
         // Execute each task in sequence. The subtasks are multithreaded, but the major tasks are sequential intentionally.
 
-        for(IInstallationTask task : installationTasks) {
-            task.executeTask(downloadManager, progressContainer, config);
+        try {
+            for (IInstallationTask task : installationTasks) {
+                task.executeTask(downloadManager, progressContainer, config);
+            }
+        } catch (PackInstallException exception) {
+            Logger.INSTANCE.warning(exception.getMessage());
+            return;
         }
 
         progressContainer.completeMajorStep();

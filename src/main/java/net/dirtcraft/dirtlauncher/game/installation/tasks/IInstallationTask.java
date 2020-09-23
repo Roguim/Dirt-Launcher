@@ -12,7 +12,7 @@ public interface IInstallationTask {
     int getNumberSteps();
 
     // Execute the task.
-    void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException;
+    void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException, PackInstallException;
 
     InstallationStages getRequiredStage();
 
