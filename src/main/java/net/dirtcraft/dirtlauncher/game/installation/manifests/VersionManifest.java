@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 
@@ -39,6 +40,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
                                 .map(libDir::relativize)
                                 .map(Path::toString)
                                 .forEach(entry.libraries::add);
+                        entry.libraries.sort(String::compareTo);
                         map.put(version, entry);
                     });
         } catch (Exception e){
@@ -90,6 +92,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
                     .map(libDir::relativize)
                     .map(Path::toString)
                     .forEach(libraries::add);
+            libraries.sort(String::compareTo);
         }
 
         public Path getLibsFolder(){

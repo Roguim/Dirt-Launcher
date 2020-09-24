@@ -99,7 +99,7 @@ public final class ActionButton extends Button {
         public static Types fromPack(PackSelector selected){
             if (selected == null) return INITIAL;
             Modpack modpack = selected.getModpack();
-            if (!modpack.isInstalled()) return INSTALL;
+            if (!modpack.isInstalled() || !modpack.isDependantsInstalled()) return INSTALL;
             if (modpack.isOutdated()) return UPDATE;
             if (modpack.isInstalled()) return PLAY;
             return INSTALL;

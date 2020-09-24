@@ -115,7 +115,7 @@ public class InstallationManager {
         if(!verifyGameComponentVersion(pack.getForgeVersion(), config.getForgeDirectory(), "forgeVersions")) installationTasks.add(new ForgeInstallationTask(pack));
 
         // Add the pack task as the next task
-        installationTasks.add(packInstallTask);
+        if (!pack.isInstalled()) installationTasks.add(packInstallTask);
 
         // Add the manifest update task as the last task.
         installationTasks.add(new UpdateInstancesManifestTask(pack));

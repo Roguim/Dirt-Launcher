@@ -147,6 +147,10 @@ public class Modpack {
                 .anyMatch(pack->pack.name.equals(getName()));
     }
 
+    public boolean isDependantsInstalled(){
+        return Manifests.VERSION.isInstalled(gameVersion);
+    }
+
     public boolean isOutdated() {
         return Manifests.INSTANCE.stream()
                 .noneMatch(pack->pack.version.equals(getVersion()));
