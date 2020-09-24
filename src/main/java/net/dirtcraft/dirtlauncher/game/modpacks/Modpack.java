@@ -132,10 +132,14 @@ public class Modpack {
     }
 
     public void launch(){
-        Account session = Main.getAccounts().getSelectedAccountUnchecked();
-        LaunchGame.isGameRunning = true;
-        LaunchGame.loadServerList(this);
-        LaunchGame.launchPack(this, session);
+        try {
+            Account session = Main.getAccounts().getSelectedAccountUnchecked();
+            LaunchGame.isGameRunning = true;
+            LaunchGame.loadServerList(this);
+            LaunchGame.launchPack(this, session);
+        } catch (Exception e){
+            Logger.INSTANCE.error(e);
+        }
     }
 
     public boolean isInstalled() {

@@ -7,7 +7,9 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
+import net.dirtcraft.dirtlauncher.game.installation.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 import net.dirtcraft.dirtlauncher.game.serverlist.ServerList;
@@ -47,8 +49,9 @@ public class LaunchGame {
         serverList.build();
     }
 
-    public static void launchPack(Modpack pack, Account session) {
+    public static void launchPack(Modpack pack, Account session) throws LaunchException {
         Config settings = Main.getConfig();
+        VersionManifest.Entry versionManifest = Manifests.VERSION.get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
         final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
 
         List<String> args = new ArrayList<>();
@@ -73,7 +76,7 @@ public class LaunchGame {
         args.add("-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump");
 
         // Natives path
-        String nativesPath = settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + "natives";
+        String nativesPath = versionManifest.getNativesFolder().toString();
         args.add("-Djava.library.path=" + nativesPath);
         args.add("-Dorg.lwjgl.librarypath=" + nativesPath);
         args.add("-Dnet.java.games.input.librarypath=" + nativesPath);
@@ -81,7 +84,7 @@ public class LaunchGame {
 
         // Classpath
         args.add("-cp");
-        args.add(getLibs(pack));
+        args.add(getLibs(pack, versionManifest));
 
         //Loader class
         args.add("net.minecraft.launchwrapper.Launch");
@@ -108,7 +111,7 @@ public class LaunchGame {
         args.add(settings.getAssetsDirectory().toString());
 
         // Assets Index
-        File assetsVersionJsonFile = Paths.get(settings.getVersionsDirectory().getPath(), pack.getGameVersion(), pack.getGameVersion() + ".json").toFile();
+        File assetsVersionJsonFile = versionManifest.getVersionManifestFile();
         String assetsVersion = JsonUtils.readJsonFromFile(assetsVersionJsonFile).get("assets").getAsString();
         args.add("--assetIndex");
         args.add(assetsVersion);
@@ -180,15 +183,15 @@ public class LaunchGame {
         gameThread.start();
     }
 
-    private static String getLibs(Modpack pack) {
+    private static String getLibs(Modpack pack, VersionManifest.Entry versionManifest) {
         Config settings = Main.getConfig();
         StringBuilder libs = new StringBuilder();
         for (JsonElement jsonElement : JsonUtils.readJsonFromFile(settings.getDirectoryManifest(settings.getForgeDirectory())).getAsJsonArray("forgeVersions")) {
             if (jsonElement.getAsJsonObject().get("version").getAsString().equals(pack.getForgeVersion()))
                 libs.append(jsonElement.getAsJsonObject().get("classpathLibraries").getAsString().replace("\\\\", "\\") + ";");
         }
-        libs.append(Manifests.VERSION.getLibs(pack.getGameVersion())).append(";");
-        libs.append(new File(settings.getVersionsDirectory().getPath() + File.separator + pack.getGameVersion() + File.separator + pack.getGameVersion() + ".jar").getPath());
+        libs.append(versionManifest.getLibs()).append(";");
+        libs.append(versionManifest.getVersionJarFile());
 
         if (SystemUtils.IS_OS_UNIX) return libs.toString().replace(";", ":");
         return libs.toString();

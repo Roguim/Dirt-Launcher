@@ -54,7 +54,6 @@ public class JsonUtils {
         return Optional.ofNullable(t);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> parseJson(File file, Class<T> clazz) {
         try {
             return Optional.ofNullable(parseJsonUnchecked(file, clazz));
@@ -133,8 +132,8 @@ public class JsonUtils {
         try{
             JsonObject jsonObject = readJsonFromFile(file);
             return migrate.apply(jsonObject);
-        } catch (Exception ignored){
-            Logger.INSTANCE.error(ignored);
+        } catch (Exception e){
+            Logger.INSTANCE.error(e);
             return null;
         }
     }

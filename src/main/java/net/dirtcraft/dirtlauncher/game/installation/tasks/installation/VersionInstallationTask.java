@@ -98,8 +98,8 @@ public class VersionInstallationTask implements IInstallationTask {
         // Update Versions Manifest
         progressContainer.setProgressText("Updating Versions Manifest");
 
-        VersionManifest manifest = Manifests.VERSION;
-        manifest.addLibs(version, files);
+        VersionManifest.Entry manifest = Manifests.VERSION.getOrCreate(version);
+        manifest.addLibs(files);
         manifest.saveAsync();
 
         progressContainer.completeMajorStep();
