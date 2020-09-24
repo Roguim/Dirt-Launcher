@@ -104,8 +104,6 @@ public class JsonUtils {
         ){
             jsonWriter.setIndent("  ");
             gson.toJson(t, type.getType(), jsonWriter);
-
-            System.out.println("!");
         } catch (IOException e){
             e.printStackTrace();
         }

@@ -9,6 +9,7 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -35,9 +36,10 @@ public class VersionManifest extends InstallationManifest<Multimap<String, Strin
                     .map(JsonElement::getAsJsonObject)
                     .forEach(versionManifest -> {
                         final String version = versionManifest.get("version").getAsString();
+                        final Path libDir = getLibsFolder(version);
                         final List<String> libraries = Arrays.stream(versionManifest.get("classpathLibraries").getAsString().split(";"))
                                 .map(Paths::get)
-                                .map(parent::relativize)
+                                .map(libDir::relativize)
                                 .map(Path::toString)
                                 .collect(Collectors.toList());
                         multimap.putAll(version, libraries);
@@ -50,17 +52,19 @@ public class VersionManifest extends InstallationManifest<Multimap<String, Strin
 
     public Optional<String> getLibs(String version){
         if (!configBase.containsKey(version)) return Optional.empty();
+        final Path libDir = getLibsFolder(version);
         String result = configBase.get(version).stream()
-                .map(parent::resolve)
+                .map(libDir::resolve)
                 .map(Path::toString)
                 .collect(Collectors.joining(";"));
         return Optional.of(result);
     }
 
     public void addLibs(String version, Collection<File> files){
+        final Path libDir = getLibsFolder(version);
         files.stream()
                 .map(File::toPath)
-                .map(parent::relativize)
+                .map(libDir::relativize)
                 .map(Path::toString)
                 .forEach(s->configBase.put(version, s));
     }
@@ -68,4 +72,21 @@ public class VersionManifest extends InstallationManifest<Multimap<String, Strin
     public boolean isInstalled(String minecraftVersion){
         return configBase.containsKey(minecraftVersion);
     }
+
+    public Path getLibsFolder(String version){
+        return parent.resolve(version).resolve("libraries");
+    }
+
+    public Path getNativesFolder(String version){
+        return parent.resolve(version).resolve("natives");
+    }
+
+    public File getVersionManifestFile(String version){
+        return new File(parent.resolve(version).toFile(), version + ".json");
+    }
+
+    public File getVersionJarFile(String version){
+        return new File(parent.resolve(version).toFile(), version + ".jar");
+    }
+
 }
