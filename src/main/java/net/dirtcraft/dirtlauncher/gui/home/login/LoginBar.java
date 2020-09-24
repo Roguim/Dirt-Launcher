@@ -148,7 +148,8 @@ public final class LoginBar extends Pane {
         this.activePackCell = pack;
         ActionButton.Types type;
 
-        if (!pack.getModpack().isInstalled() || !pack.getModpack().isDependantsInstalled()) type = ActionButton.Types.INSTALL;
+        if (!pack.getModpack().isInstalled()) type = ActionButton.Types.INSTALL;
+        else if (!pack.getModpack().isDependantsInstalled()) type = ActionButton.Types.REPAIR;
         else if (pack.getModpack().isOutdated()) type = ActionButton.Types.UPDATE;
         else type = ActionButton.Types.PLAY;
 

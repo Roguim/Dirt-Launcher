@@ -105,7 +105,8 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
     public void update(){
         initContextMenu();
         indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("installed"), modpack.isInstalled());
-        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("pinned"), modpack.isFavourite());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("repair"), modpack.isInstalled() && !modpack.isDependantsInstalled());
+        indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("pinned"), modpack.isInstalled() && modpack.isFavourite());
         indicator.pseudoClassStateChanged(PseudoClass.getPseudoClass("update"), modpack.isInstalled() && modpack.isOutdated());
     }
 

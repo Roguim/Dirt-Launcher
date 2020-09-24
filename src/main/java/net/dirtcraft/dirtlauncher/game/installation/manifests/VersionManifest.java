@@ -7,8 +7,10 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -54,14 +56,15 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
         else return Optional.of(configBase.get(version));
     }
 
-    public Entry getOrCreate(String version){
-        if (!isInstalled(version)) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public Entry create(String version) throws IOException {
             Entry entry = new Entry(version);
             configBase.put(version, entry);
+            FileUtils.deleteDirectory(entry.getVersionFolder().toFile());
+            entry.getNativesFolder().toFile().mkdirs();
+            entry.getLibsFolder().toFile().mkdirs();
+            entry.getVersionFolder().toFile().mkdirs();
             return entry;
-        } else {
-            return configBase.get(version);
-        }
     }
 
     public boolean isInstalled(String minecraftVersion){

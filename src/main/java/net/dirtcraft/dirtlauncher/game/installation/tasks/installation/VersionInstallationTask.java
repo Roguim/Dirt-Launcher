@@ -1,9 +1,12 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.data.Minecraft.Rule;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,16 +52,14 @@ public class VersionInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare the version folder
-        File versionFolder = new File(config.getVersionsDirectory(), version);
-        FileUtils.deleteDirectory(versionFolder);
-        versionFolder.mkdirs();
+        VersionManifest.Entry versionEntry = Manifests.VERSION.create(version);
 
         // Write the version JSON manifest
-        JsonUtils.writeJsonToFile(versionFolder.toPath().resolve(version + ".json").toFile(), versionManifest);
+        JsonUtils.writeJsonToFile(versionEntry.getVersionManifestFile(), versionManifest);
         progressContainer.completeMinorStep();
 
         // Download jar
-        WebUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), new File(versionFolder.getPath(), version + ".jar"));
+        WebUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), versionEntry.getVersionJarFile());
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -65,10 +67,8 @@ public class VersionInstallationTask implements IInstallationTask {
         progressContainer.setProgressText("Downloading Libraries");
         progressContainer.setNumMinorSteps(versionManifest.getAsJsonArray("libraries").size());
 
-        File libsDir = new File(versionFolder.getPath(), "libraries");
-        libsDir.mkdirs();
-        File nativesDir = new File(versionFolder.getPath(), "natives");
-        nativesDir.mkdirs();
+        File libsDir = versionEntry.getLibsFolder().toFile();
+        File nativesDir = versionEntry.getNativesFolder().toFile();
         List<File> files = Collections.synchronizedList(new ArrayList<>());
 
         try {
@@ -98,9 +98,8 @@ public class VersionInstallationTask implements IInstallationTask {
         // Update Versions Manifest
         progressContainer.setProgressText("Updating Versions Manifest");
 
-        VersionManifest.Entry manifest = Manifests.VERSION.getOrCreate(version);
-        manifest.addLibs(files);
-        manifest.saveAsync();
+        versionEntry.addLibs(files);
+        versionEntry.saveAsync();
 
         progressContainer.completeMajorStep();
     }
@@ -109,22 +108,8 @@ public class VersionInstallationTask implements IInstallationTask {
         File f = null;
         // Check if the library has conditions
         if (library.has("rules")) {
-            for (JsonElement ruleElement : library.getAsJsonArray("rules")) {
-                final JsonObject rule = ruleElement.getAsJsonObject();
-                final String action = rule.get("action").getAsString();
-
-                // Ensure the rule is valid
-                if (!rule.has("os")) continue;
-                final String os = rule.getAsJsonObject("os").get("name").getAsString();
-
-                // If the user isn't using the OS the rule is for, skip it.
-                if (action.equals("allow") && isUserOs(os)) continue;
-                if (!(action.equals("dissallow") && isUserOs(os))) continue;
-
-                progress.completeMinorStep();
-                Logger.INSTANCE.debug("Skipping library: " + library.get("name").getAsString());
-                return Optional.empty();
-            }
+            @SuppressWarnings("UnstableApiUsage") List<Rule> rules = Main.gson.fromJson(library.get("rules"), new TypeToken<List<Rule>>(){}.getType());
+            if (!rules.stream().allMatch(Rule::isValid)) return Optional.empty();
         }
 
         JsonObject libraryDownloads = library.getAsJsonObject("downloads");

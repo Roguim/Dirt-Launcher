@@ -60,6 +60,7 @@ public final class ActionButton extends Button {
         if (Main.getAccounts().hasSelectedAccount())
             switch (type) {
                 case INSTALL:
+                case REPAIR:
                     launchInstallScene(pack);
                     pack.getModpack().install().thenRun(pack::update);
                     return;
@@ -77,6 +78,7 @@ public final class ActionButton extends Button {
     }
     public enum Types{
         INSTALL,
+        REPAIR,
         UPDATE,
         PLAY,
         INITIAL;
@@ -88,9 +90,11 @@ public final class ActionButton extends Button {
                     return "Play";
                 case UPDATE:
                     return "Update";
-                default:
+                case REPAIR:
+                    return "Fix Dependencies";
                 case INSTALL:
                     return "Install";
+                default:
                 case INITIAL:
                     return "Please Select A Pack";
             }
@@ -99,7 +103,8 @@ public final class ActionButton extends Button {
         public static Types fromPack(PackSelector selected){
             if (selected == null) return INITIAL;
             Modpack modpack = selected.getModpack();
-            if (!modpack.isInstalled() || !modpack.isDependantsInstalled()) return INSTALL;
+            if (!modpack.isInstalled()) return INSTALL;
+            if (!modpack.isDependantsInstalled()) return REPAIR;
             if (modpack.isOutdated()) return UPDATE;
             if (modpack.isInstalled()) return PLAY;
             return INSTALL;

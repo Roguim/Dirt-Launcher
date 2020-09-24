@@ -75,6 +75,8 @@ public final class Update {
     }
 
     public static boolean hasUpdate() throws IOException {
+        //noinspection ConstantConditions //literally gets replaced in production.
+        if (Constants.LAUNCHER_VERSION.equals("@" + "VERSION" + "@")) return false;
         final String webVersionString = WebUtils.getLatestVersion();
         List<Integer> webVersion = Arrays.stream(webVersionString.split("\\."))
                 .map(Integer::parseInt)

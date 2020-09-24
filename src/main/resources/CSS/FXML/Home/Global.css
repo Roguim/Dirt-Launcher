@@ -257,6 +257,10 @@
     -fx-background-color: blue;
 }
 
+.indicator:repair{
+    -fx-background-color: red;
+}
+
 .indicator:update{
     -fx-background-color: yellow;
 }

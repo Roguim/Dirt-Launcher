@@ -9,10 +9,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 final public class ToolBar extends Pane {
 
@@ -48,6 +50,10 @@ final public class ToolBar extends Pane {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            CompletableFuture.runAsync(()->{
+                Manifests.VERSION.load();
+                Manifests.INSTANCE.load();
+            });
         });
 
         final Button debug = new Button();
