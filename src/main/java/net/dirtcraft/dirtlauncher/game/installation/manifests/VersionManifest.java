@@ -11,6 +11,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -20,7 +21,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
     public VersionManifest() {
         super(Main.getConfig().getDirectoryManifest(Main.getConfig().getVersionsDirectory()), new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         parent = path.getParentFile().toPath();
-        load();
+        CompletableFuture.runAsync(this::load);
     }
 
     @Override
@@ -66,6 +67,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
     }
 
     public static class Entry {
+        final int manifestVersion = 1;
         final String version;
         final ArrayList<String> libraries;
         public Entry(String version){
