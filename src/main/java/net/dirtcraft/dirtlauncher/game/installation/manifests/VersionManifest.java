@@ -68,10 +68,10 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
 
     public static class Entry {
         final int manifestVersion = 1;
-        final String version;
+        final String gameVersion;
         final ArrayList<String> libraries;
         public Entry(String version){
-            this.version = version;
+            this.gameVersion = version;
             libraries = new ArrayList<>();
         }
 
@@ -101,15 +101,15 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
         }
 
         public File getVersionManifestFile(){
-            return new File(getVersionFolder().toFile(), version + ".json");
+            return new File(getVersionFolder().toFile(), gameVersion + ".json");
         }
 
         public File getVersionJarFile(){
-            return new File(getVersionFolder().toFile(), version + ".jar");
+            return new File(getVersionFolder().toFile(), gameVersion + ".jar");
         }
 
         public Path getVersionFolder(){
-            return getMain().parent.resolve(version);
+            return getMain().parent.resolve(gameVersion);
         }
 
         public void saveAsync(){
