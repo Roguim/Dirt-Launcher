@@ -119,7 +119,7 @@ public class ForgeManifest extends InstallationManifest<Map<String, ForgeManifes
             return getForgeFolder().resolve("natives");
         }
 
-        public File getVersionManifestFile(){
+        public File getForgeManifestFile(){
             return new File(getForgeFolder().toFile(), forgeVersion + ".json");
         }
 

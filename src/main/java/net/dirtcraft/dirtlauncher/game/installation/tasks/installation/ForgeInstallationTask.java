@@ -72,7 +72,7 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
 
-        JsonUtils.writeJsonToFile(entry.getVersionManifestFile(), forgeVersionManifest);
+        JsonUtils.writeJsonToFile(entry.getForgeManifestFile(), forgeVersionManifest);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
