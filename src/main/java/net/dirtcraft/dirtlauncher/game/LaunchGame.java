@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.game;
 
-import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
@@ -8,9 +7,9 @@ import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
+import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
-import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 import net.dirtcraft.dirtlauncher.game.serverlist.ServerList;
