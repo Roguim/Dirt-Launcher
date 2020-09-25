@@ -66,8 +66,13 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
             return entry;
     }
 
-    public boolean isInstalled(String minecraftVersion){
-        return configBase.containsKey(minecraftVersion);
+    public boolean isInstalled(String minecraftVersion) {
+        try {
+            return configBase.containsKey(minecraftVersion);
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+            return true;
+        }
     }
 
     public static class Entry {
