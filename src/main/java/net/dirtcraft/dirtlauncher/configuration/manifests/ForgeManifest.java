@@ -69,7 +69,6 @@ public class ForgeManifest extends InstallationManifest<Map<String, ForgeManifes
         Entry entry = new Entry(minecraftVersion, forgeVersion, this);
         configBase.put(forgeVersion, entry);
         FileUtils.deleteDirectory(entry.getForgeFolder().toFile());
-        entry.getNativesFolder().toFile().mkdirs();
         entry.getLibsFolder().toFile().mkdirs();
         entry.getForgeFolder().toFile().mkdirs();
         entry.getTempFolder().toFile().mkdirs();
@@ -115,16 +114,12 @@ public class ForgeManifest extends InstallationManifest<Map<String, ForgeManifes
             return getForgeFolder().resolve("libraries");
         }
 
-        public Path getNativesFolder(){
-            return getForgeFolder().resolve("natives");
-        }
-
         public File getForgeManifestFile(){
             return new File(getForgeFolder().toFile(), forgeVersion + ".json");
         }
 
         public File getForgeJarFile(){
-            return new File(getForgeFolder().toFile(), "forge-" + minecraftVersion + "-" + forgeVersion + "-universal.jar");
+            return new File(getForgeFolder().toFile(), getForgeJarFilename());
         }
 
         public String getForgeJarFilename(){
