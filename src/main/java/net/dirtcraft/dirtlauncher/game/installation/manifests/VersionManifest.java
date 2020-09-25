@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;

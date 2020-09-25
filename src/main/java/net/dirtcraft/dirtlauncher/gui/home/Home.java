@@ -142,12 +142,12 @@ public class Home extends Scene {
 
     public void update(){
         Main.getAccounts().refreshSelectedAccount();
-        getSidebar().updatePacksAsync();
+        getSidebar().updateAsync();
         loginBar.setInputs();
     }
 
     public void updateModpacks(){
-        getSidebar().update();
+        getSidebar().updateAsync();
     }
 
     public void updateLogin(){

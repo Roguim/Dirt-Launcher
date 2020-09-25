@@ -10,14 +10,17 @@ import javafx.scene.layout.VBox;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class PackList extends ScrollPane {
-    private Future<List<PackSelector>> listPreload;
+    private final Semaphore updateLock;
+    private final AtomicBoolean pendingUpdate;
     private final VBox packs;
     public PackList(){
         packs = new VBox();
@@ -25,14 +28,12 @@ public class PackList extends ScrollPane {
         packs.setFocusTraversable(false);
         packs.setAlignment(Pos.TOP_CENTER);
 
-
-        listPreload = CompletableFuture.supplyAsync(()-> {
-            ModpackManager manager = ModpackManager.getInstance();
-            return manager.getModpacks().stream()
-                    .map(PackSelector::new)
-                    .sorted(PackSelector::compareTo)
-                    .collect(Collectors.toList());
-        });
+        updateLock = new Semaphore(0);
+        pendingUpdate = new AtomicBoolean(true);
+        CompletableFuture
+                .runAsync(()->update(true))
+                .whenComplete((v,e)->updateLock.release());
+        updateAsync();
 
         setFitToWidth(true);
         setFocusTraversable(false);
@@ -46,37 +47,23 @@ public class PackList extends ScrollPane {
         setContent(packs);
     }
 
-    public void updatePacksAsync(){
-        CompletableFuture.runAsync(()-> {
-            if (listPreload != null) {
-                Platform.runLater(()->{
-                    try {
-                        ObservableList<Node> nodes = packs.getChildren();
-                        List<PackSelector> packs = listPreload.get();
-                        nodes.clear();
-                        nodes.addAll(packs);
-                    } catch (Exception e){
-                        e.printStackTrace();
-                        updatePacksAsync();
-                        return;
-                    }
-                    listPreload = null;
-                });
-                return;
-            }
-
-            List<PackSelector> packsList = ModpackManager.getInstance().getModpacks().stream()
-                        .map(PackSelector::new)
-                        .sorted(PackSelector::compareTo)
-                        .collect(Collectors.toList());
-            Platform.runLater(() -> {
-                packs.getChildren().clear();
-                packs.getChildren().addAll(packsList);
-            });
+    private void update(boolean localOnly){
+        ModpackManager manager = ModpackManager.getInstance();
+        if (!localOnly) manager.updateToLatestAsync().join();
+        final List<PackSelector> packs = manager.getModpacks().stream()
+                .map(PackSelector::new)
+                .sorted(PackSelector::compareTo)
+                .collect(Collectors.toList());
+        Platform.runLater(()->{
+            ObservableList<Node> sidebar = this.packs.getChildren();
+            sidebar.clear();
+            sidebar.addAll(packs);
         });
+        if (pendingUpdate.getAndSet(false)) update(false);
     }
 
-    public void update(){
-        updatePacksAsync();
+    public void updateAsync(){
+        if (!updateLock.tryAcquire()) pendingUpdate.set(true);
+        else CompletableFuture.runAsync(()->update(false)).whenComplete((v, e)->updateLock.release());
     }
 }

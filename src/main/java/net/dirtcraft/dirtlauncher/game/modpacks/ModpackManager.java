@@ -143,6 +143,5 @@ public class ModpackManager {
                 if (!replaced) modpacks.add(remote);
             }
             this.modpacks = modpacks;
-            Platform.runLater(Main.getHome()::updateModpacks);
     }
 }
