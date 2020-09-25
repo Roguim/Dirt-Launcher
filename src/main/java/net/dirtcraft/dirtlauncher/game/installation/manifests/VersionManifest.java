@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -67,8 +66,13 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
             return entry;
     }
 
-    public boolean isInstalled(String minecraftVersion){
-        return configBase.containsKey(minecraftVersion);
+    public boolean isInstalled(String minecraftVersion) {
+        try {
+            return configBase.containsKey(minecraftVersion);
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+            return true;
+        }
     }
 
     public static class Entry {
