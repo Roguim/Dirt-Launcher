@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -13,17 +12,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class VersionManifest extends InstallationManifest<Map<String, VersionManifest.Entry>> {
-    final Path parent;
+    private final Path parent;
     @SuppressWarnings("UnstableApiUsage")
     public VersionManifest() {
         super(Main.getConfig().getDirectoryManifest(Main.getConfig().getVersionsDirectory()), new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         parent = path.getParentFile().toPath();
-        CompletableFuture.runAsync(this::load);
+        load();
+        configBase.values().forEach(entry->entry.outerReference = this);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
                     .map(JsonElement::getAsJsonObject)
                     .forEach(versionManifest -> {
                         final String version = versionManifest.get("version").getAsString();
-                        final Entry entry = new Entry(version);
+                        final Entry entry = new Entry(version, this);
                         final Path libDir = entry.getLibsFolder();
                         Arrays.stream(versionManifest.get("classpathLibraries").getAsString().split(";"))
                                 .map(Paths::get)
@@ -57,7 +56,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public Entry create(String version) throws IOException {
-            Entry entry = new Entry(version);
+            Entry entry = new Entry(version, this);
             configBase.put(version, entry);
             FileUtils.deleteDirectory(entry.getVersionFolder().toFile());
             entry.getNativesFolder().toFile().mkdirs();
@@ -67,21 +66,18 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
     }
 
     public boolean isInstalled(String minecraftVersion) {
-        try {
             return configBase.containsKey(minecraftVersion);
-        } catch (NullPointerException exception) {
-            exception.printStackTrace();
-            return true;
-        }
     }
 
     public static class Entry {
+        private transient VersionManifest outerReference;
         final int manifestVersion = 1;
         final String gameVersion;
         final ArrayList<String> libraries;
-        public Entry(String version){
+        public Entry(String version, VersionManifest outerReference){
             this.gameVersion = version;
             libraries = new ArrayList<>();
+            this.outerReference = outerReference;
         }
 
         public String getLibs(){
@@ -127,7 +123,7 @@ public class VersionManifest extends InstallationManifest<Map<String, VersionMan
         }
 
         private VersionManifest getMain(){
-            return Manifests.VERSION;
+            return outerReference;
         }
     }
 
