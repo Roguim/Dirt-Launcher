@@ -53,6 +53,7 @@ final public class ToolBar extends Pane {
             CompletableFuture.runAsync(()->{
                 Manifests.VERSION.load();
                 Manifests.INSTANCE.load();
+                Manifests.FORGE.load();
             });
         });
 

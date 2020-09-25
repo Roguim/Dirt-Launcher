@@ -103,17 +103,11 @@ public final class Config {
     private void initGameDirectory(){
         System.out.println(getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
         System.out.println(getAssetsDirectory().mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
-        System.out.println(getForgeDirectory().mkdirs()?"Successfully created":"Failed to create"+" forge directory.");
         // Ensure that the application folders are created
         if(!getDirectoryManifest(getAssetsDirectory()).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("assets", new JsonArray());
             JsonUtils.writeJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
-        }
-        if(!getDirectoryManifest(getForgeDirectory()).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("forgeVersions", new JsonArray());
-            JsonUtils.writeJsonToFile(getDirectoryManifest(getForgeDirectory()), emptyManifest);
         }
     }
 

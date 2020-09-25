@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.Manifests;
+import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -17,6 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -41,13 +47,14 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare the Forge folder
-        File forgeFolder = new File(config.getForgeDirectory(), pack.getForgeVersion());
-        FileUtils.deleteDirectory(forgeFolder);
-        forgeFolder.mkdirs();
+        ForgeManifest manifest = Manifests.FORGE;
+        ForgeManifest.Entry entry = manifest.create(pack.getGameVersion(), pack.getForgeVersion());
+        File tempDir = entry.getTempFolder().toFile();
+        File forgeFolder = entry.getForgeFolder().toFile();
         progressContainer.completeMinorStep();
 
         // Download the Forge installer
-        File forgeInstaller = new File(forgeFolder, "installer.jar");
+        File forgeInstaller = new File(tempDir, "installer.jar");
         // 1.7 did some strange stuff with forge file names
         String url = pack.getGameVersion().equals("1.7.10")
                 ? String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s-%s/forge-%s-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion())
@@ -60,13 +67,13 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setProgressText("Extracting Forge Installer");
         progressContainer.setNumMinorSteps(2);
 
-        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, forgeFolder);
+        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, tempDir);
         forgeInstaller.delete();
         progressContainer.setNumMinorSteps(1);
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
 
-        JsonUtils.writeJsonToFile(new File(forgeFolder, pack.getForgeVersion() + ".json"), forgeVersionManifest);
+        JsonUtils.writeJsonToFile(entry.getVersionManifestFile(), forgeVersionManifest);
         progressContainer.completeMinorStep();
         progressContainer.completeMajorStep();
 
@@ -76,11 +83,10 @@ public class ForgeInstallationTask implements IInstallationTask {
         if (forgeVersionManifest.has("versionInfo")) librariesArray = forgeVersionManifest.getAsJsonObject("versionInfo").getAsJsonArray("libraries");
         else {
             librariesArray = forgeVersionManifest.getAsJsonArray("libraries");
-            WebUtils.copyURLToFile(
-                    String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion()),
-                    new File(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar"));
+            String forgeUrl = String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
+            WebUtils.copyURLToFile(forgeUrl, entry.getForgeJarFile());
         }
-        StringBuffer librariesLaunchCode = new StringBuffer();
+        List<File> libraries = Collections.synchronizedList(new ArrayList<>());
         progressContainer.setNumMinorSteps(librariesArray.size());
 
         try {
@@ -89,7 +95,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                         .map(JsonElement::getAsJsonObject)
                         .map(library -> CompletableFuture.runAsync(() -> {
                             try {
-                                installLibrary(library, forgeFolder, librariesLaunchCode, progressContainer);
+                                installLibrary(library, forgeFolder, libraries, progressContainer);
                             } catch (Throwable e) {
                                 throw new CompletionException(e);
                             }
@@ -108,20 +114,16 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         // Update Forge Versions Manifest
         progressContainer.setProgressText("Updating Forge Versions Manifest");
-
-        JsonObject forgeVersionJsonObject = new JsonObject();
-        forgeVersionJsonObject.addProperty("version", pack.getForgeVersion());
-        forgeVersionJsonObject.addProperty("classpathLibraries", StringUtils.substringBeforeLast(forgeFolder + File.separator + "forge-" + pack.getGameVersion() + "-" + pack.getForgeVersion() + "-universal.jar;" + librariesLaunchCode.toString(), ";"));
-
-        File forgeVersionsManifestFile = config.getDirectoryManifest(config.getForgeDirectory());
-        JsonObject forgeManifest = JsonUtils.readJsonFromFile(forgeVersionsManifestFile);
-        forgeManifest.getAsJsonArray("forgeVersions").add(forgeVersionJsonObject);
-        JsonUtils.writeJsonToFile(forgeVersionsManifestFile, forgeManifest);
+        File tempForgeJar = new File(tempDir, entry.getForgeJarFilename());
+        if (tempForgeJar.exists()) tempForgeJar.renameTo(entry.getForgeJarFile());
+        FileUtils.deleteDirectoryUnchecked(entry.getTempFolder().toFile());
+        entry.addLibs(libraries);
+        entry.saveAsync();
 
         progressContainer.completeMajorStep();
     }
 
-    private void installLibrary(JsonObject library, File forgeFolder, StringBuffer librariesLaunchCode, ProgressContainer progressContainer) throws IOException {
+    private void installLibrary(JsonObject library, File forgeFolder, List<File> librariesLaunchCode, ProgressContainer progressContainer) throws IOException {
         String[] libraryMaven = library.get("name").getAsString().split(":");
 
         // We already installed forge, no need to do it again.
@@ -165,7 +167,7 @@ public class ForgeInstallationTask implements IInstallationTask {
             WebUtils.copyURLToFile(url, libraryFile);
         }
         if (libraryFile.getName().contains(".pack.xz")) FileUtils.unpackPackXZ(libraryFile);
-        librariesLaunchCode.append(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz") + ";");
+        librariesLaunchCode.add(new File(StringUtils.substringBeforeLast(libraryFile.getPath(), ".pack.xz")));
 
         progressContainer.completeMinorStep();
     }

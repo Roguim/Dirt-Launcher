@@ -8,7 +8,7 @@ import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.data.Minecraft.Rule;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.manifests.VersionManifest;
+import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.logging.Logger;
@@ -138,19 +138,6 @@ public class VersionInstallationTask implements IInstallationTask {
 
         progress.completeMinorStep();
         return Optional.ofNullable(f);
-    }
-
-    private static boolean isUserOs(String os){
-        Logger.INSTANCE.debug("Is Mac: " + SystemUtils.IS_OS_MAC);
-        switch(os) {
-            case "windows": return SystemUtils.IS_OS_WINDOWS;
-            case "osx": return SystemUtils.IS_OS_MAC;
-            case "linux": return SystemUtils.IS_OS_LINUX;
-            default: {
-                Logger.INSTANCE.info("Tried checking for OS:" + os + ". Did not match Pattern (win/osx/linux).");
-                return false;
-            }
-        }
     }
 
     @Override

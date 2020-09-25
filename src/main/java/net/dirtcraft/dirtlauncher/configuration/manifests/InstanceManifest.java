@@ -1,4 +1,4 @@
-package net.dirtcraft.dirtlauncher.game.installation.manifests;
+package net.dirtcraft.dirtlauncher.configuration.manifests;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;

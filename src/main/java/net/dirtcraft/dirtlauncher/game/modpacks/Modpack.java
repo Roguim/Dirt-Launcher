@@ -148,7 +148,8 @@ public class Modpack {
     }
 
     public boolean isDependantsInstalled(){
-        return Manifests.VERSION.isInstalled(gameVersion);
+        return Manifests.VERSION.isInstalled(gameVersion)
+                && isModloaderInstalled();
     }
 
     public boolean isOutdated() {
@@ -215,6 +216,13 @@ public class Modpack {
 
     public String getCode() {
         return code;
+    }
+
+    private boolean isModloaderInstalled(){
+        switch (modLoader){
+            case FORGE: return Manifests.FORGE.isInstalled(modloaderVersion);
+            default: return true;
+        }
     }
 
     public enum PackType {

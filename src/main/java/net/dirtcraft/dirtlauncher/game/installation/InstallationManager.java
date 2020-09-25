@@ -110,9 +110,9 @@ public class InstallationManager {
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         // Add tasks for any missing game or forge components
-        if (!Manifests.VERSION.isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
         if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
-        if(!verifyGameComponentVersion(pack.getForgeVersion(), config.getForgeDirectory(), "forgeVersions")) installationTasks.add(new ForgeInstallationTask(pack));
+        if (!Manifests.VERSION.isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
+        if (!Manifests.FORGE.isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
 
         // Add the pack task as the next task
         if (!pack.isInstalled()) installationTasks.add(packInstallTask);
