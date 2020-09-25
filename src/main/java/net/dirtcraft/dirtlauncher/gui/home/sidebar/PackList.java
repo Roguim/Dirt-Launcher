@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.modpacks.ModpackManager;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
