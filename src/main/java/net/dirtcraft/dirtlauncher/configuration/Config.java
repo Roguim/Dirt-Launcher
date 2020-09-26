@@ -1,10 +1,7 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.sun.management.OperatingSystemMXBean;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
@@ -14,14 +11,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 
 public final class Config extends ConfigBase<Settings>{
