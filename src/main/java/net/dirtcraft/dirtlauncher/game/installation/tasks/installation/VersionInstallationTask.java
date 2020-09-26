@@ -106,7 +106,7 @@ public class VersionInstallationTask implements IInstallationTask {
         // Check if the library has conditions
         if (library.has("rules")) {
             @SuppressWarnings("UnstableApiUsage") List<Rule> rules = Main.gson.fromJson(library.get("rules"), new TypeToken<List<Rule>>(){}.getType());
-            if (!rules.stream().allMatch(Rule::isValid)) return Optional.empty();
+            if (!rules.stream().allMatch(Rule::canDownload)) return Optional.empty();
         }
 
         JsonObject libraryDownloads = library.getAsJsonObject("downloads");

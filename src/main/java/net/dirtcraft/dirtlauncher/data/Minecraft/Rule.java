@@ -7,12 +7,12 @@ public class Rule {
         throw new InstantiationException("Gson data class. Not to be manually created.");
     }
     public final String action;
-    public final OperatingSystem os;
+    public final OperatingSystem targetOS;
 
-    public boolean isValid(){
-        final boolean b = action.equalsIgnoreCase("allow");
-        if (os == null) return b;
-        return b == os.matches();
+    public boolean canDownload(){
+        final boolean shouldDownload = action.equalsIgnoreCase("allow");
+        if (targetOS == null) return shouldDownload;
+        return shouldDownload == targetOS.matches();
     }
 
     public static class OperatingSystem {
