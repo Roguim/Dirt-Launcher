@@ -5,7 +5,6 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
@@ -50,9 +49,9 @@ public class LaunchGame {
 
     public static void launchPack(Modpack pack, Account session) throws LaunchException {
         Config settings = Main.getConfig();
-        VersionManifest.Entry versionManifest = Manifests.VERSION.get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
-        ForgeManifest.Entry forgeManifest = Manifests.FORGE.get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));;
-        final File instanceDirectory = new File(settings.getInstancesDirectory().getPath() + File.separator + pack.getFormattedName());
+        VersionManifest.Entry versionManifest = settings.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
+        ForgeManifest.Entry forgeManifest = settings.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));;
+        final File instanceDirectory = settings.getInstancesDirectory().resolve(pack.getFormattedName()).toFile();
 
         List<String> args = new ArrayList<>();
         args.add(settings.getDefaultRuntime());

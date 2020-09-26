@@ -1,20 +1,18 @@
-package net.dirtcraft.dirtlauncher.configuration.manifests;
+package net.dirtcraft.dirtlauncher.configuration;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class InstallationManifest<T> extends ConfigBase<T> {
+public abstract class ManifestBase<T> extends ConfigBase<T> {
     private final Supplier<T> tFactory;
-
-    public InstallationManifest(File path, TypeToken<T> type, Supplier<T> tFactory){
-        super(path, type);
+    public ManifestBase(Path path, TypeToken<T> type, Supplier<T> tFactory){
+        super(path.resolve("manifest.json").toFile(), type);
         this.tFactory = tFactory;
     }
 

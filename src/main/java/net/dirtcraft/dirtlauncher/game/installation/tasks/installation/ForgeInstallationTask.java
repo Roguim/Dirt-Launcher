@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
@@ -46,7 +45,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare the Forge folder
-        ForgeManifest manifest = Manifests.FORGE;
+        ForgeManifest manifest = config.getForgeManifest();
         ForgeManifest.Entry entry = manifest.create(pack.getGameVersion(), pack.getForgeVersion());
         File tempDir = entry.getTempFolder().toFile();
         File forgeFolder = entry.getForgeFolder().toFile();

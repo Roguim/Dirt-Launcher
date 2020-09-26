@@ -3,19 +3,20 @@ package net.dirtcraft.dirtlauncher.configuration.manifests;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.stream.Stream;
 
 @SuppressWarnings("UnstableApiUsage")
-public class InstanceManifest extends InstallationManifest<ArrayList<InstanceManifest.Entry>> {
+public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.Entry>> {
 
-    public InstanceManifest(){
-        super(Main.getConfig().getDirectoryManifest(Main.getConfig().getInstancesDirectory()), new TypeToken<ArrayList<Entry>>(){}, ArrayList::new);
+    public InstanceManifest(Path dir){
+        super(dir, new TypeToken<ArrayList<Entry>>(){}, ArrayList::new);
         load();
     }
 

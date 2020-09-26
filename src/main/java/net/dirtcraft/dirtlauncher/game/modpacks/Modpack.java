@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
@@ -102,7 +101,7 @@ public class Modpack {
     }
 
     public File getInstanceDirectory() {
-        return new File(Main.getConfig().getInstancesDirectory().getPath(), getFormattedName());
+        return Main.getConfig().getInstancesDirectory().resolve(getFormattedName()).toFile();
     }
 
     public boolean isPixelmon() {
@@ -142,19 +141,19 @@ public class Modpack {
         }
     }
 
+    public boolean isOutdated() {
+        return Main.getConfig().getInstanceManifest().stream()
+                .noneMatch(pack->pack.version.equals(getVersion()));
+    }
+
     public boolean isInstalled() {
-        return Manifests.INSTANCE.stream()
+        return Main.getConfig().getInstanceManifest().stream()
                 .anyMatch(pack->pack.name.equals(getName()));
     }
 
     public boolean isDependantsInstalled(){
-        return Manifests.VERSION.isInstalled(gameVersion)
+        return Main.getConfig().getVersionManifest().isInstalled(gameVersion)
                 && isModloaderInstalled();
-    }
-
-    public boolean isOutdated() {
-        return Manifests.INSTANCE.stream()
-                .noneMatch(pack->pack.version.equals(getVersion()));
     }
 
     public boolean isFavourite(){
@@ -220,7 +219,7 @@ public class Modpack {
 
     private boolean isModloaderInstalled(){
         switch (modLoader){
-            case FORGE: return Manifests.FORGE.isInstalled(modloaderVersion);
+            case FORGE: return Main.getConfig().getForgeManifest().isInstalled(modloaderVersion);
             default: return true;
         }
     }

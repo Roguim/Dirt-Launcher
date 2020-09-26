@@ -8,8 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
@@ -51,9 +51,10 @@ final public class ToolBar extends Pane {
                 e.printStackTrace();
             }
             CompletableFuture.runAsync(()->{
-                Manifests.VERSION.load();
-                Manifests.INSTANCE.load();
-                Manifests.FORGE.load();
+                Config config = Main.getConfig();
+                config.getForgeManifest().load();
+                config.getVersionManifest().load();
+                config.getInstanceManifest().load();
             });
         });
 

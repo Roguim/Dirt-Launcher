@@ -4,6 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.management.OperatingSystemMXBean;
+import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
+import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
+import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -14,9 +17,13 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 public final class Config {
+    private ForgeManifest forgeManifest;
+    private VersionManifest versionManifest;
+    private InstanceManifest instanceManifest;
     private final Path launcherDirectory;
     private final String defaultRuntime;
     private int minimumRam;
@@ -82,6 +89,10 @@ public final class Config {
             }
             saveSettings();
         }
+
+        forgeManifest = new ForgeManifest(getForgeDirectory());
+        versionManifest = new VersionManifest(getVersionsDirectory());
+        instanceManifest = new InstanceManifest(getInstancesDirectory());
     }
 
     private int getDefaultRecommendedRam() {
@@ -101,13 +112,14 @@ public final class Config {
     }
 
     private void initGameDirectory(){
+        File assets = getAssetsDirectory().toFile();
         System.out.println(getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
-        System.out.println(getAssetsDirectory().mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
+        System.out.println(assets.mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
         // Ensure that the application folders are created
-        if(!getDirectoryManifest(getAssetsDirectory()).exists()) {
+        if(!getDirectoryManifest(assets).exists()) {
             JsonObject emptyManifest = new JsonObject();
             emptyManifest.add("assets", new JsonArray());
-            JsonUtils.writeJsonToFile(getDirectoryManifest(getAssetsDirectory()), emptyManifest);
+            JsonUtils.writeJsonToFile(getDirectoryManifest(assets), emptyManifest);
         }
     }
 
@@ -124,20 +136,20 @@ public final class Config {
     public void updateSettings(int minimumRam, int maximumRam, String javaArguments, String gameDirectory){
         final boolean changedDir = !this.gameDirectory.toString().equals(gameDirectory);
         final File oldGameDir = getGameDirectory().toFile();
-        final File oldInstanceDir = getInstancesDirectory();
-        final File oldVersionDir = getVersionsDirectory();
-        final File oldAssetsDir = getAssetsDirectory();
-        final File oldForgeDir = getForgeDirectory();
+        final File oldInstanceDir = getInstancesDirectory().toFile();
+        final File oldVersionDir = getVersionsDirectory().toFile();
+        final File oldAssetsDir = getAssetsDirectory().toFile();
+        final File oldForgeDir = getForgeDirectory().toFile();
         this.minimumRam = minimumRam;
         this.maximumRam = maximumRam;
         this.javaArguments = javaArguments;
         this.gameDirectory = Paths.get(gameDirectory);
         if (changedDir){
             try {
-                org.apache.commons.io.FileUtils.moveDirectory(oldInstanceDir, getInstancesDirectory());
-                org.apache.commons.io.FileUtils.moveDirectory(oldVersionDir, getVersionsDirectory());
-                org.apache.commons.io.FileUtils.moveDirectory(oldAssetsDir, getAssetsDirectory());
-                org.apache.commons.io.FileUtils.moveDirectory(oldForgeDir, getForgeDirectory());
+                org.apache.commons.io.FileUtils.moveDirectory(oldInstanceDir, getInstancesDirectory().toFile());
+                org.apache.commons.io.FileUtils.moveDirectory(oldVersionDir, getVersionsDirectory().toFile());
+                org.apache.commons.io.FileUtils.moveDirectory(oldAssetsDir, getAssetsDirectory().toFile());
+                org.apache.commons.io.FileUtils.moveDirectory(oldForgeDir, getForgeDirectory().toFile());
             } catch (IOException e){
                 e.printStackTrace();
             }
@@ -147,24 +159,36 @@ public final class Config {
         saveSettings();
     }
 
+    public ForgeManifest getForgeManifest(){
+        return forgeManifest;
+    }
+
+    public VersionManifest getVersionManifest(){
+        return versionManifest;
+    }
+
+    public InstanceManifest getInstanceManifest(){
+        return instanceManifest;
+    }
+
     public Path getLogDirectory() {
         return launcherDirectory.resolve("logs");
     }
 
-    public File getInstancesDirectory() {
-        return gameDirectory.resolve("instances").toFile();
+    public Path getInstancesDirectory() {
+        return gameDirectory.resolve("instances");
     }
 
-    public File getVersionsDirectory() {
-        return gameDirectory.resolve("versions").toFile();
+    public Path getVersionsDirectory() {
+        return gameDirectory.resolve("versions");
     }
 
-    public File getAssetsDirectory() {
-        return gameDirectory.resolve("assets").toFile();
+    public Path getAssetsDirectory() {
+        return gameDirectory.resolve("assets");
     }
 
-    public File getForgeDirectory() {
-        return gameDirectory.resolve("forge").toFile();
+    public Path getForgeDirectory() {
+        return gameDirectory.resolve("forge");
     }
 
     public File getDirectoryManifest(File directory) {

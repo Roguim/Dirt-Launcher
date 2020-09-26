@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
@@ -147,7 +146,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
             });
 
             uninstall.setOnAction(e->{
-                Manifests.INSTANCE.remove(this.modpack);
+                Main.getConfig().getInstanceManifest().remove(this.modpack);
                 try {
                     FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){

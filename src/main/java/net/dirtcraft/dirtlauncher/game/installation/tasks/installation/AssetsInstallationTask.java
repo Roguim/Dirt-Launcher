@@ -34,7 +34,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(3);
 
         // Prepare the assets folder
-        File assetsFolder = config.getAssetsDirectory();
+        File assetsFolder = config.getAssetsDirectory().toFile();
         assetsFolder.mkdirs();
         progressContainer.completeMinorStep();
 
@@ -77,7 +77,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         JsonObject assetsVersionJsonObject = new JsonObject();
         assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
 
-        File assetsFolderManifestFile = config.getDirectoryManifest(config.getAssetsDirectory());
+        File assetsFolderManifestFile = config.getDirectoryManifest(config.getAssetsDirectory().toFile());
         JsonObject assetsFolderManifest = JsonUtils.readJsonFromFile(assetsFolderManifestFile);
         assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
         JsonUtils.writeJsonToFile(assetsFolderManifestFile, assetsFolderManifest);

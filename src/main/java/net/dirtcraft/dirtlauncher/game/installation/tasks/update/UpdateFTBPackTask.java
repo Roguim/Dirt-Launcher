@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBFile;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -73,7 +72,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         JsonObject currentJson = JsonUtils.readJsonFromFile(currentManifestFile);
         if (currentJson != null) {
             if (currentJson.has("projectID") || currentJson.has("overrides")) {
-                Manifests.INSTANCE.remove(pack);
+                config.getInstanceManifest().remove(pack);
                 try {
                     FileUtils.deleteDirectory(pack.getInstanceDirectory());
                 } catch (IOException exception){

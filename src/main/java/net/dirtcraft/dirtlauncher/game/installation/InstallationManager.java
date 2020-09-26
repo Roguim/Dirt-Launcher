@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
@@ -105,14 +104,15 @@ public class InstallationManager {
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
     private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
+        Config config = Main.getConfig();
         List<IInstallationTask> installationTasks = new ArrayList<>();
         // Fetch the game version manifest from Mojang
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         // Add tasks for any missing game or forge components
-        if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
-        if (!Manifests.VERSION.isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
-        if (!Manifests.FORGE.isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
+        if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory().toFile(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
+        if (!config.getVersionManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
+        if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
 
         // Add the pack task as the next task
         if (!pack.isInstalled()) installationTasks.add(packInstallTask);

@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Config;
-import net.dirtcraft.dirtlauncher.configuration.Manifests;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.Rule;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -50,7 +49,7 @@ public class VersionInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
         // Prepare the version folder
-        VersionManifest.Entry versionEntry = Manifests.VERSION.create(version);
+        VersionManifest.Entry versionEntry = config.getVersionManifest().create(version);
 
         // Write the version JSON manifest
         JsonUtils.writeJsonToFile(versionEntry.getVersionManifestFile(), versionManifest);

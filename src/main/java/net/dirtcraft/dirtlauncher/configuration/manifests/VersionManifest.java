@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.configuration.manifests;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -15,12 +15,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class VersionManifest extends InstallationManifest<Map<String, VersionManifest.Entry>> {
+public class VersionManifest extends ManifestBase<Map<String, VersionManifest.Entry>> {
     private final Path parent;
     @SuppressWarnings("UnstableApiUsage")
-    public VersionManifest() {
-        super(Main.getConfig().getDirectoryManifest(Main.getConfig().getVersionsDirectory()), new TypeToken<Map<String, Entry>>(){}, HashMap::new);
-        parent = path.getParentFile().toPath();
+    public VersionManifest(Path dir) {
+        super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
+        parent = dir;
         load();
         configBase.values().forEach(entry->entry.outerReference = this);
     }
