@@ -37,7 +37,7 @@ public class JsonUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> parseJson(File file, TypeToken<T> type, Function<JsonObject, T> migrate) {
-        return parseJson(file, type, migrate, t->true);
+        return parseJson(file, type, migrate, null);
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -45,12 +45,13 @@ public class JsonUtils {
         T t = null;
         try{
             t = parseJsonUnchecked(file, type);
-        } catch (Exception ignored){
-        }
-        if (t == null || !validator.apply(t)){
-            t = tryMigrate(file, migrate);
-            if (t != null) toJson(file, t, type);
-        }
+        } catch (Exception ignored){}
+        try {
+            if (migrate != null && t == null || validator != null && !validator.apply(t)) {
+                t = tryMigrate(file, migrate);
+                if (t != null) toJson(file, t, type);
+            }
+        } catch (Exception ignored){}
         return Optional.ofNullable(t);
     }
 
@@ -68,6 +69,7 @@ public class JsonUtils {
         try {
             return Optional.ofNullable(parseJsonUnchecked(file, type));
         } catch (Exception e){
+            Logger.INSTANCE.error(e);
             return Optional.empty();
         }
     }
@@ -108,8 +110,8 @@ public class JsonUtils {
         }
     }
 
-    @Nullable
-    public static JsonObject readJsonFromFile(File file) {
+
+    public static @Nullable JsonObject readJsonFromFile(File file) {
         try (FileReader reader = new FileReader(file)) {
             JsonParser parser = new JsonParser();
             return parser.parse(reader).getAsJsonObject();

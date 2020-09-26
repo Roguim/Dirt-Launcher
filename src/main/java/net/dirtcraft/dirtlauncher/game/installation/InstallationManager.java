@@ -110,7 +110,7 @@ public class InstallationManager {
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         // Add tasks for any missing game or forge components
-        if(!verifyGameComponentVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory().toFile(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
+        if(!verifyGameAssetsVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory().toFile(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
         if (!config.getVersionManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
         if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
 
@@ -185,8 +185,8 @@ public class InstallationManager {
                 }));
     }
 
-    // Checks whether or not a base game component (version, assets, and libraries) is already installed.
-    private boolean verifyGameComponentVersion(String desiredVersion, File folder, String key) {
+    // Checks whether or not assets are already installed. todo: make asset manifest and get rid of this and getJsonFromManifest();
+    private boolean verifyGameAssetsVersion(String desiredVersion, File folder, String key) {
         return StreamSupport.stream(getJsonFromManifest(folder).getAsJsonArray(key).spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
                 .map(obj -> obj.get("version"))

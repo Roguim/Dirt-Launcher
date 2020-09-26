@@ -20,7 +20,7 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     private YggdrasilClient client;
 
     public AccountManager(Path launcherDirectory){
-        super(launcherDirectory.resolve("account.json").toFile(), AccountStorage.class);
+        super(launcherDirectory.resolve("account.json").toFile(), AccountStorage.class, ()->new AccountStorage(UUID.randomUUID()));
         client = new YggdrasilClient();
         load();
     }
@@ -88,7 +88,7 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
 
     @Override
     public void load(){
-        configBase = JsonUtils.parseJson(path, type, this::migrate, AccountStorage::isValid)
+        configBase = JsonUtils.parseJson(configFile, type, this::migrate, AccountStorage::isValid)
                 .orElse(new AccountStorage(UUID.randomUUID()));
     }
 
