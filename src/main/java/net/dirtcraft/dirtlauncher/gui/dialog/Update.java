@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.gui.dialog;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -93,6 +94,15 @@ public final class Update {
         for (int i = 0; i < webVersion.size(); i++) if (webVersion.get(i) > localVersion.get(i)) return true;
 
         return false;
+    }
+
+    public static void checkForUpdates(){
+        try {
+            if (Main.getOptions().contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
+            if (Update.hasUpdate()) Platform.runLater(Update::showStage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

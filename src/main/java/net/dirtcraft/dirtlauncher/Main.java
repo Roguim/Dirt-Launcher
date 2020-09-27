@@ -14,12 +14,10 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
-import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,9 +58,8 @@ public class Main extends Application {
         settingsMenu = config
                 .thenApply(Settings::new)
                 .whenComplete(Main::announceCompletion);
-        settingsMenu.thenRun(Main::checkUpdate);
+        settingsMenu.thenRun(Update::checkForUpdates);
         CompletableFuture.runAsync(Main::postUpdateCleanup);
-        if (Constants.VERBOSE) logInfo();
         launch(args);
     }
 
@@ -78,16 +75,9 @@ public class Main extends Application {
 
     private static <T> void announceCompletion(T t, Throwable e){
         if (!Constants.VERBOSE) return;
-        System.out.println(t.getClass().getSimpleName() + " initialized @ " + (System.currentTimeMillis() - x) + "ms");
-    }
-
-    private static void checkUpdate(){
-        try {
-            if (options.contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
-            if (Update.hasUpdate()) Platform.runLater(Update::showStage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        final long ms = System.currentTimeMillis() - x;
+        final String clazz = t.getClass().getSimpleName();
+        System.out.println(String.format("%s initialized @ %sms", clazz, ms));
     }
 
     private static void postUpdateCleanup(){
@@ -112,14 +102,6 @@ public class Main extends Application {
             return Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
         else return Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
         //Logger.INSTANCE.debug("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
-    }
-
-    private static void logInfo(){
-        final Logger logger = Logger.getInstance();
-        logger.debug("Launcher Version: " + Constants.LAUNCHER_VERSION);
-        logger.debug("Bootstrap Version: " + Constants.BOOTSTRAP_JAR);
-        logger.debug("Update Source: " + Constants.UPDATE_URL);
-        logger.debug("Modpack Service: " + Constants.PACK_JSON_URL);
     }
 
     public static AccountManager getAccounts() {
