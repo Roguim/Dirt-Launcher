@@ -21,6 +21,7 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
         super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         load();
         configBase.values().forEach(entry->entry.outerReference = this);
+        assert configBase != null;
     }
 
     @Override

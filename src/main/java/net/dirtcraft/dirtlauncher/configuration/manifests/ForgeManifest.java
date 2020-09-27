@@ -21,6 +21,7 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
         super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         load();
         configBase.values().forEach(entry->entry.outerReference = this);
+        assert configBase != null;
     }
 
     private String getMinecraftVersion(File forgeJar, String forgeVersion){

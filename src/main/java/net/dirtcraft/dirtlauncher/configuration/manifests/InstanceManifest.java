@@ -20,6 +20,7 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
     public InstanceManifest(Path dir){
         super(dir, new TypeToken<ArrayList<Entry>>(){}, ArrayList::new);
         load();
+        assert configBase != null;
     }
 
     public Optional<Entry> get(Modpack modpack){

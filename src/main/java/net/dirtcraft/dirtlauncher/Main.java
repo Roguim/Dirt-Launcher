@@ -10,38 +10,32 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
-import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
-import net.dirtcraft.dirtlauncher.providers.CurseProvider;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
     private static long x = System.currentTimeMillis();
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    private static CompletableFuture<ConfigurationManager> config = null;
+    private static CompletableFuture<AccountManager> accounts = null;
+    private static CompletableFuture<Settings> settingsMenu = null;
+    private static CompletableFuture<Home> home = null;
     private static Path launcherDirectory;
     private static List<String> options;
-    private static CompletableFuture<Home> home = null;
-    private static CompletableFuture<ConfigurationManager> config = null;
-    private static CompletableFuture<Settings> settingsMenu = null;
-    private static CompletableFuture<AccountManager> accounts = null;
     public static Gson gson;
 
     public static void main(String[] args) {
@@ -53,13 +47,22 @@ public class Main extends Application {
                 .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
                 .create();
         options = Arrays.asList(args);
-        initLauncherDirectory();
-        home = CompletableFuture.supplyAsync(Main::preInitHome);
-        accounts = CompletableFuture.supplyAsync(Main::initAccountManager);
-        config = CompletableFuture.supplyAsync(Main::initConfig);
-        settingsMenu = config.thenApply(Main::initSettings);
+        launcherDirectory = getLauncherDirectory(options);
+        home = CompletableFuture
+                .supplyAsync(Home::new)
+                .whenComplete(Main::announceCompletion);
+        accounts = CompletableFuture
+                .supplyAsync(()->new AccountManager(launcherDirectory))
+                .whenComplete(Main::announceCompletion);
+        config = CompletableFuture
+                .supplyAsync(()->new ConfigurationManager(launcherDirectory, options))
+                .whenComplete(Main::announceCompletion);
+        settingsMenu = config
+                .thenApply(Settings::new)
+                .whenComplete(Main::announceCompletion);
         settingsMenu.thenRun(Main::checkUpdate);
         CompletableFuture.runAsync(Main::postUpdateCleanup);
+        if (Constants.VERBOSE) logInfo();
         launch(args);
     }
 
@@ -73,71 +76,9 @@ public class Main extends Application {
         //testMethodPleaseIgnore();
     }
 
-    public static AccountManager getAccounts() {
-        try {
-            return accounts.get();
-        } catch (Throwable e){
-            throw new Error(e);
-        }
-    }
-
-    public static Settings getSettingsMenu() {
-        try {
-            return settingsMenu.get();
-        } catch (Throwable e) {
-            throw new Error(e);
-        }
-    }
-
-    public static Home getHome() {
-        try {
-            return home.get();
-        } catch (Throwable e) {
-            throw new Error(e);
-        }
-    }
-
-    public static ConfigurationManager getConfig() {
-        try {
-            return config.get();
-        } catch (Throwable e) {
-            throw new Error(e);
-        }
-    }
-
-    public static List<String> getOptions(){
-        return options;
-    }
-
-    public static Path getLauncherDirectory(){
-        return launcherDirectory;
-    }
-
-    private static Home preInitHome(){
-        try {
-            Home home = new Home();
-            Logger.INSTANCE.debug("Scene pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
-            return home;
-        } catch (Exception e) {
-            throw new Error(e);
-        }
-    }
-
-    private static AccountManager initAccountManager() {
-        AccountManager accounts = new AccountManager(launcherDirectory);
-        Logger.INSTANCE.debug("Account manager initialized @ " + (System.currentTimeMillis() - x) + "ms");
-        return accounts;
-    }
-
-    private static ConfigurationManager initConfig() {
-        ConfigurationManager config = new ConfigurationManager(launcherDirectory, options);
-        Logger.INSTANCE.debug("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
-        return config;
-    }
-    private static Settings initSettings(ConfigurationManager config) {
-        Settings settingsMenu = new Settings(config);
-        Logger.INSTANCE.debug("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
-        return settingsMenu;
+    private static <T> void announceCompletion(T t, Throwable e){
+        if (!Constants.VERBOSE) return;
+        System.out.println(t.getClass().getSimpleName() + " initialized @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     private static void checkUpdate(){
@@ -160,17 +101,17 @@ public class Main extends Application {
         }
     }
 
-    private static void initLauncherDirectory(){
+    private static Path getLauncherDirectory(List<String> options){
         if (options.contains("-installed") || options.contains("-portable"))
             try {
-                launcherDirectory = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+                return Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
             } catch (Exception e){ throw new Error(e); }
         else if (SystemUtils.IS_OS_WINDOWS)// If the host OS is windows, use AppData
-            launcherDirectory = Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
+            return Paths.get(System.getenv("AppData"), "DirtCraft", "DirtLauncher");
         else if (SystemUtils.IS_OS_MAC)// If the host OS is mac, use the user's Application Support directory
-            launcherDirectory = Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
-        else launcherDirectory = Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
-        Logger.INSTANCE.debug("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
+            return Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
+        else return Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
+        //Logger.INSTANCE.debug("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     private static void logInfo(){
@@ -181,24 +122,27 @@ public class Main extends Application {
         logger.debug("Modpack Service: " + Constants.PACK_JSON_URL);
     }
 
-    private void run(Runnable runnable) {
-        Objects.requireNonNull(runnable, "runnable");
-        if (Platform.isFxApplicationThread()) {
-            runnable.run();
-        }
-        else {
-            Platform.runLater(runnable);
-        }
+    public static AccountManager getAccounts() {
+        return accounts.join();
     }
 
-    private void testMethodPleaseIgnore() {
-        CurseProvider.InstanceManager.getInstance(CurseProvider.class).ifPresent(curseProvider -> {
-            try {
-                CompletableFuture<Optional<Modpack>> a = curseProvider.getModpackFromUrlAsync(new URL("https://www.curseforge.com/minecraft/modpacks/infinityevolved-reloaded"));
-                a.whenComplete((z,b)->System.out.println("!!!"));
-            } catch (MalformedURLException e){
-                e.printStackTrace();
-            }
-        });
+    public static Settings getSettingsMenu() {
+        return settingsMenu.join();
+    }
+
+    public static Home getHome() {
+        return home.join();
+    }
+
+    public static ConfigurationManager getConfig() {
+        return config.join();
+    }
+
+    public static List<String> getOptions(){
+        return options;
+    }
+
+    public static Path getLauncherDirectory(){
+        return launcherDirectory;
     }
 }

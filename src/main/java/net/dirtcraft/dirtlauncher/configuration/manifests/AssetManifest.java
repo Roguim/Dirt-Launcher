@@ -17,6 +17,7 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
     public AssetManifest(Path directory) {
         super(directory, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         load();
+        assert configBase != null;
     }
 
     @Override
