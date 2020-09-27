@@ -4,7 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.Rule;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -40,7 +40,7 @@ public class VersionInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Manifest Breakdown
         String version = versionManifest.get("id").getAsString();
 

@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>> {
-    private final Path parent;
     @SuppressWarnings("UnstableApiUsage")
     public ForgeManifest(Path dir) {
         super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
-        parent = dir;
         load();
         configBase.values().forEach(entry->entry.outerReference = this);
     }
@@ -131,7 +129,7 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
         }
 
         public Path getForgeFolder(){
-            return getMain().parent.resolve(forgeVersion);
+            return getMain().directory.resolve(forgeVersion);
         }
 
 

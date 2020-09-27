@@ -1,29 +1,37 @@
 package net.dirtcraft.dirtlauncher.game.serverlist;
 
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
+import net.dirtcraft.dirtlauncher.exceptions.InstanceException;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ServerList {
     private final File serverDat;
     private final List<Server> servers;
     private final List<String> ips;
 
-    public static ServerList builder(String pack){
+    public static ServerList builder(String pack) throws InstanceException {
         return new ServerList(pack);
     }
 
-    private ServerList(String packName){
+    private ServerList(String packName) throws InstanceException{
         ips = new ArrayList<>();
         servers = new ArrayList<>();
-        this.serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+        Optional<File> serverDat = Main.getConfig().getInstanceManifest().get(packName)
+                .map(InstanceManifest.Entry::getDirectory)
+                .map(e->e.resolve("servers.dat"))
+                .map(Path::toFile);
+        this.serverDat = serverDat.orElseThrow(()->new InstanceException("Instance manifest entry not present."));
         try {
-            serverDat.createNewFile();
+            //noinspection ResultOfMethodCallIgnored
+            this.serverDat.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,8 +97,12 @@ public class ServerList {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static List<Listing> getCurrent(String packName){
-        File serverDat = Paths.get(Main.getConfig().getInstancesDirectory().toString(),packName.replaceAll("\\s+", "-"), "servers.dat").toFile();
+    public static List<Listing> getCurrent(String packName) throws InstanceException{
+        Optional<File> optServerDat = Main.getConfig().getInstanceManifest().get(packName)
+                .map(InstanceManifest.Entry::getDirectory)
+                .map(e->e.resolve("servers.dat"))
+                .map(Path::toFile);
+        File serverDat = optServerDat.orElseThrow(()->new InstanceException("Instance manifest entry not present."));
         List<Listing> serverList = new ArrayList<>();
         if (!serverDat.exists()) return serverList;
         try(

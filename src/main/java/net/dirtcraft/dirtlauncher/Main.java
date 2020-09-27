@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
@@ -39,7 +39,7 @@ public class Main extends Application {
     private static Path launcherDirectory;
     private static List<String> options;
     private static CompletableFuture<Home> home = null;
-    private static CompletableFuture<Config> config = null;
+    private static CompletableFuture<ConfigurationManager> config = null;
     private static CompletableFuture<Settings> settingsMenu = null;
     private static CompletableFuture<AccountManager> accounts = null;
     public static Gson gson;
@@ -97,7 +97,7 @@ public class Main extends Application {
         }
     }
 
-    public static Config getConfig() {
+    public static ConfigurationManager getConfig() {
         try {
             return config.get();
         } catch (Throwable e) {
@@ -129,12 +129,12 @@ public class Main extends Application {
         return accounts;
     }
 
-    private static Config initConfig() {
-        Config config = new Config(launcherDirectory, options);
+    private static ConfigurationManager initConfig() {
+        ConfigurationManager config = new ConfigurationManager(launcherDirectory, options);
         Logger.INSTANCE.debug("Config initialized @ " + (System.currentTimeMillis() - x) + "ms");
         return config;
     }
-    private static Settings initSettings(Config config) {
+    private static Settings initSettings(ConfigurationManager config) {
         Settings settingsMenu = new Settings(config);
         Logger.INSTANCE.debug("Settings menu pre-rendered @ " + (System.currentTimeMillis() - x) + "ms");
         return settingsMenu;

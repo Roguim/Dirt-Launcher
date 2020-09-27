@@ -1,12 +1,11 @@
 package net.dirtcraft.dirtlauncher.game.installation;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
@@ -25,21 +24,18 @@ import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.logging.Logger;
-import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.StreamSupport;
 
 public class InstallationManager {
 
     private final ExecutorService downloadManager;
-    private final Config config;
+    private final ConfigurationManager config;
 
     private InstallationManager() {
         downloadManager = Executors.newFixedThreadPool(Constants.MAX_DOWNLOAD_THREADS);
@@ -104,13 +100,13 @@ public class InstallationManager {
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
     private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
-        Config config = Main.getConfig();
+        ConfigurationManager config = Main.getConfig();
         List<IInstallationTask> installationTasks = new ArrayList<>();
         // Fetch the game version manifest from Mojang
         JsonObject versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion());
 
         // Add tasks for any missing game or forge components
-        if(!verifyGameAssetsVersion(versionManifest.get("assets").getAsString(), config.getAssetsDirectory().toFile(), "assets")) installationTasks.add(new AssetsInstallationTask(versionManifest));
+        if (!config.getAssetManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new AssetsInstallationTask(versionManifest));
         if (!config.getVersionManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
         if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
 
@@ -183,19 +179,6 @@ public class InstallationManager {
                     });
                     Main.getHome().update();
                 }));
-    }
-
-    // Checks whether or not assets are already installed. todo: make asset manifest and get rid of this and getJsonFromManifest();
-    private boolean verifyGameAssetsVersion(String desiredVersion, File folder, String key) {
-        return StreamSupport.stream(getJsonFromManifest(folder).getAsJsonArray(key).spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .map(obj -> obj.get("version"))
-                .map(JsonElement::getAsString)
-                .anyMatch(version -> version.equals(desiredVersion));
-    }
-
-    private JsonObject getJsonFromManifest(File folder) {
-        return JsonUtils.readJsonFromFile(config.getDirectoryManifest(folder));
     }
 
 }

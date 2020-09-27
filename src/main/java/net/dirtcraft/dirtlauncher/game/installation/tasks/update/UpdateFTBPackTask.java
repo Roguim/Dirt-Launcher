@@ -8,7 +8,7 @@ import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBFile;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -54,7 +54,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException, PackInstallException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);

@@ -1,7 +1,8 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
+import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -28,14 +29,14 @@ public class AssetsInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Assets");
         progressContainer.setNumMinorSteps(3);
 
         // Prepare the assets folder
-        File assetsFolder = config.getAssetsDirectory().toFile();
-        assetsFolder.mkdirs();
+        AssetManifest manifest = config.getAssetManifest();
+        File assetsFolder = manifest.getDirectory().toFile();
         progressContainer.completeMinorStep();
 
         // Write assets JSON manifest
@@ -73,15 +74,7 @@ public class AssetsInstallationTask implements IInstallationTask {
 
         // Update Assets Manifest
         progressContainer.setProgressText("Updating Assets Manifest");
-
-        JsonObject assetsVersionJsonObject = new JsonObject();
-        assetsVersionJsonObject.addProperty("version", versionManifest.get("assets").getAsString());
-
-        File assetsFolderManifestFile = config.getDirectoryManifest(config.getAssetsDirectory().toFile());
-        JsonObject assetsFolderManifest = JsonUtils.readJsonFromFile(assetsFolderManifestFile);
-        assetsFolderManifest.getAsJsonArray("assets").add(assetsVersionJsonObject);
-        JsonUtils.writeJsonToFile(assetsFolderManifestFile, assetsFolderManifest);
-
+        manifest.add(versionManifest.get("assets").getAsString());
         progressContainer.completeMajorStep();
     }
 

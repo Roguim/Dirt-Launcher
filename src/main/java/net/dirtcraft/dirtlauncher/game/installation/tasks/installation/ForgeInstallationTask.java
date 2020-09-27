@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
@@ -39,7 +39,7 @@ public class ForgeInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Forge Installer");
         progressContainer.setNumMinorSteps(2);

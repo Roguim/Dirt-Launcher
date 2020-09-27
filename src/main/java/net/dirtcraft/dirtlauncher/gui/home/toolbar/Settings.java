@@ -14,7 +14,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.gui.genericControls.NumberField;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -23,15 +23,16 @@ import java.io.File;
 
 public final class Settings extends Scene {
     private Stage stage = null;
-    private final Config config;
+    private final ConfigurationManager config;
     private final TextField gamesDirInputField;
     private final TextField javaArgsInput;
     private final NumberField xmsInput;
     private final NumberField xmxInput;
-    public Settings(Config config) {
+    public Settings(ConfigurationManager config) {
         super(new FlowPane(), 600, 300);
 
         this.config = config;
+        net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings settings = config.getSettings();
 
         Text titleText = new Text("Settings");
         FlowPane title = new FlowPane();
@@ -39,7 +40,7 @@ public final class Settings extends Scene {
         title.setId(Constants.CSS_CLASS_TITLE);
         title.getChildren().add(titleText);
 
-        xmsInput = new NumberField(config.getMinimumRam());
+        xmsInput = new NumberField(settings.getMinimumRam());
         MiscUtils.setAbsoluteSize(xmsInput, 200, 30);
         Text xmsText = new Text("Minimum Allocated Ram (MB)");
         xmsText.getStyleClass().add(Constants.CSS_CLASS_TEXT);
@@ -51,7 +52,7 @@ public final class Settings extends Scene {
         xms.setVgap(3);
         xms.getChildren().addAll(xmsInput, xmsText);
 
-        xmxInput = new NumberField(config.getMaximumRam());
+        xmxInput = new NumberField(settings.getMaximumRam());
         MiscUtils.setAbsoluteSize(xmxInput, 200, 30);
         Text xmxText = new Text("Maximum Allocated Ram (MB)");
         xmxText.getStyleClass().add(Constants.CSS_CLASS_TEXT);
@@ -79,7 +80,7 @@ public final class Settings extends Scene {
         ram.add(xms, 0 ,0);
         ram.add(xmx, 1 ,0);
 
-        javaArgsInput = new TextField(config.getJavaArguments());
+        javaArgsInput = new TextField(settings.getJavaArguments());
         MiscUtils.setAbsoluteSize(javaArgsInput, 300, 30);
 
         Text javaArgsText = new Text("Java Arguments");
@@ -92,7 +93,7 @@ public final class Settings extends Scene {
         javaArgs.setVgap(3);
         javaArgs.getChildren().addAll(javaArgsInput, javaArgsText);
 
-        gamesDirInputField = new TextField(config.getGameDirectory().toString());
+        gamesDirInputField = new TextField(settings.getGameDirectoryAsString());
         MiscUtils.setAbsoluteSize(gamesDirInputField, 270, 30);
 
         Button gamesDirInputButton = new Button("...");

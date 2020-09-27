@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class VersionManifest extends ManifestBase<Map<String, VersionManifest.Entry>> {
-    private final Path parent;
     @SuppressWarnings("UnstableApiUsage")
     public VersionManifest(Path dir) {
         super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
-        parent = dir;
         load();
         configBase.values().forEach(entry->entry.outerReference = this);
     }
@@ -115,7 +113,7 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
         }
 
         public Path getVersionFolder(){
-            return getMain().parent.resolve(gameVersion);
+            return getMain().directory.resolve(gameVersion);
         }
 
         public void saveAsync(){

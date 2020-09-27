@@ -76,6 +76,10 @@ public class Settings {
         return getGameDirectory().resolve("forge");
     }
 
+    public Path getLogDirectory() {
+        return getGameDirectory().resolve("logs");
+    }
+
     private int getDefaultRecommendedRam() {
         final long maxMemory = (((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()) / 1024 / 1024;
         if (maxMemory > 10000) return 8;

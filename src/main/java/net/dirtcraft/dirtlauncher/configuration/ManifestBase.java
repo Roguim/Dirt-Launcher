@@ -9,11 +9,14 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class ManifestBase<T> extends ConfigBase<T> {
-    public ManifestBase(Path path, TypeToken<T> type, Supplier<T> tFactory){
-        super(path.resolve("manifest.json").toFile(), type, tFactory);
+    protected Path directory;
+    public ManifestBase(Path directory, TypeToken<T> type, Supplier<T> tFactory){
+        super(directory.resolve("manifest.json").toFile(), type, tFactory);
+        this.directory = directory;
     }
-    public ManifestBase(Path path, Class<T> type, Supplier<T> tFactory){
-        super(path.resolve("manifest.json").toFile(), type, tFactory);
+
+    public Path getDirectory() {
+        return directory;
     }
 
     @Override

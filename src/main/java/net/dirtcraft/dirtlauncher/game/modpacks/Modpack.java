@@ -101,7 +101,7 @@ public class Modpack {
     }
 
     public File getInstanceDirectory() {
-        return Main.getConfig().getInstancesDirectory().resolve(getFormattedName()).toFile();
+        return Main.getConfig().getInstanceManifest().getDirectory().resolve(getFormattedName()).toFile();
     }
 
     public boolean isPixelmon() {
@@ -153,6 +153,7 @@ public class Modpack {
 
     public boolean isDependantsInstalled(){
         return Main.getConfig().getVersionManifest().isInstalled(gameVersion)
+                && Main.getConfig().getAssetManifest().isInstalled(gameVersion)
                 && isModloaderInstalled();
     }
 

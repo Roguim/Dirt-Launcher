@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -30,7 +30,7 @@ public class InstallCustomPackTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);

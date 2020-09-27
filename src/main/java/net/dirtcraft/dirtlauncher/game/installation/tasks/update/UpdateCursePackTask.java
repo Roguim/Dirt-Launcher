@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.google.common.reflect.TypeToken;
 import com.therandomlabs.utils.io.NetUtils;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -41,7 +41,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, Config config) throws IOException {
+    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Files");
         progressContainer.setNumMinorSteps(2);

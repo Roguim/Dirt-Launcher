@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.configuration.manifests;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -18,6 +20,14 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
     public InstanceManifest(Path dir){
         super(dir, new TypeToken<ArrayList<Entry>>(){}, ArrayList::new);
         load();
+    }
+
+    public Optional<Entry> get(Modpack modpack){
+        return get(modpack.getName());
+    }
+
+    public Optional<Entry> get(String modpack){
+        return stream().filter(entry->entry.name.equals(modpack)).findFirst();
     }
 
     @Override
@@ -71,6 +81,14 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
             this.version = version;
             this.gameVersion = gameVersion;
             this.forgeVersion = forgeVersion;
+        }
+
+        public String getFormattedName() {
+            return name.replaceAll("\\s+", "-");
+        }
+
+        public Path getDirectory(){
+            return Main.getConfig().getInstanceManifest().directory.resolve(getFormattedName()); //todo fix
         }
     }
 }

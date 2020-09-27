@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
@@ -16,16 +15,18 @@ import java.nio.file.Path;
 import java.util.List;
 
 
-public final class Config extends ConfigBase<Settings>{
+public final class ConfigurationManager extends ConfigBase<Settings>{
     private ForgeManifest forgeManifest;
+    private AssetManifest assetManifest;
     private VersionManifest versionManifest;
     private InstanceManifest instanceManifest;
-    private final Path launcherDirectory;
     private final String defaultRuntime;
 
-    public Config(Path launcherDirectory, List<String> options) {
-        super(launcherDirectory.resolve("configuration.json").toFile(), Settings.class, ()->new Settings(launcherDirectory));
-        this.launcherDirectory = launcherDirectory;
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public ConfigurationManager(Path launcherDirectory, List<String> options) {
+        super(launcherDirectory.resolve("settings.json").toFile(), Settings.class, ()->new Settings(launcherDirectory));
+        final File old = launcherDirectory.resolve("configuration.json").toFile();
+        if (old.exists()) old.renameTo(configFile);
         final String javaExecutable = SystemUtils.IS_OS_WINDOWS ? "javaw" : "java";
         if (options.contains("-installed") || options.contains("-useBundledRuntime")) {
             final Path runtimeDirectory = launcherDirectory.resolve("Runtime");
@@ -40,35 +41,24 @@ public final class Config extends ConfigBase<Settings>{
 
         if (!configFile.exists()) {
             configBase = tFactory.get();
-            initGameDirectory();
             saveAsync();
         } else load();
         forgeManifest = new ForgeManifest(configBase.getForgeDirectory());
+        assetManifest = new AssetManifest(configBase.getAssetsDirectory());
         versionManifest = new VersionManifest(configBase.getVersionsDirectory());
-        instanceManifest = new InstanceManifest(getInstancesDirectory());
-    }
-
-    private void initGameDirectory(){
-        File assets = getAssetsDirectory().toFile();
-        System.out.println(configBase.getGameDirectory().toFile().mkdirs()?"Successfully created":"Failed to create"+" game directory");
-        System.out.println(assets.mkdirs()?"Successfully created":"Failed to create"+" assets directory.");
-        // Ensure that the application folders are created
-        if(!getDirectoryManifest(assets).exists()) {
-            JsonObject emptyManifest = new JsonObject();
-            emptyManifest.add("assets", new JsonArray());
-            JsonUtils.writeJsonToFile(getDirectoryManifest(assets), emptyManifest);
-        }
+        instanceManifest = new InstanceManifest(configBase.getInstancesDirectory());
     }
 
     public void updateSettings(int minimumRam, int maximumRam, String javaArguments, String gameDirectory){
         Settings settingsNew = new Settings(minimumRam, maximumRam, javaArguments, gameDirectory);
         Settings settingsOld = configBase;
+        moveGameDirectories(settingsOld, settingsNew);
         configBase = settingsNew;
-        if (!settingsOld.getGameDirectoryAsString().equals(gameDirectory)) moveGameDirectories(settingsOld, settingsNew);
         saveAsync();
     }
 
     private void moveGameDirectories(Settings current, Settings updated){
+        if (current.getGameDirectoryAsString().equals(updated.getGameDirectoryAsString())) return;
         try {
             FileUtils.moveDirectory(current.getInstancesDirectory().toFile(), updated.getInstancesDirectory().toFile());
             FileUtils.moveDirectory(current.getVersionsDirectory().toFile(), updated.getVersionsDirectory().toFile());
@@ -76,6 +66,7 @@ public final class Config extends ConfigBase<Settings>{
             FileUtils.moveDirectory(current.getForgeDirectory().toFile(), updated.getForgeDirectory().toFile());
             instanceManifest = new InstanceManifest(configBase.getInstancesDirectory());
             versionManifest = new VersionManifest(configBase.getVersionsDirectory());
+            assetManifest = new AssetManifest(configBase.getAssetsDirectory());
             forgeManifest = new ForgeManifest(configBase.getForgeDirectory());
         } catch (IOException e){
             e.printStackTrace();
@@ -89,24 +80,16 @@ public final class Config extends ConfigBase<Settings>{
         if (configBase.migrated) saveAsync();
     }
 
-    public int getMinimumRam() {
-        return configBase.getMinimumRam();
-    }
-
-    public int getMaximumRam() {
-        return configBase.getMaximumRam();
-    }
-
-    public String getJavaArguments() {
-        return configBase.getJavaArguments();
-    }
-
-    public Path getGameDirectory() {
-        return configBase.getGameDirectory();
+    public Settings getSettings(){
+        return configBase;
     }
 
     public ForgeManifest getForgeManifest(){
         return forgeManifest;
+    }
+
+    public AssetManifest getAssetManifest(){
+        return assetManifest;
     }
 
     public VersionManifest getVersionManifest(){
@@ -115,22 +98,6 @@ public final class Config extends ConfigBase<Settings>{
 
     public InstanceManifest getInstanceManifest(){
         return instanceManifest;
-    }
-
-    public Path getLogDirectory() {
-        return launcherDirectory.resolve("logs");
-    }
-
-    public Path getInstancesDirectory() {
-        return configBase.getInstancesDirectory();
-    }
-
-    public Path getAssetsDirectory() { // todo: delete
-        return configBase.getAssetsDirectory();
-    }
-
-    public File getDirectoryManifest(File directory) { // todo: delete
-        return directory.toPath().resolve("manifest.json").toFile();
     }
 
     public String getDefaultRuntime() {

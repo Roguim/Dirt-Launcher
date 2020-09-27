@@ -3,10 +3,14 @@ package net.dirtcraft.dirtlauncher.game;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Config;
+import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
+import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
+import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
+import net.dirtcraft.dirtlauncher.exceptions.InstanceException;
 import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -33,7 +37,7 @@ public class LaunchGame {
 
     public static boolean isGameRunning = false;
 
-    public static void loadServerList(Modpack pack) {
+    public static void loadServerList(Modpack pack) throws InstanceException {
         List<Listing> servers = ServerList.getCurrent(pack.getName());
         ServerList serverList = ServerList.builder(pack.getName());
         pack.getListings().ifPresent(listings -> {
@@ -48,13 +52,16 @@ public class LaunchGame {
     }
 
     public static void launchPack(Modpack pack, Account session) throws LaunchException {
-        Config settings = Main.getConfig();
-        VersionManifest.Entry versionManifest = settings.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
-        ForgeManifest.Entry forgeManifest = settings.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));;
-        final File instanceDirectory = settings.getInstancesDirectory().resolve(pack.getFormattedName()).toFile();
+        ConfigurationManager configManager = Main.getConfig();
+        Settings settings = configManager.getSettings();
+        InstanceManifest.Entry instanceManifest = configManager.getInstanceManifest().get(pack).orElseThrow(()->new LaunchException("Instance manifest entry not present."));
+        VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
+        ForgeManifest.Entry forgeManifest = configManager.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));
+        AssetManifest.Entry assetManifest = configManager.getAssetManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Asset manifest entry not present."));
+        final File instanceDirectory = instanceManifest.getDirectory().toFile();
 
         List<String> args = new ArrayList<>();
-        args.add(settings.getDefaultRuntime());
+        args.add(configManager.getDefaultRuntime());
 
         // RAM
         args.add("-Xms" + settings.getMinimumRam() + "M");
@@ -107,7 +114,7 @@ public class LaunchGame {
 
         // Assets Dir
         args.add("--assetsDir");
-        args.add(settings.getAssetsDirectory().toString());
+        args.add(assetManifest.getAssetDirectory().toString());
 
         // Assets Index
         File assetsVersionJsonFile = versionManifest.getVersionManifestFile();
