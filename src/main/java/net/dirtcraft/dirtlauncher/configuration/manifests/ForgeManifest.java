@@ -75,7 +75,13 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
     }
 
     public boolean isInstalled(String forgeVersion) {
-        return configBase.containsKey(forgeVersion);
+        final Entry entry = configBase.get(forgeVersion);
+        if (entry == null) return false;
+        if (!entry.getForgeFolder().toFile().exists()){
+            configBase.remove(forgeVersion);
+            saveAsync();
+            return false;
+        } else return true;
     }
 
     public static class Entry {

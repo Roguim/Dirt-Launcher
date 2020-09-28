@@ -46,6 +46,10 @@ public class ProgressContainer {
         updateMinorStepsUI();
     }
 
+    public void setMinorPercent(double percent){
+        updateUI(install -> install.getLoadingBar().setProgress(percent));
+    }
+
     public void setMinorStepsCompleted(int setMinorStepsCompleted) {
         minorStepsCompleted.set(setMinorStepsCompleted);
         updateMinorStepsUI();

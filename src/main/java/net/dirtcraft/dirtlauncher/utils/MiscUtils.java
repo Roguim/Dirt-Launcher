@@ -10,13 +10,11 @@ import net.dirtcraft.dirtlauncher.configuration.Constants;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,6 +102,22 @@ public class MiscUtils {
             System.exit(0);
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public static void trySleep(long ms){
+        try{
+            Thread.sleep(ms);
+        } catch (Exception ignored){
+
+        }
+    }
+
+    public static Optional<URL> getURL(String url){
+        try {
+            return Optional.of(new URL(url));
+        } catch (MalformedURLException e){
+            return Optional.empty();
         }
     }
 

@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.configuration.manifests;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
@@ -23,11 +22,10 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
     @Override
     protected Map<String, Entry> migrate(JsonObject jsonObject) {
         Map<String, Entry> entries = tFactory.get();
-        Gson gson = Main.gson;
         for (JsonElement jsonElement : jsonObject.get("assets").getAsJsonArray()) {
-            Entry entry = gson.fromJson(jsonElement, Entry.class);
-            String gameVersion = entry.assetVersion.equalsIgnoreCase("1.12")? "1.12.2" : entry.assetVersion;
-            entries.put(gameVersion, entry);
+            String assetVersion = jsonElement.getAsJsonObject().get("version").getAsString();
+            String gameVersion = assetVersion.equalsIgnoreCase("1.12")? "1.12.2" : assetVersion;
+            entries.put(gameVersion, new Entry(assetVersion));
         }
         return entries;
     }
@@ -38,10 +36,6 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
 
     public void add(String gameVersion, Entry asset){
         configBase.put(gameVersion, asset);
-    }
-
-    public void remove(String gameVersion){
-        configBase.remove(gameVersion);
     }
 
     public boolean isInstalled(String gameVersion){

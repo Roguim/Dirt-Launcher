@@ -65,7 +65,13 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
     }
 
     public boolean isInstalled(String minecraftVersion) {
-            return configBase.containsKey(minecraftVersion);
+        final Entry entry = configBase.get(minecraftVersion);
+        if (entry == null) return false;
+        if (!entry.getVersionFolder().toFile().exists()){
+            configBase.remove(minecraftVersion);
+            saveAsync();
+            return false;
+        } else return true;
     }
 
     public static class Entry {

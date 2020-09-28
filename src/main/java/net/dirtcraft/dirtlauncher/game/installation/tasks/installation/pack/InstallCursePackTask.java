@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
+import net.dirtcraft.dirtlauncher.game.installation.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -17,12 +18,11 @@ import net.lingala.zip4j.ZipFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class InstallCursePackTask implements IInstallationTask {
@@ -107,6 +107,7 @@ public class InstallCursePackTask implements IInstallationTask {
 
         progressContainer.completeMajorStep();
 
+
         // Update Progress
         progressContainer.setProgressText("Downloading Mods");
         synchronized (modManifests) {
@@ -116,38 +117,37 @@ public class InstallCursePackTask implements IInstallationTask {
         }
 
         // Install Mods
-            File modsFolder = new File(modpackFolder.getPath(), "mods");
-            modsFolder.mkdirs();
+        File modsFolder = new File(modpackFolder.getPath(), "mods");
+        modsFolder.mkdirs();
 
-        synchronized (modManifests) {
-            try {
-                CompletableFuture.allOf(
-                        modManifests.stream()
-                        .map(mod -> CompletableFuture.runAsync(() -> {
-                            try {
-                                // Download the mod
-                                WebUtils.copyURLToFile(mod.get("downloadUrl").getAsString().replaceAll("\\s", "%20"), new File(modsFolder, mod.get("fileName").getAsString()));
+        AtomicInteger i = new AtomicInteger();
+        int samples = 10;
+        long[] bytesPerSecond = new long[samples];
+        Arrays.fill(bytesPerSecond, 0);
+        DownloadManager manager = new DownloadManager(progress -> {
+            int j = i.addAndGet(1) % samples;
+            bytesPerSecond[j] = progress.getBytesPerSecond();
+            progressContainer.setMinorPercent(progress.getPercent());
+            if (j == 0 || progress.totalSize == 0) return;
+            double sampledSpeed = Arrays.stream(bytesPerSecond).average().orElse(0d);
+            String speed = sampledSpeed > DownloadManager.KILOBYTE ? String.format("%.1fMB/s", sampledSpeed / DownloadManager.MEGABYTE) : String.format("%dKB/s", (long) sampledSpeed / DownloadManager.KILOBYTE);
+            final String template = "Downloading %dMB at " + speed;
+            progressContainer.setProgressText(String.format(template, progress.totalSize / DownloadManager.MEGABYTE));
+        }, 50);
 
-                                // Update progress
-                                progressContainer.addMinorStepsCompleted(mod.get("fileLength").getAsInt());
-                            } catch (IOException e) {
-                                throw new CompletionException(e);
-                            }
-                        }, threadService))
-                        .toArray(CompletableFuture[]::new))
-                    .join();
-            } catch (CompletionException e) {
-                try {
-                    throw e.getCause();
-                } catch (IOException ex) {
-                    throw ex;
-                } catch (Throwable impossible) {
-                    throw new AssertionError(impossible);
-                }
-            }
-        }
+        Collection<CompletableFuture<File>> files = modManifests.stream().map(mod -> {
+            String url = mod.get("downloadUrl").getAsString().replaceAll("\\s", "%20");
+            File file = new File(modsFolder, mod.get("fileName").getAsString());
+            long size = mod.get("fileLength").getAsLong();
+            return manager.download(url, file, size);
+        }).collect(Collectors.toList());
+
+        if (files.stream().map(CompletableFuture::join).anyMatch(Objects::isNull)) throw new IOException();
+        manager.close();
+
 
         progressContainer.completeMajorStep();
+
     }
 
     @Override
