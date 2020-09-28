@@ -11,6 +11,7 @@ import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -30,14 +31,26 @@ public class AssetsInstallationTask implements IInstallationTask {
 
     @Override
     public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+
         // Update Progress
         progressContainer.setProgressText("Downloading Assets");
+        String gameVersion = versionManifest.get("id").getAsString();
+        String assetVersion =  versionManifest.get("assets").getAsString();
         progressContainer.setNumMinorSteps(3);
 
         // Prepare the assets folder
         AssetManifest manifest = config.getAssetManifest();
         File assetsFolder = manifest.getDirectory().toFile();
         progressContainer.completeMinorStep();
+
+        // Check if another game version shares the same assets which we are about to install:
+        Optional<AssetManifest.Entry> optEntry = manifest.getViaAssetIndex(assetVersion);
+        if (optEntry.isPresent()){
+            manifest.add(gameVersion, optEntry.get());
+            manifest.saveAsync();
+            progressContainer.completeMajorStep();
+            return;
+        }
 
         // Write assets JSON manifest
         JsonObject assetsManifest = WebUtils.getJsonFromUrl(versionManifest.getAsJsonObject("assetIndex").get("url").getAsString());
@@ -74,7 +87,8 @@ public class AssetsInstallationTask implements IInstallationTask {
 
         // Update Assets Manifest
         progressContainer.setProgressText("Updating Assets Manifest");
-        manifest.add(versionManifest.get("assets").getAsString());
+        manifest.add(gameVersion, assetVersion);
+        manifest.saveAsync();
         progressContainer.completeMajorStep();
     }
 

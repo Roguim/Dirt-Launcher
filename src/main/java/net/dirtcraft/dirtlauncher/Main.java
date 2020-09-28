@@ -14,11 +14,14 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -70,7 +73,6 @@ public class Main extends Application {
         home.getStage().show();
         home.update();
         Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
-        //testMethodPleaseIgnore();
     }
 
     private static <T> void announceCompletion(T t, Throwable e){

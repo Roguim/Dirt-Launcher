@@ -148,7 +148,8 @@ public class Modpack {
 
     public boolean isInstalled() {
         return Main.getConfig().getInstanceManifest().stream()
-                .anyMatch(pack->pack.name.equals(getName()));
+                .anyMatch(pack->pack.name.equals(getName()))
+                && getInstanceDirectory().exists();
     }
 
     public boolean isDependantsInstalled(){

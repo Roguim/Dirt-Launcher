@@ -21,19 +21,23 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
     }
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     protected Map<String, Entry> migrate(JsonObject jsonObject) {
         Map<String, Entry> entries = tFactory.get();
         Gson gson = Main.gson;
         for (JsonElement jsonElement : jsonObject.get("assets").getAsJsonArray()) {
             Entry entry = gson.fromJson(jsonElement, Entry.class);
-            entries.put(entry.version, entry);
+            String gameVersion = entry.assetVersion.equalsIgnoreCase("1.12")? "1.12.2" : entry.assetVersion;
+            entries.put(gameVersion, entry);
         }
         return entries;
     }
 
-    public void add(String gameVersion){
-        configBase.put(gameVersion, new Entry(gameVersion));
+    public void add(String gameVersion, String assetVersion){
+        configBase.put(gameVersion, new Entry(assetVersion));
+    }
+
+    public void add(String gameVersion, Entry asset){
+        configBase.put(gameVersion, asset);
     }
 
     public void remove(String gameVersion){
@@ -44,19 +48,25 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
         return configBase.containsKey(gameVersion);
     }
 
+    public Optional<Entry> getViaAssetIndex(String assetVersion){
+        return configBase.values().stream()
+                .filter(entry -> entry.assetVersion.equalsIgnoreCase(assetVersion))
+                .findFirst();
+    }
+
     public Optional<Entry> get(String gameVersion){
         return Optional.ofNullable(configBase.get(gameVersion));
     }
 
     public static class Entry {
-        private final String version;
+        private final String assetVersion;
 
         public Entry(String gameVersion){
-            this.version = gameVersion;
+            this.assetVersion = gameVersion;
         }
 
         private boolean isValid(){
-            return version != null;
+            return assetVersion != null;
         }
 
         public Path getAssetDirectory(){

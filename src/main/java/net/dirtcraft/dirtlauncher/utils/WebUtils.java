@@ -10,16 +10,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static net.dirtcraft.dirtlauncher.configuration.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
@@ -95,6 +101,72 @@ public class WebUtils {
             e.printStackTrace();
             if (attempts < MAX_DOWNLOAD_ATTEMPTS) copyURLToFile(URL, file, attempts+1);
             else throw e;
+        }
+    }
+
+    public static void copyUrlToFileWithProgressPrintln(URL url, File file){
+        final AtomicBoolean finished = new AtomicBoolean(false);
+        final long size = getFileSize(url);
+        final AtomicLong count = new AtomicLong();
+        CompletableFuture.runAsync(()->{
+            while (!finished.get()){
+                try{
+                    Thread.sleep(500);
+                } catch (Exception ignored){}
+                long n = count.get();
+                System.out.println(n + "/" + size + " (" + 100 * n / size + "%)");
+            }
+        });
+        tryCopyUrlToFile(url, file, count);
+        finished.set(true);
+    }
+
+    public static Optional<IOException> tryCopyUrlToFile(URL url, File file, AtomicLong count){
+        int attempts = 0;
+        IOException exception = null;
+        while (attempts < MAX_DOWNLOAD_ATTEMPTS){
+            try {
+                copyUrlToFile(url, file, count);
+                return Optional.empty();
+            } catch (IOException e){
+                exception = e;
+                attempts++;
+            }
+        }
+        return Optional.of(exception);
+    }
+
+    public static long getFileSize(URL url){
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            return conn.getContentLengthLong();
+        } catch (IOException e) {
+            Logger.INSTANCE.verbose(e);
+            return -1;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
+
+    private static void copyUrlToFile(URL url, File file, AtomicLong count) throws IOException{
+        try(
+                InputStream in = url.openStream();
+                OutputStream out = FileUtils.openOutputStream(file)
+                ){
+            copyInputStream(in, out, count);
+        }
+    }
+
+    private static void copyInputStream(InputStream in, OutputStream out, AtomicLong count) throws IOException{
+        byte[] buffer = new byte[1024 * 8];
+        int n;
+        while (-1 != (n = in.read(buffer))) {
+            out.write(buffer, 0, n);
+            count.getAndAdd(+n);
         }
     }
 
