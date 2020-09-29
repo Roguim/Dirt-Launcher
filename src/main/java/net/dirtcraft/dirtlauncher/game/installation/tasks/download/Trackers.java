@@ -10,15 +10,15 @@ import java.util.function.Consumer;
 public class Trackers {
     private static int SAMPLES = 25;
     private static int PER_TEXT = 3;
-    public static Consumer<DownloadManager.Progress> getProgressContainerTracker(ProgressContainer progressContainer){
+    public static Consumer<DownloadManager.Progress> getProgressContainerTracker(ProgressContainer progressContainer, int bitrateSamples, int updatesPerText){
         AtomicInteger counter = new AtomicInteger();
-        long[] bytesPerSecond = new long[SAMPLES];
+        long[] bytesPerSecond = new long[bitrateSamples];
         Arrays.fill(bytesPerSecond, 0);
         return progress -> {
             int i = counter.addAndGet(1);
-            bytesPerSecond[i % SAMPLES] = progress.getBytesPerSecond();
+            bytesPerSecond[i % bitrateSamples] = progress.getBytesPerSecond();
             progressContainer.setMinorPercent(progress.getPercent());
-            if (i % PER_TEXT != 0 || progress.totalSize == 0) return;
+            if (i % updatesPerText != 0 || progress.totalSize == 0) return;
 
             final long sampledSpeed = (long) Arrays.stream(bytesPerSecond).average().orElse(0d);
             final String speed = DataRates.getBitrate(sampledSpeed);
@@ -27,14 +27,14 @@ public class Trackers {
         };
     }
 
-    public static Consumer<DownloadManager.Progress> getPrintStreamTracker(PrintStream printStream){
-        AtomicInteger i = new AtomicInteger();
-        long[] bytesPerSecond = new long[SAMPLES];
+    public static Consumer<DownloadManager.Progress> getPrintStreamTracker(PrintStream printStream, int bitrateSamples, int updatesPerText){
+        AtomicInteger counter = new AtomicInteger();
+        long[] bytesPerSecond = new long[bitrateSamples];
         Arrays.fill(bytesPerSecond, 0);
         return progress -> {
-            int j = i.addAndGet(1) % SAMPLES;
-            bytesPerSecond[j] = progress.getBytesPerSecond();
-            if (j == 0 || progress.totalSize == 0) return;
+            int i = counter.addAndGet(1);
+            bytesPerSecond[i % bitrateSamples] = progress.getBytesPerSecond();
+            if (i % updatesPerText != 0 || progress.totalSize == 0) return;
 
             final long sampledSpeed = (long) Arrays.stream(bytesPerSecond).average().orElse(0d);
             final String speed = DataRates.getBitrate(sampledSpeed);

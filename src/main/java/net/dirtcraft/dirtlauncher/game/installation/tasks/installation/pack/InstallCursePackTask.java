@@ -102,7 +102,7 @@ public class InstallCursePackTask implements IInstallationTask {
                 .map(meta->meta.getDownloadInfo(modsFolder))
                 .forEach(manager::addDownload);
 
-        List<Download.Result> results = manager.download(Trackers.getProgressContainerTracker(progressContainer), 50);
+        List<Download.Result> results = manager.download(Trackers.getProgressContainerTracker(progressContainer, 50, 3), 50);
         Optional<Throwable> err = results.stream()
                 .filter(Download.Result::finishedExceptionally)
                 .findFirst()
