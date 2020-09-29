@@ -25,26 +25,15 @@ public class Download {
     }
 
     public long getBytesPerSecond(){
-        final long downloaded = currentProgress.get();
-        if (downloaded <= 0) return 0;
-        long currentProgress = downloaded - lastProgress;
         long currentTime = System.currentTimeMillis();
+        final long downloaded = currentProgress.get();
+        if (downloaded <= 0 || lastProgress == downloaded) return 0;
+        long currentProgress = downloaded - lastProgress;
         long timePassed = currentTime - lastTime;
-        lastProgress = currentTime;
         lastProgress = downloaded;
-        return (currentProgress * timePassed) / 1000;
+        lastTime = currentTime;
+        return (currentProgress * 1000) / timePassed;
     }
-
-    /*
-    private long getBytesPerSecond(long timeMs){
-        synchronized (currentProgress){
-            final long downloaded = currentProgress.get() - lastProgress;
-            if (downloaded == 0) return 0;
-            lastProgress = currentProgress.get();
-            return (long) ((double) downloaded * (double)(1000/timeMs));
-        }
-    }
-     */
 
     public CompletableFuture<Result> downloadAsync(ExecutorService service){
         return CompletableFuture.supplyAsync(this::download, service);

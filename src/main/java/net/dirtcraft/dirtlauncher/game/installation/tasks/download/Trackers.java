@@ -8,16 +8,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Trackers {
-    private static int SAMPLES = 10;
+    private static int SAMPLES = 25;
+    private static int PER_TEXT = 3;
     public static Consumer<DownloadManager.Progress> getProgressContainerTracker(ProgressContainer progressContainer){
-        AtomicInteger i = new AtomicInteger();
+        AtomicInteger counter = new AtomicInteger();
         long[] bytesPerSecond = new long[SAMPLES];
         Arrays.fill(bytesPerSecond, 0);
         return progress -> {
-            int j = i.addAndGet(1) % SAMPLES;
-            bytesPerSecond[j] = progress.getBytesPerSecond();
+            int i = counter.addAndGet(1);
+            bytesPerSecond[i % SAMPLES] = progress.getBytesPerSecond();
             progressContainer.setMinorPercent(progress.getPercent());
-            if (j == 0 || progress.totalSize == 0) return;
+            if (i % PER_TEXT != 0 || progress.totalSize == 0) return;
 
             final long sampledSpeed = (long) Arrays.stream(bytesPerSecond).average().orElse(0d);
             final String speed = DataRates.getBitrate(sampledSpeed);

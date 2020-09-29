@@ -12,7 +12,8 @@ public enum  DataRates {
     PETABYTES   ((long) Math.pow(1024, 5), "PB"),
     EXABYTES    ((long) Math.pow(1024, 6), "EB"),
     ZETTABYTES  ((long) Math.pow(1024, 7), "ZB"),
-    YOTTABYTES  ((long) Math.pow(1024, 8), "YB");
+    YOTTABYTES  ((long) Math.pow(1024, 8), "YB"),
+    YEETABYTES  ((long) Math.pow(1024, 9), "?B");
     private final long bytes;
     private final String suffix;
     DataRates(long i, String suffix){
@@ -21,9 +22,9 @@ public enum  DataRates {
     }
 
     public static DataRates getMaximumDataRate(long bytes){
-        Iterator<DataRates> rates = Arrays.asList(DataRates.values()).iterator();
-        DataRates previousRate = DataRates.BYTES;
         DataRates currentRate;
+        DataRates previousRate = DataRates.BYTES;
+        Iterator<DataRates> rates = Arrays.asList(DataRates.values()).iterator();
         while (rates.hasNext() && bytes >= (currentRate = rates.next()).getBytes()) previousRate = currentRate;
         return previousRate;
     }
