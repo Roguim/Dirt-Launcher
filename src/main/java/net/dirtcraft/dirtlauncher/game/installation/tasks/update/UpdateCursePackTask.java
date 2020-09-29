@@ -3,6 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 import com.google.common.reflect.TypeToken;
 import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
+import net.dirtcraft.dirtlauncher.data.Curse.CurseFile;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -114,7 +115,7 @@ public class UpdateCursePackTask implements IUpdateTask {
         toRemove.parallelStream()
                 .map(m->m.getManifestAsync(threadService))
                 .map(this::getFutureUnchecked)
-                .map(m->m.fileName)
+                .map(CurseFile::getFileName)
                 //.peek(fn->System.out.println("removed: " + fn))
                 .map(m->new File(modsFolder, m))
                 .peek(File::delete)

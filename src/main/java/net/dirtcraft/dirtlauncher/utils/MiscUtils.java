@@ -141,4 +141,13 @@ public class MiscUtils {
         return Constants.UPDATE_URL;
     }
 
+    public static TimerTask toTimerTask(Runnable runnable){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+    }
+
 }

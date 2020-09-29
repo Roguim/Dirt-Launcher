@@ -1,6 +1,8 @@
 package net.dirtcraft.dirtlauncher.data.Curse;
 
 
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Download;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -14,13 +16,26 @@ public class CurseFile {
     final long id;
     final String displayName;
     final String fileName;
-    final int releaseType;
-    final String downloadUrl;
-    final boolean isAvailable;
-    final boolean isServerPack;
-    final long serverPackFileId;
-    final long projectId;
+    //final ??? fileDate <- timestamp? useless anyway.
     final long fileLength;
+    final int releaseType;
+    //final int fileStatus;
+    final String downloadUrl;
+    //final boolean isAlternate;
+    //final int alternateFileId;
+    //final Object dependencies;
+    final boolean isAvailable;
+    //final Object modules;
+    //final long packageFingerPrint;
+    //final String[] gameVersion;
+    //final null installMetadata;
+    final long serverPackFileId;
+    //final boolean hasInstallScript;
+    //final ??? gameVersionDateReleased;
+    //final null gameVersionFlavor
+
+    final boolean isServerPack; //<-- ??? modpack only?
+    final long projectId; // <-- ??? modpack only?
 
     public CompletableFuture<Void> downloadAsync(File modsFolder, Executor executor){
         return CompletableFuture.runAsync(()-> download(modsFolder), executor);
@@ -34,34 +49,17 @@ public class CurseFile {
         }
     }
 
-    /*"releaseType":
-1: release
-2: beta
-3: alpha
-        "dependencies": [],
-        "restrictProjectFileAccess": 1,
-        "isAlternate": false,
-        "alternateFileId": 0,
-        "fileStatus": 4,
-        "fileDate": "2020-02-13T00:38:17.903Z",
-        "gameVersion": [
-          "1.12.2"
-        ],
-        "sortableGameVersion": [
-    {
-        "gameVersionPadded": "0000000001.0000000012.0000000002",
-            "gameVersion": "1.12.2",
-            "gameVersionReleaseDate": "2017-09-18T05:00:00Z",
-            "gameVersionName": "1.12.2"
+    public Download getDownload(File file){
+        return new Download(MiscUtils.getURL(downloadUrl).orElse(null), file, fileLength);
     }
-        ],
-        "modules": [
-          {
-            "foldername": "manifest.json",
-            "fingerprint": 381212442,
-            "type": 3
-          }
-        ],
 
-     */
+    public String getFileName(){
+        return fileName;
+    }
+/*
+    releaseTypes:
+        1: release
+        2: beta
+        3: alpha
+ */
 }
