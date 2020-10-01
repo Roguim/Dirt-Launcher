@@ -4,6 +4,9 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadInfo;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -30,7 +33,7 @@ public class InstallCustomPackTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);
@@ -48,24 +51,11 @@ public class InstallCustomPackTask implements IInstallationTask {
         progressContainer.setProgressText(String.format("Downloading %s Files", pack.getName()));
         Optional<Integer> optionalFileSize = pack.getFileSize();
 
-        Timer timer = null;
-        if (optionalFileSize.isPresent()) {
-            int fileSize = optionalFileSize.get();
-            progressContainer.setNumMinorSteps(fileSize);
-
-            // Update UI On Interval Todo make better
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Install.getInstance().ifPresent(instance -> progressContainer.setMinorStepsCompleted((int) ((modpackZip.length() / 1024 / 1024))));
-                }
-            }, 0, 1000);
-        } else progressContainer.setNumMinorSteps(1);
+        DownloadInfo download = new DownloadInfo.Default(pack.getLink(), modpackZip);
 
         // Download the Pack
-        WebUtils.copyURLToFile(pack.getLink(), modpackZip);
-        if (timer != null) timer.cancel();
+        downloadManager.download(Trackers.getProgressContainerTracker(progressContainer), download);
+
         progressContainer.setNumMinorSteps(2);
         progressContainer.completeMajorStep();
 

@@ -14,23 +14,24 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
-import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main extends Application {
     private static long x = System.currentTimeMillis();
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    private static ThreadPoolExecutor threadPool;
     private static CompletableFuture<ConfigurationManager> config = null;
     private static CompletableFuture<AccountManager> accounts = null;
     private static CompletableFuture<Settings> settingsMenu = null;
@@ -40,6 +41,7 @@ public class Main extends Application {
     public static Gson gson;
 
     public static void main(String[] args) {
+        threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(24);
         //noinspection rawtypes
         gson = new GsonBuilder()
                 .serializeNulls()
@@ -50,20 +52,24 @@ public class Main extends Application {
         options = Arrays.asList(args);
         launcherDirectory = getLauncherDirectory(options);
         home = CompletableFuture
-                .supplyAsync(Home::new)
+                .supplyAsync(Home::new, threadPool)
                 .whenComplete(Main::announceCompletion);
         accounts = CompletableFuture
-                .supplyAsync(()->new AccountManager(launcherDirectory))
+                .supplyAsync(()->new AccountManager(launcherDirectory), threadPool)
                 .whenComplete(Main::announceCompletion);
         config = CompletableFuture
-                .supplyAsync(()->new ConfigurationManager(launcherDirectory, options))
+                .supplyAsync(()->new ConfigurationManager(launcherDirectory, options), threadPool)
                 .whenComplete(Main::announceCompletion);
         settingsMenu = config
                 .thenApply(Settings::new)
                 .whenComplete(Main::announceCompletion);
         settingsMenu.thenRun(Update::checkForUpdates);
-        CompletableFuture.runAsync(Main::postUpdateCleanup);
+        CompletableFuture.runAsync(Main::postUpdateCleanup, threadPool);
         launch(args);
+    }
+
+    public static ExecutorService getIOExecutor(){
+        return threadPool;
     }
 
     @Override

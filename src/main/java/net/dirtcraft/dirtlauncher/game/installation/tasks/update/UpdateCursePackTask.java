@@ -9,6 +9,7 @@ import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -18,9 +19,7 @@ import net.lingala.zip4j.ZipFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -42,7 +41,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Files");
         progressContainer.setNumMinorSteps(2);
@@ -111,9 +110,11 @@ public class UpdateCursePackTask implements IUpdateTask {
         progressContainer.setProgressText("Removing Old Mods");
         progressContainer.setNumMinorSteps(toRemove.size());
 
+
+
         //remove old mods
         toRemove.parallelStream()
-                .map(m->m.getManifestAsync(threadService))
+                .map(m->m.getManifestAsync(downloadManager.getThreadPool()))
                 .map(this::getFutureUnchecked)
                 .map(CurseFile::getFileName)
                 //.peek(fn->System.out.println("removed: " + fn))
@@ -128,10 +129,10 @@ public class UpdateCursePackTask implements IUpdateTask {
 
         //install new mods
         toInstall.stream()
-                .map(m->m.getManifestAsync(threadService))
+                .map(m->m.getManifestAsync(downloadManager.getThreadPool()))
                 .map(this::getFutureUnchecked)
                 //.peek(fn->System.out.println("added: " + fn.fileName))
-                .forEach(m->m.downloadAsync(modsFolder, threadService).whenComplete((t,e)->progressContainer.completeMinorStep()));
+                .forEach(m->m.downloadAsync(modsFolder, downloadManager.getThreadPool()).whenComplete((t,e)->progressContainer.completeMinorStep()));
 
 
         // Update Progress

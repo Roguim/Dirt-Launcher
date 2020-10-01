@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download;
 
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -24,10 +25,22 @@ public interface DownloadInfo {
         private final File dest;
         private long size;
 
+        public Default(String src, File dest){
+            this.src = MiscUtils.getURL(src).orElse(null);
+            this.dest = dest;
+            this.size = -1;
+        }
+
         public Default(URL src, File dest){
             this.src = src;
             this.dest = dest;
             this.size = -1;
+        }
+
+        public Default(String src, File dest, long size){
+            this.src = MiscUtils.getURL(src).orElse(null);
+            this.dest = dest;
+            this.size = size;
         }
 
         public Default(URL src, File dest, long size){

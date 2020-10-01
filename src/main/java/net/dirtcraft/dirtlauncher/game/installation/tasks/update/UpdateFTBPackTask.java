@@ -15,6 +15,7 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
@@ -54,7 +55,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);
@@ -164,7 +165,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
 
         // Install New Mods
         for (FTBFile mod : toInstall) mod
-                .downloadAsync(modsFolder, threadService)
+                .downloadAsync(modsFolder, downloadManager.getThreadPool())
                 .whenComplete((t,e) -> progressContainer.addMinorStepsCompleted(mod.size));
 
         // Update Progress

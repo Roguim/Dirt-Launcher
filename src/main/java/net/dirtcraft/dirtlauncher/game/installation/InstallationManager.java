@@ -11,6 +11,7 @@ import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.AssetsInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.VersionInstallationTask;
@@ -34,11 +35,11 @@ import java.util.concurrent.Executors;
 
 public class InstallationManager {
 
-    private final ExecutorService downloadManager;
+    private final DownloadManager downloadManager;
     private final ConfigurationManager config;
 
     private InstallationManager() {
-        downloadManager = Executors.newFixedThreadPool(Constants.MAX_DOWNLOAD_THREADS);
+        downloadManager = new DownloadManager();
         config = Main.getConfig();
     }
 

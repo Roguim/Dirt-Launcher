@@ -6,6 +6,7 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
@@ -30,7 +31,7 @@ public class AssetsInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
 
         // Update Progress
         progressContainer.setProgressText("Downloading Assets");
@@ -72,7 +73,7 @@ public class AssetsInstallationTask implements IInstallationTask {
                             } catch (IOException e) {
                                 throw new CompletionException(e);
                             }
-                        }, threadService))
+                        }, downloadManager.getThreadPool()))
                         .toArray(CompletableFuture[]::new))
                     .join();
         } catch (CompletionException e) {

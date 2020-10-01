@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.download;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public enum  DataRates {
+public enum DataFormat {
     BYTES       ((long) Math.pow(1024, 0), "B"),
     KILOBYTES   ((long) Math.pow(1024, 1), "KB"),
     MEGABYTES   ((long) Math.pow(1024, 2), "MB"),
@@ -16,26 +16,26 @@ public enum  DataRates {
     YEETABYTES  ((long) Math.pow(1024, 9), "?B");
     private final long bytes;
     private final String suffix;
-    DataRates(long i, String suffix){
+    DataFormat(long i, String suffix){
         this.bytes = i;
         this.suffix = suffix;
     }
 
-    public static DataRates getMaximumDataRate(long bytes){
-        DataRates currentRate;
-        DataRates previousRate = DataRates.BYTES;
-        Iterator<DataRates> rates = Arrays.asList(DataRates.values()).iterator();
+    public static DataFormat getMaximumDataRate(long bytes){
+        DataFormat currentRate;
+        DataFormat previousRate = DataFormat.BYTES;
+        Iterator<DataFormat> rates = Arrays.asList(DataFormat.values()).iterator();
         while (rates.hasNext() && bytes >= (currentRate = rates.next()).getBytes()) previousRate = currentRate;
         return previousRate;
     }
 
     public static String getBitrate(long bytes){
-        DataRates rates = getMaximumDataRate(bytes);
+        DataFormat rates = getMaximumDataRate(bytes);
         return rates.toBitrate(bytes);
     }
 
     public static String getFileSize(long bytes){
-        DataRates rates = getMaximumDataRate(bytes);
+        DataFormat rates = getMaximumDataRate(bytes);
         return rates.toFileSize(bytes);
     }
 

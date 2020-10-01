@@ -9,6 +9,7 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -39,7 +40,7 @@ public class ForgeInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager  downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Forge Installer");
         progressContainer.setNumMinorSteps(2);
@@ -97,7 +98,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                             } catch (Throwable e) {
                                 throw new CompletionException(e);
                             }
-                        }, threadService))
+                        }, downloadManager.getThreadPool()))
                         .toArray(CompletableFuture[]::new))
                     .join();
         } catch (CompletionException e) {

@@ -1,100 +1,99 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download;
 
-
-import javafx.beans.NamedArg;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
+import com.google.gson.stream.JsonReader;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.io.File;
-import java.net.URL;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DownloadManager {
-    private static ExecutorService threadPool = Executors.newFixedThreadPool(Constants.MAX_DOWNLOAD_THREADS);
-    private final List<DownloadInfo> downloads = new ArrayList<>(); //todo Thread-local maybe?
+    private static ExecutorService threadPool = Main.getIOExecutor();
     private final Timer scheduler = new Timer();
 
-    public List<Download.Result> download(Consumer<Progress> progressConsumer, long updateInterval){
+    public List<Download.Result> download(Consumer<ProgressDetailed> progressConsumer, DownloadInfo downloadMeta){
+        return download(progressConsumer, Collections.singletonList(downloadMeta));
+    }
+
+    public List<Download.Result> download(Consumer<ProgressDetailed> progressConsumer, List<DownloadInfo> downloadMeta) {
+        List<Download> downloads = calculateDownloads(downloadMeta, progressConsumer);
+        return executeDownloads(downloads, progressConsumer);
+    }
+
+    public <T,R> List<R> download(List<T> batch, Function<T,R> func,Consumer<ProgressBasic> progressTracker){
+        AtomicInteger completed = new AtomicInteger();
+        AtomicInteger counter = new AtomicInteger();
+        ProgressBasic progress = new ProgressBasic(completed, batch.size(), counter.addAndGet(1));
+        TimerTask task = MiscUtils.toTimerTask(()->progressTracker.accept(progress));
         try {
-            List<Download> downloads = calculateDownloads();
-            return executeDownloads(downloads, progressConsumer, updateInterval);
+            scheduler.scheduleAtFixedRate(task, 0, 50);
+            List<CompletableFuture<R>> futures = batch.stream()
+                    .map(t -> CompletableFuture.supplyAsync(() -> func.apply(t)))
+                    .collect(Collectors.toList());
+            return futures.stream().map(CompletableFuture::join).collect(Collectors.toList());
         } finally {
-            clearDownloads();
+            task.cancel();
+            task.run();
         }
     }
 
-    private List<Download> calculateDownloads(){
-        final List<CompletableFuture<Download>> infoFutures = this.downloads.stream()
-                .map(dl->dl.getDownloadAsync(threadPool))
-                .collect(Collectors.toList());
-        return infoFutures.stream().map(CompletableFuture::join).collect(Collectors.toList());
+    public ExecutorService getThreadPool(){
+        //((ThreadPoolExecutor)threadPool).setCorePoolSize();
+        return threadPool;
     }
 
-    private List<Download.Result> executeDownloads(List<Download> downloads, Consumer<Progress> progressConsumer, long updateInterval){
-        final TimerTask updater = MiscUtils.toTimerTask(()->progressConsumer.accept(new Progress(downloads.toArray(new Download[]{}))));
+    private List<Download> calculateDownloads(List<DownloadInfo> downloadMeta, Consumer<ProgressDetailed> progressConsumer){
+        AtomicInteger counter = new AtomicInteger();
+        final AtomicInteger progress = new AtomicInteger();
+        final TimerTask updater = MiscUtils.toTimerTask(()->progressConsumer.accept(new ProgressDetailed(progress, downloadMeta.size(), counter.getAndIncrement())));
         try {
-            scheduler.scheduleAtFixedRate(updater, 250, updateInterval);
+            scheduler.scheduleAtFixedRate(updater, 0, 50);
+            final List<CompletableFuture<Download>> infoFutures = downloadMeta.stream()
+                    .map(dl -> dl.getDownloadAsync(threadPool).whenComplete((t,e)->progress.addAndGet(1)))
+                    .collect(Collectors.toList());
+            return infoFutures.stream().map(CompletableFuture::join).collect(Collectors.toList());
+        } finally {
+            updater.cancel();
+            updater.run();
+        }
+    }
+
+    private List<Download.Result> executeDownloads(List<Download> downloads, Consumer<ProgressDetailed> progressConsumer){
+        final BitrateSmoother bitrateSmoother = new BitrateSmoother(40);
+        AtomicInteger counter = new AtomicInteger();
+        final TimerTask updater = MiscUtils.toTimerTask(()->progressConsumer.accept(new ProgressDetailed(downloads.toArray(new Download[]{}), bitrateSmoother, counter.getAndIncrement())));
+        try {
+            scheduler.scheduleAtFixedRate(updater, 0, 50);
             final List<CompletableFuture<Download.Result>> futureResults = downloads.stream().map(dl -> dl.downloadAsync(threadPool)).collect(Collectors.toList());
             return futureResults.stream().map(CompletableFuture::join).collect(Collectors.toList());
         } finally {
-            updater.run();
             updater.cancel();
+            updater.run();
         }
 
     }
 
-    public void addDownload(DownloadInfo downloadInfo){
-        downloads.add(downloadInfo);
-    }
-
-    public void addDownloads(Collection<DownloadInfo> downloadInfo){
-        downloads.addAll(downloadInfo);
-    }
-
-    public void addDownload(@NamedArg("src") URL src, @NamedArg("dest") File dest){
-        downloads.add(new DownloadInfo.Default(src, dest));
-    }
-
-    public void addDownload(@NamedArg("src") String src, @NamedArg("dest") File dest){
-        addDownload(MiscUtils.getURL(src).orElse(null), dest);
-    }
-
-    public void addDownload(@NamedArg("src") URL src, @NamedArg("dest") File dest, @NamedArg("size") long size){
-        downloads.add(new DownloadInfo.Default(src, dest, size));
-    }
-
-    public void addDownload(@NamedArg("src") String src, @NamedArg("dest") File dest, @NamedArg("size") long size){
-        addDownload(MiscUtils.getURL(src).orElse(null), dest, size);
-    }
-
-    public void clearDownloads(){
-        downloads.clear();
-    }
-
-    public static class Progress{
-        public final long progress;
-        public final long totalSize;
-        public final long bytesPerSecond;
-        public final int files;
-        public Progress(Download[] downloads){
-            this.bytesPerSecond = Arrays.stream(downloads).mapToLong(Download::getBytesPerSecond).sum();
-            this.progress = Arrays.stream(downloads).mapToLong(Download::getProgress).sum();
-            this.totalSize = Arrays.stream(downloads).mapToLong(Download::getSize).sum();
-            this.files = downloads.length;
+    public static class BitrateSmoother{
+        private long[] bytesPerSecond;
+        private int counter;
+        private int samples;
+        public BitrateSmoother(int samples){
+            this.counter = 0;
+            this.bytesPerSecond = new long[samples];
+            Arrays.fill(bytesPerSecond, 0);
+            this.samples = samples;
         }
 
-        public long getBytesPerSecond(){
-            return bytesPerSecond;
-        }
-
-        public double getPercent(){
-            if (totalSize == 0) return 0;
-            return progress / (double) totalSize;
+        public long getAveraged(long i){
+            int count = counter == Integer.MAX_VALUE? 0 : counter++;
+            bytesPerSecond[count % samples] = i;
+            return (long) Arrays.stream(bytesPerSecond).average().orElse(0d);
         }
     }
 }

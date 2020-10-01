@@ -11,6 +11,7 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Download;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadInfo;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class InstallCursePackTask implements IInstallationTask {
@@ -37,7 +39,7 @@ public class InstallCursePackTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(ExecutorService threadService, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Files");
         progressContainer.setNumMinorSteps(2);
@@ -94,15 +96,13 @@ public class InstallCursePackTask implements IInstallationTask {
         Path modsFolder = modsFile.toPath();
         modsFile.mkdirs();
 
-        Gson gson = Main.gson;
-        DownloadManager manager = new DownloadManager();
-        StreamSupport.stream(mods.spliterator(), false)
-                .map(f->gson.fromJson(f, CurseMetaFileReference.class))
+        List<DownloadInfo> downloads = StreamSupport.stream(mods.spliterator(), false)
+                .map(f->Main.gson.fromJson(f, CurseMetaFileReference.class))
                 .filter(CurseMetaFileReference::isRequired)
                 .map(meta->meta.getDownloadInfo(modsFolder))
-                .forEach(manager::addDownload);
+                .collect(Collectors.toList());
 
-        List<Download.Result> results = manager.download(Trackers.getProgressContainerTracker(progressContainer, 50, 3), 50);
+        List<Download.Result> results = downloadManager.download(Trackers.getProgressContainerTracker(progressContainer), downloads);
         Optional<Throwable> err = results.stream()
                 .filter(Download.Result::finishedExceptionally)
                 .findFirst()
@@ -114,7 +114,7 @@ public class InstallCursePackTask implements IInstallationTask {
 
     @Override
     public int getNumberSteps() {
-        return 4;
+        return 3;
     }
 
     @Override

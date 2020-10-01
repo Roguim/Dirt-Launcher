@@ -104,23 +104,6 @@ public class WebUtils {
         }
     }
 
-    public static void copyUrlToFileWithProgressPrintln(URL url, File file){
-        final AtomicBoolean finished = new AtomicBoolean(false);
-        final long size = getFileSize(url);
-        final AtomicLong count = new AtomicLong();
-        CompletableFuture.runAsync(()->{
-            while (!finished.get()){
-                try{
-                    Thread.sleep(500);
-                } catch (Exception ignored){}
-                long n = count.get();
-                System.out.println(n + "/" + size + " (" + 100 * n / size + "%)");
-            }
-        });
-        tryCopyUrlToFile(url, file, count);
-        finished.set(true);
-    }
-
     public static Optional<IOException> tryCopyUrlToFile(URL url, File file, AtomicLong count){
         int attempts = 0;
         IOException exception = null;
