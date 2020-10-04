@@ -5,9 +5,9 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -43,17 +43,17 @@ public class UpdateCustomPackTask implements IUpdateTask {
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Downloading Update...");
         progressContainer.setNumMinorSteps(1);
 
         //Download update
         IPresetDownload download = new DownloadMeta(pack.getLink(), modpackZip);
-        downloadManager.download(Trackers.getProgressContainerTracker(progressContainer, "Preparing download...", "Downloading ModPack"), download);
+        downloadManager.download(Trackers.getTracker(progressContainer, "Preparing download...", "Downloading ModPack"), download);
         progressContainer.completeMinorStep();
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Deleting Old Files...");
         progressContainer.setNumMinorSteps(2);
 
@@ -65,7 +65,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
 
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Adding Updated Files...");
         progressContainer.setNumMinorSteps(1);
 
@@ -75,14 +75,14 @@ public class UpdateCustomPackTask implements IUpdateTask {
         progressContainer.completeMinorStep();
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Cleaning Up...");
         progressContainer.setNumMinorSteps(1);
 
         // Delete the temporary files
         FileUtils.deleteDirectory(tempDir);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     @Override

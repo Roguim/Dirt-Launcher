@@ -9,9 +9,8 @@ import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.*;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -57,7 +56,7 @@ public class InstallCursePackTask implements IInstallationTask {
         // Download Modpack Zip
         WebUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         // Update Progress
         progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
@@ -83,7 +82,7 @@ public class InstallCursePackTask implements IInstallationTask {
         FileUtils.deleteDirectory(tempDir);
         progressContainer.completeMinorStep();
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         JsonArray mods = modpackManifest.getAsJsonArray("files");
 
@@ -100,14 +99,14 @@ public class InstallCursePackTask implements IInstallationTask {
                 .filter(CurseMetaFileReference::isRequired)
                 .collect(Collectors.toList());
 
-        List<Result> results = downloadManager.download(Trackers.getProgressContainerTracker(progressContainer, "Getting Mod Info", "Downloading Mods"), downloads, modsFolder);
+        List<Result> results = downloadManager.download(Trackers.getTracker(progressContainer, "Getting Mod Info", "Downloading Mods"), downloads, modsFolder);
         Optional<Throwable> err = results.stream()
                 .filter(Result::finishedExceptionally)
                 .findFirst()
                 .flatMap(Result::getException);
 
         if (err.isPresent()) throw new IOException(err.get());
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     @Override

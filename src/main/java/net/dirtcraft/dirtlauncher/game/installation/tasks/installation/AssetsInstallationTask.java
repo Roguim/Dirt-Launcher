@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
 
 public class AssetsInstallationTask implements IInstallationTask {
 
@@ -49,7 +48,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         if (optEntry.isPresent()){
             manifest.add(gameVersion, optEntry.get());
             manifest.saveAsync();
-            progressContainer.completeMajorStep();
+            progressContainer.nextMajorStep();
             return;
         }
 
@@ -90,7 +89,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         progressContainer.setProgressText("Updating Assets Manifest");
         manifest.add(gameVersion, assetVersion);
         manifest.saveAsync();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     private void installAsset(JsonObject assetsManifest, String assetKey, File assetsFolder, ProgressContainer progressContainer) throws IOException {

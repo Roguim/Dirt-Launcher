@@ -30,7 +30,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -121,7 +120,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         progressContainer.completeMinorStep();
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Calculating Changes");
         progressContainer.setNumMinorSteps(oldManifest.files.size() + newManifest.files.size());
 
@@ -147,7 +146,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         }
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Removing Old Mods");
         progressContainer.setNumMinorSteps(toRemove.size());
 
@@ -159,7 +158,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
                 .forEach(t -> progressContainer.completeMinorStep());
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Adding New Mods");
         progressContainer.setNumMinorSteps(toInstall.stream().mapToInt(file -> file.size).sum());
 
@@ -169,7 +168,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
                 .whenComplete((t,e) -> progressContainer.addMinorStepsCompleted(mod.size));
 
         // Update Progress
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
         progressContainer.setProgressText("Cleaning Up");
         progressContainer.setNumMinorSteps(1);
 
@@ -178,7 +177,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         // Delete the temporary files
         FileUtils.deleteDirectory(tempDir);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
     }
 

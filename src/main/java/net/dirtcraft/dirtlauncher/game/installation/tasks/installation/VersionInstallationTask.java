@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.StreamSupport;
 
 public class VersionInstallationTask implements IInstallationTask {
@@ -59,7 +58,7 @@ public class VersionInstallationTask implements IInstallationTask {
         // Download jar
         WebUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), versionEntry.getVersionJarFile());
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         // Download Libraries
         progressContainer.setProgressText("Downloading Libraries");
@@ -99,7 +98,7 @@ public class VersionInstallationTask implements IInstallationTask {
         versionEntry.addLibs(files);
         versionEntry.saveAsync();
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     private Optional<File> installLibrary(JsonObject library, File libDir, File nativeDir, ProgressContainer progress) throws IOException {

@@ -6,7 +6,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
@@ -30,8 +29,6 @@ import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class InstallationManager {
 
@@ -112,7 +109,7 @@ public class InstallationManager {
         if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
 
         // Add the pack task as the next task
-        if (!pack.isInstalled()) installationTasks.add(packInstallTask);
+        if (!pack.isInstalled() || pack.isOutdated()) installationTasks.add(packInstallTask);
 
         // Add the manifest update task as the last task.
         installationTasks.add(new UpdateInstancesManifestTask(pack));
@@ -162,7 +159,7 @@ public class InstallationManager {
             return;
         }
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         /*
             --- Installation Completed ---

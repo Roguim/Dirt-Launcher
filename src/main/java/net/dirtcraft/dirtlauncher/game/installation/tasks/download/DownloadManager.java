@@ -9,13 +9,13 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Prog
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.ProgressDetailed;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,6 +62,7 @@ public class DownloadManager {
         try {
             scheduler.scheduleAtFixedRate(updater, 0, 50);
             final List<CompletableFuture<DownloadTask>> infoFutures = downloadMeta.stream()
+                    .peek(meta->meta.setSize(meta.getSize() > 0? meta.getSize() : WebUtils.getFileSize(meta.getUrl())))
                     .map(function)
                     .map(f->f.whenComplete((t,e)->progress.addAndGet(1)))
                     .collect(Collectors.toList());

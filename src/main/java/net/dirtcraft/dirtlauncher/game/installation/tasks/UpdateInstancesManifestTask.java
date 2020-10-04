@@ -7,8 +7,6 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
-import java.util.concurrent.ExecutorService;
-
 public class UpdateInstancesManifestTask implements IInstallationTask {
 
     private final Modpack pack;
@@ -40,7 +38,7 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
             instanceManifest.saveAsync();
 
             progressContainer.completeMinorStep();
-            progressContainer.completeMajorStep();
+            progressContainer.nextMajorStep();
         } catch (Exception e){
             e.printStackTrace();
         }

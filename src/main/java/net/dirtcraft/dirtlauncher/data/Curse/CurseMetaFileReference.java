@@ -35,7 +35,7 @@ public class CurseMetaFileReference implements IDownload {
     }
 
     public boolean equals(CurseMetaFileReference o){
-        return projectID == o.projectID && fileID == o.fileID;
+        return projectID == o.projectID && fileID == o.fileID && required == o.required;
     }
 
     public boolean isRequired(){

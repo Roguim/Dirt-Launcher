@@ -1,27 +1,26 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.google.common.reflect.TypeToken;
-import com.therandomlabs.utils.io.NetUtils;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseFile;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
-import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import net.lingala.zip4j.ZipFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UpdateCursePackTask implements IUpdateTask {
@@ -42,26 +41,18 @@ public class UpdateCursePackTask implements IUpdateTask {
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
-        // Update Progress
-        progressContainer.setProgressText("Downloading Modpack Files");
-        progressContainer.setNumMinorSteps(2);
-
         // Prepare Folders
         modpackFolder.mkdirs();
         tempDir.mkdirs();
 
-        progressContainer.completeMinorStep();
-
         // Download Modpack Zip
-        WebUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
+        IPresetDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
+        Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
+        downloadManager.download(updater, manifestDownload);
         progressContainer.completeMinorStep();
-
-        // Update Progress
-        progressContainer.completeMajorStep();
-        progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
-        progressContainer.setNumMinorSteps(3);
 
         // Extract Modpack Zip
+        progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 3);
         new ZipFile(modpackZip).extractAll(tempDir.getPath());
         progressContainer.completeMinorStep();
 
@@ -79,80 +70,39 @@ public class UpdateCursePackTask implements IUpdateTask {
         modsFolder.mkdirs();
         progressContainer.completeMinorStep();
 
-        // Update Progress
-        progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Calculating Changes");
-        progressContainer.setNumMinorSteps(oldManifest.files.size() + newManifest.files.size());
-
         //Work out what changes need to be made to the mods and remove / add them.
-        List<CurseMetaFileReference> toRemove = new ArrayList<>();
-        List<CurseMetaFileReference> toInstall = newManifest.files.parallelStream()
-                .peek(e->progressContainer.completeMinorStep())
-                .filter(file->oldManifest.files.stream().noneMatch(file::equals))
+        progressContainer.nextMajorStep("Calculating Changes", oldManifest.files.size() + newManifest.files.size());
+        List<IDownload> toRemove = oldManifest.files.parallelStream()
                 .filter(file->file.required)
+                .filter(file->newManifest.files.stream().noneMatch(file::equals))
+                .peek(e->progressContainer.completeMinorStep())
                 .collect(Collectors.toList());
 
-        for (CurseMetaFileReference oldFile : oldManifest.files) {
-            progressContainer.completeMinorStep();
-            Optional<CurseMetaFileReference> optNewFile = newManifest.files.stream()
-                    .filter(oldFile::equals)
-                    .findAny();
-            if (optNewFile.isPresent()) {
-                CurseMetaFileReference newFile = optNewFile.get();
-                if (newFile.required == oldFile.required) continue;
-                else if (newFile.required) toInstall.add(newFile);
-                else toRemove.add(oldFile);
-            } else toRemove.add(oldFile);
-        }
-
-        // Update Progress
-        progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Removing Old Mods");
-        progressContainer.setNumMinorSteps(toRemove.size());
-
-
+        List<IDownload> toInstall = newManifest.files.parallelStream()
+                .filter(file->file.required)
+                .filter(file->oldManifest.files.stream().noneMatch(file::equals))
+                .peek(e->progressContainer.completeMinorStep())
+                .collect(Collectors.toList());
 
         //remove old mods
-        toRemove.parallelStream()
-                .map(m->m.getManifestAsync(downloadManager.getThreadPool()))
-                .map(this::getFutureUnchecked)
-                .map(CurseFile::getFileName)
-                //.peek(fn->System.out.println("removed: " + fn))
-                .map(m->new File(modsFolder, m))
-                .peek(File::delete)
-                .forEach(t->progressContainer.completeMinorStep());
-
-        // Update Progress
-        progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Adding New Mods");
-        progressContainer.setNumMinorSteps(toInstall.size());
+        progressContainer.nextMajorStep();
+        Trackers.PreparationUpdater removalUpdater = Trackers.getPrepTracker(progressContainer, "Deleting outdated mods");
+        downloadManager.preCalculate(removalUpdater, toRemove, modsFolder.toPath()).stream()
+                .map(DownloadTask::getFile)
+                .forEach(File::delete);
 
         //install new mods
-        toInstall.stream()
-                .map(m->m.getManifestAsync(downloadManager.getThreadPool()))
-                .map(this::getFutureUnchecked)
-                //.peek(fn->System.out.println("added: " + fn.fileName))
-                .forEach(m->m.downloadAsync(modsFolder, downloadManager.getThreadPool()).whenComplete((t,e)->progressContainer.completeMinorStep()));
+        progressContainer.nextMajorStep();
+        Trackers.MultiUpdater installUpdater = Trackers.getTracker(progressContainer, "Preparing to download new mods", "Downloading new mods");
+        downloadManager.download(installUpdater, toInstall, modsFolder.toPath());
 
-
-        // Update Progress
-        progressContainer.completeMajorStep();
-        progressContainer.setProgressText("Cleaning Up");
-        progressContainer.setNumMinorSteps(1);
-        org.apache.commons.io.FileUtils.copyFile(tempManifestFile, currentManifestFile);
 
         // Delete the temporary files
+        progressContainer.nextMajorStep("Cleaning Up", 1);
+        org.apache.commons.io.FileUtils.copyFile(tempManifestFile, currentManifestFile);
         FileUtils.deleteDirectory(tempDir);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
-    }
-
-    private  <T> T getFutureUnchecked(CompletableFuture<T> t){
-        try {
-            return t.get();
-        } catch (Exception e){
-            return null;
-        }
+        progressContainer.nextMajorStep();
     }
 
     @Override

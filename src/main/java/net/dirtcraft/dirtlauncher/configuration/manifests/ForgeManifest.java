@@ -32,6 +32,12 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
     }
 
     @Override
+    public void load(){
+        super.load();
+        configBase.values().forEach(entry->entry.setOuterReference(this));
+    }
+
+    @Override
     protected Map<String, Entry> migrate(JsonObject jsonObject) {
         Map<String, Entry> map = new HashMap<>();
         try {
@@ -136,16 +142,20 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
         }
 
         public Path getForgeFolder(){
-            return getMain().directory.resolve(forgeVersion);
+            return getOuterReference().directory.resolve(forgeVersion);
         }
 
 
         public void saveAsync(){
-            getMain().saveAsync();
+            getOuterReference().saveAsync();
         }
 
-        private ForgeManifest getMain(){
+        private ForgeManifest getOuterReference(){
             return outerReference;
+        }
+
+        private void setOuterReference(ForgeManifest instance){
+            outerReference = instance;
         }
     }
 }

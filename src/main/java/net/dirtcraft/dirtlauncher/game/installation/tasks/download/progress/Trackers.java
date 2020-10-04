@@ -3,10 +3,10 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 
 public class Trackers {
-    public static MultiUpdater getProgressContainerTracker(ProgressContainer progressContainer, String calculating, String downloading){
+    public static MultiUpdater getTracker(ProgressContainer progressContainer, String calculating, String downloading){
         return new MultiUpdater() {
-            DownloadUpdater downloadUpdater = getDownloadTracker(progressContainer, downloading);
-            PreparationUpdater preparationUpdater = getPreparationTracker(progressContainer, calculating);
+            DownloadUpdater downloadUpdater = getDlTracker(progressContainer, downloading);
+            PreparationUpdater preparationUpdater = getPrepTracker(progressContainer, calculating);
             @Override
             public void sendUpdate(ProgressDetailed progress) {
                 downloadUpdater.sendUpdate(progress);
@@ -19,14 +19,14 @@ public class Trackers {
         };
     }
 
-    public static PreparationUpdater getPreparationTracker(ProgressContainer progressContainer, String calculating){
+    public static PreparationUpdater getPrepTracker(ProgressContainer progressContainer, String calculating){
         return progress -> {
             progressContainer.setMinorPercent(progress.getStageCompletionPercent());
             if (progress.isNthUpdate(5)) progressContainer.setProgressText(calculating, String.format("%s", progress.getStageRemainingFraction()));
         };
     }
 
-    public static DownloadUpdater getDownloadTracker(ProgressContainer progressContainer, String downloading){
+    public static DownloadUpdater getDlTracker(ProgressContainer progressContainer, String downloading){
         return progress -> {
             progressContainer.setMinorPercent(progress.getStageCompletionPercent());
             if (progress.isNthUpdate(5)) {

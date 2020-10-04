@@ -4,9 +4,9 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -48,17 +48,17 @@ public class InstallCustomPackTask implements IInstallationTask {
         IPresetDownload download = new DownloadMeta(pack.getLink(), modpackZip);
 
         // Download the Pack
-        downloadManager.download(Trackers.getProgressContainerTracker(progressContainer, "Preparing download...", "Downloading ModPack"), download);
+        downloadManager.download(Trackers.getTracker(progressContainer, "Preparing download...", "Downloading ModPack"), download);
 
         progressContainer.setNumMinorSteps(2);
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         // Extract the pack
         progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
         new ZipFile(modpackZip).extractAll(modpackFolder.getPath());
         modpackZip.delete();
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     @Override

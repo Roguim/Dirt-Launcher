@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -77,7 +76,7 @@ public class InstallFTBPackTask implements IInstallationTask {
         List<JsonObject> files = Collections.synchronizedList(new ArrayList<>());
         for (JsonElement fileElement : filesArray) files.add(fileElement.getAsJsonObject());
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         synchronized (files) {
             progressContainer.setNumMinorSteps(
@@ -119,7 +118,7 @@ public class InstallFTBPackTask implements IInstallationTask {
             }
         }
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
     }
 

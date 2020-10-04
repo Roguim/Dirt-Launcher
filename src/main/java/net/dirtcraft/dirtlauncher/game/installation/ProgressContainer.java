@@ -34,11 +34,20 @@ public class ProgressContainer {
         updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text + "...\n" + progress));
     }
 
-    public void setProgressTextDotless(String text) {
-        updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text));
+    public void nextMajorStep(String text) {
+        majorStepsCompleted++;
+        updateUI(install -> install.getBottomBar().setProgress(((double)majorStepsCompleted) / numMajorSteps));
+        setProgressText(text);
     }
 
-    public void completeMajorStep() {
+    public void nextMajorStep(String text, int steps) {
+        majorStepsCompleted++;
+        updateUI(install -> install.getBottomBar().setProgress(((double)majorStepsCompleted) / numMajorSteps));
+        setProgressText(text);
+        setNumMinorSteps(steps);
+    }
+
+    public void nextMajorStep() {
         majorStepsCompleted++;
         updateUI(install -> install.getBottomBar().setProgress(((double)majorStepsCompleted) / numMajorSteps));
     }

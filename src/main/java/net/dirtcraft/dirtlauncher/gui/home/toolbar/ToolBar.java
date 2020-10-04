@@ -44,18 +44,19 @@ final public class ToolBar extends Pane {
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
         refresh.setOnAction(event -> {
-            Main.getHome().update();
-            try {
-                if (Update.hasUpdate()) Platform.runLater(Update::showStage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            CompletableFuture.runAsync(()->{
+            CompletableFuture.runAsync(() -> {
                 ConfigurationManager config = Main.getConfig();
                 config.getForgeManifest().load();
                 config.getAssetManifest().load();
                 config.getVersionManifest().load();
                 config.getInstanceManifest().load();
+            }).thenRun(() -> {
+                Main.getHome().update();
+                try {
+                    if (Update.hasUpdate()) Platform.runLater(Update::showStage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         });
 

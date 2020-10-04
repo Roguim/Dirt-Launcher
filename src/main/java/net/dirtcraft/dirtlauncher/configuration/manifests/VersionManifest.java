@@ -20,8 +20,13 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
     public VersionManifest(Path dir) {
         super(dir, new TypeToken<Map<String, Entry>>(){}, HashMap::new);
         load();
-        configBase.values().forEach(entry->entry.outerReference = this);
         assert configBase != null;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        configBase.values().forEach(entry->entry.setOuterReference(this));
     }
 
     @Override
@@ -120,15 +125,19 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
         }
 
         public Path getVersionFolder(){
-            return getMain().directory.resolve(gameVersion);
+            return getOuterReference().directory.resolve(gameVersion);
         }
 
         public void saveAsync(){
-            getMain().saveAsync();
+            getOuterReference().saveAsync();
         }
 
-        private VersionManifest getMain(){
+        private VersionManifest getOuterReference(){
             return outerReference;
+        }
+
+        private void setOuterReference(VersionManifest instance){
+            outerReference = instance;
         }
     }
 }

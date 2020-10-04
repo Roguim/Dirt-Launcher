@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.StreamSupport;
 
 public class ForgeInstallationTask implements IInstallationTask {
@@ -60,7 +59,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                 : String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
         WebUtils.copyURLToFile(url, forgeInstaller);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         // Extract the Forge Installer & Write the Forge JSON manifest
         progressContainer.setProgressText("Extracting Forge Installer");
@@ -74,7 +73,7 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         JsonUtils.writeJsonToFile(entry.getForgeManifestFile(), forgeVersionManifest);
         progressContainer.completeMinorStep();
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
 
         // Download the Forge Libraries
         progressContainer.setProgressText("Downloading Forge Libraries");
@@ -119,7 +118,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         entry.addLibs(libraries);
         entry.saveAsync();
 
-        progressContainer.completeMajorStep();
+        progressContainer.nextMajorStep();
     }
 
     private void installLibrary(JsonObject library, File forgeFolder, List<File> librariesLaunchCode, ProgressContainer progressContainer) throws IOException {
