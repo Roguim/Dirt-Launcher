@@ -1,41 +1,42 @@
 package net.dirtcraft.dirtlauncher.data.Curse;
 
 
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Download;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class CurseFile {
-    private CurseFile(int i) throws InstantiationException{
+public class CurseFile implements IDownload {
+    protected CurseFile(int i) throws InstantiationException{
         throw new InstantiationException("This is a data class intended to only be constructed by GSON.");
     }
-    final long id;
-    final String displayName;
-    final String fileName;
-    //final ??? fileDate <- timestamp? useless anyway.
-    final long fileLength;
-    final int releaseType;
-    //final int fileStatus;
-    final String downloadUrl;
-    //final boolean isAlternate;
-    //final int alternateFileId;
-    //final Object dependencies;
-    final boolean isAvailable;
-    //final Object modules;
-    //final long packageFingerPrint;
-    //final String[] gameVersion;
-    //final null installMetadata;
-    final long serverPackFileId;
-    //final boolean hasInstallScript;
-    //final ??? gameVersionDateReleased;
-    //final null gameVersionFlavor
+    public final long id;
+    public final String displayName;
+    public final String fileName;
+    //public final ??? fileDate <- timestamp? useless anyway.
+    public final long fileLength;
+    public final int releaseType;
+    //public final int fileStatus;
+    public final String downloadUrl;
+    //public final boolean isAlternate;
+    //public final int alternateFileId;
+    //public final Object dependencies;
+    public final boolean isAvailable;
+    //public final Object modules;
+    //public final long packageFingerPrint;
+    //public final String[] gameVersion;
+    //public final null installMetadata;
+    public final long serverPackFileId;
+    //public final boolean hasInstallScript;
+    //public final ??? gameVersionDateReleased;
+    //public final null gameVersionFlavor
 
-    final boolean isServerPack; //<-- ??? modpack only?
-    final long projectId; // <-- ??? modpack only?
+    public final boolean isServerPack; //<-- ??? modpack only?
+    public final long projectId; // <-- ??? modpack only?
 
     public CompletableFuture<Void> downloadAsync(File modsFolder, Executor executor){
         return CompletableFuture.runAsync(()-> download(modsFolder), executor);
@@ -49,10 +50,22 @@ public class CurseFile {
         }
     }
 
-    public Download getDownload(File file){
-        return new Download(MiscUtils.getURL(downloadUrl).orElse(null), file, fileLength);
+    @Override
+    public URL getUrl() {
+        return MiscUtils.getURL(downloadUrl.replaceAll("\\s", "%20")).orElse(null);
     }
 
+    @Override
+    public long getSize() {
+        return fileLength;
+    }
+
+    @Override
+    public void setSize(long size) {
+
+    }
+
+    @Override
     public String getFileName(){
         return fileName;
     }

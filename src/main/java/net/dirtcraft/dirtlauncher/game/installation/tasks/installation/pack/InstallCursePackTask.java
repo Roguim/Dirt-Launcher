@@ -1,6 +1,5 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.therandomlabs.utils.io.NetUtils;
@@ -10,10 +9,11 @@ import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Download;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadInfo;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Trackers;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.*;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -26,7 +26,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -96,17 +95,16 @@ public class InstallCursePackTask implements IInstallationTask {
         Path modsFolder = modsFile.toPath();
         modsFile.mkdirs();
 
-        List<DownloadInfo> downloads = StreamSupport.stream(mods.spliterator(), false)
+        List<IDownload> downloads = StreamSupport.stream(mods.spliterator(), false)
                 .map(f->Main.gson.fromJson(f, CurseMetaFileReference.class))
                 .filter(CurseMetaFileReference::isRequired)
-                .map(meta->meta.getDownloadInfo(modsFolder))
                 .collect(Collectors.toList());
 
-        List<Download.Result> results = downloadManager.download(Trackers.getProgressContainerTracker(progressContainer), downloads);
+        List<Result> results = downloadManager.download(Trackers.getProgressContainerTracker(progressContainer, "Getting Mod Info", "Downloading Mods"), downloads, modsFolder);
         Optional<Throwable> err = results.stream()
-                .filter(Download.Result::finishedExceptionally)
+                .filter(Result::finishedExceptionally)
                 .findFirst()
-                .flatMap(Download.Result::getException);
+                .flatMap(Result::getException);
 
         if (err.isPresent()) throw new IOException(err.get());
         progressContainer.completeMajorStep();

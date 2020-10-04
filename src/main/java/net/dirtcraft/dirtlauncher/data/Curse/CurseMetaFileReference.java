@@ -2,21 +2,19 @@ package net.dirtcraft.dirtlauncher.data.Curse;
 
 import com.google.common.reflect.TypeToken;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.Download;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadInfo;
-import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
-import java.io.File;
+import javax.annotation.Nullable;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class CurseMetaFileReference {
+public class CurseMetaFileReference implements IDownload {
     private CurseMetaFileReference(int i) throws InstantiationException {
         throw new InstantiationException("This is a data class intended to only be constructed by GSON.");
     }
+    private transient @Nullable CurseFile manifest;
     public final long projectID;
     public final long fileID;
     public final boolean required;
@@ -31,8 +29,9 @@ public class CurseMetaFileReference {
 
     @SuppressWarnings("UnstableApiUsage")
     private CurseFile getManifest(){
+        if (this.manifest != null) return manifest;
         final TypeToken<CurseFile> type = new TypeToken<CurseFile>(){};
-        return WebUtils.getGsonFromUrl(getDownloadUrl(), type).orElse(null);
+        return (manifest = WebUtils.getGsonFromUrl(getDownloadUrl(), type).orElse(null));
     }
 
     public boolean equals(CurseMetaFileReference o){
@@ -43,12 +42,23 @@ public class CurseMetaFileReference {
         return required;
     }
 
-    public DownloadInfo getDownloadInfo(Path folder) {
-        return () -> {
-            final CurseFile manifest = getManifest();
-            final URL src = MiscUtils.getURL(manifest.downloadUrl.replaceAll("\\s", "%20")).orElse(null);
-            final File dest = folder.resolve(manifest.fileName).toFile();
-            return new Download(src, dest, manifest.fileLength);
-        };
+    @Override
+    public long getSize() {
+        return getManifest().getSize();
+    }
+
+    @Override
+    public void setSize(long size) {
+        getManifest().setSize(size);
+    }
+
+    @Override
+    public URL getUrl() {
+        return getManifest().getUrl();
+    }
+
+    @Override
+    public String getFileName() {
+        return getManifest().getFileName();
     }
 }

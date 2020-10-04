@@ -34,7 +34,6 @@ public class Modpack {
     private final ModLoader modLoader;
     private final String modloaderVersion;
     private final List<OptionalMod> optionalMods;
-    private final int fileSize;
     private final List<Listing> listings;
     private final UpdateTracker updateTracker;
     boolean favourite = false;
@@ -53,7 +52,6 @@ public class Modpack {
         this.modLoader = ModLoader.FORGE;
         this.modloaderVersion = modpackManifest.minecraft.modLoaders.stream().findFirst().map(ml->ml.id).orElse("N/A");
         this.optionalMods = new ArrayList<>();
-        this.fileSize = -1;
         this.listings = new ArrayList<>();
         this.updateTracker = UpdateTracker.CURSE;
     }
@@ -87,13 +85,7 @@ public class Modpack {
         this.requiredRam = json.get("requiredRam").getAsInt();
         this.recommendedRam = json.get("recommendedRam").getAsInt();
         this.modloaderVersion = json.get("forgeVersion").getAsString();
-        this.fileSize = getJsonElement(json, JsonElement::getAsInt, "fileSize").orElse(-1);
         this.optionalMods = optionalMods;
-    }
-
-    //Gets file size of custom pack in megabytes
-    public Optional<Integer> getFileSize() {
-        return Optional.ofNullable(fileSize);
     }
 
     public Optional<List<Listing>> getListings() {

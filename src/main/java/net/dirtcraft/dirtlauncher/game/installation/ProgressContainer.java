@@ -30,6 +30,14 @@ public class ProgressContainer {
         updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text + "..."));
     }
 
+    public void setProgressText(String text, String progress) {
+        updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text + "...\n" + progress));
+    }
+
+    public void setProgressTextDotless(String text) {
+        updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text));
+    }
+
     public void completeMajorStep() {
         majorStepsCompleted++;
         updateUI(install -> install.getBottomBar().setProgress(((double)majorStepsCompleted) / numMajorSteps));

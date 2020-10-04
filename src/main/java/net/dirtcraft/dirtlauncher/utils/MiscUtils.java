@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
