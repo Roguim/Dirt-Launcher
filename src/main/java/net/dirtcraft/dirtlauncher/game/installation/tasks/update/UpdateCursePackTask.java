@@ -49,7 +49,6 @@ public class UpdateCursePackTask implements IUpdateTask {
         IPresetDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
         Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
         downloadManager.download(updater, manifestDownload);
-        progressContainer.completeMinorStep();
 
         // Extract Modpack Zip
         progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 3);

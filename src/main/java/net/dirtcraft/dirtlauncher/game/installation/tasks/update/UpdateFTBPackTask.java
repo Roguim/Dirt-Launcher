@@ -22,6 +22,7 @@ import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
@@ -84,7 +85,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
                             PackSelector packSelector = new PackSelector(pack);
                             loginBar.setActivePackCell(packSelector);
                             Install.getStage().ifPresent(Stage::close);
-                            packSelector.launchInstallScene();
+                            MiscUtils.launchInstallScene(packSelector);
                             packSelector.getModpack().install();
                             Main.getHome().update();
                         });

@@ -10,7 +10,9 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -38,31 +40,21 @@ public class InstallCursePackTask implements IInstallationTask {
 
     @Override
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
-        // Update Progress
-        progressContainer.setProgressText("Downloading Modpack Files");
-        progressContainer.setNumMinorSteps(2);
-
         // Prepare Folders
         final File modpackFolder = pack.getInstanceDirectory();
         final File modpackZip = new File(modpackFolder, "modpack.zip");
         final File tempDir = new File(modpackFolder, "temp");
-
         FileUtils.deleteDirectory(modpackFolder);
         modpackFolder.mkdirs();
         tempDir.mkdirs();
 
-        progressContainer.completeMinorStep();
-
         // Download Modpack Zip
-        WebUtils.copyURLToFile(NetUtils.getRedirectedURL(new URL(pack.getLink())).toString().replace("%2B", "+"), modpackZip);
-        progressContainer.completeMinorStep();
-        progressContainer.nextMajorStep();
-
-        // Update Progress
-        progressContainer.setProgressText(String.format("Extracting %s Files", pack.getName()));
-        progressContainer.setNumMinorSteps(4);
+        IPresetDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
+        Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
+        downloadManager.download(updater, manifestDownload);
 
         // Extract Modpack Zip
+        progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 4);
         new ZipFile(modpackZip).extractAll(tempDir.getPath());
         progressContainer.completeMinorStep();
 
@@ -75,7 +67,6 @@ public class InstallCursePackTask implements IInstallationTask {
         File tempManifest = new File(tempDir, "manifest.json");
         JsonObject modpackManifest = JsonUtils.readJsonFromFile(tempManifest);
         org.apache.commons.io.FileUtils.copyFile(tempManifest, new File(modpackFolder, "manifest.json"));
-        //FileUtils.writeJsonToFile(new File(modpackFolder, "manifest.json"), modpackManifest);
         progressContainer.completeMinorStep();
 
         // Delete the temporary files

@@ -26,6 +26,12 @@ public class ProgressContainer {
                 .sum();
     }
 
+    public ProgressContainer(){
+        setProgressText("Preparing");
+        setNumMinorSteps(1);
+        numMajorSteps = 1;
+    }
+
     public void setProgressText(String text) {
         updateUI(install -> ((Text)install.getNotificationText().getChildren().get(0)).setText(text + "..."));
     }

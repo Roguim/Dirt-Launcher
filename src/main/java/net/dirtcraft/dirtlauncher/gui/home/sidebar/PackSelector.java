@@ -138,7 +138,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                launchInstallScene();
+                MiscUtils.launchInstallScene(this);
                 getModpack().install();
                 oldPack.ifPresent(PackSelector::fire);
                 Main.getHome().update();
@@ -177,7 +177,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
                 LoginBar loginBar = Main.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
-                launchInstallScene();
+                MiscUtils.launchInstallScene(this);
                 getModpack().install();
                 oldPack.ifPresent(PackSelector::fire);
             });
@@ -207,41 +207,5 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         Region rectangle = new Region();
         rectangle.getStyleClass().add(Constants.CSS_CLASS_INDICATOR);
         return rectangle;
-    }
-
-    public void launchInstallScene() {
-        try {
-            Stage stage = new Stage();
-            stage.setTitle("Installing " + this.getModpack().getName() + "...");
-            Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
-
-            stage.initOwner(Main.getHome().getStage());
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initStyle(StageStyle.DECORATED);
-
-            stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
-
-            stage.setScene(new Scene(root, Main.screenDimension.getWidth() / 3, Main.screenDimension.getHeight() / 4));
-            stage.setResizable(false);
-            stage.setOnCloseRequest(Event::consume);
-
-            stage.show();
-
-            Install.getInstance().ifPresent(install -> {
-                TextFlow notificationArea = install.getNotificationText();
-                Text notification = new Text("Beginning Download...");
-                notification.setFill(Color.WHITE);
-                notification.setTextOrigin(VPos.CENTER);
-                notification.setTextAlignment(TextAlignment.CENTER);
-                notificationArea.getChildren().add(notification);
-
-                notification.setText("Preparing To Install...");
-                install.setStage(stage);
-            });
-
-
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
     }
 }

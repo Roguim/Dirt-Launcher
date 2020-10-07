@@ -27,7 +27,7 @@ public final class ConfigurationManager extends ConfigBase<Settings>{
         super(launcherDirectory.resolve("settings.json").toFile(), Settings.class, ()->new Settings(launcherDirectory));
         final File old = launcherDirectory.resolve("configuration.json").toFile();
         if (old.exists()) old.renameTo(configFile);
-        final String javaExecutable = SystemUtils.IS_OS_WINDOWS ? "javaw" : "java";
+        final String javaExecutable = SystemUtils.IS_OS_WINDOWS && !Constants.VERBOSE ? "javaw" : "java";
         if (options.contains("-installed") || options.contains("-useBundledRuntime")) {
             final Path runtimeDirectory = launcherDirectory.resolve("Runtime");
             defaultRuntime = runtimeDirectory

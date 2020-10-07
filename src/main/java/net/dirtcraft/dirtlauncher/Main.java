@@ -14,6 +14,7 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
@@ -50,6 +51,7 @@ public class Main extends Application {
                 .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
                 .create();
         options = Arrays.asList(args);
+        if (options.contains("-postUpdate")) System.out.println("\n\n");
         launcherDirectory = getLauncherDirectory(options);
         home = CompletableFuture
                 .supplyAsync(Home::new, threadPool)
@@ -88,15 +90,18 @@ public class Main extends Application {
         System.out.println(String.format("%s initialized @ %sms", clazz, ms));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void postUpdateCleanup(){
+        boolean updated = false;
         try {
-            File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-            String bootstrapName = Constants.BOOTSTRAP_JAR;
-            final File bootstrap = new File(currentJar, bootstrapName);
-            final boolean updated = bootstrap.delete();
+            File currentDirectory = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+            String[] duds = currentDirectory.list((dir, name) -> name.matches("(?i)^.*Dirt-Bootstrap-Updater-[a-zA-Z0-9]+\\.jar$"));
+            long bootstraps = Arrays.stream(duds == null? new String[0] : duds).map(File::new).peek(File::delete).count();
+            if (bootstraps > 0) updated = true;
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        if (updated) Logger.getInstance().verbose("Successfully updated launcher to version " + Constants.LAUNCHER_VERSION + "!!!");
     }
 
     private static Path getLauncherDirectory(List<String> options){
