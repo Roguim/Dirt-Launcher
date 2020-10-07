@@ -7,15 +7,20 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 
 public class AssetsInstallationTask implements IInstallationTask {
 
@@ -30,6 +35,7 @@ public class AssetsInstallationTask implements IInstallationTask {
     }
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
 
         // Update Progress
@@ -63,27 +69,9 @@ public class AssetsInstallationTask implements IInstallationTask {
         Set<String> assetKeys = assetsManifest.getAsJsonObject("objects").keySet();
         progressContainer.setNumMinorSteps(assetKeys.size());
 
-        try {
-            CompletableFuture.allOf(
-                    assetKeys.stream()
-                        .map(asset -> CompletableFuture.runAsync(() -> {
-                            try {
-                                installAsset(assetsManifest, asset, assetsFolder, progressContainer);
-                            } catch (IOException e) {
-                                throw new CompletionException(e);
-                            }
-                        }, downloadManager.getThreadPool()))
-                        .toArray(CompletableFuture[]::new))
-                    .join();
-        } catch (CompletionException e) {
-            try {
-                throw e.getCause();
-            } catch (IOException ex) {
-                throw ex;
-            } catch (Throwable impossible) {
-                throw new AssertionError(impossible);
-            }
-        }
+        List<IPresetDownload> downloads = assetKeys.stream().map(asset-> getLibDownload(assetsManifest, asset, assetsFolder)).collect(Collectors.toList());
+        Trackers.MultiUpdater tracker = Trackers.getTracker(progressContainer, "Fetching Downloads", "Downloading Assets");
+        downloadManager.download(tracker, downloads);
 
         // Update Assets Manifest
         progressContainer.setProgressText("Updating Assets Manifest");
@@ -92,12 +80,15 @@ public class AssetsInstallationTask implements IInstallationTask {
         progressContainer.nextMajorStep();
     }
 
-    private void installAsset(JsonObject assetsManifest, String assetKey, File assetsFolder, ProgressContainer progressContainer) throws IOException {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private DownloadMeta getLibDownload(JsonObject assetsManifest, String assetKey, File assetsFolder) {
         String hash = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("hash").getAsString();
+        long size = assetsManifest.getAsJsonObject("objects").getAsJsonObject(assetKey).get("size").getAsLong();
         File assetFolder = new File(new File(assetsFolder, "objects"), hash.substring(0, 2));
         assetFolder.mkdirs();
-        WebUtils.copyURLToFile("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash, new File(assetFolder.getPath(), hash));
-        progressContainer.completeMinorStep();
+        final URL asset = MiscUtils.getURL("http://resources.download.minecraft.net/" + hash.substring(0, 2) + "/" + hash).orElse(null);
+        final File dest = new File(assetFolder.getPath(), hash);
+        return new DownloadMeta(asset, dest, size);
     }
 
     @Override

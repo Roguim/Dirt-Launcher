@@ -1,6 +1,7 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download.data;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -32,6 +33,10 @@ public class Result {
 
     public Path getFolder(){
         return folder;
+    }
+
+    public URL getUrl(){
+        return value.getUrl();
     }
 
     public boolean relocate(Path folder){

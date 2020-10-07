@@ -48,22 +48,26 @@ public class DownloadManager {
     }
 
     public List<DownloadTask> preCalculate(Trackers.PreparationUpdater progressConsumer, List<IDownload> downloadMeta, Path folder){
-        return calculateDownloads(downloadMeta, progressConsumer, dl->dl.getDownloadAsync(folder, threadPool));
+        return calculateDownloads(downloadMeta, progressConsumer, dl->dl.getDownload(folder));
     }
 
     public List<DownloadTask> preCalculate(Trackers.PreparationUpdater progressConsumer, List<IPresetDownload> downloadMeta){
-        return calculateDownloads(downloadMeta, progressConsumer, dl->dl.getDownloadAsync(threadPool));
+        return calculateDownloads(downloadMeta, progressConsumer, IPresetDownload::getDownload);
     }
 
-    private <T extends IDownload> List<DownloadTask> calculateDownloads(List<T> downloadMeta, Trackers.PreparationUpdater progressConsumer, Function<T, CompletableFuture<DownloadTask>> function){
+    private <T extends IDownload> List<DownloadTask> calculateDownloads(List<T> downloadMeta, Trackers.PreparationUpdater progressConsumer, Function<T, DownloadTask> function){
         AtomicInteger counter = new AtomicInteger();
         final AtomicInteger progress = new AtomicInteger();
         final TimerTask updater = MiscUtils.toTimerTask(()-> progressConsumer.sendUpdate(new ProgressBasic(progress, downloadMeta.size(), counter.getAndIncrement())));
+        final Function<T,T> getSizeFunc = meta->{
+            meta.setSize(meta.getSize() > 0? meta.getSize() : WebUtils.getFileSize(meta.getUrl()));
+            return meta;
+        };
         try {
             scheduler.scheduleAtFixedRate(updater, 0, 50);
             final List<CompletableFuture<DownloadTask>> infoFutures = downloadMeta.stream()
-                    .peek(meta->meta.setSize(meta.getSize() > 0? meta.getSize() : WebUtils.getFileSize(meta.getUrl())))
-                    .map(function)
+                    .map(meta->CompletableFuture.supplyAsync(()->getSizeFunc.apply(meta), threadPool))
+                    .map(f->f.thenApply(function))
                     .map(f->f.whenComplete((t,e)->progress.addAndGet(1)))
                     .collect(Collectors.toList());
             return infoFutures.stream().map(CompletableFuture::join).collect(Collectors.toList());
