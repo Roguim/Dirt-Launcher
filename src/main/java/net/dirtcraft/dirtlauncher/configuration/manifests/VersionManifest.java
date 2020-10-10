@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -106,6 +107,14 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
                     .map(Path::toString)
                     .forEach(libraries::add);
             libraries.sort(String::compareTo);
+        }
+
+        public void addLibs(List<Result> files){
+            List<File> downloaded = files.stream()
+                    .map(Result::getFile)
+                    .collect(Collectors.toList());
+
+            addLibs(downloaded);
         }
 
         public Path getLibsFolder(){

@@ -100,6 +100,14 @@ public final class ConfigurationManager extends ConfigBase<Settings>{
         return instanceManifest;
     }
 
+    public void fullReload(){
+        load();
+        forgeManifest.load();
+        assetManifest.load();
+        versionManifest.load();
+        instanceManifest.load();
+    }
+
     public String getDefaultRuntime() {
         return defaultRuntime;
     }

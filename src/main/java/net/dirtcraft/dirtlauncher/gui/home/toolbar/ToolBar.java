@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -44,13 +43,7 @@ final public class ToolBar extends Pane {
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
         refresh.setOnAction(event -> {
-            CompletableFuture.runAsync(() -> {
-                ConfigurationManager config = Main.getConfig();
-                config.getForgeManifest().load();
-                config.getAssetManifest().load();
-                config.getVersionManifest().load();
-                config.getInstanceManifest().load();
-            }).thenRun(() -> {
+            CompletableFuture.runAsync(()->Main.getConfig().fullReload()).thenRun(() -> {
                 Main.getHome().update();
                 try {
                     if (Update.hasUpdate()) Platform.runLater(Update::showStage);

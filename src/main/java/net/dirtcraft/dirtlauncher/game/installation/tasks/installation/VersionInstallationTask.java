@@ -1,31 +1,29 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.Rule;
+import net.dirtcraft.dirtlauncher.data.Minecraft.Download;
+import net.dirtcraft.dirtlauncher.data.Minecraft.Library;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
-import net.dirtcraft.dirtlauncher.utils.WebUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 public class VersionInstallationTask implements IInstallationTask {
 
@@ -40,103 +38,95 @@ public class VersionInstallationTask implements IInstallationTask {
     }
 
     @Override
+    @SuppressWarnings({"UnstableApiUsage"})
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Manifest Breakdown
         String version = versionManifest.get("id").getAsString();
+        VersionManifest.Entry versionEntry = config.getVersionManifest().create(version);
+        Path libsDir = versionEntry.getLibsFolder();
+        Path nativesDir = versionEntry.getNativesFolder();
+        Path tempDir = nativesDir.resolve("temp");
 
         // Update Progress
         progressContainer.setProgressText("Installing Minecraft " + version);
         progressContainer.setNumMinorSteps(2);
 
-        // Prepare the version folder
-        VersionManifest.Entry versionEntry = config.getVersionManifest().create(version);
-
         // Write the version JSON manifest
         JsonUtils.writeJsonToFile(versionEntry.getVersionManifestFile(), versionManifest);
         progressContainer.completeMinorStep();
 
-        // Download jar
-        WebUtils.copyURLToFile(versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString(), versionEntry.getVersionJarFile());
-        progressContainer.completeMinorStep();
-        progressContainer.nextMajorStep();
+        downloadMinecraft(progressContainer, downloadManager, versionEntry);
 
-        // Download Libraries
-        progressContainer.setProgressText("Downloading Libraries");
-        progressContainer.setNumMinorSteps(versionManifest.getAsJsonArray("libraries").size());
+        List<Library> rawLibs = Main.gson.fromJson(versionManifest.getAsJsonArray("libraries"), new TypeToken<List<Library>>(){}.getType());
+        rawLibs.removeIf(Library::notRequired);
 
-        File libsDir = versionEntry.getLibsFolder().toFile();
-        File nativesDir = versionEntry.getNativesFolder().toFile();
-        List<File> files = Collections.synchronizedList(new ArrayList<>());
+        List<Result> libs = downloadLibraries(rawLibs, libsDir, downloadManager, progressContainer);
+        List<Result> natives = downloadNatives(rawLibs, tempDir, downloadManager, progressContainer);
 
-        try {
-            CompletableFuture.allOf(
-                    StreamSupport.stream(versionManifest.getAsJsonArray("libraries").spliterator(), false)
-                            .map(JsonElement::getAsJsonObject)
-                            .map(library -> CompletableFuture.runAsync(() -> {
-                                try {
-                                    Optional<File> optPath = installLibrary(library, libsDir, nativesDir, progressContainer);
-                                    optPath.ifPresent(files::add);
-                                } catch (IOException e) {
-                                    throw new CompletionException(e);
-                                }
-                            }, downloadManager.getThreadPool()))
-                            .toArray(CompletableFuture[]::new))
-                    .join();
-        } catch (CompletionException e) {
-            try {
-                throw e.getCause();
-            } catch (IOException ex) {
-                throw ex;
-            } catch (Throwable impossible) {
-                throw new AssertionError(impossible);
-            }
-        }
+        progressContainer.nextMajorStep("Extracting Natives", natives.size());
+        Optional<IOException> extractionException = natives.stream()
+                .map(r->extractNatives(r, nativesDir))
+                .peek(e->progressContainer.completeMinorStep())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
 
-        // Update Versions Manifest
+        if (extractionException.isPresent()) throw extractionException.get();
+
         progressContainer.setProgressText("Updating Versions Manifest");
 
-        versionEntry.addLibs(files);
+        versionEntry.addLibs(libs);
         versionEntry.saveAsync();
-
+        FileUtils.deleteDirectory(tempDir.toFile());
+        FileUtils.deleteDirectory(nativesDir.resolve("META-INF").toFile());
         progressContainer.nextMajorStep();
     }
 
-    private Optional<File> installLibrary(JsonObject library, File libDir, File nativeDir, ProgressContainer progress) throws IOException {
-        File f = null;
-        // Check if the library has conditions
-        if (library.has("rules")) {
-            @SuppressWarnings("UnstableApiUsage") List<Rule> rules = Main.gson.fromJson(library.get("rules"), new TypeToken<List<Rule>>(){}.getType());
-            if (!rules.stream().allMatch(Rule::canDownload)) return Optional.empty();
-        }
-
-        JsonObject libraryDownloads = library.getAsJsonObject("downloads");
-
-        // Download any standard libraries
-        if (libraryDownloads.has("artifact")) {
-            new File(libDir, StringUtils.substringBeforeLast(libraryDownloads.getAsJsonObject("artifact").get("path").getAsString(), "/").replace("/", File.separator)).mkdirs();
-            String filePath = libDir.getPath() + File.separator + libraryDownloads.getAsJsonObject("artifact").get("path").getAsString().replace("/", File.separator);
-            WebUtils.copyURLToFile(libraryDownloads.getAsJsonObject("artifact").get("url").getAsString(), new File(filePath));
-            f = new File(filePath);
-        }
-        // Download any natives
-        if (libraryDownloads.has("classifiers")) {
-            String nativesType = "";
-            if (SystemUtils.IS_OS_WINDOWS) nativesType = "natives-windows";
-            else if (SystemUtils.IS_OS_MAC) nativesType = "natives-osx";
-            else if (SystemUtils.IS_OS_LINUX) nativesType = "natives-linux";
-
-            if (libraryDownloads.getAsJsonObject("classifiers").has(nativesType)) {
-                JsonObject nativeJson = libraryDownloads.getAsJsonObject("classifiers").getAsJsonObject(nativesType);
-                File outputFile = new File(nativeDir, nativeJson.get("sha1").getAsString());
-                WebUtils.copyURLToFile(nativeJson.get("url").getAsString(), outputFile);
-                FileUtils.extractJar(outputFile.getPath(), nativeDir.getPath());
-                outputFile.delete();
-            }
-        }
-
-        progress.completeMinorStep();
-        return Optional.ofNullable(f);
+    @SuppressWarnings("UnstableApiUsage")
+    private void downloadMinecraft(ProgressContainer progressContainer, DownloadManager downloadManager, VersionManifest.Entry versionEntry) throws PackInstallException {
+        Type type = new TypeToken<Download>(){}.getType();
+        Trackers.MultiUpdater updater = Trackers.getSimpleTracker(progressContainer, "Minecraft Version JAR");
+        IPresetDownload jar = JsonUtils.getJsonElement(versionManifest, element -> Main.gson.<Download>fromJson(element, type), "downloads", "client")
+                .map(download -> download.getPreset(versionEntry.getVersionJarFile()))
+                .orElseThrow(() -> new PackInstallException("No minecraft download"));
+        downloadManager.download(updater, jar);
     }
+
+    private List<Result> downloadNatives(List<Library> libs, Path downloadFolder, DownloadManager downloadManager, ProgressContainer progressContainer) {
+        Trackers.MultiUpdater updater = Trackers.getSimpleTracker(progressContainer, "Natives");
+        List<IPresetDownload> natives = libs.stream()
+                .map(Library::getNative)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(dl -> dl.getPreset(downloadFolder))
+                .collect(Collectors.toList());
+
+        return downloadManager.download(updater, natives);
+    }
+
+    private List<Result> downloadLibraries(List<Library> libs, Path downloadFolder, DownloadManager downloadManager, ProgressContainer progressContainer) {
+        Trackers.MultiUpdater updater = Trackers.getSimpleTracker(progressContainer, "Libraries");
+        List<IPresetDownload> libraries = libs.stream()
+                .map(Library::getArtifact)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(dl -> dl.getPreset(downloadFolder))
+                .collect(Collectors.toList());
+
+        return downloadManager.download(updater, libraries);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private Optional<IOException> extractNatives(Result result, Path nativeDir){
+        try {
+            FileUtils.extractJar(result.getFile().getPath(), nativeDir.toString());
+            result.getFile().delete();
+            return Optional.empty();
+        } catch (IOException e){
+            return Optional.of(e);
+        }
+    }
+
 
     @Override
     public InstallationStages getRequiredStage() {

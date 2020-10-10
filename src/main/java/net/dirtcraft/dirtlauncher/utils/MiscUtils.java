@@ -25,7 +25,6 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Download
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
-import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -34,7 +33,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

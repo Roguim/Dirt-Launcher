@@ -19,6 +19,10 @@ public class Trackers {
         };
     }
 
+    public static MultiUpdater getSimpleTracker(ProgressContainer container, String type){
+        return getTracker(container, "Fetching " + type, "Downloading " + type);
+    }
+
     public static PreparationUpdater getPrepTracker(ProgressContainer progressContainer, String calculating){
         return progress -> {
             progressContainer.setMinorPercent(progress.getStageCompletionPercent());

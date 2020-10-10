@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.configuration.manifests;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
@@ -32,6 +31,12 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
     }
 
     @Override
+    public void load(){
+        super.load();
+        configBase.forEach(entry->entry.setOuterReference(this));
+    }
+
+    @Override
     protected ArrayList<Entry> migrate(JsonObject jsonObject) {
         ArrayList<Entry> packs = new ArrayList<>();
         for (JsonElement jsonElement : jsonObject.getAsJsonArray("packs")) {
@@ -40,7 +45,7 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
             final String version = entry.get("version").getAsString();
             final String gameVersion = entry.get("gameVersion").getAsString();
             final String forgeVersion = entry.get("forgeVersion").getAsString();
-            packs.add(new Entry(name, version, gameVersion, forgeVersion));
+            packs.add(new Entry(name, version, gameVersion, forgeVersion, this));
         }
         return packs;
     }
@@ -60,7 +65,7 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
     }
 
     public void update(Modpack pack){
-        InstanceManifest.Entry updated = new InstanceManifest.Entry(pack.getName(), pack.getVersion(), pack.getGameVersion(), pack.getForgeVersion());
+        InstanceManifest.Entry updated = new InstanceManifest.Entry(pack.getName(), pack.getVersion(), pack.getGameVersion(), pack.getForgeVersion(), this);
         ListIterator<Entry> modpackIterator = configBase.listIterator();
         while (true) {
             if (!modpackIterator.hasNext()) modpackIterator.add(updated);
@@ -76,12 +81,14 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
         public final String version;
         public final String gameVersion;
         public final String forgeVersion;
+        private transient InstanceManifest outerReference;
 
-        public Entry(String name, String version, String gameVersion, String forgeVersion){
+        public Entry(String name, String version, String gameVersion, String forgeVersion, InstanceManifest outerReference){
             this.name = name;
             this.version = version;
             this.gameVersion = gameVersion;
             this.forgeVersion = forgeVersion;
+            this.outerReference = outerReference;
         }
 
         public String getFormattedName() {
@@ -89,7 +96,15 @@ public class InstanceManifest extends ManifestBase<ArrayList<InstanceManifest.En
         }
 
         public Path getDirectory(){
-            return Main.getConfig().getInstanceManifest().directory.resolve(getFormattedName()); //todo fix
+            return getOuterReference().directory.resolve(getFormattedName());
+        }
+
+        private InstanceManifest getOuterReference(){
+            return outerReference;
+        }
+
+        private void setOuterReference(InstanceManifest instance){
+            outerReference = instance;
         }
     }
 }

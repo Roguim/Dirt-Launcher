@@ -3,7 +3,6 @@ package net.dirtcraft.dirtlauncher.configuration.manifests;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
 
 import java.nio.file.Path;
@@ -20,18 +19,24 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
     }
 
     @Override
+    public void load(){
+        super.load();
+        configBase.values().forEach(entry->entry.setOuterReference(this));
+    }
+
+    @Override
     protected Map<String, Entry> migrate(JsonObject jsonObject) {
         Map<String, Entry> entries = tFactory.get();
         for (JsonElement jsonElement : jsonObject.get("assets").getAsJsonArray()) {
             String assetVersion = jsonElement.getAsJsonObject().get("version").getAsString();
             String gameVersion = assetVersion.equalsIgnoreCase("1.12")? "1.12.2" : assetVersion;
-            entries.put(gameVersion, new Entry(assetVersion));
+            entries.put(gameVersion, new Entry(assetVersion, this));
         }
         return entries;
     }
 
     public void add(String gameVersion, String assetVersion){
-        configBase.put(gameVersion, new Entry(assetVersion));
+        configBase.put(gameVersion, new Entry(assetVersion, this));
     }
 
     public void add(String gameVersion, Entry asset){
@@ -54,9 +59,11 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
 
     public static class Entry {
         private final String assetVersion;
+        private AssetManifest outerReference;
 
-        public Entry(String gameVersion){
+        public Entry(String gameVersion, AssetManifest outerReference){
             this.assetVersion = gameVersion;
+            this.outerReference = outerReference;
         }
 
         private boolean isValid(){
@@ -64,7 +71,15 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
         }
 
         public Path getAssetDirectory(){
-            return Main.getConfig().getAssetManifest().directory; //todo fix
+            return getOuterReference().directory;
+        }
+
+        private AssetManifest getOuterReference() {
+            return outerReference;
+        }
+
+        private void setOuterReference(AssetManifest outerReference) {
+            this.outerReference = outerReference;
         }
     }
 }

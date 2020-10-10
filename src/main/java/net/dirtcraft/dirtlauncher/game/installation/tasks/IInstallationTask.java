@@ -5,7 +5,6 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 
 public interface IInstallationTask {
 
