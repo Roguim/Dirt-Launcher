@@ -7,7 +7,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -48,7 +48,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(1);
 
         //Download update
-        IPresetDownload download = new DownloadMeta(pack.getLink(), modpackZip);
+        IFileDownload download = new DownloadMeta(pack.getLink(), modpackZip);
         downloadManager.download(Trackers.getTracker(progressContainer, "Preparing download...", "Downloading ModPack"), download);
         progressContainer.completeMinorStep();
 

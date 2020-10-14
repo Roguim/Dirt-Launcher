@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -97,13 +98,21 @@ public class JsonUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     public static <T> void toJson(File file, T t, TypeToken<T> type){
+        toJson(file, t, type.getType());
+    }
+
+    public static <T> void toJson(File file, T t, Class<T> type){
+        toJson(file, t, (Type) type);
+    }
+
+    public static <T> void toJson(File file, T t, Type type){
         final Gson gson = Main.gson;
         try(
                 FileWriter fileWriter = new FileWriter(file);
                 JsonWriter jsonWriter = new JsonWriter(fileWriter)
         ){
             jsonWriter.setIndent("  ");
-            gson.toJson(t, type.getType(), jsonWriter);
+            gson.toJson(t, type, jsonWriter);
         } catch (IOException e){
             e.printStackTrace();
         }

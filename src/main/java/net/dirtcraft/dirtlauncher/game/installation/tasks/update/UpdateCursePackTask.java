@@ -10,7 +10,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManag
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -46,7 +46,7 @@ public class UpdateCursePackTask implements IUpdateTask {
         tempDir.mkdirs();
 
         // Download Modpack Zip
-        IPresetDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
+        IFileDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
         Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
         downloadManager.download(updater, manifestDownload);
 

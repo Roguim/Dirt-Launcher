@@ -59,7 +59,7 @@ public class AssetManifest extends ManifestBase<Map<String, AssetManifest.Entry>
 
     public static class Entry {
         private final String assetVersion;
-        private AssetManifest outerReference;
+        private transient AssetManifest outerReference;
 
         public Entry(String gameVersion, AssetManifest outerReference){
             this.assetVersion = gameVersion;

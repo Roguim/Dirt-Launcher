@@ -11,7 +11,7 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IPresetDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
@@ -97,7 +97,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         List<File> libraries = Collections.synchronizedList(new ArrayList<>());
         progressContainer.setNumMinorSteps(librariesArray.size());
 
-        List<IPresetDownload> downloads = StreamSupport.stream(librariesArray.spliterator(), false)
+        List<IFileDownload> downloads = StreamSupport.stream(librariesArray.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
                 .map(lib->getLibraryDownload(lib, forgeFolder))
                 .filter(Optional::isPresent)

@@ -1,13 +1,12 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download.data;
 
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
-import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 
-public class DownloadMeta implements IPresetDownload {
+public class DownloadMeta implements IFileDownload {
     private final URL src;
     private final File dest;
     private long size;

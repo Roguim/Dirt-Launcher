@@ -1,12 +1,19 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download.data;
 
-import net.dirtcraft.dirtlauncher.utils.WebUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static net.dirtcraft.dirtlauncher.configuration.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
 public class DownloadTask {
     private IDownload downloadData;
@@ -21,7 +28,7 @@ public class DownloadTask {
         this.folder = folder;
     }
 
-    public DownloadTask(IPresetDownload meta){
+    public DownloadTask(IFileDownload meta){
         this.currentProgress = new AtomicLong(-1);
         this.downloadData = meta;
         this.folder = meta.getFolder();
@@ -41,7 +48,7 @@ public class DownloadTask {
     public Result download(){
         this.lastTime = System.currentTimeMillis();
         currentProgress.set(0);
-        Throwable e = WebUtils.tryCopyUrlToFile(downloadData.getUrl(), getFile(), currentProgress).orElse(null);
+        Throwable e = tryCopyUrlToFile(downloadData.getUrl(), getFile()).orElse(null);
         return new Result(e, downloadData, folder);
     }
 
@@ -63,5 +70,30 @@ public class DownloadTask {
 
     public File getFile() {
         return folder.resolve(downloadData.getFileName()).toFile();
+    }
+
+    private Optional<IOException> tryCopyUrlToFile(URL url, File file){
+        int attempts = 0;
+        String initFailed = "Download was unable to initialize. Check " + this.getClass().getName() + ".java";
+        Optional<IOException> exception = Optional.of(new IOException(initFailed));
+        while (attempts++ < MAX_DOWNLOAD_ATTEMPTS && exception.isPresent()) exception = copyUrlToFile(url, file);
+        return exception;
+    }
+
+    private Optional<IOException> copyUrlToFile(URL url, File file) {
+        try (
+                InputStream in = url.openStream();
+                OutputStream out = FileUtils.openOutputStream(file)
+        ) {
+            byte[] buffer = new byte[1024 * 8];
+            int n;
+            while (-1 != (n = in.read(buffer))) {
+                out.write(buffer, 0, n);
+                currentProgress.getAndAdd(+n);
+            }
+            return Optional.empty();
+        } catch (IOException e) {
+            return Optional.of(e);
+        }
     }
 }
