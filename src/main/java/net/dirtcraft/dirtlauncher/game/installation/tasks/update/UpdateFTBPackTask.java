@@ -9,8 +9,8 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.data.FTB.FTBFile;
-import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
+import net.dirtcraft.dirtlauncher.data.FTB.File;
+import net.dirtcraft.dirtlauncher.data.FTB.ModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
@@ -25,7 +25,6 @@ import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,14 +36,14 @@ import java.util.stream.StreamSupport;
 public class UpdateFTBPackTask implements IUpdateTask {
 
     private final Modpack pack;
-    private final File modpackFolder;
-    private final File tempDir;
+    private final java.io.File modpackFolder;
+    private final java.io.File tempDir;
 
 
     public UpdateFTBPackTask(Modpack pack) {
         this.pack = pack;
         this.modpackFolder = pack.getInstanceDirectory();
-        this.tempDir = new File(modpackFolder, "temp");
+        this.tempDir = new java.io.File(modpackFolder, "temp");
         if (tempDir.exists()) FileUtils.deleteDirectoryUnchecked(tempDir);
     }
 
@@ -65,9 +64,9 @@ public class UpdateFTBPackTask implements IUpdateTask {
         tempDir.mkdirs();
 
         // Sort out the files
-        File modsFolder = new File(modpackFolder, "mods");
-        File tempManifestFile = new File(tempDir, "manifest.json");
-        File currentManifestFile = new File(modpackFolder, "manifest.json");
+        java.io.File modsFolder = new java.io.File(modpackFolder, "mods");
+        java.io.File tempManifestFile = new java.io.File(tempDir, "manifest.json");
+        java.io.File currentManifestFile = new java.io.File(modpackFolder, "manifest.json");
 
         // Check if old manifest is in use (Used to be a curse pack)
         JsonObject currentJson = JsonUtils.readJsonFromFile(currentManifestFile);
@@ -115,8 +114,8 @@ public class UpdateFTBPackTask implements IUpdateTask {
         JsonUtils.writeJsonToFile(tempManifestFile, newJson);
 
         // Modpack Manifest to GSON
-        FTBModpackManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<FTBModpackManifest>() {});
-        FTBModpackManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<FTBModpackManifest>() {});
+        ModpackManifest oldManifest = JsonUtils.parseJsonUnchecked(currentManifestFile, new TypeToken<ModpackManifest>() {});
+        ModpackManifest newManifest = JsonUtils.parseJsonUnchecked(tempManifestFile, new TypeToken<ModpackManifest>() {});
         modsFolder.mkdirs();
         progressContainer.completeMinorStep();
 
@@ -126,20 +125,20 @@ public class UpdateFTBPackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(oldManifest.files.size() + newManifest.files.size());
 
         // Work out what changes need to be made to the mods and remove / add them.
-        List<FTBFile> toRemove = new ArrayList<>();
-        List<FTBFile> toInstall = newManifest.files.parallelStream()
+        List<File> toRemove = new ArrayList<>();
+        List<File> toInstall = newManifest.files.parallelStream()
                 .peek(e -> progressContainer.completeMinorStep())
                 .filter(file -> oldManifest.files.stream().noneMatch(oldFile -> oldFile.sha1.equals(file.sha1)))
                 .filter(file -> !file.serveronly)
                 .collect(Collectors.toList());
 
-        for (FTBFile oldFile : oldManifest.files) {
+        for (File oldFile : oldManifest.files) {
             progressContainer.completeMinorStep();
-            Optional<FTBFile> optionalNewFile = newManifest.files.stream()
+            Optional<File> optionalNewFile = newManifest.files.stream()
                     .filter(newFile -> newFile.sha1.equals(oldFile.sha1))
                     .findAny();
             if (optionalNewFile.isPresent()) {
-                FTBFile newFile = optionalNewFile.get();
+                File newFile = optionalNewFile.get();
                 if (!newFile.serveronly == !oldFile.serveronly) continue;
                 if (!newFile.serveronly) toInstall.add(newFile);
                 else toRemove.add(oldFile);
@@ -154,8 +153,8 @@ public class UpdateFTBPackTask implements IUpdateTask {
         // Remove Old Mods
         toRemove.parallelStream()
                 .map(mod -> mod.name)
-                .map(mod -> new File(modsFolder, mod))
-                .peek(File::delete)
+                .map(mod -> new java.io.File(modsFolder, mod))
+                .peek(java.io.File::delete)
                 .forEach(t -> progressContainer.completeMinorStep());
 
         // Update Progress
@@ -164,7 +163,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(toInstall.stream().mapToInt(file -> file.size).sum());
 
         // Install New Mods
-        for (FTBFile mod : toInstall) mod
+        for (File mod : toInstall) mod
                 .downloadAsync(modsFolder, downloadManager.getThreadPool())
                 .whenComplete((t,e) -> progressContainer.addMinorStepsCompleted(mod.size));
 

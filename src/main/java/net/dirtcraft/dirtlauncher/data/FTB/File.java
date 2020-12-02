@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class FTBFile {
-    private FTBFile(int i) throws InstantiationException {
+public class File {
+    private File(int i) throws InstantiationException {
         throw new InstantiationException("This is a data class intended to only be constructed by GSON.");
     }
     public final String version;
@@ -23,13 +23,13 @@ public class FTBFile {
     public final String name;
     public final int updated;
 
-    public CompletableFuture<Void> downloadAsync(File modsFolder, Executor executor){
+    public CompletableFuture<Void> downloadAsync(java.io.File modsFolder, Executor executor){
         return CompletableFuture.runAsync(()-> download(modsFolder), executor);
     }
 
-    private void download(File modsFolder){
+    private void download(java.io.File modsFolder){
         try{
-            WebUtils.copyURLToFile(url.replaceAll("\\s", "%20"), new File(modsFolder, name));
+            WebUtils.copyURLToFile(url.replaceAll("\\s", "%20"), new java.io.File(modsFolder, name));
         } catch (Exception e){
             e.printStackTrace();
         }

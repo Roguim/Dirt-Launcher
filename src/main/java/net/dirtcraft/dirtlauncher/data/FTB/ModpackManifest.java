@@ -2,13 +2,13 @@ package net.dirtcraft.dirtlauncher.data.FTB;
 
 import java.util.List;
 
-public class FTBModpackManifest {
-    private FTBModpackManifest(int i) throws InstantiationException {
+public class ModpackManifest {
+    private ModpackManifest(int i) throws InstantiationException {
         throw new InstantiationException("This is a data class intended to only be constructed by GSON");
     }
-    public final List<FTBFile> files;
+    public final List<File> files;
     public final String name;
-    public final List<FTBTarget> targets;
+    public final List<Target> targets;
     public final int installs;
     public final int plays;
     public final int refreshed;

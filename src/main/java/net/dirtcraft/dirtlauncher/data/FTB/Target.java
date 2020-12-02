@@ -1,7 +1,7 @@
 package net.dirtcraft.dirtlauncher.data.FTB;
 
-public class FTBTarget {
-    private FTBTarget(int i) throws InstantiationException {
+public class Target {
+    private Target(int i) throws InstantiationException {
         throw new InstantiationException("This is a data class intended to only be constructed by GSON.");
     }
     public String version;
