@@ -15,6 +15,7 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
+import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.login.NotificationBox;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackList;
@@ -101,7 +102,10 @@ public class Home extends Scene {
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "main.png"));
             stage.initStyle(StageStyle.DECORATED);
             stage.setOnCloseRequest(event -> {
-                if (!LaunchGame.isGameRunning) Platform.exit();
+                if (!LaunchGame.isGameRunning) {
+                    Platform.exit();
+                    DiscordPresence.shutdown();
+                }
             });
         }
         return stage;

@@ -49,7 +49,7 @@ dependencies {
     provided 'com.google.guava:guava:28.0-jre'
     provided 'org.apache.commons:commons-lang3:3.9'
     provided 'commons-io:commons-io:2.6'
-    provided 'club.minnced:java-discord-rpc:2.0.2'
+    provided 'com.github.Vatuu:discord-rpc:6233ef5'
     provided 'org.apache.commons:commons-compress:1.18'
     provided 'net.lingala.zip4j:zip4j:2.1.0'
     provided "org.tukaani:xz:1.8"

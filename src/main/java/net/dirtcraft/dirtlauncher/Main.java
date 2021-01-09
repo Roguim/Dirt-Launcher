@@ -10,11 +10,11 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
+import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
-import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main extends Application {
-    private static long x = System.currentTimeMillis();
+    private static final long x = System.currentTimeMillis();
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     private static ThreadPoolExecutor threadPool;
     private static CompletableFuture<ConfigurationManager> config = null;
@@ -67,6 +67,7 @@ public class Main extends Application {
                 .whenComplete(Main::announceCompletion);
         settingsMenu.thenRun(Update::checkForUpdates);
         CompletableFuture.runAsync(Main::postUpdateCleanup, threadPool);
+        DiscordPresence.initPresence();
         launch(args);
     }
 
@@ -87,7 +88,7 @@ public class Main extends Application {
         if (!Constants.VERBOSE) return;
         final long ms = System.currentTimeMillis() - x;
         final String clazz = t.getClass().getSimpleName();
-        System.out.println(String.format("%s initialized @ %sms", clazz, ms));
+        System.out.printf("%s initialized @ %sms%n", clazz, ms);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
