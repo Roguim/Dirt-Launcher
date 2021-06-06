@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
@@ -156,7 +157,8 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .resolve(libraryMaven[2])
                 .toFile();
         libraryPath.mkdirs();
-        String url = parseUrlElement(library, libraryMaven).replace("http://", "https://");
+        JsonElement urlElement = JsonUtils.getJsonElement(library, "downloads", "artifact", "url").orElse(JsonNull.INSTANCE);
+        String url = parseUrlElement(urlElement, library, libraryMaven).replace("http://", "https://");
 
         // Install the library
         File libraryFile = new File(libraryPath, String.format("%s-%s.jar", libraryMaven[1], libraryMaven[2]));
@@ -164,7 +166,8 @@ public class ForgeInstallationTask implements IInstallationTask {
         return Optional.of(new DownloadMeta(MiscUtils.getURL(url).orElseThrow(NullPointerException::new), libraryFile));
     }
 
-    private String parseUrlElement(JsonObject library, String[] libraryMaven) {
+    private String parseUrlElement(JsonElement urlElement, JsonObject library, String[] libraryMaven) {
+        if (!urlElement.isJsonNull()) return urlElement.getAsString();
         final String concatLibrary = String.format("%s/%s/%s/%s-%s.jar", libraryMaven[0].replace(".", "/"), libraryMaven[1], libraryMaven[2], libraryMaven[1], libraryMaven[2]);
         return library.has("url") ? library.get("url").getAsString() + concatLibrary : "https://libraries.minecraft.net/" + concatLibrary;
     }
