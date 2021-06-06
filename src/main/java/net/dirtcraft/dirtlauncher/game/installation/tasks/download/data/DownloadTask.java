@@ -42,7 +42,7 @@ public class DownloadTask {
         long timePassed = currentTime - lastTime;
         lastProgress = downloaded;
         lastTime = currentTime;
-        return (currentProgress * 1000) / timePassed;
+        return (currentProgress * 1000) / Math.max(1, timePassed);
     }
 
     public Result download(){
