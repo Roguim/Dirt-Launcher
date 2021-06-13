@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -136,6 +137,16 @@ public class Main extends Application {
 
     public static List<String> getOptions(){
         return options;
+    }
+
+    public static Optional<String> getOption(String key) {
+        int idx = options.indexOf(key);
+        if (idx < 0) return Optional.empty();
+        return Optional.of(options.get(idx + 1));
+    }
+
+    public static boolean hasOption(String key) {
+        return options.contains(key);
     }
 
     public static Path getLauncherDirectory(){

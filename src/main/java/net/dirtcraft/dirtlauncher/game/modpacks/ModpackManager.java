@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -59,6 +60,12 @@ public class ModpackManager {
     private String getStringFromURL() {
         String string = null;
         try {
+            String file = Main.getOption("-packFile").orElse(null);
+            if (file != null) {
+                File json = new File(file);
+                byte[] contents = Files.readAllBytes(json.toPath());
+                return new String(contents);
+            }
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
             HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(Constants.PACK_JSON_URL));
             HttpResponse response = request.execute();
