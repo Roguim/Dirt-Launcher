@@ -103,8 +103,9 @@ public class Home extends Scene {
             stage.initStyle(StageStyle.DECORATED);
             stage.setOnCloseRequest(event -> {
                 if (!LaunchGame.isGameRunning) {
-                    Platform.exit();
                     DiscordPresence.shutdown();
+                    Main.getIOExecutor().shutdown();
+                    Platform.exit();
                 }
             });
         }

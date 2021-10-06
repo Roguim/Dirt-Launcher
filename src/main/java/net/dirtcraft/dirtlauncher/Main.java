@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Stream;
 
 public class Main extends Application {
     private static final long x = System.currentTimeMillis();
@@ -41,6 +42,10 @@ public class Main extends Application {
     private static Path launcherDirectory;
     private static List<String> options;
     public static Gson gson;
+    public static final int[] JREVersion = Stream.of(System.getProperty("java.version")
+            .replaceAll("[^\\d.]", "")
+            .split("\\.")).mapToInt(Integer::parseInt)
+            .toArray();
 
     public static void main(String[] args) {
         threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(24);
