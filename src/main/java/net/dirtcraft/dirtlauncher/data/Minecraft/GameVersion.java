@@ -9,6 +9,7 @@ public class GameVersion {
     private Download assetIndex;
     private String assets;
     private Map<String, Download> downloads;
+    private JavaVersion javaVersion;
     private String id;
     private List<Library> libraries;
     //private Map<String, ?> logging;
@@ -18,6 +19,10 @@ public class GameVersion {
     private String releaseTime;
     private String time;
     private String type;
+
+    public JavaVersion getJava() {
+        return javaVersion != null? javaVersion : JavaVersion.legacy;
+    }
 
     public Download getAssetIndex() {
         return assetIndex;

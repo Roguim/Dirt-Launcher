@@ -12,6 +12,7 @@ public class Constants {
     public static final String UPDATE_URL = "http://164.132.201.67/launcher/Dirt-Launcher.jar";
     public static final String PACK_JSON_URL = "http://164.132.201.67/launcher/packs.json";
     public static final String CURSE_API_URL = "https://addons-ecs.forgesvc.net/api/v2/addon/";
+    public static final String LAUNCHERMETA_JAVA_URL = "https://launchermeta.mojang.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json";
 
     public static final String DEFAULT_JAVA_ARGS = "-XX:+UseG1GC -Dfml.readTimeout=180 -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 

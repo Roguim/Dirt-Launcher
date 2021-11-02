@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
+import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
@@ -37,8 +38,9 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
             StreamSupport.stream(jsonObject.getAsJsonArray("versions").spliterator(), false)
                     .map(JsonElement::getAsJsonObject)
                     .forEach(versionManifest -> {
+                        final JavaVersion javaVersion = JavaVersion.legacy;
                         final String version = versionManifest.get("version").getAsString();
-                        final Entry entry = new Entry(version, this);
+                        final Entry entry = new Entry(version, javaVersion, this);
                         final Path libDir = entry.getLibsFolder();
                         Arrays.stream(versionManifest.get("classpathLibraries").getAsString().split(";"))
                                 .map(Paths::get)
@@ -60,9 +62,9 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Entry create(String version) throws IOException {
-            Entry entry = new Entry(version, this);
-            configBase.put(version, entry);
+    public Entry create(String gameVersion, JavaVersion javaVersion) throws IOException {
+            Entry entry = new Entry(gameVersion, javaVersion, this);
+            configBase.put(gameVersion, entry);
             FileUtils.deleteDirectory(entry.getVersionFolder().toFile());
             entry.getNativesFolder().toFile().mkdirs();
             entry.getLibsFolder().toFile().mkdirs();
@@ -84,10 +86,12 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
         private transient VersionManifest outerReference;
         final int manifestVersion = 1;
         final String gameVersion;
+        final JavaVersion javaVersion;
         final ArrayList<String> libraries;
-        public Entry(String version, VersionManifest outerReference){
-            this.gameVersion = version;
+        public Entry(String gameVersion, JavaVersion javaVersion, VersionManifest outerReference){
+            this.gameVersion = gameVersion;
             libraries = new ArrayList<>();
+            this.javaVersion = javaVersion;
             this.outerReference = outerReference;
         }
 

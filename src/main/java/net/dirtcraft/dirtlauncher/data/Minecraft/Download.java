@@ -5,14 +5,13 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownloa
 import java.net.URI;
 import java.net.URL;
 
-public class Download implements IDownload {
+public class Download extends FileDownload implements IDownload {
     public Download(int i) throws InstantiationException{
+        super(0);
         throw new InstantiationException("Gson data class. Not to be manually created.");
     }
+
     final URI path;
-    final String sha1;
-    final long size;
-    final URL url;
 
     @Override
     public long getSize() {

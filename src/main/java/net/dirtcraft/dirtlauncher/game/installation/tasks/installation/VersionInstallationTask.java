@@ -36,7 +36,7 @@ public class VersionInstallationTask implements IInstallationTask {
     @Override
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Manifest Breakdown
-        VersionManifest.Entry versionEntry = config.getVersionManifest().create(versionManifest.getId());
+        VersionManifest.Entry versionEntry = config.getVersionManifest().create(versionManifest.getId(), versionManifest.getJava());
         Path libsDir = versionEntry.getLibsFolder();
         Path nativesDir = versionEntry.getNativesFolder();
         Path tempDir = nativesDir.resolve("temp");
