@@ -121,6 +121,10 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
             addLibs(downloaded);
         }
 
+        public JavaVersion getJavaVersion() {
+            return javaVersion;
+        }
+
         public Path getLibsFolder(){
             return getVersionFolder().resolve("libraries");
         }

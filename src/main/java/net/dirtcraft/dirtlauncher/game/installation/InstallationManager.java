@@ -5,13 +5,16 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
+import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.GameVersion;
+import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.AssetsInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInstallationTask;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.JavaInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.VersionInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCursePackTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack.InstallCustomPackTask;
@@ -106,6 +109,10 @@ public class InstallationManager {
         if (!config.getAssetManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new AssetsInstallationTask(versionManifest));
         if (!config.getVersionManifest().isInstalled(pack.getGameVersion())) installationTasks.add(new VersionInstallationTask(versionManifest));
         if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
+        JavaVersion javaVersion = config.getVersionManifest().get(pack.getGameVersion())
+                .map(VersionManifest.Entry::getJavaVersion)
+                .orElse(JavaVersion.legacy);
+        if (!javaVersion.isInstalled(config.getJavaDirectory())) installationTasks.add(new JavaInstallationTask(javaVersion));
 
         // Add the pack task as the next task
         if (!pack.isInstalled() || pack.isOutdated()) installationTasks.add(packInstallTask);

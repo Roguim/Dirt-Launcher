@@ -15,8 +15,10 @@ public class JavaVersionManifest {
     public List<DownloadMeta> getDownloads(File folder) {
         List<DownloadMeta> downloads = new ArrayList<>();
         files.forEach((path, archive)->{
-            FileDownload dl = archive.downloads.get("raw");
-            downloads.add(new DownloadMeta(dl.url, new File(folder, path), dl.size, dl.sha1));
+            if (archive.downloads != null) {
+                FileDownload dl = archive.downloads.get("raw");
+                downloads.add(new DownloadMeta(dl.url, new File(folder, path), dl.size, dl.sha1));
+            }
         });
         return downloads;
     }

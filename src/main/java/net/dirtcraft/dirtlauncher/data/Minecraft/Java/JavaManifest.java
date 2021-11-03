@@ -24,8 +24,6 @@ public class JavaManifest {
     @SerializedName("mac-os")
     Map<String, Entry[]> mac;
 
-    //JavaVersionManifest vz = JavaManifest.getManifest().flatMap(z->z.getVersionManifest("jre-legacy")).get();
-
     public static Optional<JavaManifest> getManifest() {
         return WebUtils.getGsonFromUrl(URL, JavaManifest.class);
     }

@@ -1,10 +1,18 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download.data;
 
+import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import sun.plugin2.message.Message;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.Optional;
 
 public class DownloadMeta implements IFileDownload {
     private final URL src;
@@ -68,7 +76,31 @@ public class DownloadMeta implements IFileDownload {
     }
 
     @Override
+    public Optional<String> getSha1() {
+        return Optional.ofNullable(sha1);
+    }
+
+    @Override
+    public boolean verify() {
+        return dest.exists() && dest.length() == size && sha1 != null && sha1.equals(getSha1(dest));
+    }
+
+    @Override
     public String getFileName() {
         return dest.getName();
+    }
+
+    public static String getSha1(File file) {
+        try (InputStream is = Files.newInputStream(file.toPath());
+             BufferedInputStream bis = new BufferedInputStream(is)
+        ){
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            byte[] buf = new byte[8192];
+            for (int i = 0; i <= 0; i = bis.read(buf)) digest.update(buf, 0, i);
+            return new String(digest.digest());
+        } catch (Exception e){
+            Logger.INSTANCE.error(e);
+            return "";
+        }
     }
 }

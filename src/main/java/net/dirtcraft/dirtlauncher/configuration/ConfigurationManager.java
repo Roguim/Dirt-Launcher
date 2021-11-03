@@ -20,11 +20,13 @@ public final class ConfigurationManager extends ConfigBase<Settings>{
     private AssetManifest assetManifest;
     private VersionManifest versionManifest;
     private InstanceManifest instanceManifest;
+    private File javaDirectory;
     private final String defaultRuntime;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public ConfigurationManager(Path launcherDirectory, List<String> options) {
         super(launcherDirectory.resolve("settings.json").toFile(), Settings.class, ()->new Settings(launcherDirectory));
+        javaDirectory = launcherDirectory.resolve("runtime").toFile();
         final File old = launcherDirectory.resolve("configuration.json").toFile();
         if (old.exists()) old.renameTo(configFile);
         final String javaExecutable = SystemUtils.IS_OS_WINDOWS && !Constants.VERBOSE ? "javaw" : "java";
@@ -98,6 +100,10 @@ public final class ConfigurationManager extends ConfigBase<Settings>{
 
     public InstanceManifest getInstanceManifest(){
         return instanceManifest;
+    }
+
+    public File getJavaDirectory() {
+        return javaDirectory;
     }
 
     public void fullReload(){

@@ -3,7 +3,9 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -145,9 +147,14 @@ public class Modpack {
     }
 
     public boolean isDependantsInstalled(){
-        return Main.getConfig().getVersionManifest().isInstalled(gameVersion)
+        VersionManifest versionManifest = Main.getConfig().getVersionManifest();
+        return versionManifest.isInstalled(gameVersion)
                 && Main.getConfig().getAssetManifest().isInstalled(gameVersion)
-                && isModloaderInstalled();
+                && isModloaderInstalled()
+                && versionManifest.get(gameVersion)
+                .map(VersionManifest.Entry::getJavaVersion)
+                .orElse(JavaVersion.legacy)
+                .isInstalled(Main.getConfig().getJavaDirectory());
     }
 
     public boolean isFavourite(){
