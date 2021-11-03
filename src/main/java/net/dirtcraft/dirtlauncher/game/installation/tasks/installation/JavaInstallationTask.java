@@ -36,7 +36,7 @@ public class JavaInstallationTask implements IInstallationTask {
 
     @Override
     public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
-        File jvmFolder = new File(config.getJavaDirectory(), javaVersion.component);
+        File jvmFolder = new File(config.getJavaDirectory(), javaVersion.getFolder());
         List<IFileDownload> files = JavaManifest.getManifest()
                 .flatMap(x->x.getVersionManifest(javaVersion.component))
                 .map(x->x.getDownloads(jvmFolder))

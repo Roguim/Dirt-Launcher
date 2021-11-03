@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
+import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.exceptions.InstanceException;
 import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -58,10 +59,17 @@ public class LaunchGame {
         VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
         ForgeManifest.Entry forgeManifest = configManager.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));
         AssetManifest.Entry assetManifest = configManager.getAssetManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Asset manifest entry not present."));
+        JavaVersion version = versionManifest.getJavaVersion();
+        if (version == null) version = JavaVersion.legacy; //for old installs
+        File javaDir = new File(configManager.getJavaDirectory(), version.getFolder());
         final File instanceDirectory = instanceManifest.getDirectory().toFile();
 
         List<String> args = new ArrayList<>();
-        args.add(configManager.getDefaultRuntime());
+        String javaExecutable = SystemUtils.IS_OS_WINDOWS && !Constants.VERBOSE ? "javaw" : "java";
+        String jvm = javaDir.toPath().resolve("bin").resolve(javaExecutable).toString();
+        args.add(jvm);
+
+        //args.add(configManager.getDefaultRuntime());
 
         // RAM
         args.add("-Xms" + settings.getMinimumRam() + "M");
