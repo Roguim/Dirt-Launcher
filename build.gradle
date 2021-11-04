@@ -1,36 +1,55 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 buildscript {
-    dependencies {
-        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
-    }
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url 'https://jitpack.io/' }
-        jcenter()
     }
 }
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.22.0'
     id 'java'
 }
 
+apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'java-library'
-apply plugin: 'javafx-gradle-plugin'
 
 configurations {
     packaged
     provided
-    shaded
-    compile.extendsFrom(provided)
-    compile.extendsFrom(shaded)
+    implementation.extendsFrom(provided)
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.16
+targetCompatibility = 1.16
 def bootstrapJar = "Dirt-Bootstrap-Updater:$bootstrapVersion"
 def outputJar = "${project.name}.jar"
+
+javafx {
+    version = "16"
+    modules = [ 'javafx.controls',
+                'javafx.web',
+                'javafx.fxml' ]
+}
+
+jlink {
+    launcher {
+        name = 'DirtLauncher'
+    }
+}
+
+application {
+    mainModule = 'net.dirtcraft.dirtlauncher.Main'
+    mainClass = 'net.dirtcraft.dirtlauncher.Main'
+}
+shadowJar {
+    exclude 'META-INF/**'
+    configurations = [project.configurations.provided]
+    archiveFileName = outputJar
+}
 
 repositories {
     jcenter()
@@ -43,6 +62,7 @@ dependencies {
     packaged "com.github.Dirt-Craft:$bootstrapJar"
 
     provided fileTree(dir: 'src/main/libraries', include: '*.jar')
+    provided group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
     provided 'com.google.code.gson:gson:2.8.5'
     provided 'com.google.http-client:google-http-client:1.23.0'
     provided 'com.github.Cydhra:Nidhogg:1.3'
@@ -60,27 +80,12 @@ jar {
     archiveName = outputJar
     manifest {
         attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                //'Class-Path': configurations.implementation.collect { it.getName() }.join(' '),
                 'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
         )
     }
-    from configurations.provided.asFileTree.files.collect {zipTree(it)}
+    //from configurations.provided.asFileTree.files.collect {zipTree(it) }
     from configurations.packaged.copy()
-}
-
-shadowJar {
-    configurations = [project.configurations.shaded]
-    archiveFileName = outputJar
-    //minimize() todo: not break shit
-}
-
-jfx {
-    // minimal requirement for jfxJar-task
-    mainClass = 'net.dirtcraft.dirtlauncher.Main'
-    css2bin = true
-
-    // minimal requirement for jfxNative-task
-    vendor = 'DirtCraft'
 }
 
 task processSource(type: Sync) {
@@ -98,7 +103,6 @@ compileJava {
     source = processSource.outputs
 }
 
-
 sourceSets.main {
     resources {
         srcDirs = ["src/main/resources"]
@@ -106,6 +110,4 @@ sourceSets.main {
     }
 }
 
-//jfxJar.dependsOn(shadowJar)
-//build.dependsOn(shadowJar)
 compileJava.options.encoding = 'UTF-8'
