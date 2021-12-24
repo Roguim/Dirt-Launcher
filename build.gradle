@@ -37,12 +37,16 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url 'https://jitpack.io/' }
+    //maven { url 'https://libraries.minecraft.net'}
 }
 
 dependencies {
     packaged "com.github.Dirt-Craft:$bootstrapJar"
 
     provided fileTree(dir: 'src/main/libraries', include: '*.jar')
+    provided 'com.squareup.okhttp3:okhttp-tls:4.9.2'
+    provided 'com.squareup.okhttp3:okhttp:4.9.2'
+    //provided 'com.mojang:authlib:1.5.21'
     provided 'com.google.code.gson:gson:2.8.5'
     provided 'com.google.http-client:google-http-client:1.23.0'
     provided 'com.github.Cydhra:Nidhogg:1.3'

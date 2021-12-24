@@ -1,7 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
-import net.cydhra.nidhogg.data.AccountCredentials;
-import net.cydhra.nidhogg.exception.*;
+import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +32,6 @@ public class AccountStorage {
         altAccounts.remove(newAccount);
         selectedAccount = newAccount;
         return true;
-    }
-
-    public void setSelectedAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
-        selectedAccount = new Account(credentials);
-        altAccounts.removeIf(account -> account.getId().equals(selectedAccount.getId()));
     }
 
     public void refreshSelectedAccount(){

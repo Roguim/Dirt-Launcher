@@ -60,12 +60,10 @@ public class ModpackManager {
     private String getStringFromURL() {
         String string = null;
         try {
-            String file = Main.getOption("-packFile").orElse(null);
-            if (file != null) {
-                File json = new File(file);
-                byte[] contents = Files.readAllBytes(json.toPath());
-                return new String(contents);
-            }
+            File file = Main.getOption("-packFile")
+                    .map(File::new)
+                    .orElse(null);
+            if (file != null && file.exists()) return new String(Files.readAllBytes(file.toPath()));
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
             HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(Constants.PACK_JSON_URL));
             HttpResponse response = request.execute();

@@ -2,8 +2,9 @@ package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.gson.JsonObject;
 import net.cydhra.nidhogg.YggdrasilClient;
-import net.cydhra.nidhogg.data.AccountCredentials;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
+import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.account.LegacyAccount;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
@@ -36,8 +37,16 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     }
 
     public void login(String email, String password, Consumer<Exception> onFailure) {
+        login(email, password, onFailure, true);
+    }
+
+    public void login(String email, String password, Consumer<Exception> onFailure, boolean ms) {
         try {
-            configBase.setSelectedAccount(new AccountCredentials(email, password));
+            final Account account;
+            //if (ms) account = MicroAccount.login();
+            //else
+            account = LegacyAccount.login(email, password);
+            configBase.setSelectedAccount(account);
             saveAsync();
         } catch (Exception e) {
             onFailure.accept(e);
@@ -95,13 +104,13 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     private AccountStorage migrate(JsonObject jsonObject) {
         AccountStorage accountStorage = new AccountStorage(UUID.randomUUID());
         try {
-            accountStorage.selectedAccount = new Account(jsonObject.get("selected account").getAsJsonObject());
+            accountStorage.selectedAccount = new LegacyAccount(jsonObject.get("selected account").getAsJsonObject());
         } catch (Exception ignored) { }
         try {
             ArrayList<Account> list = new ArrayList<>();
             jsonObject.get("alt account list")
                     .getAsJsonArray()
-                    .forEach(account -> list.add(new Account(account.getAsJsonObject())));
+                    .forEach(account -> list.add(new LegacyAccount(account.getAsJsonObject())));
             accountStorage.altAccounts = list;
         } catch (Exception ignored) { }
         try {

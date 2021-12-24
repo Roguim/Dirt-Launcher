@@ -8,11 +8,9 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.data.Minecraft.Java.JavaManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.Java.JavaVersionManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
+import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -22,6 +20,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,7 +36,7 @@ import java.util.stream.Stream;
 public class Main extends Application {
     private static final long x = System.currentTimeMillis();
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-    private static ThreadPoolExecutor threadPool;
+    public static ThreadPoolExecutor threadPool;
     private static CompletableFuture<ConfigurationManager> config = null;
     private static CompletableFuture<AccountManager> accounts = null;
     private static CompletableFuture<Settings> settingsMenu = null;
@@ -77,6 +76,7 @@ public class Main extends Application {
         settingsMenu.thenRun(Update::checkForUpdates);
         CompletableFuture.runAsync(Main::postUpdateCleanup, threadPool);
         DiscordPresence.initPresence();
+
         launch(args);
     }
 
@@ -85,12 +85,13 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         Platform.setImplicitExit(false);
         Home home = Main.home.join();
         home.getStage().show();
         home.update();
         Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
+        //todo not use MicroAccount.login(); but integrate properly lmfao
     }
 
     private static <T> void announceCompletion(T t, Throwable e){

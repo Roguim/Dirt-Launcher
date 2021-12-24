@@ -12,6 +12,9 @@ import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.data.DirtCraft.Version;
 import net.dirtcraft.dirtlauncher.data.Minecraft.GameVersion;
 import net.dirtcraft.dirtlauncher.data.Minecraft.Releases;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +26,28 @@ import static net.dirtcraft.dirtlauncher.configuration.Constants.MAX_DOWNLOAD_AT
 
 public class WebUtils {
 
+    private static OkHttpClient client = new OkHttpClient();
     private static String jsonVersion = null;
+
+    //todo fix this shit lol i dont even care anymore fucking have not coded in yonks and this is the shit i gotta deal with smh
+    public static Response getResponse(Request request){
+        try {
+            return client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Optional<T> getGsonFromRequest(Request request, TypeToken<T> type) {
+        try {
+            return Optional.ofNullable(Main.gson.fromJson(getResponse(request).body().string(), type.getType()));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public static JsonObject getJsonFromUrl(String url) {
         try {

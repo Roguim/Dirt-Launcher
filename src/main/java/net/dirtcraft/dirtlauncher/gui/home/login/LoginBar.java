@@ -14,8 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
+import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 

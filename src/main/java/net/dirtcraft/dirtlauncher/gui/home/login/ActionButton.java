@@ -1,29 +1,14 @@
 package net.dirtcraft.dirtlauncher.gui.home.login;
 
-import javafx.event.Event;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.game.authentification.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
-import net.dirtcraft.dirtlauncher.gui.wizards.Install;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public final class ActionButton extends Button {
