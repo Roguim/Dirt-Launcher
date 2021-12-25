@@ -16,10 +16,12 @@ public class LegacyAccount extends Account {
     }
 
     public LegacyAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
+        super(AccountType.MOJANG);
         this.session = Main.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
     }
 
     public LegacyAccount(JsonObject jsonObject) {
+        super(AccountType.MOJANG);
         if (!jsonObject.has("UUID")) throw new JsonParseException("No UUID");
         if (!jsonObject.has("Alias")) throw new JsonParseException("No Alias");
         if (!jsonObject.has("AccessToken")) throw new JsonParseException("No Access Token");

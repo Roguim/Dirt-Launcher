@@ -157,7 +157,8 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        Main.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
+        if (usernameField.getText().isEmpty() && passField.getText().isEmpty()) Main.getAccounts().login();
+        else Main.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
         setInputs();
     }
 

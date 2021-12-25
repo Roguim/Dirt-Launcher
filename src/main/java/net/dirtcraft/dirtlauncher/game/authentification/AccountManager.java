@@ -1,10 +1,15 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.gson.JsonObject;
+import javafx.application.Platform;
 import net.cydhra.nidhogg.YggdrasilClient;
+import net.cydhra.nidhogg.exception.*;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.account.LegacyAccount;
+import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
+import net.dirtcraft.dirtlauncher.gui.dialog.LoginDialogueMicrosoft;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
@@ -34,6 +39,15 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     public void logout(){
         configBase.removeSelectedAccount();
         saveAsync();
+    }
+
+    public void login() throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
+        LoginDialogueMicrosoft.grabToken(token->{
+            MicroAccount account = new MicroAccount(token);
+            System.out.printf("\nSuccessfully logged into %s.\nUSER: %s\nUUID: %s\nSESS: %s\n\n", account.name, account.name, account.uuid, account.accessToken);
+            configBase.setSelectedAccount(account);
+            saveAsync();
+        });
     }
 
     public void login(String email, String password, Consumer<Exception> onFailure) {

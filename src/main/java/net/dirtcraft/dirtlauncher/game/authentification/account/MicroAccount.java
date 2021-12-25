@@ -2,10 +2,8 @@ package net.dirtcraft.dirtlauncher.game.authentification.account;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import net.cydhra.nidhogg.exception.*;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.data.MicroSoft.*;
-import net.dirtcraft.dirtlauncher.gui.dialog.LoginDialogueMicrosoft;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -15,45 +13,38 @@ import okhttp3.RequestBody;
 import java.util.*;
 
 public class MicroAccount extends Account {
-    Gson gson = Main.gson.newBuilder().setPrettyPrinting().create();
 
-    AuthResponse authResponse;
-    XBLResponse xblResponse;
-    XBLResponse xstsResponse;
-    MSMCLoginResponse msmcLoginResponse;
-    MSProfile profile;
-    MSEnitlements entitlements;
-
-    public static void login() throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
-        //todo actually figure this out honestly kinda cant be fucked right now i just got shit working who fucking cares we gotta  glue this shit or something mang also need to fix refreshing and shit lmfao
-        LoginDialogueMicrosoft.grabToken(token->{
-            MicroAccount account = new MicroAccount(token);
-        });
-    }
+    public static final Gson gson = Main.gson;
+    public final String name;
+    public final String uuid;
+    public final String accessToken;
 
     public MicroAccount(String token) {
-        authResponse = getAccessToken(token);
-        xblResponse = getXBLToken(authResponse);
-        xstsResponse = getXstsToken(xblResponse);
-        msmcLoginResponse = loginToMinecraft(xstsResponse.getIdentityToken());
-        profile = getMcProfile(msmcLoginResponse);
-        entitlements = getEntitlements(msmcLoginResponse);
-        System.out.println("!!!");
+        super(AccountType.MICROSOFT);
+        AuthResponse authResponse = getAccessToken(token);
+        XBLResponse xblResponse = getXBLToken(authResponse);
+        XBLResponse xstsResponse = getXstsToken(xblResponse);
+        MSMCLoginResponse msmcLoginResponse = loginToMinecraft(xstsResponse.getIdentityToken());
+        MSProfile profile = getMcProfile(msmcLoginResponse);
+        //MSEnitlements entitlements = getEntitlements(msmcLoginResponse);
+        this.name = profile.name;
+        this.uuid = profile.id;
+        this.accessToken = msmcLoginResponse.access_token;
     }
 
     @Override
     public String getAlias() {
-        return profile.name;
+        return name;
     }
 
     @Override
     public String getAccessToken() {
-        return msmcLoginResponse.access_token;
+        return accessToken;
     }
 
     @Override
     public String getId() {
-        return profile.id;
+        return uuid;
     }
 
     @Override
