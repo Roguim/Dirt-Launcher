@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import net.cydhra.nidhogg.YggdrasilClient;
@@ -44,7 +45,6 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     public void login() throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
         LoginDialogueMicrosoft.grabToken(token->{
             MicroAccount account = new MicroAccount(token);
-            System.out.printf("\nSuccessfully logged into %s.\nUSER: %s\nUUID: %s\nSESS: %s\n\n", account.name, account.name, account.uuid, account.accessToken);
             configBase.setSelectedAccount(account);
             saveAsync();
         });
@@ -57,8 +57,6 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
     public void login(String email, String password, Consumer<Exception> onFailure, boolean ms) {
         try {
             final Account account;
-            //if (ms) account = MicroAccount.login();
-            //else
             account = LegacyAccount.login(email, password);
             configBase.setSelectedAccount(account);
             saveAsync();
@@ -111,27 +109,6 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
 
     @Override
     public void load(){
-        configBase = JsonUtils.parseJson(configFile, type, this::migrate, AccountStorage::isValid)
-                .orElse(new AccountStorage(UUID.randomUUID()));
+        configBase = JsonUtils.parseJson(configFile, type).orElse(new AccountStorage(UUID.randomUUID()));
     }
-
-    private AccountStorage migrate(JsonObject jsonObject) {
-        AccountStorage accountStorage = new AccountStorage(UUID.randomUUID());
-        try {
-            accountStorage.selectedAccount = new LegacyAccount(jsonObject.get("selected account").getAsJsonObject());
-        } catch (Exception ignored) { }
-        try {
-            ArrayList<Account> list = new ArrayList<>();
-            jsonObject.get("alt account list")
-                    .getAsJsonArray()
-                    .forEach(account -> list.add(new LegacyAccount(account.getAsJsonObject())));
-            accountStorage.altAccounts = list;
-        } catch (Exception ignored) { }
-        try {
-            accountStorage.clientToken = jsonObject.get("ClientToken").getAsString();
-        } catch (Exception ignored) { }
-        saveAsync();
-        return accountStorage;
-    }
-
 }

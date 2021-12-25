@@ -11,13 +11,12 @@ public class AccountStorage {
     Account selectedAccount;
     String clientToken;
 
-    public boolean isValid(){
-        return altAccounts != null && clientToken != null;
+    AccountStorage(){
+        altAccounts = new ArrayList<>();
     }
 
     AccountStorage(UUID uuid){
         altAccounts = new ArrayList<>();
-        selectedAccount = null;
         clientToken = uuid.toString().replaceAll("-", "");
     }
 

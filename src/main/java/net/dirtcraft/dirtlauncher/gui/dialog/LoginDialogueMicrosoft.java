@@ -14,7 +14,9 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.util.function.Consumer;
@@ -32,6 +34,7 @@ public class LoginDialogueMicrosoft extends Stage {
     private String token;
 
     private LoginDialogueMicrosoft(Consumer<String> tokenConsumer) {
+        final LoginBar bar = Main.getHome().getLoginBar();
         final FlowPane title = new FlowPane();
         title.getChildren().add(new Text("Login"));
         title.getChildren().get(0).setTranslateY(3);
@@ -51,7 +54,10 @@ public class LoginDialogueMicrosoft extends Stage {
                     if (entry.getUrl().startsWith(MICROSOFT_LOGIN_REDIRECT_SUFFIX)) {
                         this.token = entry.getUrl().substring(entry.getUrl().indexOf("=") + 1, entry.getUrl().indexOf("&"));
                         this.hide();
-                        Platform.runLater(()->tokenConsumer.accept(token));
+                        Platform.runLater(()->{
+                            tokenConsumer.accept(token);
+                            bar.setInputs();
+                        });
                     }
                 }
             }

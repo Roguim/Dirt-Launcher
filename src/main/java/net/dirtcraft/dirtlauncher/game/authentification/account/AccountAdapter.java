@@ -9,7 +9,7 @@ public class AccountAdapter implements JsonSerializer<Account>, JsonDeserializer
 
     @Override
     public Account deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        Account.AccountType type = Account.AccountType.valueOf(json.getAsJsonObject().getAsString());
+        Account.AccountType type = Account.AccountType.valueOf(json.getAsJsonObject().get("type").getAsString());
         return context.deserialize(json, type.type);
     }
 
