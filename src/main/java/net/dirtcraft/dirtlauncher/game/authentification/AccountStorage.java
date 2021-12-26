@@ -2,46 +2,41 @@ package net.dirtcraft.dirtlauncher.game.authentification;
 
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class AccountStorage {
-    List<Account> altAccounts;
+    Set<Account> altAccounts;
     Account selectedAccount;
     String clientToken;
 
-    AccountStorage(){
-        altAccounts = new ArrayList<>();
-    }
-
     AccountStorage(UUID uuid){
-        altAccounts = new ArrayList<>();
+        altAccounts = new HashSet<>();
         clientToken = uuid.toString().replaceAll("-", "");
     }
 
-    public void removeSelectedAccount(){
-        if (selectedAccount != null) altAccounts.add(selectedAccount);
-        selectedAccount = null;
+    public void addAccount(Account account) {
+        if (altAccounts == null) altAccounts = new HashSet<>();
+        altAccounts.add(account);
     }
 
-    public boolean setSelectedAccount(Account newAccount) {
-        if (!newAccount.isValid()) return false;
-        if (selectedAccount != null) altAccounts.add(selectedAccount);
-        altAccounts.remove(newAccount);
-        selectedAccount = newAccount;
-        return true;
+    public void removeAccount(Account account) {
+        if (altAccounts == null) altAccounts = new HashSet<>();
+        altAccounts.remove(account);
     }
 
-    public void refreshSelectedAccount(){
-        if (selectedAccount != null && !selectedAccount.isValid()) selectedAccount = null;
+    public void selectAccount(Account account) {
+        if (altAccounts == null) altAccounts = new HashSet<>();
+        altAccounts.add(account);
+        selectedAccount = account;
     }
 
-    public List<Account> getAltAccounts() {
+    public void removeSelected() {
+        if (altAccounts == null) altAccounts = new HashSet<>();
+        altAccounts.remove(selectedAccount);
+        selectAccount(null);
+    }
+
+    public Set<Account> getAltAccounts() {
         return altAccounts;
-    }
-
-    public void trimInvalidAlts(){
-        altAccounts.removeIf(session -> !session.isValid(false));
     }
 }

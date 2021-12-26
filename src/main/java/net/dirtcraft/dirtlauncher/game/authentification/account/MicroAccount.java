@@ -15,9 +15,10 @@ import java.util.*;
 public class MicroAccount extends Account {
 
     public static final Gson gson = Main.gson;
-    public final String name;
-    public final String uuid;
-    public final String accessToken;
+    private String refreshToken;
+    private String name;
+    private String uuid;
+    private String accessToken;
 
     public MicroAccount(String token) {
         super(AccountType.MICROSOFT);
@@ -25,11 +26,26 @@ public class MicroAccount extends Account {
         XBLResponse xblResponse = getXBLToken(authResponse);
         XBLResponse xstsResponse = getXstsToken(xblResponse);
         MSMCLoginResponse msmcLoginResponse = loginToMinecraft(xstsResponse.getIdentityToken());
-        MSProfile profile = getMcProfile(msmcLoginResponse);
-        //MSEnitlements entitlements = getEntitlements(msmcLoginResponse);
+
+        this.accessToken = msmcLoginResponse.access_token;
+        this.refreshToken = authResponse.refresh_token;
+        updateUsername();
+    }
+
+    private void refreshTokens() {
+        AuthResponse authResponse = refreshAccessToken(refreshToken);
+        XBLResponse xblResponse = getXBLToken(authResponse);
+        XBLResponse xstsResponse = getXstsToken(xblResponse);
+        MSMCLoginResponse msmcLoginResponse = loginToMinecraft(xstsResponse.getIdentityToken());
+
+        this.accessToken = msmcLoginResponse.access_token;
+        this.refreshToken = authResponse.refresh_token;
+    }
+
+    private void updateUsername() {
+        MSProfile profile = getMcProfile(accessToken);
         this.name = profile.name;
         this.uuid = profile.id;
-        this.accessToken = msmcLoginResponse.access_token;
     }
 
     @Override
@@ -48,8 +64,22 @@ public class MicroAccount extends Account {
     }
 
     @Override
-    public boolean isValid(boolean save) {
-        return true;
+    public boolean isValid() {
+        try {
+            String uuid = this.uuid;
+            updateUsername();
+            if (uuid.equals(this.uuid)) return true;
+            else {
+                System.out.println("Session not valid, Attempting to refresh it!");
+                refreshTokens();
+                updateUsername();
+                return uuid.equals(this.uuid);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Session not valid.");
+            return false;
+        }
     }
 
     private AuthResponse getAccessToken(String authToken){
@@ -65,6 +95,23 @@ public class MicroAccount extends Account {
                 .url("https://login.live.com/oauth20_token.srf")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .post(data).build();
+
+        return WebUtils.getGsonFromRequest(request, TypeToken.of(AuthResponse.class)).get();
+    }
+
+    private AuthResponse refreshAccessToken(String refreshToken) {
+        RequestBody data = new FormBody.Builder()
+                .add("client_id", "00000000402b5328")
+                .add("refresh_token", refreshToken)
+                .add("grant_type", "refresh_token")
+                .add("redirect_uri", "http://127.0.0.1:28562")
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://login.live.com/oauth20_token.srf")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .post(data)
+                .build();
 
         return WebUtils.getGsonFromRequest(request, TypeToken.of(AuthResponse.class)).get();
     }
@@ -127,21 +174,9 @@ public class MicroAccount extends Account {
         return WebUtils.getGsonFromRequest(request, TypeToken.of(MSMCLoginResponse.class)).get();
     }
 
-
-    private MSEnitlements getEntitlements(MSMCLoginResponse login) {
-        Request request = new Request.Builder()
-                .url(String.format("%s?requestId=%s", "https://api.minecraftservices.com/entitlements/license", UUID.randomUUID()))
-                .header("Authorization", "Bearer " + login.access_token)
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .build();
-
-        return WebUtils.getGsonFromRequest(request, TypeToken.of(MSEnitlements.class)).get();
-    }
-
-    private MSProfile getMcProfile(MSMCLoginResponse login) {
+    private MSProfile getMcProfile(String login) {
         Request request = new Request.Builder().url("https://api.minecraftservices.com/minecraft/profile")
-                .header("Authorization", "Bearer " + login.access_token)
+                .header("Authorization", "Bearer " + login)
                 .build();
 
         return WebUtils.getGsonFromRequest(request, TypeToken.of(MSProfile.class)).get();

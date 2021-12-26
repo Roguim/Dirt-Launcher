@@ -19,6 +19,7 @@ import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static net.dirtcraft.dirtlauncher.configuration.Constants.MICROSOFT_LOGIN_REDIRECT_SUFFIX;
@@ -54,10 +55,10 @@ public class LoginDialogueMicrosoft extends Stage {
                     if (entry.getUrl().startsWith(MICROSOFT_LOGIN_REDIRECT_SUFFIX)) {
                         this.token = entry.getUrl().substring(entry.getUrl().indexOf("=") + 1, entry.getUrl().indexOf("&"));
                         this.hide();
-                        Platform.runLater(()->{
+                        CompletableFuture.runAsync(()->{
                             tokenConsumer.accept(token);
-                            bar.setInputs();
-                        });
+                            Platform.runLater(bar::setInputs);
+                        }, Main.threadPool);
                     }
                 }
             }

@@ -19,17 +19,19 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 final class AccountList extends Stage {
     private final AccountList instance = this;
     private final ScrollPane scrollPane;
     AccountList(){
-        final List<Account> sessions = Main.getAccounts().getAltAccounts();
-        double vBoxSize = (sessions.size() + 1) * (59+5) + 5;
+        final Set<Account> sessions = Main.getAccounts().getAltAccounts();
+        double vBoxSize = (sessions.size() + 2) * (59+5) + 5;
         vBoxSize = vBoxSize > 450 ? 450 : vBoxSize;
         final VBox backing = new VBox();
         backing.setBackground(Background.EMPTY);
@@ -76,10 +78,9 @@ final class AccountList extends Stage {
         setTitle("Accounts");
 
         final ObservableList<Node> contents = backing.getChildren();
-        CompletableFuture.runAsync(()->{
-            sessions.forEach(session -> contents.add(new AccountButton(session)));
-        });
-        contents.add(new AddAccountButton());
+        sessions.forEach(session -> contents.add(0, new AccountButton(session)));
+        contents.add(new AddMicroAccountButton());
+        contents.add(new AddMojangAccountButton());
 
 
         focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
@@ -113,12 +114,33 @@ final class AccountList extends Stage {
         }
     }
 
-    private class AddAccountButton extends Button {
+    private class AddMicroAccountButton extends Button {
         private double lastDragY;
 
-        AddAccountButton() {
+        AddMicroAccountButton() {
             setCursor(Cursor.HAND);
-            setText("Add New Account");
+            setText("Add Microsoft Account");
+            setOnMouseDragged(event -> {
+                if (event.isPrimaryButtonDown()) {
+                    double change = (lastDragY - event.getY()) / scrollPane.getHeight();
+                    scrollPane.setVvalue(scrollPane.getVvalue() + change);
+                    lastDragY = change;
+                }
+            });
+        }
+
+        @Override
+        public void fire() {
+            Main.getAccounts().login();
+        }
+    }
+
+    private class AddMojangAccountButton extends Button {
+        private double lastDragY;
+
+        AddMojangAccountButton() {
+            setCursor(Cursor.HAND);
+            setText("Add Mojang Account");
             setOnMouseDragged(event -> {
                 if (event.isPrimaryButtonDown()) {
                     double change = (lastDragY - event.getY()) / scrollPane.getHeight();

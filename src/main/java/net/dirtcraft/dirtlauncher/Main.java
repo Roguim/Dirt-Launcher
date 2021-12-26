@@ -12,7 +12,6 @@ import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.account.AccountAdapter;
-import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -94,7 +93,6 @@ public class Main extends Application {
         home.getStage().show();
         home.update();
         Logger.INSTANCE.info("Launching @ " + (System.currentTimeMillis() - x) + "ms");
-        //todo not use MicroAccount.login(); but integrate properly lmfao
     }
 
     private static <T> void announceCompletion(T t, Throwable e){

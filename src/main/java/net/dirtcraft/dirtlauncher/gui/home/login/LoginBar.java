@@ -62,7 +62,7 @@ public final class LoginBar extends Pane {
         x2.setMaxHeight(29);        // It's an honest living. Also this space  \\
         y1.setMinWidth(190);        // was perfect for a comment block because \\
         y1.setMaxWidth(190);        // it just is screaming for someone to put \\
-        y2.setMinWidth(60);        // something in this exact box shaped area \\
+        y2.setMinWidth(60);         // something in this exact box shaped area \\
         y2.setMaxWidth(60);
         loginContainer.getRowConstraints().add(0, x1);
         loginContainer.getRowConstraints().add(1, x2);

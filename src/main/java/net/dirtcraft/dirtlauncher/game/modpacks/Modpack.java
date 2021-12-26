@@ -126,6 +126,7 @@ public class Modpack {
 
     public void launch(){
         try {
+            Main.getAccounts().verifySelected();
             Account session = Main.getAccounts().getSelectedAccountUnchecked();
             LaunchGame.isGameRunning = true;
             LaunchGame.loadServerList(this);
