@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.serverlist;
 
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.exceptions.InstanceException;
 import org.apache.commons.lang3.ArrayUtils;
@@ -24,7 +24,7 @@ public class ServerList {
     private ServerList(String packName) throws InstanceException{
         ips = new ArrayList<>();
         servers = new ArrayList<>();
-        Optional<File> serverDat = Main.getConfig().getInstanceManifest().get(packName)
+        Optional<File> serverDat = DirtLauncher.getConfig().getInstanceManifest().get(packName)
                 .map(InstanceManifest.Entry::getDirectory)
                 .map(e->e.resolve("servers.dat"))
                 .map(Path::toFile);
@@ -98,7 +98,7 @@ public class ServerList {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static List<Listing> getCurrent(String packName) throws InstanceException{
-        Optional<File> optServerDat = Main.getConfig().getInstanceManifest().get(packName)
+        Optional<File> optServerDat = DirtLauncher.getConfig().getInstanceManifest().get(packName)
                 .map(InstanceManifest.Entry::getDirectory)
                 .map(e->e.resolve("servers.dat"))
                 .map(Path::toFile);

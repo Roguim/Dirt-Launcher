@@ -1,12 +1,10 @@
 package net.dirtcraft.dirtlauncher.game.authentification.account;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
 import net.cydhra.nidhogg.exception.*;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 
 public class LegacyAccount extends Account {
     private Session session;
@@ -17,7 +15,7 @@ public class LegacyAccount extends Account {
 
     public LegacyAccount(AccountCredentials credentials) throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
         super(AccountType.MOJANG);
-        this.session = Main.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
+        this.session = DirtLauncher.getAccounts().getClient().login(credentials, YggdrasilAgent.MINECRAFT);
     }
 
     public String getAlias(){
@@ -34,12 +32,12 @@ public class LegacyAccount extends Account {
 
     public boolean isValid(){
         try {
-            Main.getAccounts().getClient().validate(session);
+            DirtLauncher.getAccounts().getClient().validate(session);
             return true;
         } catch (Exception e){
             System.out.println("Session not valid, Attempting to refresh it!");
             try {
-                Main.getAccounts().getClient().refresh(session);
+                DirtLauncher.getAccounts().getClient().refresh(session);
                 return true;
             } catch (Exception refreshException){
                 System.out.println(e.getMessage());

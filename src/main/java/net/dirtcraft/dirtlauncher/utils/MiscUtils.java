@@ -17,7 +17,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
@@ -114,7 +114,7 @@ public class MiscUtils {
         final File bootstrapper = new File(currentDir, getBootstrapJar());
         final File temp = new File(getCurrentJar().toString() + ".tmp");
         try(
-                InputStream is = Main.class.getClassLoader().getResourceAsStream(getBootstrapJar());
+                InputStream is = DirtLauncher.class.getClassLoader().getResourceAsStream(getBootstrapJar());
                 BufferedInputStream bis = new BufferedInputStream(Objects.requireNonNull(is));
         ){
             bootstrapper.delete();
@@ -123,7 +123,7 @@ public class MiscUtils {
             Files.copy(bis, bootstrapper.toPath());
             List<String> args = Arrays.asList(getRuntime(), "-jar", bootstrapper.toString(), getRuntime(), currentJar.toString(), temp.toString());
             args = new ArrayList<>(args);
-            args.addAll(Main.getOptions());
+            args.addAll(DirtLauncher.getOptions());
             new ProcessBuilder(args.toArray(new String[0]))
                     .inheritIO()
                     .start();
@@ -152,14 +152,14 @@ public class MiscUtils {
 
     private static File getCurrentJar(){
         try {
-            return new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            return new File(DirtLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI());
         } catch (URISyntaxException e) {
             throw new Error(e);
         }
     }
 
     private static String getRuntime(){
-        return Main.getConfig().getDefaultRuntime();
+        return DirtLauncher.getConfig().getDefaultRuntime();
     }
 
     private static String getBootstrapJar(){
@@ -189,13 +189,13 @@ public class MiscUtils {
             stage.setTitle(modPack);
             Parent root = FXMLLoader.load(MiscUtils.getResourceURL(Constants.JAR_SCENES, "install.fxml"));
 
-            stage.initOwner(Main.getHome().getStage());
+            stage.initOwner(DirtLauncher.getHome().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.DECORATED);
 
             stage.getIcons().setAll(MiscUtils.getImage(Constants.JAR_ICONS, "install.png"));
 
-            stage.setScene(new Scene(root, Main.screenDimension.getWidth() / 3, Main.screenDimension.getHeight() / 4));
+            stage.setScene(new Scene(root, DirtLauncher.screenDimension.getWidth() / 3, DirtLauncher.screenDimension.getHeight() / 4));
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
 

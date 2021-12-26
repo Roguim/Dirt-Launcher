@@ -8,7 +8,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.data.DirtCraft.Version;
 import net.dirtcraft.dirtlauncher.data.Minecraft.GameVersion;
 import net.dirtcraft.dirtlauncher.data.Minecraft.Releases;
@@ -42,7 +42,7 @@ public class WebUtils {
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> getGsonFromRequest(Request request, TypeToken<T> type) {
         try {
-            return Optional.ofNullable(Main.gson.fromJson(getResponse(request).body().string(), type.getType()));
+            return Optional.ofNullable(DirtLauncher.gson.fromJson(getResponse(request).body().string(), type.getType()));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();
@@ -62,7 +62,7 @@ public class WebUtils {
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> getGsonFromUrl(String url, TypeToken<T> type) {
         try {
-            return Optional.ofNullable(Main.gson.fromJson(getJsonStringFromUrl(url), type.getType()));
+            return Optional.ofNullable(DirtLauncher.gson.fromJson(getJsonStringFromUrl(url), type.getType()));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();
@@ -71,7 +71,7 @@ public class WebUtils {
 
     public static <T> Optional<T> getGsonFromUrl(String url, Class<T> type) {
         try {
-            return Optional.ofNullable(Main.gson.fromJson(getJsonStringFromUrl(url), type));
+            return Optional.ofNullable(DirtLauncher.gson.fromJson(getJsonStringFromUrl(url), type));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();

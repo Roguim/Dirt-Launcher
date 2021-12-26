@@ -1,7 +1,7 @@
 package net.dirtcraft.dirtlauncher.gui.components;
 
 import javafx.application.Platform;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -46,7 +46,7 @@ public class SystemTray {
             trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main stage
-            trayIcon.addActionListener(event -> Platform.runLater(() -> Main.getHome().getStage().show()));
+            trayIcon.addActionListener(event -> Platform.runLater(() -> DirtLauncher.getHome().getStage().show()));
             // set tooltip on hover
             trayIcon.setToolTip("Playing " + pack.getName());
 

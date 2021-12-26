@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.game.authentification.account;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.data.MicroSoft.*;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import okhttp3.FormBody;
@@ -14,7 +14,7 @@ import java.util.*;
 
 public class MicroAccount extends Account {
 
-    public static final Gson gson = Main.gson;
+    public static final Gson gson = DirtLauncher.gson;
     private String refreshToken;
     private String name;
     private String uuid;

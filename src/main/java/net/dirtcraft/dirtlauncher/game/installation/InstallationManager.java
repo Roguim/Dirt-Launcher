@@ -3,7 +3,7 @@ package net.dirtcraft.dirtlauncher.game.installation;
 import javafx.application.Platform;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.GameVersion;
@@ -39,7 +39,7 @@ public class InstallationManager {
 
     private InstallationManager() {
         downloadManager = new DownloadManager();
-        config = Main.getConfig();
+        config = DirtLauncher.getConfig();
     }
 
     // Lazy Loaded Singleton Container
@@ -100,7 +100,7 @@ public class InstallationManager {
 
     // Handles the entire installation/update process. The passed task is the appropriate install/update task to be run after the game version tasks are complete.
     private void installOrUpdatePack(Modpack pack, IInstallationTask packInstallTask) throws IOException {
-        ConfigurationManager config = Main.getConfig();
+        ConfigurationManager config = DirtLauncher.getConfig();
         List<IInstallationTask> installationTasks = new ArrayList<>();
         // Fetch the game version manifest from Mojang
         GameVersion versionManifest = WebUtils.getVersionManifestJson(pack.getGameVersion()).orElseThrow(IOException::new);
@@ -181,7 +181,7 @@ public class InstallationManager {
                     if (installStage != null) installStage.setOnCloseRequest(event -> {
                         if (!install.getButtonPane().isVisible()) event.consume();
                     });
-                    Main.getHome().update();
+                    DirtLauncher.getHome().update();
                 }));
     }
 

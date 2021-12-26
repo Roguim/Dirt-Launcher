@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.therandomlabs.utils.io.NetUtils;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBFile;
 import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
@@ -81,13 +81,13 @@ public class UpdateFTBPackTask implements IUpdateTask {
                 }
                 if (pack.isFavourite()) pack.toggleFavourite();
                 Platform.runLater(() -> {
-                            LoginBar loginBar = Main.getHome().getLoginBar();
+                            LoginBar loginBar = DirtLauncher.getHome().getLoginBar();
                             PackSelector packSelector = new PackSelector(pack);
                             loginBar.setActivePackCell(packSelector);
                             Install.getStage().ifPresent(Stage::close);
                             MiscUtils.launchInstallScene(packSelector);
                             packSelector.getModpack().install();
-                            Main.getHome().update();
+                            DirtLauncher.getHome().update();
                         });
                 throw new PackInstallException("Previously a Curse pack type, Converting to a FTB pack type...");
             }

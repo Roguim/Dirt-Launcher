@@ -16,21 +16,18 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 final class AccountList extends Stage {
     private final AccountList instance = this;
     private final ScrollPane scrollPane;
     AccountList(){
-        final Set<Account> sessions = Main.getAccounts().getAltAccounts();
+        final Set<Account> sessions = DirtLauncher.getAccounts().getAltAccounts();
         double vBoxSize = (sessions.size() + 2) * (59+5) + 5;
         vBoxSize = vBoxSize > 450 ? 450 : vBoxSize;
         final VBox backing = new VBox();
@@ -108,9 +105,9 @@ final class AccountList extends Stage {
         }
         @Override
         public void fire() {
-            Main.getAccounts().setSelectedAccount(session);
+            DirtLauncher.getAccounts().setSelectedAccount(session);
             instance.close();
-            Main.getHome().getLoginBar().setInputs();
+            DirtLauncher.getHome().getLoginBar().setInputs();
         }
     }
 
@@ -131,7 +128,7 @@ final class AccountList extends Stage {
 
         @Override
         public void fire() {
-            Main.getAccounts().login();
+            DirtLauncher.getAccounts().login();
         }
     }
 
@@ -152,9 +149,9 @@ final class AccountList extends Stage {
 
         @Override
         public void fire() {
-            Main.getAccounts().logout();
+            DirtLauncher.getAccounts().logout();
             instance.close();
-            Main.getHome().getLoginBar().setInputs();
+            DirtLauncher.getHome().getLoginBar().setInputs();
         }
     }
 }

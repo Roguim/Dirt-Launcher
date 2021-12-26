@@ -10,7 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -55,7 +55,7 @@ public final class Update {
             root.getStylesheets().add("https://fonts.gstatic.com/s/russoone/v7/Z9XUDmZRWg6M1LvRYsHOz8mJvLuL9A.woff2");
 
             Stage stage = new Stage();
-            stage.initOwner(Main.getHome().getStage());
+            stage.initOwner(DirtLauncher.getHome().getStage());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initStyle(StageStyle.UTILITY);
 
@@ -98,7 +98,7 @@ public final class Update {
 
     public static void checkForUpdates(){
         try {
-            if (Main.getOptions().contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
+            if (DirtLauncher.getOptions().contains("-update") && Update.hasUpdate()) MiscUtils.updateLauncher();
             if (Update.hasUpdate()) Platform.runLater(Update::showStage);
         } catch (IOException e) {
             e.printStackTrace();

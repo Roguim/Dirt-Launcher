@@ -12,7 +12,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
@@ -38,7 +38,7 @@ public class Home extends Scene {
     private PackList sidebar;
 
     public Home() {
-        super(new AnchorPane(), Main.screenDimension.getWidth() / 1.15, Main.screenDimension.getHeight() / 1.35);
+        super(new AnchorPane(), DirtLauncher.screenDimension.getWidth() / 1.15, DirtLauncher.screenDimension.getHeight() / 1.35);
         stage = null;
         sidebar = new PackList();
 
@@ -104,7 +104,7 @@ public class Home extends Scene {
             stage.setOnCloseRequest(event -> {
                 if (!LaunchGame.isGameRunning) {
                     DiscordPresence.shutdown();
-                    Main.getIOExecutor().shutdown();
+                    DirtLauncher.getIOExecutor().shutdown();
                     Platform.exit();
                 }
             });

@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
@@ -98,14 +98,14 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
     }
 
     public void fire() {
-        final LoginBar home = Main.getHome().getLoginBar();
+        final LoginBar home = DirtLauncher.getHome().getLoginBar();
         final Button playButton = home.getActionButton();
         home.getActivePackCell().ifPresent(PackSelector::deactivate);
         home.setActivePackCell(this);
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + modpack.getName());
 
-        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
+        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || DirtLauncher.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
     }
 
     private void initContextMenu() {
@@ -123,25 +123,25 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
 
             reinstall.setOnAction(e->{
                 uninstall.fire();
-                LoginBar loginBar = Main.getHome().getLoginBar();
+                LoginBar loginBar = DirtLauncher.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
                 MiscUtils.launchInstallScene(this);
                 getModpack().install();
                 oldPack.ifPresent(PackSelector::fire);
-                Main.getHome().update();
+                DirtLauncher.getHome().update();
                 initContextMenu();
             });
 
             uninstall.setOnAction(e->{
-                Main.getConfig().getInstanceManifest().remove(this.modpack);
+                DirtLauncher.getConfig().getInstanceManifest().remove(this.modpack);
                 try {
                     FileUtils.deleteDirectory(modpack.getInstanceDirectory());
                 } catch (IOException exception){
                     exception.printStackTrace();
                 }
                 if (isFavourite()) modpack.toggleFavourite();
-                Main.getHome().update();
+                DirtLauncher.getHome().update();
                 initContextMenu();
             });
 
@@ -155,14 +155,14 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
 
             favourite.setOnAction(e->{
                 modpack.toggleFavourite();
-                Main.getHome().updateModpacks();
+                DirtLauncher.getHome().updateModpacks();
             });
         } else {
             MenuItem install = new MenuItem("Install");
             contextMenu.getItems().add(install);
 
             install.setOnAction(e->{
-                LoginBar loginBar = Main.getHome().getLoginBar();
+                LoginBar loginBar = DirtLauncher.getHome().getLoginBar();
                 Optional<PackSelector> oldPack = loginBar.getActivePackCell();
                 loginBar.setActivePackCell(this);
                 MiscUtils.launchInstallScene(this);

@@ -12,7 +12,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class ErrorWindow extends Stage {
     public ErrorWindow(String error) {
-        final Optional<PackSelector> pack = Main.getHome().getLoginBar().getActivePackCell();
+        final Optional<PackSelector> pack = DirtLauncher.getHome().getLoginBar().getActivePackCell();
         final FlowPane title = new FlowPane();
         title.getChildren().add(new Text("Error"));
         title.getChildren().get(0).setTranslateY(3);

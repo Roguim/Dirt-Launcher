@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download;
 
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DownloadManager {
-    private static ExecutorService threadPool = Main.getIOExecutor();
+    private static ExecutorService threadPool = DirtLauncher.getIOExecutor();
     private final Timer scheduler = new Timer();
 
     public ExecutorService getThreadPool(){

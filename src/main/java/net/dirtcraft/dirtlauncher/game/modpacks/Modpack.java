@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.game.modpacks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
@@ -95,7 +95,7 @@ public class Modpack {
     }
 
     public File getInstanceDirectory() {
-        return Main.getConfig().getInstanceManifest().getDirectory().resolve(getFormattedName()).toFile();
+        return DirtLauncher.getConfig().getInstanceManifest().getDirectory().resolve(getFormattedName()).toFile();
     }
 
     public boolean isPixelmon() {
@@ -126,8 +126,8 @@ public class Modpack {
 
     public void launch(){
         try {
-            Main.getAccounts().verifySelected();
-            Account session = Main.getAccounts().getSelectedAccountUnchecked();
+            DirtLauncher.getAccounts().verifySelected();
+            Account session = DirtLauncher.getAccounts().getSelectedAccountUnchecked();
             LaunchGame.isGameRunning = true;
             LaunchGame.loadServerList(this);
             LaunchGame.launchPack(this, session);
@@ -137,25 +137,25 @@ public class Modpack {
     }
 
     public boolean isOutdated() {
-        return Main.getConfig().getInstanceManifest().stream()
+        return DirtLauncher.getConfig().getInstanceManifest().stream()
                 .noneMatch(pack->pack.version.equals(getVersion()));
     }
 
     public boolean isInstalled() {
-        return Main.getConfig().getInstanceManifest().stream()
+        return DirtLauncher.getConfig().getInstanceManifest().stream()
                 .anyMatch(pack->pack.name.equals(getName()))
                 && getInstanceDirectory().exists();
     }
 
     public boolean isDependantsInstalled(){
-        VersionManifest versionManifest = Main.getConfig().getVersionManifest();
+        VersionManifest versionManifest = DirtLauncher.getConfig().getVersionManifest();
         return versionManifest.isInstalled(gameVersion)
-                && Main.getConfig().getAssetManifest().isInstalled(gameVersion)
+                && DirtLauncher.getConfig().getAssetManifest().isInstalled(gameVersion)
                 && isModloaderInstalled()
                 && versionManifest.get(gameVersion)
                 .map(VersionManifest.Entry::getJavaVersion)
                 .orElse(JavaVersion.legacy)
-                .isInstalled(Main.getConfig().getJavaDirectory());
+                .isInstalled(DirtLauncher.getConfig().getJavaDirectory());
     }
 
     public boolean isFavourite(){
@@ -221,7 +221,7 @@ public class Modpack {
 
     private boolean isModloaderInstalled(){
         switch (modLoader){
-            case FORGE: return Main.getConfig().getForgeManifest().isInstalled(modloaderVersion);
+            case FORGE: return DirtLauncher.getConfig().getForgeManifest().isInstalled(modloaderVersion);
             default: return true;
         }
     }

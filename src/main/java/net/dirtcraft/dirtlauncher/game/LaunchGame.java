@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.game;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
@@ -53,7 +53,7 @@ public class LaunchGame {
     }
 
     public static void launchPack(Modpack pack, Account session) throws LaunchException {
-        ConfigurationManager configManager = Main.getConfig();
+        ConfigurationManager configManager = DirtLauncher.getConfig();
         Settings settings = configManager.getSettings();
         InstanceManifest.Entry instanceManifest = configManager.getInstanceManifest().get(pack).orElseThrow(()->new LaunchException("Instance manifest entry not present."));
         VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
@@ -169,7 +169,7 @@ public class LaunchGame {
                     Install.getStage().ifPresent(Stage::close);
 
                     //Minimize the main stage to the task bar
-                    Main.getHome().getStage().close();
+                    DirtLauncher.getHome().getStage().close();
                     //Create system tray icon
                     SwingUtilities.invokeLater(() -> SystemTray.createIcon(pack));
                 });
@@ -183,7 +183,7 @@ public class LaunchGame {
                     }
                 }
                 //Show main stage
-                Platform.runLater(() -> Main.getHome().getStage().show());
+                Platform.runLater(() -> DirtLauncher.getHome().getStage().show());
                 if (buffer.length() > 0) Platform.runLater(() -> new ErrorWindow(buffer.toString()).show());
 
                 //Close system tray icon

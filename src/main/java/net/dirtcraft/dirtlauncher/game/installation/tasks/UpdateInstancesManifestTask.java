@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks;
 
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -28,7 +28,7 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
             progressContainer.setProgressText("Updating Instances Manifest");
             progressContainer.setNumMinorSteps(2);
 
-            InstanceManifest instanceManifest = Main.getConfig().getInstanceManifest();
+            InstanceManifest instanceManifest = DirtLauncher.getConfig().getInstanceManifest();
 
             instanceManifest.update(pack);
 

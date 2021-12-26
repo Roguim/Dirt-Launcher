@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -32,7 +32,7 @@ final public class ToolBar extends Pane {
         MiscUtils.setAbsoluteSize(settings, largeButtonSize, largeButtonSize);
         settings.setLayoutX(toolbarUpperWidth - largeButtonSize);
         settings.setOnMouseClicked(event -> {
-            Stage stage = Main.getSettingsMenu().getStage();
+            Stage stage = DirtLauncher.getSettingsMenu().getStage();
             stage.show();
         });
 
@@ -43,8 +43,8 @@ final public class ToolBar extends Pane {
         final Button refresh = new Button();
         refresh.setGraphic(MiscUtils.getGraphic(smallButtonSize - buttonGraphicPadding, Constants.JAR_ICONS, "refresh.png"));
         refresh.setOnAction(event -> {
-            CompletableFuture.runAsync(()->Main.getConfig().fullReload()).thenRun(() -> {
-                Main.getHome().update();
+            CompletableFuture.runAsync(()-> DirtLauncher.getConfig().fullReload()).thenRun(() -> {
+                DirtLauncher.getHome().update();
                 try {
                     if (Update.hasUpdate()) Platform.runLater(Update::showStage);
                 } catch (IOException e) {

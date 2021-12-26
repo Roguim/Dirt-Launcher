@@ -12,7 +12,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
@@ -95,14 +95,14 @@ public final class LoginBar extends Pane {
             return;
         }
 
-        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passField.getText().trim()) || Main.getAccounts().hasSelectedAccount()) {
+        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passField.getText().trim()) || DirtLauncher.getAccounts().hasSelectedAccount()) {
             actionButton.setDisable(false);
             actionButton.setOnAction(e -> getActionButton().fire());
         } else actionButton.setDisable(true);
     }
 
     public void setInputs(){
-        Optional<Account> session = Main.getAccounts().getSelectedAccount();
+        Optional<Account> session = DirtLauncher.getAccounts().getSelectedAccount();
         loginContainer.getChildren().clear();
         actionButton.refresh();
         if (session.isPresent()){
@@ -157,13 +157,13 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        if (usernameField.getText().isEmpty() && passField.getText().isEmpty()) Main.getAccounts().login();
-        else Main.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
+        if (usernameField.getText().isEmpty() && passField.getText().isEmpty()) DirtLauncher.getAccounts().login();
+        else DirtLauncher.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
         setInputs();
     }
 
     private void onError(Exception e){
-        Main.getHome().getNotificationBox().displayError(LoginError.from(e));
+        DirtLauncher.getHome().getNotificationBox().displayError(LoginError.from(e));
     }
 
     public void updatePlayButton(ActionButton.Types types){

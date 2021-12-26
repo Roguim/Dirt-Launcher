@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 
 public class Constants {
     public static final String LAUNCHER_VERSION = "@VERSION@";
@@ -46,8 +46,8 @@ public class Constants {
     public final static String JAR_ICONS = "Icons";
 
     @SuppressWarnings("ConstantConditions") //Tokens will replace this on jfxjar / build, but will not when ran using IntelliJ's IDEA application run build script.
-    public static final boolean DEBUG = (Main.getOptions().contains("-debug") || LAUNCHER_VERSION.equals('@' + "VERSION" + '@'));
-    public static final boolean VERBOSE = (Main.getOptions().contains("-verbose"));
+    public static final boolean DEBUG = (DirtLauncher.getOptions().contains("-debug") || LAUNCHER_VERSION.equals('@' + "VERSION" + '@'));
+    public static final boolean VERBOSE = (DirtLauncher.getOptions().contains("-verbose"));
 
     public static final int MAX_DOWNLOAD_ATTEMPTS = 8;
     public static final int MAX_DOWNLOAD_THREADS = 24;

@@ -2,7 +2,7 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.installation.pack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
@@ -84,7 +84,7 @@ public class InstallCursePackTask implements IInstallationTask {
         modsFile.mkdirs();
 
         List<IDownload> downloads = StreamSupport.stream(mods.spliterator(), false)
-                .map(f->Main.gson.fromJson(f, CurseMetaFileReference.class))
+                .map(f-> DirtLauncher.gson.fromJson(f, CurseMetaFileReference.class))
                 .filter(CurseMetaFileReference::isRequired)
                 .collect(Collectors.toList());
 

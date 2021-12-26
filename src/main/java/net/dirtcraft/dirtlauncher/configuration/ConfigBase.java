@@ -1,7 +1,7 @@
 package net.dirtcraft.dirtlauncher.configuration;
 
 import com.google.common.reflect.TypeToken;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
@@ -42,7 +42,7 @@ public abstract class ConfigBase<T> {
 
     public void saveAsync(){
         if (!saveLock.tryAcquire()) pendingSave.set(true);
-        else CompletableFuture.runAsync(this::save, Main.getIOExecutor()).whenComplete((v, e)->saveLock.release());
+        else CompletableFuture.runAsync(this::save, DirtLauncher.getIOExecutor()).whenComplete((v, e)->saveLock.release());
     }
 
     private void save(){

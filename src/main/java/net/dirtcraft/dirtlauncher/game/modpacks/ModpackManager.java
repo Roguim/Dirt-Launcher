@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 
 import java.io.File;
@@ -35,8 +35,8 @@ public class ModpackManager {
     private List<Modpack> modpacks;
 
     public ModpackManager() {
-        jsonPath = Main.getLauncherDirectory().resolve("packs.json").toFile();
-        gson = Main.gson;
+        jsonPath = DirtLauncher.getLauncherDirectory().resolve("packs.json").toFile();
+        gson = DirtLauncher.gson;
         if (!jsonPath.exists()) {
             try {
                 List<Modpack> packsList = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ModpackManager {
     private String getStringFromURL() {
         String string = null;
         try {
-            File file = Main.getOption("-packFile")
+            File file = DirtLauncher.getOption("-packFile")
                     .map(File::new)
                     .orElse(null);
             if (file != null && file.exists()) return new String(Files.readAllBytes(file.toPath()));
