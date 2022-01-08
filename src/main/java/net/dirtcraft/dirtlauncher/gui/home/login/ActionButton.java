@@ -54,7 +54,6 @@ public final class ActionButton extends Button {
                     pack.getModpack().update().thenRun(pack::update);
                     return;
                 case PLAY:
-                    MiscUtils.launchInstallScene(pack);
                     pack.getModpack().launch();
                     return;
                 default:

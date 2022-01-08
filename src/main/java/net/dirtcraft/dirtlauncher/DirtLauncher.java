@@ -1,17 +1,18 @@
 package net.dirtcraft.dirtlauncher;
 
-import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
+import net.dirtcraft.dirtlauncher.data.Minecraft.Java.JavaManifest;
+import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.AccountAdapter;
+import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -29,65 +30,53 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class DirtLauncher extends Application {
     private static final long x = System.currentTimeMillis();
     public static final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-    public static ThreadPoolExecutor threadPool;
     private static CompletableFuture<ConfigurationManager> config = null;
     private static CompletableFuture<AccountManager> accounts = null;
     private static CompletableFuture<Settings> settingsMenu = null;
     private static CompletableFuture<Home> home = null;
     private static Path launcherDirectory;
     private static List<String> options;
-    public static Gson gson;
-    public static final int[] JREVersion = Stream.of(System.getProperty("java.version")
-            .replaceAll("[^\\d.]", "")
-            .split("\\.")).mapToInt(Integer::parseInt)
-            .toArray();
 
     public static void main(String[] args) {
-        threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(24);
-        //noinspection rawtypes
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .setPrettyPrinting()
-                .enableComplexMapKeySerialization()
-                .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
-                .registerTypeAdapter(Account.class, new AccountAdapter())
-                .create();
         options = Arrays.asList(args);
         if (options.contains("-postUpdate")) System.out.println("\n\n");
         launcherDirectory = getLauncherDirectory(options);
         home = CompletableFuture
-                .supplyAsync(Home::new, threadPool)
+                .supplyAsync(Home::new, Main.THREAD_POOL)
                 .whenComplete(DirtLauncher::announceCompletion);
         accounts = CompletableFuture
-                .supplyAsync(()->new AccountManager(launcherDirectory), threadPool)
+                .supplyAsync(()->new AccountManager(launcherDirectory), Main.THREAD_POOL)
                 .whenComplete(DirtLauncher::announceCompletion);
         config = CompletableFuture
-                .supplyAsync(()->new ConfigurationManager(launcherDirectory, options), threadPool)
+                .supplyAsync(()->new ConfigurationManager(launcherDirectory, options), Main.THREAD_POOL)
                 .whenComplete(DirtLauncher::announceCompletion);
         settingsMenu = config
                 .thenApply(Settings::new)
                 .whenComplete(DirtLauncher::announceCompletion);
         settingsMenu.thenRun(Update::checkForUpdates);
-        CompletableFuture.runAsync(DirtLauncher::postUpdateCleanup, threadPool);
+        CompletableFuture.runAsync(DirtLauncher::postUpdateCleanup, Main.THREAD_POOL);
         DiscordPresence.initPresence();
 
         launch(args);
     }
 
     public static ExecutorService getIOExecutor(){
-        return threadPool;
+        return Main.THREAD_POOL;
+    }
+
+    public static Gson getGson() {
+        return Main.gson;
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) {
         Platform.setImplicitExit(false);
         Home home = DirtLauncher.home.join();
         home.getStage().show();
@@ -126,7 +115,6 @@ public class DirtLauncher extends Application {
         else if (SystemUtils.IS_OS_MAC)// If the host OS is mac, use the user's Application Support directory
             return Paths.get(System.getProperty("user.home"), "Library", "Application Support", "DirtCraft", "DirtLauncher");
         else return Paths.get(System.getProperty("user.home"), "DirtCraft", "DirtLauncher");
-        //Logger.INSTANCE.debug("Block Start @ " + (System.currentTimeMillis() - x) + "ms");
     }
 
     public static AccountManager getAccounts() {
@@ -153,10 +141,6 @@ public class DirtLauncher extends Application {
         int idx = options.indexOf(key);
         if (idx < 0) return Optional.empty();
         return Optional.of(options.get(idx + 1));
-    }
-
-    public static boolean hasOption(String key) {
-        return options.contains(key);
     }
 
     public static Path getLauncherDirectory(){

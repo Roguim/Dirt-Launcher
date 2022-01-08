@@ -76,7 +76,7 @@ public class JsonUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     public static <T> T parseJsonUnchecked(File file, TypeToken<T> type) throws IOException {
-        final Gson gson = DirtLauncher.gson;
+        final Gson gson = DirtLauncher.getGson();
         try(
                 FileReader fileReader = new FileReader(file);
                 JsonReader jsonReader = new JsonReader(fileReader)
@@ -87,7 +87,7 @@ public class JsonUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     public static <T> T parseJsonUnchecked(File file, Class<T> clazz) throws IOException {
-        final Gson gson = DirtLauncher.gson;
+        final Gson gson = DirtLauncher.getGson();
         try(
                 FileReader fileReader = new FileReader(file);
                 JsonReader jsonReader = new JsonReader(fileReader)
@@ -106,7 +106,7 @@ public class JsonUtils {
     }
 
     public static <T> void toJson(File file, T t, Type type){
-        final Gson gson = DirtLauncher.gson;
+        final Gson gson = DirtLauncher.getGson();
         try(
                 FileWriter fileWriter = new FileWriter(file);
                 JsonWriter jsonWriter = new JsonWriter(fileWriter)

@@ -14,7 +14,7 @@ import java.util.*;
 
 public class MicroAccount extends Account {
 
-    public static final Gson gson = DirtLauncher.gson;
+    public static final Gson gson = DirtLauncher.getGson();
     private String refreshToken;
     private String name;
     private String uuid;

@@ -36,7 +36,7 @@ public class ModpackManager {
 
     public ModpackManager() {
         jsonPath = DirtLauncher.getLauncherDirectory().resolve("packs.json").toFile();
-        gson = DirtLauncher.gson;
+        gson = DirtLauncher.getGson();
         if (!jsonPath.exists()) {
             try {
                 List<Modpack> packsList = new ArrayList<>();

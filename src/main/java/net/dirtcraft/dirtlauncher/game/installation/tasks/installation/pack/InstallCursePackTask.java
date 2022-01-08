@@ -84,7 +84,7 @@ public class InstallCursePackTask implements IInstallationTask {
         modsFile.mkdirs();
 
         List<IDownload> downloads = StreamSupport.stream(mods.spliterator(), false)
-                .map(f-> DirtLauncher.gson.fromJson(f, CurseMetaFileReference.class))
+                .map(f-> DirtLauncher.getGson().fromJson(f, CurseMetaFileReference.class))
                 .filter(CurseMetaFileReference::isRequired)
                 .collect(Collectors.toList());
 

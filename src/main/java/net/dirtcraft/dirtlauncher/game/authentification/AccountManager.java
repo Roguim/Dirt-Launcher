@@ -1,7 +1,9 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
+import javafx.application.Platform;
 import net.cydhra.nidhogg.YggdrasilClient;
 import net.cydhra.nidhogg.exception.*;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
 import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
 import net.dirtcraft.dirtlauncher.game.authentification.account.LegacyAccount;
@@ -28,7 +30,10 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
 
     public void verifySelected() {
         if (configBase.selectedAccount == null || !configBase.selectedAccount.isValid()) {
+            configBase.altAccounts.remove(configBase.selectedAccount);
             configBase.selectedAccount = null;
+            saveAsync();
+            Platform.runLater(()-> DirtLauncher.getHome().getLoginBar().setInputs());
         }
     }
 

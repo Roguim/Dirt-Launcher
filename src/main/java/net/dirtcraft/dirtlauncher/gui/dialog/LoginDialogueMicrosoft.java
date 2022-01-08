@@ -58,7 +58,7 @@ public class LoginDialogueMicrosoft extends Stage {
                         CompletableFuture.runAsync(()->{
                             tokenConsumer.accept(token);
                             Platform.runLater(bar::setInputs);
-                        }, DirtLauncher.threadPool);
+                        }, DirtLauncher.getIOExecutor());
                     }
                 }
             }

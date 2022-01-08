@@ -42,7 +42,7 @@ public class WebUtils {
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> getGsonFromRequest(Request request, TypeToken<T> type) {
         try {
-            return Optional.ofNullable(DirtLauncher.gson.fromJson(getResponse(request).body().string(), type.getType()));
+            return Optional.ofNullable(DirtLauncher.getGson().fromJson(getResponse(request).body().string(), type.getType()));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();
@@ -62,7 +62,7 @@ public class WebUtils {
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Optional<T> getGsonFromUrl(String url, TypeToken<T> type) {
         try {
-            return Optional.ofNullable(DirtLauncher.gson.fromJson(getJsonStringFromUrl(url), type.getType()));
+            return Optional.ofNullable(DirtLauncher.getGson().fromJson(getJsonStringFromUrl(url), type.getType()));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();
@@ -71,7 +71,7 @@ public class WebUtils {
 
     public static <T> Optional<T> getGsonFromUrl(String url, Class<T> type) {
         try {
-            return Optional.ofNullable(DirtLauncher.gson.fromJson(getJsonStringFromUrl(url), type));
+            return Optional.ofNullable(DirtLauncher.getGson().fromJson(getJsonStringFromUrl(url), type));
         } catch (Exception exception) {
             exception.printStackTrace();
             return Optional.empty();

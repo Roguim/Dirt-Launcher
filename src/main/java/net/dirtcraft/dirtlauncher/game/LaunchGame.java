@@ -53,6 +53,7 @@ public class LaunchGame {
     }
 
     public static void launchPack(Modpack pack, Account session) throws LaunchException {
+        if (session == null) return;
         ConfigurationManager configManager = DirtLauncher.getConfig();
         Settings settings = configManager.getSettings();
         InstanceManifest.Entry instanceManifest = configManager.getInstanceManifest().get(pack).orElseThrow(()->new LaunchException("Instance manifest entry not present."));

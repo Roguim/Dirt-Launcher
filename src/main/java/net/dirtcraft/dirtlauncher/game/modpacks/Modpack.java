@@ -128,6 +128,7 @@ public class Modpack {
         try {
             DirtLauncher.getAccounts().verifySelected();
             Account session = DirtLauncher.getAccounts().getSelectedAccountUnchecked();
+            if (session == null) return;
             LaunchGame.isGameRunning = true;
             LaunchGame.loadServerList(this);
             LaunchGame.launchPack(this, session);
