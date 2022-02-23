@@ -18,13 +18,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 final class AccountList extends Stage {
     private final AccountList instance = this;
@@ -80,7 +77,6 @@ final class AccountList extends Stage {
         final ObservableList<Node> contents = backing.getChildren();
         sessions.forEach(session -> contents.add(0, new AccountButton(session)));
         contents.add(new AddMicroAccountButton());
-        contents.add(new AddMojangAccountButton());
 
 
         focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
@@ -132,29 +128,6 @@ final class AccountList extends Stage {
         @Override
         public void fire() {
             Main.getAccounts().login();
-        }
-    }
-
-    private class AddMojangAccountButton extends Button {
-        private double lastDragY;
-
-        AddMojangAccountButton() {
-            setCursor(Cursor.HAND);
-            setText("Add Mojang Account");
-            setOnMouseDragged(event -> {
-                if (event.isPrimaryButtonDown()) {
-                    double change = (lastDragY - event.getY()) / scrollPane.getHeight();
-                    scrollPane.setVvalue(scrollPane.getVvalue() + change);
-                    lastDragY = change;
-                }
-            });
-        }
-
-        @Override
-        public void fire() {
-            Main.getAccounts().logout();
-            instance.close();
-            Main.getHome().getLoginBar().setInputs();
         }
     }
 }

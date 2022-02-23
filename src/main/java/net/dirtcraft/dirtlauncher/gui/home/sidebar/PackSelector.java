@@ -105,7 +105,7 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
         pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), true);
         DiscordPresence.setDetails("Playing " + modpack.getName());
 
-        if (!MiscUtils.isEmptyOrNull(home.getUsernameField().getText().trim(), home.getPassField().getText().trim()) || Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
+        if (Main.getAccounts().hasSelectedAccount()) playButton.setDisable(false);
     }
 
     private void initContextMenu() {

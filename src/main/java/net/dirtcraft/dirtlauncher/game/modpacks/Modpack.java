@@ -8,7 +8,7 @@ import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
 import net.dirtcraft.dirtlauncher.logging.Logger;

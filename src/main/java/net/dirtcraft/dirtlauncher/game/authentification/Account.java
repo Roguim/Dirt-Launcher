@@ -1,7 +1,7 @@
-package net.dirtcraft.dirtlauncher.game.authentification.account;
+package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.data.MicroSoft.*;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
@@ -10,9 +10,10 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
-public class MicroAccount extends Account {
+public class Account {
 
     public static final Gson gson = Main.gson;
     private String refreshToken;
@@ -20,8 +21,7 @@ public class MicroAccount extends Account {
     private String uuid;
     private String accessToken;
 
-    public MicroAccount(String token) {
-        super(AccountType.MICROSOFT);
+    public Account(String token) {
         AuthResponse authResponse = getAccessToken(token);
         XBLResponse xblResponse = getXBLToken(authResponse);
         XBLResponse xstsResponse = getXstsToken(xblResponse);
@@ -48,22 +48,18 @@ public class MicroAccount extends Account {
         this.uuid = profile.id;
     }
 
-    @Override
     public String getAlias() {
         return name;
     }
 
-    @Override
     public String getAccessToken() {
         return accessToken;
     }
 
-    @Override
     public String getId() {
         return uuid;
     }
 
-    @Override
     public boolean isValid() {
         try {
             String uuid = this.uuid;
@@ -180,5 +176,18 @@ public class MicroAccount extends Account {
                 .build();
 
         return WebUtils.getGsonFromRequest(request, TypeToken.of(MSProfile.class)).get();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return getId().equals(account.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

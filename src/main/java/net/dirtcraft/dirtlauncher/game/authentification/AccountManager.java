@@ -1,11 +1,8 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
-import net.cydhra.nidhogg.YggdrasilClient;
-import net.cydhra.nidhogg.exception.*;
+import javafx.application.Platform;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.LegacyAccount;
-import net.dirtcraft.dirtlauncher.game.authentification.account.MicroAccount;
 import net.dirtcraft.dirtlauncher.gui.dialog.LoginDialogueMicrosoft;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 
@@ -13,15 +10,11 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public final class AccountManager extends ConfigBase<AccountStorage> {
 
-    private YggdrasilClient client;
-
     public AccountManager(Path launcherDirectory){
         super(launcherDirectory.resolve("account.json").toFile(), AccountStorage.class, ()->new AccountStorage(UUID.randomUUID()));
-        client = new YggdrasilClient();
         load();
         verifySelected();
     }
@@ -42,20 +35,12 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
         saveAsync();
     }
 
-    public void login() throws InvalidCredentialsException, InvalidSessionException, TooManyRequestsException, UnauthorizedOperationException, UserMigratedException, YggdrasilBanException {
+    public void login()  {
         LoginDialogueMicrosoft.grabToken(token->{
-            configBase.selectAccount(new MicroAccount(token));
+            configBase.selectAccount(new Account(token));
             saveAsync();
+            Platform.runLater(()-> Main.getHome().getLoginBar().setInputs());
         });
-    }
-
-    public void login(String email, String password, Consumer<Exception> onFailure) {
-        try {
-            configBase.selectAccount(LegacyAccount.login(email, password));
-            saveAsync();
-        } catch (Exception e) {
-            onFailure.accept(e);
-        }
     }
 
     public Set<Account> getAltAccounts() {
@@ -72,10 +57,6 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
 
     public Account getSelectedAccountUnchecked() {
         return configBase.selectedAccount;
-    }
-
-    public YggdrasilClient getClient() {
-        return client;
     }
 
     @Override

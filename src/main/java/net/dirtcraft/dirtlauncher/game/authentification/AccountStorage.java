@@ -1,7 +1,5 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-
 import java.util.*;
 
 public class AccountStorage {
@@ -11,7 +9,6 @@ public class AccountStorage {
 
     AccountStorage(UUID uuid){
         altAccounts = new HashSet<>();
-        clientToken = uuid.toString().replaceAll("-", "");
     }
 
     public void addAccount(Account account) {

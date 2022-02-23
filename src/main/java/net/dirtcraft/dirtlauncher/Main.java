@@ -10,8 +10,7 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
 import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.AccountAdapter;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
@@ -58,7 +57,6 @@ public class Main extends Application {
                 .setPrettyPrinting()
                 .enableComplexMapKeySerialization()
                 .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
-                .registerTypeAdapter(Account.class, new AccountAdapter())
                 .create();
         options = Arrays.asList(args);
         if (options.contains("-postUpdate")) System.out.println("\n\n");

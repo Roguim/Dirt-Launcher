@@ -4,7 +4,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
 import net.dirtcraft.dirtlauncher.Main;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -44,6 +44,7 @@ public final class ActionButton extends Button {
     public void fire() {
         if (Main.getAccounts().hasSelectedAccount())
             switch (type) {
+                case LOGIN: Main.getAccounts().login();
                 case INSTALL:
                 case REPAIR:
                     MiscUtils.launchInstallScene(pack);
@@ -59,9 +60,10 @@ public final class ActionButton extends Button {
                     return;
                 default:
                     Main.getHome().getNotificationBox().displayError(null);
-            }
+            } else Main.getAccounts().login();
     }
     public enum Types{
+        LOGIN,
         INSTALL,
         REPAIR,
         UPDATE,
@@ -71,6 +73,8 @@ public final class ActionButton extends Button {
         @Override
         public String toString() {
             switch (this) {
+                case LOGIN:
+                    return "Login";
                 case PLAY:
                     return "Play";
                 case UPDATE:
