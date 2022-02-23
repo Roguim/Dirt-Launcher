@@ -96,6 +96,7 @@ public class Main extends Application {
     }
 
     private static <T> void announceCompletion(T t, Throwable e){
+        if (e != null) e.printStackTrace();
         if (!Constants.VERBOSE) return;
         final long ms = System.currentTimeMillis() - x;
         final String clazz = t.getClass().getSimpleName();

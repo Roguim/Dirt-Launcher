@@ -1,7 +1,5 @@
 package net.dirtcraft.dirtlauncher.game.authentification.account;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.cydhra.nidhogg.YggdrasilAgent;
 import net.cydhra.nidhogg.data.AccountCredentials;
 import net.cydhra.nidhogg.data.Session;
@@ -33,20 +31,6 @@ public class LegacyAccount extends Account {
     }
 
     public boolean isValid(){
-        try {
-            Main.getAccounts().getClient().validate(session);
-            return true;
-        } catch (Exception e){
-            System.out.println("Session not valid, Attempting to refresh it!");
-            try {
-                Main.getAccounts().getClient().refresh(session);
-                return true;
-            } catch (Exception refreshException){
-                System.out.println(e.getMessage());
-                System.out.println(refreshException.getMessage());
-                System.out.println("Session not valid.");
-            }
-        }
         return false;
     }
 }
