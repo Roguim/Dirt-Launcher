@@ -1,7 +1,7 @@
 package net.dirtcraft.dirtlauncher.game.authentification;
 
 import javafx.application.Platform;
-import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigBase;
 import net.dirtcraft.dirtlauncher.gui.dialog.LoginDialogueMicrosoft;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -39,7 +39,7 @@ public final class AccountManager extends ConfigBase<AccountStorage> {
         LoginDialogueMicrosoft.grabToken(token->{
             configBase.selectAccount(new Account(token));
             saveAsync();
-            Platform.runLater(()-> Main.getHome().getLoginBar().setInputs());
+            Platform.runLater(()-> DirtLauncher.getHome().getLoginBar().setInputs());
         });
     }
 

@@ -6,23 +6,16 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.data.Minecraft.Java.JavaManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
-import net.dirtcraft.dirtlauncher.game.authentification.AccountManager;
-import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.gui.components.DiscordPresence;
 import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.game.authentification.*;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,9 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 public class DirtLauncher extends Application {
     private static final long x = System.currentTimeMillis();

@@ -3,18 +3,12 @@ package net.dirtcraft.dirtlauncher;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.dirtcraft.dirtlauncher.data.Minecraft.Java.JavaVersionManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
-import net.dirtcraft.dirtlauncher.game.authentification.account.AccountAdapter;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -25,7 +19,6 @@ public class Main {
             .setPrettyPrinting()
             .enableComplexMapKeySerialization()
             .registerTypeAdapter(Multimap .class, new MultiMapAdapter<>())
-            .registerTypeAdapter(Account .class, new AccountAdapter())
             .create();
     public static final String DEFAULT_JRE = "default_jre";
     public static final String DEFAULT_JFX = "default_jfx";

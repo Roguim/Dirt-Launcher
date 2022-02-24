@@ -10,7 +10,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 
 import javax.annotation.Nullable;

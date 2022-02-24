@@ -7,6 +7,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -63,7 +64,7 @@ public final class LoginBar extends Pane {
     }
 
     public void setInputs() {
-        Optional<Account> session = Main.getAccounts().getSelectedAccount();
+        Optional<Account> session = DirtLauncher.getAccounts().getSelectedAccount();
         loginContainer.getChildren().clear();
         actionButton.refresh();
         boolean account = session.isPresent();
@@ -105,6 +106,6 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        Main.getAccounts().login();
+        DirtLauncher.getAccounts().login();
     }
 }
