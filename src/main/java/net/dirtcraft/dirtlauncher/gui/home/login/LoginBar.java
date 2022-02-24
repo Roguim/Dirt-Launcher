@@ -1,29 +1,21 @@
 package net.dirtcraft.dirtlauncher.gui.home.login;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import net.dirtcraft.dirtlauncher.DirtLauncher;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.game.authentification.LoginError;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 
 import java.util.Optional;
 
 public final class LoginBar extends Pane {
-    private final TextField usernameField;
-    private final PasswordField passField;
     private final ActionButton actionButton;
     private final LogoutButton logout;
     private final GridPane loginContainer;
@@ -32,8 +24,6 @@ public final class LoginBar extends Pane {
     public LoginBar() {
         actionButton = new ActionButton();
         activePackCell = null;
-        passField = new PasswordField();
-        usernameField = new TextField();
         loginContainer = new GridPane();
         logout = new LogoutButton(this);
 
@@ -42,11 +32,6 @@ public final class LoginBar extends Pane {
         MiscUtils.setAbsoluteSize(loginContainer, 250.0, 59);
 
         setId(Constants.CSS_ID_LOGIN_BAR);
-        passField.setId("PasswordField");
-        usernameField.setId("UsernameField");
-
-        setTextDrag(passField);
-        setTextDrag(usernameField);
 
         RowConstraints x1 = new RowConstraints();
         RowConstraints x2 = new RowConstraints();
@@ -71,73 +56,36 @@ public final class LoginBar extends Pane {
         loginContainer.setLayoutX(8);
         loginContainer.setLayoutY(8);
 
-        usernameField.setPromptText("E-Mail Address");
-        passField.setPromptText("Password");
         actionButton.setDefaultButton(true);
-        actionButton.setDisable(true);
+        //actionButton.setDisable(true);
         actionButton.setText("Play");
         getChildren().setAll(loginContainer);
-        usernameField.setOnKeyTyped(this::setKeyTypedEvent);
-        passField.setOnKeyPressed(this::setKeyTypedEvent);
-
-        SimpleBooleanProperty firstTime =  new SimpleBooleanProperty(true);
-        usernameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue && firstTime.get()){
-                this.requestFocus();
-                firstTime.setValue(false);
-            }
-        });
     }
 
-    private void setKeyTypedEvent(KeyEvent event) {
-        if (!getActivePackCell().isPresent()) {
-            actionButton.setDisable(true);
-            return;
-        }
-
-        if (!MiscUtils.isEmptyOrNull(usernameField.getText().trim(), passField.getText().trim()) || DirtLauncher.getAccounts().hasSelectedAccount()) {
-            actionButton.setDisable(false);
-            actionButton.setOnAction(e -> getActionButton().fire());
-        } else actionButton.setDisable(true);
-    }
-
-    public void setInputs(){
-        Optional<Account> session = DirtLauncher.getAccounts().getSelectedAccount();
+    public void setInputs() {
+        Optional<Account> session = Main.getAccounts().getSelectedAccount();
         loginContainer.getChildren().clear();
         actionButton.refresh();
-        if (session.isPresent()){
-            final int barSize = 252;
-            final int logoutSize = 35;
-            actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), true);
+        boolean account = session.isPresent();
+        final int barSize = 252;
+        final int logoutSize = 35;
+        actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), account);
+        loginContainer.add(actionButton, 0, 0, 2, 2);
+        if (account) {
             actionButton.setTranslateX(-logoutSize);
-            MiscUtils.setAbsoluteSize(actionButton , barSize-logoutSize ,  59 );
-            MiscUtils.setAbsoluteSize(logout , logoutSize ,  59 );
-            loginContainer.add(actionButton, 0, 0,  2, 2);
-            loginContainer.add(logout, 0, 0,  2, 2);
+            MiscUtils.setAbsoluteSize(actionButton, barSize - logoutSize, 59);
+            MiscUtils.setAbsoluteSize(logout, logoutSize, 59);
             this.actionButton.setType(session.get());
-            if (activePackCell != null) actionButton.setDisable(false);
+            loginContainer.add(logout, 0, 0, 2, 2);
         } else {
-            MiscUtils.setAbsoluteSize(actionButton, 58, 59);
             actionButton.setTranslateX(0);
-            loginContainer.add(usernameField, 0, 0, 1, 1);
-            loginContainer.add(passField, 0, 1, 1, 1);
-            loginContainer.add(new LoginButton(this), 1, 0, 1, 2);
-            actionButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("authenticated"), false);
-            this.actionButton.setType(null);
-            actionButton.setDisable(true);
+            MiscUtils.setAbsoluteSize(actionButton, barSize, 59);
+            this.actionButton.setType(ActionButton.Types.LOGIN, null);
         }
     }
 
     public ActionButton getActionButton() {
         return actionButton;
-    }
-
-    public PasswordField getPassField() {
-        return passField;
-    }
-
-    public TextField getUsernameField() {
-        return usernameField;
     }
 
     public Optional<PackSelector> getActivePackCell() {
@@ -157,32 +105,6 @@ public final class LoginBar extends Pane {
     }
 
     public void login(){
-        if (usernameField.getText().isEmpty() && passField.getText().isEmpty()) DirtLauncher.getAccounts().login();
-        else DirtLauncher.getAccounts().login(usernameField.getText(), passField.getText(), this::onError);
-        setInputs();
-    }
-
-    private void onError(Exception e){
-        DirtLauncher.getHome().getNotificationBox().displayError(LoginError.from(e));
-    }
-
-    public void updatePlayButton(ActionButton.Types types){
-        actionButton.setType(types, activePackCell);
-    }
-
-    public void setTextDrag(TextField node){
-        node.setOnDragOver(event -> {
-            if (event.getDragboard().hasString()){
-                event.acceptTransferModes(TransferMode.ANY);
-            }
-            event.consume();
-        });
-
-        node.setOnDragDropped(event -> {
-            if (event.getDragboard().hasString()){
-                node.setText(event.getDragboard().getString());
-            }
-            event.consume();
-        });
+        Main.getAccounts().login();
     }
 }

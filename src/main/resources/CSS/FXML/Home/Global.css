@@ -164,8 +164,8 @@
 }
 
 #PlayButton{
-    -fx-border-radius: 00 15 15 00;
-    -fx-background-radius: 00 15 15 00;
+    -fx-border-radius: 15 15 15 15;
+    -fx-background-radius: 15 15 15 15;
     -fx-opacity: 1;
     -fx-font-size: 13 ;
     -fx-font-weight: bold ;

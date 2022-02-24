@@ -3,8 +3,8 @@ package net.dirtcraft.dirtlauncher.gui.home.login;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
-import net.dirtcraft.dirtlauncher.DirtLauncher;
-import net.dirtcraft.dirtlauncher.game.authentification.account.Account;
+import net.dirtcraft.dirtlauncher.Main;
+import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -29,7 +29,7 @@ public final class ActionButton extends Button {
     }
 
     public void setType(Types type, PackSelector pack) {
-        Optional<Account> account = DirtLauncher.getAccounts().getSelectedAccount();
+        Optional<Account> account = Main.getAccounts().getSelectedAccount();
         this.type = type;
         this.pack = pack;
         if (!account.isPresent() || type != Types.PLAY) setText(type.toString());
@@ -42,8 +42,9 @@ public final class ActionButton extends Button {
 
     @Override
     public void fire() {
-        if (DirtLauncher.getAccounts().hasSelectedAccount())
+        if (Main.getAccounts().hasSelectedAccount())
             switch (type) {
+                case LOGIN: Main.getAccounts().login();
                 case INSTALL:
                 case REPAIR:
                     MiscUtils.launchInstallScene(pack);
@@ -54,13 +55,15 @@ public final class ActionButton extends Button {
                     pack.getModpack().update().thenRun(pack::update);
                     return;
                 case PLAY:
+                    MiscUtils.launchInstallScene(pack);
                     pack.getModpack().launch();
                     return;
                 default:
-                    DirtLauncher.getHome().getNotificationBox().displayError(null);
-            }
+                    Main.getHome().getNotificationBox().displayError(null);
+            } else Main.getAccounts().login();
     }
     public enum Types{
+        LOGIN,
         INSTALL,
         REPAIR,
         UPDATE,
@@ -70,6 +73,8 @@ public final class ActionButton extends Button {
         @Override
         public String toString() {
             switch (this) {
+                case LOGIN:
+                    return "Login";
                 case PLAY:
                     return "Play";
                 case UPDATE:
