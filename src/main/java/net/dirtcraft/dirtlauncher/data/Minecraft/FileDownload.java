@@ -1,5 +1,6 @@
 package net.dirtcraft.dirtlauncher.data.Minecraft;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class FileDownload {
@@ -8,5 +9,13 @@ public class FileDownload {
     }
     public final String sha1;
     public final long size;
-    public final URL url;
+    public final String url;
+
+    public URL getUrl() {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 }

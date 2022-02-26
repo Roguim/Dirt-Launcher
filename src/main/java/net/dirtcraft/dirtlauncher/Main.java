@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.dirtcraft.dirtlauncher.data.serializers.MultiMapAdapter;
+import net.dirtcraft.dirtlauncher.utils.forge.Artifact;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class Main {
             .serializeNulls()
             .setPrettyPrinting()
             .enableComplexMapKeySerialization()
-            .registerTypeAdapter(Multimap .class, new MultiMapAdapter<>())
+            .registerTypeAdapter(Artifact.class, new Artifact.Adapter())
+            .registerTypeAdapter(Multimap.class, new MultiMapAdapter<>())
             .create();
     public static final String DEFAULT_JRE = "default_jre";
     public static final String DEFAULT_JFX = "default_jfx";

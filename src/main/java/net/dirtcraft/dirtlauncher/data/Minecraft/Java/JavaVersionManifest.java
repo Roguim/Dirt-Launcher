@@ -17,7 +17,7 @@ public class JavaVersionManifest {
         files.forEach((path, archive)->{
             if (archive.downloads != null) {
                 FileDownload dl = archive.downloads.get("raw");
-                downloads.add(new DownloadMeta(dl.url, new File(folder, path), dl.size, dl.sha1));
+                downloads.add(new DownloadMeta(dl.getUrl(), new File(folder, path), dl.size, dl.sha1));
             }
         });
         return downloads;

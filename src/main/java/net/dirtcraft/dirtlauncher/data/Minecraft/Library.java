@@ -13,10 +13,11 @@ public class Library {
     }
     final String name;
     final Downloads downloads;
+    final List<Rule> rules; //1.16.5+
     //final ExtractInfo extract; <-- usually to just remove META-INF.
 
     public boolean isRequired(){
-        return downloads.rules == null || downloads.rules.stream().allMatch(Rule::canDownload);
+        return downloads.isRequired() && ( rules == null || rules.stream().allMatch(Rule::canDownload));
     }
 
     public boolean notRequired(){
@@ -43,9 +44,13 @@ public class Library {
         public Downloads(int i) throws InstantiationException{
             throw new InstantiationException("Gson data class. Not to be manually created.");
         }
-        final List<Rule> rules;
+        final List<Rule> rules; //1.12.2
         final Download artifact;
         final Map<String, Download> classifiers;
+
+        public boolean isRequired(){
+            return rules == null || rules.stream().allMatch(Rule::canDownload);
+        }
 
     }
 }

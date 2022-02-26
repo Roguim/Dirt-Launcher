@@ -2,6 +2,7 @@ package net.dirtcraft.dirtlauncher.data.Minecraft;
 
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -11,7 +12,7 @@ public class Download extends FileDownload implements IDownload {
         throw new InstantiationException("Gson data class. Not to be manually created.");
     }
 
-    final URI path;
+    public final URI path;
 
     @Override
     public long getSize() {
@@ -21,11 +22,6 @@ public class Download extends FileDownload implements IDownload {
     @Override
     public void setSize(long size) {
 
-    }
-
-    @Override
-    public URL getUrl() {
-        return url;
     }
 
     @Override
