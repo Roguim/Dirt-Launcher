@@ -1,12 +1,15 @@
 package net.dirtcraft.dirtlauncher.game.installation.tasks.download.data;
 
+import net.dirtcraft.dirtlauncher.data.Minecraft.Download;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 
 public interface IDownload {
-    default DownloadTask getDownload(Path folder){
-        return new DownloadTask(this, folder);
+    default DownloadTask getDownload(Path folder) {
+        if (getUrl() == null) return null;
+        else return new DownloadTask(this, folder);
     }
 
     default IFileDownload getPreset(File dest){

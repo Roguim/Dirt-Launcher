@@ -20,15 +20,19 @@ import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
+import net.dirtcraft.dirtlauncher.utils.forge.ForgeInstallManifest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,7 +50,7 @@ public class ForgeInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(DownloadManager  downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Forge Installer");
         progressContainer.setNumMinorSteps(2);
@@ -75,7 +79,13 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
         JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, tempDir); //todo some sort of progress display?
-        forgeInstaller.delete();
+
+        JarFile f = new JarFile(forgeInstaller);
+        File installProfile = new File(tempDir, "install_profile.json");
+        try (InputStream jis = f.getInputStream(f.getJarEntry("install_profile.json"))){
+            Files.copy(jis, installProfile.toPath());
+        }
+        ForgeInstallManifest installManifest = JsonUtils.parseJsonUnchecked(installProfile, ForgeInstallManifest.class);
         progressContainer.setNumMinorSteps(1);
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
@@ -128,6 +138,8 @@ public class ForgeInstallationTask implements IInstallationTask {
         baseDownloads.addAll(packedDownloads);
         baseDownloads.forEach(lib->addToLaunchCode(lib, libraries));
 
+        installManifest.run(new File(forgeFolder, "libraries"), forgeInstaller, config, downloadManager);
+        forgeInstaller.delete();
 
         // Update Forge Versions Manifest
         progressContainer.setProgressText("Updating Forge Versions Manifest");
