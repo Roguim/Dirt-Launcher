@@ -21,7 +21,7 @@ public class GameVersion {
     private String type;
 
     public JavaVersion getJava() {
-        return javaVersion != null? javaVersion : JavaVersion.legacy;
+        return javaVersion != null? javaVersion : JavaVersion.LEGACY;
     }
 
     public Download getAssetIndex() {

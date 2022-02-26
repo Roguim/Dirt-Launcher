@@ -12,10 +12,12 @@ import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.game.authentification.*;
+import net.dirtcraft.dirtlauncher.utils.Launcher;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,7 +37,7 @@ public class DirtLauncher extends Application {
     private static Path launcherDirectory;
     private static List<String> options;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         options = Arrays.asList(args);
         if (options.contains("-postUpdate")) System.out.println("\n\n");
         launcherDirectory = getLauncherDirectory(options);

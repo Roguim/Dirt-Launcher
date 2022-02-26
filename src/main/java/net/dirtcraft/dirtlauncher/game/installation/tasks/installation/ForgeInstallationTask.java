@@ -10,6 +10,7 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
+import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadLocal;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
@@ -99,7 +100,7 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         List<IFileDownload> downloads = StreamSupport.stream(librariesArray.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
-                .map(lib->getLibraryDownload(lib, forgeFolder))
+                .map(lib->getLibraryDownload(lib, forgeFolder, tempDir))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -139,14 +140,14 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.nextMajorStep();
     }
 
-    private Optional<DownloadMeta> getLibraryDownload(JsonObject library, File forgeFolder) {
+    private Optional<IFileDownload> getLibraryDownload(JsonObject library, File forgeFolder, File tempDir) {
         String[] libraryMaven = library.get("name").getAsString().split(":");
 
         // We already installed forge, no need to do it again.
-        if (libraryMaven[1].equals("forge")) {
-            Logger.INSTANCE.debug("Skipping forge library because Forge is already installed!");
-            return Optional.empty();
-        }
+        //if (libraryMaven[1].equals("forge")) {
+        //    Logger.INSTANCE.debug("Skipping forge library because Forge is already installed!");
+        //    return Optional.empty();
+        //}
         Logger.INSTANCE.debug("Installing library: " + libraryMaven[1]);
 
         // Establish paths
@@ -157,17 +158,30 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .resolve(libraryMaven[2])
                 .toFile();
         libraryPath.mkdirs();
-        JsonElement urlElement = JsonUtils.getJsonElement(library, "downloads", "artifact", "url").orElse(JsonNull.INSTANCE);
-        String url = parseUrlElement(urlElement, library, libraryMaven).replace("http://", "https://");
+        String url = JsonUtils.getJsonElement(library, "downloads", "artifact", "url")
+                .filter(j->!j.isJsonNull())
+                .map(JsonElement::getAsString)
+                .filter(s->!s.isEmpty())
+                .orElse(null);
+        String path = JsonUtils.getJsonElement(library, "downloads", "artifact", "path")
+                .filter(j->!j.isJsonNull())
+                .map(JsonElement::getAsString)
+                .filter(s->!s.isEmpty())
+                .orElse(null);
+        File libraryFile = new File(libraryPath, String.format("%s-%s.jar", libraryMaven[1], libraryMaven[2]));
+        if (url == null && path != null) {
+            File artifact = new File(new File(tempDir, "maven"), path);
+            if (artifact.exists()) return Optional.of(new DownloadLocal(artifact, libraryFile));
+        }
+        url = parseUrlElement(url, library, libraryMaven).replace("http://", "https://");
 
         // Install the library
-        File libraryFile = new File(libraryPath, String.format("%s-%s.jar", libraryMaven[1], libraryMaven[2]));
         Logger.INSTANCE.debug("Downloading " + url);
         return Optional.of(new DownloadMeta(MiscUtils.getURL(url).orElseThrow(NullPointerException::new), libraryFile));
     }
 
-    private String parseUrlElement(JsonElement urlElement, JsonObject library, String[] libraryMaven) {
-        if (!urlElement.isJsonNull()) return urlElement.getAsString();
+    private String parseUrlElement(String urlElement, JsonObject library, String[] libraryMaven) {
+        if (urlElement != null) return urlElement;
         final String concatLibrary = String.format("%s/%s/%s/%s-%s.jar", libraryMaven[0].replace(".", "/"), libraryMaven[1], libraryMaven[2], libraryMaven[1], libraryMaven[2]);
         return library.has("url") ? library.get("url").getAsString() + concatLibrary : "https://libraries.minecraft.net/" + concatLibrary;
     }
