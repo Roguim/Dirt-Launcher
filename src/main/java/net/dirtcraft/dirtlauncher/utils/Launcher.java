@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.utils;
 
-import net.dirtcraft.dirtlauncher.DirtLauncher;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
 import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -27,7 +27,7 @@ public class Launcher {
     }
 
     private String getJavaExec() {
-        return DirtLauncher.getConfig()
+        return Main.getConfig()
                 .getJavaDirectory()
                 .toPath()
                 .resolve(java.getJavaExec())

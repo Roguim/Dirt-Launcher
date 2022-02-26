@@ -154,7 +154,7 @@ public class Modpack {
                 && isModloaderInstalled()
                 && versionManifest.get(gameVersion)
                 .map(VersionManifest.Entry::getJavaVersion)
-                .orElse(JavaVersion.legacy)
+                .orElse(JavaVersion.LEGACY)
                 .isInstalled(Main.getConfig().getJavaDirectory());
     }
 

@@ -1,6 +1,6 @@
 package net.dirtcraft.dirtlauncher.utils;
 
-import net.dirtcraft.dirtlauncher.DirtLauncher;
+import net.dirtcraft.dirtlauncher.Main;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
@@ -9,7 +9,6 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
 import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
-import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.logging.Logger;
@@ -35,7 +34,7 @@ public class LegacyLauncher {
 
     public Process launchPack(Settings settings, Account session) throws IOException {
         if (session == null) return null;
-        ConfigurationManager configManager = DirtLauncher.getConfig();
+        ConfigurationManager configManager = Main.getConfig();
         InstanceManifest.Entry instanceManifest = configManager.getInstanceManifest().get(modpack).orElseThrow(() -> new IOException("Instance manifest entry not present."));
         VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(modpack.getGameVersion()).orElseThrow(() -> new IOException("Version manifest entry not present."));
         ForgeManifest.Entry forgeManifest = configManager.getForgeManifest().get(modpack.getForgeVersion()).orElseThrow(() -> new IOException("Forge manifest entry not present."));

@@ -16,6 +16,7 @@ import net.dirtcraft.dirtlauncher.gui.dialog.Update;
 import net.dirtcraft.dirtlauncher.gui.home.Home;
 import net.dirtcraft.dirtlauncher.gui.home.toolbar.Settings;
 import net.dirtcraft.dirtlauncher.logging.Logger;
+import net.dirtcraft.dirtlauncher.utils.forge.Artifact;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.*;
@@ -57,6 +58,7 @@ public class Main extends Application {
                 .setPrettyPrinting()
                 .enableComplexMapKeySerialization()
                 .registerTypeAdapter(Multimap.class, new MultiMapAdapter())
+                .registerTypeAdapter(Artifact.class, new Artifact.Adapter())
                 .create();
         options = Arrays.asList(args);
         if (options.contains("-postUpdate")) System.out.println("\n\n");
