@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static net.dirtcraft.dirtlauncher.configuration.Constants.MAX_DOWNLOAD_ATTEMPTS;
 
 public class DownloadTask {
-    private IDownload downloadData;
+    IDownload downloadData;
     private Path folder;
     private final AtomicLong currentProgress;
     private long lastProgress;

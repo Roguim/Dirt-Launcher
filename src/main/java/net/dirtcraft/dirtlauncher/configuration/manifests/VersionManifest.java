@@ -38,7 +38,7 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
             StreamSupport.stream(jsonObject.getAsJsonArray("versions").spliterator(), false)
                     .map(JsonElement::getAsJsonObject)
                     .forEach(versionManifest -> {
-                        final JavaVersion javaVersion = JavaVersion.legacy;
+                        final JavaVersion javaVersion = JavaVersion.LEGACY;
                         final String version = versionManifest.get("version").getAsString();
                         final Entry entry = new Entry(version, javaVersion, this);
                         final Path libDir = entry.getLibsFolder();

@@ -111,7 +111,7 @@ public class InstallationManager {
         if (!config.getForgeManifest().isInstalled(pack.getForgeVersion())) installationTasks.add(new ForgeInstallationTask(pack));
         JavaVersion javaVersion = config.getVersionManifest().get(pack.getGameVersion())
                 .map(VersionManifest.Entry::getJavaVersion)
-                .orElse(JavaVersion.legacy);
+                .orElse(JavaVersion.LEGACY);
         if (!javaVersion.isInstalled(config.getJavaDirectory())) installationTasks.add(new JavaInstallationTask(javaVersion));
 
         // Add the pack task as the next task
