@@ -1,0 +1,110 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://jitpack.io/' }
+        jcenter()
+    }
+}
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'javafx-gradle-plugin'
+
+configurations {
+    packaged
+    provided
+    shaded
+    compile.extendsFrom(provided)
+    compile.extendsFrom(shaded)
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+def bootstrapJar = "Dirt-Bootstrap-Updater:$bootstrapVersion"
+def outputJar = "${project.name}.jar"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jitpack.io/' }
+    //maven { url 'https://libraries.minecraft.net'}
+}
+
+dependencies {
+    packaged "com.github.Dirt-Craft:$bootstrapJar"
+
+    provided fileTree(dir: 'src/main/libraries', include: '*.jar')
+    provided project(":Library")
+    provided 'com.squareup.okhttp3:okhttp-tls:4.9.2'
+    provided 'com.squareup.okhttp3:okhttp:4.9.2'
+    provided 'com.google.http-client:google-http-client:1.23.0'
+    provided 'commons-io:commons-io:2.6'
+    provided 'com.github.Vatuu:discord-rpc:6233ef5'
+    provided 'org.apache.commons:commons-compress:1.18'
+    provided 'net.lingala.zip4j:zip4j:2.1.0'
+    provided "org.tukaani:xz:1.8"
+}
+
+
+jar {
+    archiveName = outputJar
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
+        )
+    }
+    from configurations.provided.asFileTree.files.collect {zipTree(it)}
+    from configurations.packaged.copy()
+}
+
+shadowJar {
+    configurations = [project.configurations.shaded]
+    archiveFileName = outputJar
+    //minimize() todo: not break shit
+}
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = 'net.dirtcraft.dirtlauncher.Main'
+    css2bin = true
+
+    // minimal requirement for jfxNative-task
+    vendor = 'DirtCraft'
+}
+
+task processSource(type: Sync) {
+    from sourceSets.main.java
+    inputs.properties(
+            version: version,
+            bootstrap: bootstrapJar)
+    filter(ReplaceTokens, tokens: [
+            VERSION  : version,
+            BOOTSTRAP: bootstrapJar.replace(":", "-") + ".jar"])
+    into "$buildDir/src"
+}
+
+compileJava {
+    source = processSource.outputs
+}
+
+
+sourceSets.main {
+    resources {
+        srcDirs = ["src/main/resources"]
+        includes = ["**/*.*"]
+    }
+}
+
+//jfxJar.dependsOn(shadowJar)
+//build.dependsOn(shadowJar)
+compileJava.options.encoding = 'UTF-8'

@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'java-library'
+
+repositories {
+    google()
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    api 'org.apache.commons:commons-lang3:3.9'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'com.google.guava:guava:28.0-jre'
+}
+
+compileJava.options.encoding = 'UTF-8'

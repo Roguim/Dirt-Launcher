@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://jitpack.io/' }
+    }
+}
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+apply plugin: 'java'
+apply plugin: 'java-library'
+
+configurations {
+    packaged
+    provided
+    shaded
+    compile.extendsFrom(provided)
+    compile.extendsFrom(shaded)
+}
+
+def resourceTargets = ['release.json']
+def intoTargets = ["$rootDir/Launcher/out/production/resources/"]
+def replaceProperties = [version:project.ext.fullVersion]
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+    intoTargets.each { target ->
+        if (file(target).exists()) {
+            copy {
+                from(sourceSets.main.resources) {
+                    include resourceTargets
+                    expand replaceProperties
+                }
+                into target
+            }
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+dependencies {
+    api project(':Library')
+}
