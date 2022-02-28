@@ -4,7 +4,6 @@ import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 
 public class UpdateInstancesManifestTask implements IInstallationTask {
@@ -22,7 +21,7 @@ public class UpdateInstancesManifestTask implements IInstallationTask {
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) {
         try {
             // Update Progress
             progressContainer.setProgressText("Updating Instances Manifest");

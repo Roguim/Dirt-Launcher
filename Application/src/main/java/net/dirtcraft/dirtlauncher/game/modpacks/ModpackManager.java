@@ -12,7 +12,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
+import net.dirtcraft.dirtlauncher.lib.config.Constants;
 
 import java.io.File;
 import java.io.FileReader;

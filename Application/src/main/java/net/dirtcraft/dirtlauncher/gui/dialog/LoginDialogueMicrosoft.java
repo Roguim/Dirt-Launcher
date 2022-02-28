@@ -22,8 +22,8 @@ import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static net.dirtcraft.dirtlauncher.configuration.Constants.MICROSOFT_LOGIN_REDIRECT_SUFFIX;
-import static net.dirtcraft.dirtlauncher.configuration.Constants.MICROSOFT_LOGIN_URL;
+import static net.dirtcraft.dirtlauncher.lib.config.Constants.MICROSOFT_LOGIN_REDIRECT_SUFFIX;
+import static net.dirtcraft.dirtlauncher.lib.config.Constants.MICROSOFT_LOGIN_URL;
 
 public class LoginDialogueMicrosoft extends Stage {
 

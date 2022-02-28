@@ -2,17 +2,17 @@ package net.dirtcraft.dirtlauncher.game.installation.tasks.update;
 
 import com.google.common.reflect.TypeToken;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseFile;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseMetaFileReference;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadTask;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.FileTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.JsonTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.lingala.zip4j.ZipFile;
@@ -20,6 +20,7 @@ import net.lingala.zip4j.ZipFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,15 +41,14 @@ public class UpdateCursePackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Prepare Folders
         modpackFolder.mkdirs();
         tempDir.mkdirs();
 
         // Download Modpack Zip
-        IFileDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
-        Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
-        downloadManager.download(updater, manifestDownload);
+        DownloadTask manifestDownload = new DownloadTask(new URL(new URL(pack.getLink()).toString().replace("%2B", "+")), modpackZip);
+        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.bitrate, "Downloading Manifest");
 
         // Extract Modpack Zip
         progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 3);
@@ -71,30 +71,28 @@ public class UpdateCursePackTask implements IUpdateTask {
 
         //Work out what changes need to be made to the mods and remove / add them.
         progressContainer.nextMajorStep("Calculating Changes", oldManifest.files.size() + newManifest.files.size());
-        List<IDownload> toRemove = oldManifest.files.parallelStream()
+        oldManifest.files.parallelStream()
                 .filter(file->file.required)
                 .filter(file->newManifest.files.stream().noneMatch(file::equals))
                 .peek(e->progressContainer.completeMinorStep())
-                .collect(Collectors.toList());
+                .map(CurseMetaFileReference::getManifest)
+                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching File MetaData"))
+                .stream()
+                .map(JsonTask::getResult)
+                .map(x->x.getDownload(modsFolder))
+                .map(FileTask::getDestination)
+                .forEach(File::delete);
 
-        List<IDownload> toInstall = newManifest.files.parallelStream()
+        newManifest.files.parallelStream()
                 .filter(file->file.required)
                 .filter(file->oldManifest.files.stream().noneMatch(file::equals))
                 .peek(e->progressContainer.completeMinorStep())
-                .collect(Collectors.toList());
-
-        //remove old mods
-        progressContainer.nextMajorStep();
-        Trackers.PreparationUpdater removalUpdater = Trackers.getPrepTracker(progressContainer, "Deleting outdated mods");
-        downloadManager.preCalculate(removalUpdater, toRemove, modsFolder.toPath()).stream()
-                .map(DownloadTask::getFile)
-                .forEach(File::delete);
-
-        //install new mods
-        progressContainer.nextMajorStep();
-        Trackers.MultiUpdater installUpdater = Trackers.getTracker(progressContainer, "Preparing to download new mods", "Downloading new mods");
-        downloadManager.download(installUpdater, toInstall, modsFolder.toPath());
-
+                .map(CurseMetaFileReference::getManifest)
+                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching File MetaData"))
+                .stream()
+                .map(JsonTask::getResult)
+                .map(x->x.getDownload(modsFolder))
+                .collect(TaskExecutor.collector(progressContainer.progress, "Downloading new mods"));
 
         // Delete the temporary files
         progressContainer.nextMajorStep("Cleaning Up", 1);

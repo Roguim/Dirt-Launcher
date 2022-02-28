@@ -6,12 +6,9 @@ import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.GameVersion;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.UpdateInstancesManifestTask;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.AssetsInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.ForgeInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.installation.JavaInstallationTask;
@@ -25,6 +22,8 @@ import net.dirtcraft.dirtlauncher.game.installation.tasks.update.UpdateFTBPackTa
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.game.modpacks.OptionalMod;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.GameVersion;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
@@ -34,11 +33,9 @@ import java.util.List;
 
 public class InstallationManager {
 
-    private final DownloadManager downloadManager;
     private final ConfigurationManager config;
 
     private InstallationManager() {
-        downloadManager = new DownloadManager();
         config = DirtLauncher.getConfig();
     }
 
@@ -112,7 +109,7 @@ public class InstallationManager {
         JavaVersion javaVersion = config.getVersionManifest().get(pack.getGameVersion())
                 .map(VersionManifest.Entry::getJavaVersion)
                 .orElse(JavaVersion.LEGACY);
-        if (!javaVersion.isInstalled(config.getJavaDirectory())) installationTasks.add(new JavaInstallationTask(javaVersion));
+        if (!javaVersion.isInstalled()) installationTasks.add(new JavaInstallationTask(javaVersion));
 
         // Add the pack task as the next task
         if (!pack.isInstalled() || pack.isOutdated()) installationTasks.add(packInstallTask);
@@ -158,7 +155,7 @@ public class InstallationManager {
 
         try {
             for (IInstallationTask task : installationTasks) {
-                task.executeTask(downloadManager, progressContainer, config);
+                task.executeTask(progressContainer, config);
             }
         } catch (Exception exception) {
             Logger.INSTANCE.warning(exception.getMessage());

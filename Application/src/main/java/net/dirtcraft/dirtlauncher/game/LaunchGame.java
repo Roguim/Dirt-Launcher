@@ -6,8 +6,7 @@ import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
+import net.dirtcraft.dirtlauncher.configuration.Settings;
 import net.dirtcraft.dirtlauncher.exceptions.InstanceException;
 import net.dirtcraft.dirtlauncher.exceptions.LaunchException;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
@@ -17,6 +16,7 @@ import net.dirtcraft.dirtlauncher.game.serverlist.ServerList;
 import net.dirtcraft.dirtlauncher.gui.components.SystemTray;
 import net.dirtcraft.dirtlauncher.gui.dialog.ErrorWindow;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 import net.dirtcraft.dirtlauncher.utils.Launcher;
 import net.dirtcraft.dirtlauncher.utils.LegacyLauncher;
 

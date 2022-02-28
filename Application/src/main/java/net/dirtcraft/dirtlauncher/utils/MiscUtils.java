@@ -20,11 +20,10 @@ import javafx.stage.StageStyle;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.Constants;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -108,7 +107,6 @@ public class MiscUtils {
     public static void updateLauncher() {
         Platform.runLater(()->launchInstallScene("Fetching Launcher Update... Please wait"));
         ProgressContainer container = new ProgressContainer();
-        DownloadManager manager = new DownloadManager();
         final File currentJar = getCurrentJar();
         final File currentDir = currentJar.getParentFile();
         final File bootstrapper = new File(currentDir, getBootstrapJar());
@@ -118,8 +116,8 @@ public class MiscUtils {
                 BufferedInputStream bis = new BufferedInputStream(Objects.requireNonNull(is));
         ){
             bootstrapper.delete();
-            DownloadMeta meta = new DownloadMeta(new URL(Constants.UPDATE_URL), temp);
-            manager.download(Trackers.getTracker(container, "Fetching Launcher Update", "Downloading Launcher Update"), meta);
+            DownloadTask meta = new DownloadTask(new URL(net.dirtcraft.dirtlauncher.lib.config.Constants.UPDATE_URL), temp);
+            TaskExecutor.execute(Collections.singleton(meta), container.bitrate, "Downloading Launcher Update");
             Files.copy(bis, bootstrapper.toPath());
             List<String> args = Arrays.asList(getRuntime(), "-jar", bootstrapper.toString(), getRuntime(), currentJar.toString(), temp.toString());
             args = new ArrayList<>(args);
@@ -167,7 +165,7 @@ public class MiscUtils {
     }
 
     private static String getUpdateUrl(){
-        return Constants.UPDATE_URL;
+        return net.dirtcraft.dirtlauncher.lib.config.Constants.UPDATE_URL;
     }
 
     public static TimerTask toTimerTask(Runnable runnable){

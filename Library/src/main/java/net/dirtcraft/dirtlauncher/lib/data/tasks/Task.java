@@ -9,8 +9,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
-public abstract class Task {
+public abstract class Task<T> {
     public static final int MAX_DOWNLOAD_ATTEMPTS = 12;
+    private IOException exception;
     private long lastProgress;
     private long lastTime;
     protected volatile long completion;
@@ -24,7 +25,15 @@ public abstract class Task {
 
     public abstract OutputStream openDestination() throws IOException;
 
-    public abstract CompletableFuture<?> preExecute();
+    public abstract CompletableFuture<?> prepare();
+
+    public abstract boolean isComplete();
+
+    public abstract String getType();
+
+    public abstract T run();
+
+    public abstract T getResult();
 
     public long getCompletion() {
         return completion;
@@ -45,12 +54,25 @@ public abstract class Task {
         return CompletableFuture.runAsync(this::tryComplete, DirtLib.THREAD_POOL);
     }
 
-    protected Optional<IOException> tryComplete(){
+    public boolean completedExceptionally() {
+        return exception != null;
+    }
+
+    public IOException getException() {
+        return exception;
+    }
+
+    public void throwException() throws IOException {
+        throw exception;
+    }
+
+    protected void tryComplete(){
+        exception = null;
         int attempts = 0;
-        String initFailed = "Download was unable to initialize. Check " + this.getClass().getName() + ".java";
+        String initFailed = "Task was unable to initialize. Check " + this.getClass().getName() + ".java";
         Optional<IOException> exception = Optional.of(new IOException(initFailed));
         while (attempts++ < MAX_DOWNLOAD_ATTEMPTS && exception.isPresent()) exception = complete();
-        return exception;
+        this.exception = exception.orElse(null);
     }
 
     protected Optional<IOException> complete() {

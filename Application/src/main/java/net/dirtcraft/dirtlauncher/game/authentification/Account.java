@@ -2,10 +2,10 @@ package net.dirtcraft.dirtlauncher.game.authentification;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import net.dirtcraft.dirtlauncher.data.MicroSoft.AuthResponse;
-import net.dirtcraft.dirtlauncher.data.MicroSoft.MSMCLoginResponse;
-import net.dirtcraft.dirtlauncher.data.MicroSoft.MSProfile;
-import net.dirtcraft.dirtlauncher.data.MicroSoft.XBLResponse;
+import net.dirtcraft.dirtlauncher.lib.data.json.microsoft.AuthResponse;
+import net.dirtcraft.dirtlauncher.lib.data.json.microsoft.MSMCLoginResponse;
+import net.dirtcraft.dirtlauncher.lib.data.json.microsoft.MSProfile;
+import net.dirtcraft.dirtlauncher.lib.data.json.microsoft.XBLResponse;
 import net.dirtcraft.dirtlauncher.lib.parsing.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 import okhttp3.FormBody;

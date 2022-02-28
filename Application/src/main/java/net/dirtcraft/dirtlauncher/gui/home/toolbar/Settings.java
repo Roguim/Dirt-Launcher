@@ -32,7 +32,7 @@ public final class Settings extends Scene {
         super(new FlowPane(), 600, 300);
 
         this.config = config;
-        net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings settings = config.getSettings();
+        net.dirtcraft.dirtlauncher.configuration.Settings settings = config.getSettings();
 
         Text titleText = new Text("Settings");
         FlowPane title = new FlowPane();

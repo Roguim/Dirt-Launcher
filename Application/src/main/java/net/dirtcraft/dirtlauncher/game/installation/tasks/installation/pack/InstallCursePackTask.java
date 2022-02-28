@@ -4,28 +4,27 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseMetaFileReference;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseFile;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseMetaFileReference;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.JsonTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.Task;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.lingala.zip4j.ZipFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class InstallCursePackTask implements IInstallationTask {
@@ -37,7 +36,7 @@ public class InstallCursePackTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Prepare Folders
         final File modpackFolder = pack.getInstanceDirectory();
         final File modpackZip = new File(modpackFolder, "modpack.zip");
@@ -47,9 +46,8 @@ public class InstallCursePackTask implements IInstallationTask {
         tempDir.mkdirs();
 
         // Download Modpack Zip
-        IFileDownload manifestDownload = new DownloadMeta(new URL(pack.getLink()).toString().replace("%2B", "+"), modpackZip);
-        Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Preparing Download", "Downloading Manifest");
-        downloadManager.download(updater, manifestDownload);
+        DownloadTask manifestDownload = new DownloadTask(new URL(new URL(pack.getLink()).toString().replace("%2B", "+")), modpackZip);
+        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.bitrate, "Downloading Manifest");
 
         // Extract Modpack Zip
         progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 4);
@@ -83,18 +81,22 @@ public class InstallCursePackTask implements IInstallationTask {
         Path modsFolder = modsFile.toPath();
         modsFile.mkdirs();
 
-        List<IDownload> downloads = StreamSupport.stream(mods.spliterator(), false)
+        DownloadTask exception = StreamSupport.stream(mods.spliterator(), false)
                 .map(f-> DirtLauncher.getGson().fromJson(f, CurseMetaFileReference.class))
                 .filter(CurseMetaFileReference::isRequired)
-                .collect(Collectors.toList());
-
-        List<Result> results = downloadManager.download(Trackers.getTracker(progressContainer, "Getting Mod Info", "Downloading Mods"), downloads, modsFolder);
-        Optional<Throwable> err = results.stream()
-                .filter(Result::finishedExceptionally)
-                .findFirst()
-                .flatMap(Result::getException);
-
-        if (err.isPresent()) throw new IOException(err.get());
+                .map(x-> MiscUtils.getURL(x.getDownloadUrl()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(x->new JsonTask<>(x, CurseFile.class))
+                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching downloads"))
+                .stream()
+                .map(JsonTask::getResult)
+                .map(x->x.getDownload(modsFolder.toFile()))
+                .collect(TaskExecutor.collector(progressContainer.bitrate, "Downloading Mods"))
+                .stream()
+                .filter(Task::completedExceptionally)
+                .findFirst().orElse(null);
+        if (exception != null) exception.throwException();
         progressContainer.nextMajorStep();
     }
 

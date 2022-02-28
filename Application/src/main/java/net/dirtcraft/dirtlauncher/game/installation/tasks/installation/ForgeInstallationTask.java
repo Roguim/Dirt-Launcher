@@ -9,19 +9,11 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadLocal;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.DownloadMeta;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.IFileDownload;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.progress.Trackers;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.lib.data.json.forge.ForgeInstallManifest;
 import net.dirtcraft.dirtlauncher.lib.data.json.forge.ForgePostProcess;
 import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Library;
-import net.dirtcraft.dirtlauncher.lib.data.tasks.CopyTask;
-import net.dirtcraft.dirtlauncher.lib.data.tasks.FileTask;
-import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.*;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -30,16 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ForgeInstallationTask implements IInstallationTask {
@@ -55,7 +44,7 @@ public class ForgeInstallationTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Downloading Forge Installer");
         progressContainer.setNumMinorSteps(2);
@@ -73,9 +62,8 @@ public class ForgeInstallationTask implements IInstallationTask {
         String url = pack.getGameVersion().equals("1.7.10")
                 ? String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s-%s/forge-%s-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion())
                 : String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
-        DownloadMeta forgeDl = new DownloadMeta(MiscUtils.getURL(url).orElse(null), forgeInstaller);
-        Trackers.MultiUpdater tracker = Trackers.getTracker(progressContainer, "Fetching Download", "Downloading Forge");
-        downloadManager.download(tracker, forgeDl);
+        DownloadTask forgeDl = new DownloadTask(MiscUtils.getURL(url).orElse(null), forgeInstaller);
+        TaskExecutor.execute(Collections.singleton(forgeDl), progressContainer.bitrate, "Downloading Forge");
         progressContainer.completeMinorStep();
         progressContainer.nextMajorStep();
 
@@ -83,18 +71,17 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setProgressText("Extracting Forge Installer");
         progressContainer.setNumMinorSteps(2);
 
-        JsonObject forgeVersionManifest = FileUtils.extractForgeJar(forgeInstaller, tempDir); //todo some sort of progress display?
 
-        JarFile f = new JarFile(forgeInstaller);
-        File installProfile = new File(tempDir, "install_profile.json");
-        try (InputStream jis = f.getInputStream(f.getJarEntry("install_profile.json"))){
-            Files.copy(jis, installProfile.toPath());
-        }
-        ForgeInstallManifest installManifest = JsonUtils.parseJsonUnchecked(installProfile, ForgeInstallManifest.class);
+        JarFile installerJar = new JarFile(forgeInstaller);
+        JsonTask<ForgeInstallManifest> profileTask = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class);
+        ForgeInstallManifest installManifest = profileTask.run();
         progressContainer.setNumMinorSteps(1);
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
 
+        ExtractTask versionTask = new ExtractTask(installerJar, "version.json", entry.getForgeManifestFile());
+        versionTask.run();
+        JsonObject forgeVersionManifest = JsonUtils.readJsonFromFile(entry.getForgeManifestFile());
         JsonUtils.writeJsonToFile(entry.getForgeManifestFile(), forgeVersionManifest);
         progressContainer.completeMinorStep();
         progressContainer.nextMajorStep();
@@ -106,32 +93,33 @@ public class ForgeInstallationTask implements IInstallationTask {
         else {
             librariesArray = forgeVersionManifest.getAsJsonArray("libraries");
             String forgeUrl = String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
-            DownloadMeta forge = new DownloadMeta(forgeUrl, entry.getForgeJarFile());
-            Trackers.MultiUpdater forgeTracker = Trackers.getTracker(progressContainer, "Fetching Forge", "Downloading Forge");
-            downloadManager.download(forgeTracker, forge);
+            DownloadTask forge = new DownloadTask(new URL(forgeUrl), entry.getForgeJarFile());
+            TaskExecutor.execute(Collections.singleton(forge), progressContainer.bitrate, "Downloading Forge");
         }
         List<File> libraries = Collections.synchronizedList(new ArrayList<>());
         progressContainer.setNumMinorSteps(librariesArray.size());
 
-        List<IFileDownload> downloads = StreamSupport.stream(librariesArray.spliterator(), false)
+        List<FileTask> downloads = StreamSupport.stream(librariesArray.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
-                .map(lib->getLibraryDownload(lib, forgeFolder, tempDir))
+                .map(lib->getLibraryDownload(lib, forgeFolder, installerJar))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-
-        Trackers.MultiUpdater updater = Trackers.getTracker(progressContainer, "Fetching Libraries", "Downloading Libraries");
-        List<Result> baseDownloads = downloadManager.download(updater, downloads);
+        Collection<FileTask> baseDownloads = TaskExecutor.execute(downloads, progressContainer.bitrate, "Downloading Libraries");
 
         downloads = baseDownloads.stream()
-                .filter(Result::finishedExceptionally)
+                .filter(Task::completedExceptionally)
+                .map(DownloadTask.class::cast)
                 .map(this::tryAsXZ)
                 .collect(Collectors.toList());
 
-        updater = Trackers.getTracker(progressContainer, "Fetching Additional Libraries", "Downloading Additional Libraries");
-        List<Result> packedDownloads = downloadManager.download(updater, downloads);
+        Collection<FileTask> packedDownloads = TaskExecutor.execute(downloads, progressContainer.bitrate, "Downloading Additional Libraries");
 
-        if (packedDownloads.stream().anyMatch(Result::finishedExceptionally)) throw new IOException();
+        {
+            Task<?> exception = packedDownloads.stream().filter(Task::completedExceptionally).findFirst().orElse(null);
+            if (exception != null) exception.throwException();
+        }
+
         Optional<IOException> exception = packedDownloads.stream()
                 .map(this::unpackXZ)
                 .filter(Optional::isPresent)
@@ -139,11 +127,11 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .findFirst();
 
         if (exception.isPresent()) throw exception.get();
-        baseDownloads.removeIf(Result::finishedExceptionally);
+        baseDownloads.removeIf(Task::completedExceptionally);
         baseDownloads.addAll(packedDownloads);
         baseDownloads.forEach(lib->addToLaunchCode(lib, libraries));
 
-        run(installManifest, new File(forgeFolder, "libraries"), forgeInstaller, config, downloadManager);
+        run(progressContainer, installManifest, new File(forgeFolder, "libraries"), forgeInstaller, config);
         forgeInstaller.delete();
 
         // Update Forge Versions Manifest
@@ -157,7 +145,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.nextMajorStep();
     }
 
-    private Optional<IFileDownload> getLibraryDownload(JsonObject library, File forgeFolder, File tempDir) {
+    private Optional<FileTask> getLibraryDownload(JsonObject library, File forgeFolder, ZipFile installer) {
         String[] libraryMaven = library.get("name").getAsString().split(":");
 
         // We already installed forge, no need to do it again.
@@ -187,14 +175,14 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .orElse(null);
         File libraryFile = new File(libraryPath, String.format("%s-%s.jar", libraryMaven[1], libraryMaven[2]));
         if (url == null && path != null) {
-            File artifact = new File(new File(tempDir, "maven"), path);
-            if (artifact.exists()) return Optional.of(new DownloadLocal(artifact, libraryFile));
+            ZipEntry entry = installer.getEntry(String.format("maven/%s", path));
+            if (entry != null) return Optional.of(new ExtractTask(installer, entry, libraryFile));
         }
         url = parseUrlElement(url, library, libraryMaven).replace("http://", "https://");
 
         // Install the library
         Logger.INSTANCE.debug("Downloading " + url);
-        return Optional.of(new DownloadMeta(MiscUtils.getURL(url).orElseThrow(NullPointerException::new), libraryFile));
+        return Optional.of(new DownloadTask(MiscUtils.getURL(url).orElseThrow(NullPointerException::new), libraryFile));
     }
 
     private String parseUrlElement(String urlElement, JsonObject library, String[] libraryMaven) {
@@ -203,35 +191,35 @@ public class ForgeInstallationTask implements IInstallationTask {
         return library.has("url") ? library.get("url").getAsString() + concatLibrary : "https://libraries.minecraft.net/" + concatLibrary;
     }
 
-    private DownloadMeta tryAsXZ(Result result){
-        final File fileXZ = new File(result.getFile().toString() + ".pack.xz");
-        final URL urlXZ = MiscUtils.getURL(result.getUrl().toString() + ".pack.xz").orElse(null);
-        return new DownloadMeta(urlXZ, fileXZ);
+    private DownloadTask tryAsXZ(DownloadTask result){
+        final File fileXZ = new File(result.destination.toString() + ".pack.xz");
+        final URL urlXZ = MiscUtils.getURL(result.getSrc().toString() + ".pack.xz").orElse(null);
+        return new DownloadTask(urlXZ, fileXZ);
     }
 
-    private Optional<IOException> unpackXZ(Result result) {
+    private Optional<IOException> unpackXZ(FileTask result) {
         try {
-            FileUtils.unpackPackXZ(result.getFile());
+            FileUtils.unpackPackXZ(result.getResult());
             return Optional.empty();
         } catch (IOException e){
             return Optional.of(e);
         }
     }
 
-    private void addToLaunchCode(Result result, List<File> librariesLaunchCode){
-        String lib = StringUtils.substringBeforeLast(result.getFile().getPath(), ".pack.xz");
+    private void addToLaunchCode(FileTask result, List<File> librariesLaunchCode){
+        String lib = StringUtils.substringBeforeLast(result.getResult().getPath(), ".pack.xz");
         librariesLaunchCode.add(new File(lib));
     }
 
 
-    private void run(ForgeInstallManifest manifest, File libraryDir, File installerJar, ConfigurationManager config, DownloadManager manager) {
+    private void run(ProgressContainer container, ForgeInstallManifest manifest, File libraryDir, File installerJar, ConfigurationManager config) {
         List<FileTask> downloads = new ArrayList<>();
         for (Library lib : manifest.getLibraries()) lib.getArtifact()
                 .map(d->{
                     if (d.getUrl() != null) return d.getDownload(libraryDir);
                     else return new CopyTask(installerJar.getParentFile().toPath().resolve("maven").resolve(d.path).toFile(), libraryDir.toPath().resolve(d.path).toFile());
                 }).ifPresent(downloads::add);
-        TaskExecutor.execute(downloads, null, 50, "");
+        TaskExecutor.execute(downloads, container.bitrate);
         ForgePostProcess p = manifest.getPostProcess();
         p.process(libraryDir, config.getVersionManifest().get(manifest.getMinecraft()).map(VersionManifest.Entry::getVersionJarFile).get(), installerJar);
     }

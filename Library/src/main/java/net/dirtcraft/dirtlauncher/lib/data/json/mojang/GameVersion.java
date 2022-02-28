@@ -1,7 +1,9 @@
 package net.dirtcraft.dirtlauncher.lib.data.json.mojang;
 
 import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ public class GameVersion {
     private String releaseTime;
     private String time;
     private String type;
+
+    //https://github.com/Dirt-Craft/Dirt-Launcher/blob/master/src/main/java/net/dirtcraft/dirtlauncher/data/Minecraft/GameVersion.java
 
     public JavaVersion getJava() {
         return javaVersion != null? javaVersion : JavaVersion.LEGACY;
@@ -54,5 +58,11 @@ public class GameVersion {
 
     public String getType() {
         return type;
+    }
+
+    public DownloadTask getDownload(String key, File folder) {
+        Download download = downloads.get(key);
+        if (download == null) return null;
+        else return download.getDownload(folder);
     }
 }

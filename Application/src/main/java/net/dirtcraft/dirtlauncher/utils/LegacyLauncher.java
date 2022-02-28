@@ -7,10 +7,10 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
+import net.dirtcraft.dirtlauncher.configuration.Settings;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -41,7 +41,7 @@ public class LegacyLauncher {
         AssetManifest.Entry assetManifest = configManager.getAssetManifest().get(modpack.getGameVersion()).orElseThrow(() -> new IOException("Asset manifest entry not present."));
         JavaVersion version = versionManifest.getJavaVersion();
         if (version == null) version = JavaVersion.LEGACY; //for old installs
-        File javaDir = new File(configManager.getJavaDirectory(), version.getFolder());
+        File javaDir = version.getFolder().toFile();
         final File instanceDirectory = instanceManifest.getDirectory().toFile();
 
         List<String> args = new ArrayList<>();

@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.scene.text.Text;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.renderers.Renderer;
+import net.dirtcraft.dirtlauncher.lib.util.DataFormat;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,6 +18,24 @@ public class ProgressContainer {
 
     private int numMinorSteps = 0;
     private AtomicInteger minorStepsCompleted = new AtomicInteger(0);
+
+    public final Renderer.ProgressRenderer progress = (title, tasksCompleted, tasksTotal, percent) -> {
+        setMinorPercent(percent);
+        String info = String.format("%s/%s",
+                tasksCompleted,
+                tasksTotal);
+        setProgressText(title, info);
+    };
+
+    public final Renderer.BitrateRenderer bitrate = (title, bytesCompleted, bytesTotal, bitrate, percent) -> {
+        setMinorPercent(percent);
+        DataFormat format = DataFormat.getMaximumDataRate(bytesTotal);
+        String info = String.format("%s/%s (%s)",
+                format.toFileSize(bytesCompleted),
+                format.toFileSize(bytesTotal),
+                DataFormat.getBitrate(bitrate));
+        setProgressText(title, info);
+    };
 
     public ProgressContainer(Collection<IInstallationTask> installTasks) {
         setProgressText("Preparing");

@@ -11,13 +11,13 @@ import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
 public class DownloadTask extends FileTask {
-    public final URL src;
+    protected URL src;
 
     public DownloadTask(URL src, File destination) {
         this(src, destination, -0, null);
     }
 
-    public DownloadTask(URL src, File destination, int size) {
+    public DownloadTask(URL src, File destination, long size) {
         this(src, destination, size, null);
     }
 
@@ -40,7 +40,7 @@ public class DownloadTask extends FileTask {
     }
 
     @Override
-    public CompletableFuture<?> preExecute() {
+    public CompletableFuture<?> prepare() {
         if (this.completion > 0) return Constants.COMPLETED_FUTURE;
         return CompletableFuture.runAsync(()->{
             HttpURLConnection conn = null;
@@ -57,5 +57,10 @@ public class DownloadTask extends FileTask {
                 }
             }
         }, DirtLib.THREAD_POOL);
+    }
+
+    @Override
+    public String getType() {
+        return "Downloading";
     }
 }

@@ -46,7 +46,6 @@ dependencies {
     provided project(":Library")
     provided 'com.squareup.okhttp3:okhttp-tls:4.9.2'
     provided 'com.squareup.okhttp3:okhttp:4.9.2'
-    provided 'com.google.http-client:google-http-client:1.23.0'
     provided 'commons-io:commons-io:2.6'
     provided 'com.github.Vatuu:discord-rpc:6233ef5'
     provided 'org.apache.commons:commons-compress:1.18'

@@ -1,10 +1,10 @@
 package net.dirtcraft.dirtlauncher.utils;
 
 import net.dirtcraft.dirtlauncher.DirtLauncher;
-import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
+import net.dirtcraft.dirtlauncher.configuration.Settings;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,15 +26,6 @@ public class Launcher {
         this.java = java;
     }
 
-    private String getJavaExec() {
-        return DirtLauncher.getConfig()
-                .getJavaDirectory()
-                .toPath()
-                .resolve(java.getJavaExec())
-                .toAbsolutePath()
-                .toString();
-    }
-
     public Launcher applyJavaArgs(String... args) {
         javaArgs.addAll(Arrays.asList(args));
         return this;
@@ -52,7 +43,7 @@ public class Launcher {
 
     public String[] processArgs(Settings settings, Account account) {
         ArrayList<String> program = new ArrayList<>();
-        program.add(getJavaExec());
+        program.add(java.getJavaExec().toString());
         program.add("-Djava.library.path=" + settings.getVersionsDirectory().resolve(modpack.getGameVersion()).resolve("natives"));
         program.addAll(javaArgs);
         program.add("-cp");

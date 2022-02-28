@@ -4,13 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseModpackManifest;
 import net.dirtcraft.dirtlauncher.exceptions.InvalidManifestException;
 import net.dirtcraft.dirtlauncher.game.LaunchGame;
 import net.dirtcraft.dirtlauncher.game.authentification.Account;
 import net.dirtcraft.dirtlauncher.game.installation.InstallationManager;
 import net.dirtcraft.dirtlauncher.game.serverlist.Listing;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 
 import java.io.File;
@@ -156,7 +156,7 @@ public class Modpack {
                 && versionManifest.get(gameVersion)
                 .map(VersionManifest.Entry::getJavaVersion)
                 .orElse(JavaVersion.LEGACY)
-                .isInstalled(DirtLauncher.getConfig().getJavaDirectory());
+                .isInstalled();
     }
 
     public boolean isFavourite(){

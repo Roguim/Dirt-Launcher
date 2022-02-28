@@ -8,8 +8,8 @@ import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
+import net.dirtcraft.dirtlauncher.lib.DirtLib;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
@@ -39,7 +39,7 @@ public class InstallFTBPackTask implements IInstallationTask {
     }
 
     @Override
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException {
         // Update Progress
         progressContainer.setProgressText("Preparing Modpack Manifest");
         progressContainer.setNumMinorSteps(2);
@@ -104,7 +104,7 @@ public class InstallFTBPackTask implements IInstallationTask {
                                     } catch (IOException e) {
                                         throw new CompletionException(e);
                                     }
-                                }, downloadManager.getThreadPool()))
+                                }, DirtLib.THREAD_POOL))
                                 .toArray(CompletableFuture[]::new)
                 ).join();
             } catch (CompletionException e) {

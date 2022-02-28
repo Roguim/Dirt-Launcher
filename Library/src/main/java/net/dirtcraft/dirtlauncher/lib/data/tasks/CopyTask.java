@@ -38,7 +38,12 @@ public class CopyTask extends FileTask {
     }
 
     @Override
-    public CompletableFuture<?> preExecute() {
+    public CompletableFuture<?> prepare() {
         return Constants.COMPLETED_FUTURE;
+    }
+
+    @Override
+    public String getType() {
+        return "Copying";
     }
 }

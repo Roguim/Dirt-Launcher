@@ -2,15 +2,15 @@ package net.dirtcraft.dirtlauncher.launcher;
 
 import net.dirtcraft.dirtlauncher.lib.DirtLib;
 import net.dirtcraft.dirtlauncher.lib.config.Constants;
-import net.dirtcraft.dirtlauncher.lib.data.json.dirtlauncher.JavaFx;
+import net.dirtcraft.dirtlauncher.lib.data.json.dirtcraft.Version;
+import net.dirtcraft.dirtlauncher.lib.data.json.dirtcraft.JavaFx;
 import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.CopyTask;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.ExtractTask;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
-import net.dirtcraft.dirtlauncher.lib.data.tasks.renderers.TextRenderer;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.renderers.TextRenderers;
 import net.dirtcraft.dirtlauncher.lib.parsing.JsonUtils;
-import net.dirtcraft.dirtlauncher.lib.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +30,7 @@ public class Main extends DirtLib{
         checkRelease();
         launchApp(getJavaPath(),
                 "-Dprism.verbose=true",
+                "--illegal-access=permit",
                 "--module-path",
                 getJfxPath(),
                 "--add-modules",
@@ -43,29 +44,27 @@ public class Main extends DirtLib{
     }
 
     public static void launchApp(String... args) throws IOException {
-        for (String s : args) System.out.println(s);
-        Process p = new ProcessBuilder(args)
-                .directory(DirtLib.LAUNCHER_DIR.toFile())
-                .inheritIO()
-                .start();
-        while (p.isAlive()) Util.spin(5000);
+        new ProcessBuilder(args).directory(DirtLib.LAUNCHER_DIR.toFile()).inheritIO().start();
     }
 
     private static void checkRelease() throws IOException {
-        try(InputStream executing = Main.class.getResourceAsStream("/release.json")){
+        try(InputStream current = Main.class.getResourceAsStream("/release.json")){
             File installed = LAUNCHER_DIR.resolve("Dirt-Launcher.jar").toFile();
-            if (installed.exists()) return; //for now do not support updates here as the jar could be being ran here.
-            Release installedRelease = JsonUtils.parseJson(new JarFile(installed), "release.json", Release.class);
+            File executing = new File(Constants.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            if (executing.isDirectory() || (installed.exists() && installed.equals(executing))) return; //for now do not support updates here as the jar could be being ran here.
+            Version installedRelease = JsonUtils.parseJson(new JarFile(installed), "release.json", Version.class);
             String installedVersion = installedRelease == null? "null" : installedRelease.version;
-            Release executingRelease = JsonUtils.parseJson(executing, Release.class);
+            Version executingRelease = JsonUtils.parseJson(current, Version.class);
             String executingVersion = executingRelease == null? "null" : executingRelease.version;
-            Release remoteRelease = JsonUtils.parseJson(new URL("http://164.132.201.67/launcher/version.json"), Release.class);
+            Version remoteRelease = JsonUtils.parseJson(new URL("http://164.132.201.67/launcher/version.json"), Version.class);
             String remoteVersion = remoteRelease == null? "null" : remoteRelease.version;
             if (isLeftGreater(executingVersion, remoteVersion)){
-                if (isLeftGreater(executingVersion, installedVersion)) performJarUpdate();
+                if (isLeftGreater(executingVersion, installedVersion)) performJarUpdate(executing,installed);
             } else {
-                if (isLeftGreater(remoteVersion, installedVersion)) performWebUpdate();
+                if (isLeftGreater(remoteVersion, installedVersion)) performWebUpdate(installed);
             }
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
         }
     }
 
@@ -75,15 +74,14 @@ public class Main extends DirtLib{
 
     private static void installJfx() throws IOException {
         if (JavaFx.RUNTIME.isInstalled()) return;
-        TextRenderer textRenderer = new TextRenderer();
         System.out.print("Fetching JavaFx Library!\n");
         DownloadTask task = JavaFx.RUNTIME.getArchive(Constants.DIR_TEMP.resolve("javafx.zip").toFile());
-        TaskExecutor.prepare(Collections.singleton(task), textRenderer, 20);
-        TaskExecutor.execute(Collections.singleton(task), textRenderer, 20, "Downloading");
+        TaskExecutor.prepare(Collections.singleton(task), TextRenderers.PROGRESS);
+        TaskExecutor.execute(Collections.singleton(task), TextRenderers.BITRATE);
         System.out.print("\r\nDownload Complete!\n");
         System.out.print("Extracting Archive!\n");
         Collection<ExtractTask> tasks = ExtractTask.from(new ZipFile(task.destination), Constants.DIR_RUNTIMES);
-        TaskExecutor.execute(tasks, textRenderer, 20, "Extracting");
+        TaskExecutor.execute(tasks, TextRenderers.BITRATE);
         System.out.print("\r\nExtraction Complete!\n");
     }
 
@@ -93,9 +91,8 @@ public class Main extends DirtLib{
 
     private static void installJava(){
         if (JavaVersion.DEFAULT.isInstalled()) return;
-        TextRenderer textRenderer = new TextRenderer();
         System.out.print("Fetching Default Java Runtime!\n");
-        TaskExecutor.execute(JavaVersion.DEFAULT.getDownloads(), textRenderer, 20, "Downloading");
+        TaskExecutor.execute(JavaVersion.DEFAULT.getDownloads(), TextRenderers.BITRATE);
         System.out.print("\r\nDownload Complete!\n");
     }
 
@@ -103,27 +100,20 @@ public class Main extends DirtLib{
         return JavaVersion.DEFAULT.getJavaExec().getPath();
     }
 
-    private static void performWebUpdate() throws IOException{
-        TextRenderer textRenderer = new TextRenderer();
+    private static void performWebUpdate(File destJar) throws IOException{
         System.out.print("Fetching Update!\n");
-        DownloadTask task = new DownloadTask(new URL("http://164.132.201.67/launcher/Dirt-Launcher.jar"), LAUNCHER_DIR.resolve("Dirt-Launcher.jar").toFile());
-        TaskExecutor.execute(Collections.singleton(task), textRenderer, 20, "Downloading");
+        DownloadTask task = new DownloadTask(new URL("http://164.132.201.67/launcher/Dirt-Launcher.jar"), destJar);
+        TaskExecutor.execute(Collections.singleton(task), TextRenderers.BITRATE);
         System.out.print("\r\nUpdate Complete!\n");
 
     }
 
-    private static void performJarUpdate() throws IOException {
-        try {
-            File jar = new File(Constants.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            if (!jar.exists() || jar.isDirectory()) return;
-            TextRenderer textRenderer = new TextRenderer();
+    private static void performJarUpdate(File srcJar, File destJar) throws IOException {
+            if (!srcJar.exists() || srcJar.isDirectory()) return;
             System.out.print("Executed jar contains new version! Applying update!!\n");
-            CopyTask task = new CopyTask(jar, LAUNCHER_DIR.resolve("Dirt-Launcher.jar").toFile());
-            TaskExecutor.execute(Collections.singleton(task), textRenderer, 20, "Copying");
+            CopyTask task = new CopyTask(srcJar, destJar);
+            TaskExecutor.execute(Collections.singleton(task), TextRenderers.BITRATE);
             System.out.print("\r\nUpdate Complete!\n");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
     private static boolean isLeftGreater(String a, String b) {
@@ -136,9 +126,5 @@ public class Main extends DirtLib{
             if (partA != partB) return partA > partB;
         }
         return false;
-    }
-
-    public static class Release {
-        private String version = "${version}";
     }
 }

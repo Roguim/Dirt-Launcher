@@ -1,9 +1,9 @@
 package net.dirtcraft.dirtlauncher.providers;
 
 import com.google.common.reflect.TypeToken;
-import net.dirtcraft.dirtlauncher.configuration.Constants;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseModpackManifest;
-import net.dirtcraft.dirtlauncher.data.Curse.CurseProject;
+import net.dirtcraft.dirtlauncher.lib.config.Constants;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseModpackManifest;
+import net.dirtcraft.dirtlauncher.lib.data.json.curse.CurseProject;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -36,7 +36,7 @@ public class CurseProvider implements IPackProvider {
             tempDir = new File(tempFile.getAbsolutePath().replace(".tmp", ""));
             CurseProject project = getProjectFromUrl(url).orElseThrow(InvalidParameterException::new);
             CompletableFuture<String> latestFile = project.getLatestFileUrl();
-            project.getLatestFileAsync(tempFile).join();
+            project.getLatestFile(tempFile).execute().join();
 
             tempDir.mkdirs();
             ZipFile zipFile = new ZipFile(tempFile);
@@ -58,7 +58,7 @@ public class CurseProvider implements IPackProvider {
     public CompletableFuture<Boolean> getLatestFileFromUrl(URL url, File file){
         final Optional<CurseProject> project = getProjectFromUrl(url);
         final boolean $ = file.delete();
-        if (project.isPresent()) return project.get().getLatestFileAsync(file).thenApply(v->file.exists());
+        if (project.isPresent()) return project.get().getLatestFile(file).execute().thenApply(v->file.exists());
         else return CompletableFuture.supplyAsync(()->false);
     }
 

@@ -4,7 +4,6 @@ import net.dirtcraft.dirtlauncher.configuration.manifests.AssetManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.ForgeManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.InstanceManifest;
 import net.dirtcraft.dirtlauncher.configuration.manifests.VersionManifest;
-import net.dirtcraft.dirtlauncher.data.DirtLauncher.Settings;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;

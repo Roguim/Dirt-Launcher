@@ -7,7 +7,8 @@ import java.io.*;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class FileTask extends Task {
+public abstract class FileTask extends Task<File> {
+    private boolean completed = false;
     public final File destination;
     protected String sha1;
 
@@ -52,12 +53,27 @@ public abstract class FileTask extends Task {
     }
 
     @Override
-    protected Optional<IOException> tryComplete(){
-        //noinspection ResultOfMethodCallIgnored
-        destination.getParentFile().mkdirs();
-        return super.tryComplete();
+    public File run() {
+        if (!completed) {
+            this.execute().join();
+            completed = true;
+        }
+        return destination;
     }
 
+    @Override
+    protected void tryComplete(){
+        //noinspection ResultOfMethodCallIgnored
+        destination.getParentFile().mkdirs();
+        super.tryComplete();
+    }
+
+    @Override
+    public File getResult() {
+        return destination;
+    }
+
+    @Override
     public boolean isComplete() {
         if (sha1 == null || sha1.length() < 30 || !destination.exists()) return false;
         try {

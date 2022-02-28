@@ -9,17 +9,17 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import net.dirtcraft.dirtlauncher.DirtLauncher;
 import net.dirtcraft.dirtlauncher.configuration.ConfigurationManager;
-import net.dirtcraft.dirtlauncher.data.FTB.FTBFile;
-import net.dirtcraft.dirtlauncher.data.FTB.FTBModpackManifest;
+import net.dirtcraft.dirtlauncher.lib.data.json.ftb.FTBFile;
+import net.dirtcraft.dirtlauncher.lib.data.json.ftb.FTBModpackManifest;
 import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IUpdateTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.PackInstallException;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.DownloadManager;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
 import net.dirtcraft.dirtlauncher.gui.home.login.LoginBar;
 import net.dirtcraft.dirtlauncher.gui.home.sidebar.PackSelector;
 import net.dirtcraft.dirtlauncher.gui.wizards.Install;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
 import net.dirtcraft.dirtlauncher.utils.MiscUtils;
@@ -55,7 +55,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
 
     @SuppressWarnings({"UnstableApiUsage", "ResultOfMethodCallIgnored"})
     @Override
-    public void executeTask(DownloadManager downloadManager, ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
+    public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
         // Update Progress
         progressContainer.setProgressText("Downloading Modpack Manifest");
         progressContainer.setNumMinorSteps(2);
@@ -164,9 +164,9 @@ public class UpdateFTBPackTask implements IUpdateTask {
         progressContainer.setNumMinorSteps(toInstall.stream().mapToInt(file -> file.size).sum());
 
         // Install New Mods
-        for (FTBFile mod : toInstall) mod
-                .downloadAsync(modsFolder, downloadManager.getThreadPool())
-                .whenComplete((t,e) -> progressContainer.addMinorStepsCompleted(mod.size));
+        toInstall.stream()
+                .map(x->x.getDownload(modsFolder))
+                .collect(TaskExecutor.collector(progressContainer.bitrate, "Adding New Mods"));
 
         // Update Progress
         progressContainer.nextMajorStep();

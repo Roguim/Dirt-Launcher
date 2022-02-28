@@ -60,31 +60,6 @@ public class FileUtils {
         copyOrReplaceDirectory(src, dest);
     }
 
-    public static void moveDirectory(File src, File dest, boolean createDir) throws IOException {
-        org.apache.commons.io.FileUtils.moveDirectoryToDirectory(src, dest, createDir);
-    }
-
-    public static void extractJar(String jarFile, String destDir) throws IOException {
-        JarFile jar = new JarFile(jarFile);
-        Enumeration enumEntries = jar.entries();
-        while (enumEntries.hasMoreElements()) {
-            JarEntry file = (JarEntry) enumEntries.nextElement();
-            File f = new File(destDir + File.separator + file.getName());
-            if (file.isDirectory()) { // if its a directory, create it
-                f.mkdir();
-                continue;
-            }
-            InputStream is = jar.getInputStream(file); // get the input stream
-            FileOutputStream fos = new FileOutputStream(f);
-            while (is.available() > 0) {  // write contents of 'is' to 'fos'
-                fos.write(is.read());
-            }
-            fos.close();
-            is.close();
-        }
-        jar.close();
-    }
-
     public static JsonObject extractForgeJar(File jarFile, File destDir) throws IOException {
         JsonObject output = new JsonObject();
         JarFile jar = new JarFile(jarFile);

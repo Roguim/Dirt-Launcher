@@ -4,8 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
-import net.dirtcraft.dirtlauncher.data.Minecraft.JavaVersion;
-import net.dirtcraft.dirtlauncher.game.installation.tasks.download.data.Result;
+import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Java.JavaVersion;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -113,11 +113,10 @@ public class VersionManifest extends ManifestBase<Map<String, VersionManifest.En
             libraries.sort(String::compareTo);
         }
 
-        public void addLibs(List<Result> files){
+        public void addDownloadedLibs(Collection<DownloadTask> files){
             List<File> downloaded = files.stream()
-                    .map(Result::getFile)
+                    .map(DownloadTask::getResult)
                     .collect(Collectors.toList());
-
             addLibs(downloaded);
         }
 
