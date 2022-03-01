@@ -6,7 +6,6 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,10 +45,19 @@ public class Util {
                     len = input.read(buffer);
                 }
 
-                return new HexBinaryAdapter().marshal(sha1.digest());
+                return toHex(sha1.digest(), false);
             }
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
         return null;
+    }
+
+    private static final char[] hexLower = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final char[] hexUpper = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    public static String toHex(byte[] data, boolean uppercase) {
+        StringBuilder result = new StringBuilder(data.length * 2);
+        char[] hex = uppercase? hexUpper : hexLower;
+        for (byte b : data) result.append(hex[b & 0xF]).append(hex[(b << 4) & 0xF]);
+        return result.toString();
     }
 
     public static String getStringFromUrl(String url) {

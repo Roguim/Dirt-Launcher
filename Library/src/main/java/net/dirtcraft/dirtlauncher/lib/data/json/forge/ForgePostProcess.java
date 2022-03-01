@@ -18,6 +18,8 @@
  */
 package net.dirtcraft.dirtlauncher.lib.data.json.forge;
 
+import net.dirtcraft.dirtlauncher.lib.util.Jar;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +35,8 @@ import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ForgePostProcess {
     private final boolean isClient;
@@ -47,7 +51,7 @@ public class ForgePostProcess {
         this.data = data;
     }
 
-    public boolean process(File librariesDir, File minecraft, File installer) {
+    public boolean process(File librariesDir, File minecraft, Jar installer) {
         try {
             if (!data.isEmpty()) {
                 StringBuilder err = new StringBuilder();
@@ -74,7 +78,7 @@ public class ForgePostProcess {
             data.put("MINECRAFT_JAR", minecraft.getAbsolutePath());
             data.put("MINECRAFT_VERSION", mcVersion);
             //data.put("ROOT", instanceDir.getAbsolutePath());
-            data.put("INSTALLER", installer.getAbsolutePath());
+            data.put("INSTALLER", installer.asFile().getAbsolutePath());
             data.put("LIBRARY_DIR", librariesDir.getAbsolutePath());
 
             int progress = 1;
@@ -323,12 +327,11 @@ public class ForgePostProcess {
         }
     }
 
-    public static boolean extractFile(File installer, String name, File target) {
+    public static boolean extractFile(ZipFile installer, String name, File target) {
         try {
             final String path = name.charAt(0) == '/' ? name.substring(1) : name;
-            JarFile jar = new JarFile(installer);
-            JarEntry entry = jar.getJarEntry(path);
-            final InputStream input = jar.getInputStream(entry);
+            ZipEntry entry = installer.getEntry(path);
+            final InputStream input = installer.getInputStream(entry);
             if (input == null) {
                 System.out.println("File not found in installer archive: " + path);
                 return false;

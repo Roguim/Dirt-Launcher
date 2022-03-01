@@ -162,7 +162,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         // Install New Mods
         toInstall.stream()
                 .map(x->x.getDownload(modsFolder))
-                .collect(TaskExecutor.collector(progressContainer.bitrate, "Adding New Mods"));
+                .collect(TaskExecutor.collector(progressContainer.showBitrate(), "Adding New Mods"));
 
         // Update Progress
         progressContainer.nextMajorStep();

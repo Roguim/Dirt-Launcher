@@ -9,21 +9,20 @@ import net.dirtcraft.dirtlauncher.game.installation.ProgressContainer;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.IInstallationTask;
 import net.dirtcraft.dirtlauncher.game.installation.tasks.InstallationStages;
 import net.dirtcraft.dirtlauncher.game.modpacks.Modpack;
-import net.dirtcraft.dirtlauncher.lib.DirtLib;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.Task;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.TaskExecutor;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
+import net.dirtcraft.dirtlauncher.utils.MiscUtils;
 import net.dirtcraft.dirtlauncher.utils.WebUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class InstallFTBPackTask implements IInstallationTask {
@@ -78,46 +77,16 @@ public class InstallFTBPackTask implements IInstallationTask {
         progressContainer.completeMinorStep();
         progressContainer.nextMajorStep();
 
-        synchronized (files) {
-            progressContainer.setNumMinorSteps(
-                    files.stream()
-                    .mapToInt(element -> element.get("size").getAsInt())
-                    .sum());
-        }
-
-        progressContainer.setProgressText("Downloading Modpack Files");
-        //Download Modpack Files
-        synchronized (files) {
-            try {
-                CompletableFuture.allOf(
-                        StreamSupport.stream(files.spliterator(), false)
-                                .map(JsonElement::getAsJsonObject)
-                                .filter(file -> !file.get("serveronly").getAsBoolean())
-                                .map(file -> CompletableFuture.runAsync(() -> {
-                                    try {
-                                        int size = file.get("size").getAsInt();
-                                        String url = file.get("url").getAsString().replaceAll("\\s", "%20");
-                                        File path = new File(new File(modpackFolder, file.get("path").getAsString()), file.get("name").getAsString());
-
-                                        WebUtils.copyURLToFile(url, path);
-                                        progressContainer.addMinorStepsCompleted(size);
-                                    } catch (IOException e) {
-                                        throw new CompletionException(e);
-                                    }
-                                }, DirtLib.THREAD_POOL))
-                                .toArray(CompletableFuture[]::new)
-                ).join();
-            } catch (CompletionException e) {
-                try {
-                    throw e.getCause();
-                } catch (IOException ex) {
-                    throw ex;
-                } catch (Throwable impossible) {
-                    throw new AssertionError(impossible);
-                }
-            }
-        }
-
+        Stream<Task<?>> a = files.stream()
+                .filter(file->!file.get("serveronly").getAsBoolean())
+                .map(file->{
+                        File dest = new File(new File(modpackFolder, file.get("path").getAsString()), file.get("name").getAsString());
+                        URL src = MiscUtils.getURL(file.get("url").getAsString().replaceAll("\\s", "%20")).orElse(null);
+                        long sz = file.get("size").getAsLong();
+                        return new DownloadTask(src, dest, sz);
+                });
+        Collection<Task<?>> b = a.collect(TaskExecutor.collector(progressContainer.showBitrate(), "Downloading Modpack Files"));//a.collect(Collectors.toList());
+        //TaskExecutor.execute(b, progressContainer.bitrate, "Downloading Modpack Files");
         progressContainer.nextMajorStep();
 
     }

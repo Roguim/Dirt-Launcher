@@ -19,24 +19,6 @@ public class ProgressContainer {
     private int numMinorSteps = 0;
     private AtomicInteger minorStepsCompleted = new AtomicInteger(0);
 
-    public final Renderer.ProgressRenderer progress = (title, tasksCompleted, tasksTotal, percent) -> {
-        setMinorPercent(percent);
-        String info = String.format("%s/%s",
-                tasksCompleted,
-                tasksTotal);
-        setProgressText(title, info);
-    };
-
-    public final Renderer.BitrateRenderer bitrate = (title, bytesCompleted, bytesTotal, bitrate, percent) -> {
-        setMinorPercent(percent);
-        DataFormat format = DataFormat.getMaximumDataRate(bytesTotal);
-        String info = String.format("%s/%s (%s)",
-                format.toFileSize(bytesCompleted),
-                format.toFileSize(bytesTotal),
-                DataFormat.getBitrate(bitrate));
-        setProgressText(title, info);
-    };
-
     public ProgressContainer(Collection<IInstallationTask> installTasks) {
         setProgressText("Preparing");
         setNumMinorSteps(1);
@@ -110,5 +92,33 @@ public class ProgressContainer {
     private void updateUI(Consumer<Install> consumer) {
         Platform.runLater(() -> Install.getInstance().ifPresent(consumer));
     }
+
+    public Renderer.ProgressRenderer showProgress() {
+        completeMinorStep();
+        return this::progress;
+    }
+
+    public Renderer.BitrateRenderer showBitrate() {
+        completeMinorStep();
+        return this::bitrate;
+    }
+
+    private void progress(String title, long tasksCompleted, long tasksTotal, double percent) {
+        setMinorPercent(percent);
+        String info = String.format("%s/%s",
+                tasksCompleted,
+                tasksTotal);
+        setProgressText(title, info);
+    };
+
+    private void bitrate(String title, long bytesCompleted, long bytesTotal, long bitrate, double percent) {
+        setMinorPercent(percent);
+        DataFormat format = DataFormat.getMaximumDataRate(bytesTotal);
+        String info = String.format("%s/%s (%s)",
+                format.toFileSize(bytesCompleted),
+                format.toFileSize(bytesTotal),
+                DataFormat.getBitrate(bitrate));
+        setProgressText(title, info);
+    };
 
 }

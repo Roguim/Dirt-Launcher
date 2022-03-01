@@ -43,18 +43,10 @@ public class DownloadTask extends FileTask {
     public CompletableFuture<?> prepare() {
         if (this.completion > 0) return Constants.COMPLETED_FUTURE;
         return CompletableFuture.runAsync(()->{
-            HttpURLConnection conn = null;
             try {
-                conn = (HttpURLConnection) src.openConnection();
-                conn.setRequestMethod("HEAD");
-                this.completion = conn.getContentLengthLong();
+                this.completion = src.openConnection().getContentLengthLong();
             } catch (IOException e) {
-                //Logger.INSTANCE.verbose(e);
                 e.printStackTrace();
-            } finally {
-                if (conn != null) {
-                    conn.disconnect();
-                }
             }
         }, DirtLib.THREAD_POOL);
     }

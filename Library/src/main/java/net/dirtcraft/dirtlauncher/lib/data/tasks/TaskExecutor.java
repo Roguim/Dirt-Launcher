@@ -16,37 +16,7 @@ import java.util.stream.Collectors;
 public class TaskExecutor {
     private static final Timer scheduler = new Timer();
     public static  <T extends Task<?>> Collector<T, List<T>, List<T>> collector(Renderer onTick, String title){
-        return new Collector<T, List<T>, List<T>>() {
-
-
-            @Override
-            public Supplier<List<T>> supplier() {
-                return ArrayList::new;
-            }
-
-            @Override
-            public BiConsumer<List<T>, T> accumulator() {
-                return List::add;
-            }
-
-            @Override
-            public BinaryOperator<List<T>> combiner() {
-                return (left, right) -> { left.addAll(right); return left; };
-            }
-
-            @Override
-            public Function<List<T>, List<T>> finisher() {
-                return (a) -> {
-                    execute(a, onTick, title);
-                    return a;
-                };
-            }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
-            }
-        };
+        return new ExecuteCollector<>(onTick, title);
     }
 
     public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick) {
@@ -101,5 +71,44 @@ public class TaskExecutor {
         render.cancel();
         Util.spin(tickMs + 5);
         return tasks;
+    }
+
+    private static class ExecuteCollector<T extends Task<?>> implements Collector<T, List<T>, List<T>>  {
+        private final EnumSet<Characteristics> CHARS = EnumSet.of(Characteristics.UNORDERED);
+        private final Renderer onTick;
+        private final String title;
+
+        private ExecuteCollector(Renderer onTick, String title) {
+            this.onTick = onTick;
+            this.title = title;
+        }
+
+        @Override
+        public Supplier<List<T>> supplier() {
+            return ArrayList::new;
+        }
+
+        @Override
+        public BiConsumer<List<T>, T> accumulator() {
+            return List::add;
+        }
+
+        @Override
+        public BinaryOperator<List<T>> combiner() {
+            return (left, right) -> { left.addAll(right); return left; };
+        }
+
+        @Override
+        public Function<List<T>, List<T>> finisher() {
+            return (a) -> {
+                execute(a, onTick, title);
+                return a;
+            };
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return CHARS;
+        }
     }
 }

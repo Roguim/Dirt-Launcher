@@ -73,8 +73,7 @@ public class AssetsInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(assets.size());
 
         Collection<DownloadTask> downloads = assets.stream().map(asset-> getLibDownload(asset, assetsFolder)).collect(Collectors.toList());
-        TaskExecutor.prepare(downloads, progressContainer.progress, "Fetching Assets");
-        TaskExecutor.execute(downloads, progressContainer.bitrate, "Downloading Assets");
+        TaskExecutor.execute(downloads, progressContainer.showBitrate(), "Downloading Assets");
 
         // Update Assets Manifest
         progressContainer.setProgressText("Updating Assets Manifest");

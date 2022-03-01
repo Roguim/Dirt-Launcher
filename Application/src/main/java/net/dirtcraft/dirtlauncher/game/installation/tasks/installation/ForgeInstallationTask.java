@@ -14,6 +14,7 @@ import net.dirtcraft.dirtlauncher.lib.data.json.forge.ForgeInstallManifest;
 import net.dirtcraft.dirtlauncher.lib.data.json.forge.ForgePostProcess;
 import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Library;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.*;
+import net.dirtcraft.dirtlauncher.lib.util.Jar;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 import net.dirtcraft.dirtlauncher.utils.JsonUtils;
@@ -63,7 +64,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                 ? String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s-%s/forge-%s-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion())
                 : String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
         DownloadTask forgeDl = new DownloadTask(MiscUtils.getURL(url).orElse(null), forgeInstaller);
-        TaskExecutor.execute(Collections.singleton(forgeDl), progressContainer.bitrate, "Downloading Forge");
+        TaskExecutor.execute(Collections.singleton(forgeDl), progressContainer.showBitrate(), "Downloading Forge");
         progressContainer.completeMinorStep();
         progressContainer.nextMajorStep();
 
@@ -72,7 +73,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         progressContainer.setNumMinorSteps(2);
 
 
-        JarFile installerJar = new JarFile(forgeInstaller);
+        Jar installerJar = new Jar(forgeInstaller);
         JsonTask<ForgeInstallManifest> profileTask = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class);
         ForgeInstallManifest installManifest = profileTask.runUnchecked();
         progressContainer.setNumMinorSteps(1);
@@ -94,7 +95,7 @@ public class ForgeInstallationTask implements IInstallationTask {
             librariesArray = forgeVersionManifest.getAsJsonArray("libraries");
             String forgeUrl = String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-universal.jar", pack.getGameVersion(), pack.getForgeVersion(), pack.getGameVersion(), pack.getForgeVersion());
             DownloadTask forge = new DownloadTask(new URL(forgeUrl), entry.getForgeJarFile());
-            TaskExecutor.execute(Collections.singleton(forge), progressContainer.bitrate, "Downloading Forge");
+            TaskExecutor.execute(Collections.singleton(forge), progressContainer.showBitrate(), "Downloading Forge");
         }
         List<File> libraries = Collections.synchronizedList(new ArrayList<>());
         progressContainer.setNumMinorSteps(librariesArray.size());
@@ -105,7 +106,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-        Collection<FileTask> baseDownloads = TaskExecutor.execute(downloads, progressContainer.bitrate, "Downloading Libraries");
+        Collection<FileTask> baseDownloads = TaskExecutor.execute(downloads, progressContainer.showBitrate(), "Downloading Libraries");
 
         downloads = baseDownloads.stream()
                 .filter(Task::completedExceptionally)
@@ -113,7 +114,7 @@ public class ForgeInstallationTask implements IInstallationTask {
                 .map(this::tryAsXZ)
                 .collect(Collectors.toList());
 
-        Collection<FileTask> packedDownloads = TaskExecutor.execute(downloads, progressContainer.bitrate, "Downloading Additional Libraries");
+        Collection<FileTask> packedDownloads = TaskExecutor.execute(downloads, progressContainer.showBitrate(), "Downloading Additional Libraries");
 
         {
             Task<?> exception = packedDownloads.stream().filter(Task::completedExceptionally).findFirst().orElse(null);
@@ -131,7 +132,7 @@ public class ForgeInstallationTask implements IInstallationTask {
         baseDownloads.addAll(packedDownloads);
         baseDownloads.forEach(lib->addToLaunchCode(lib, libraries));
 
-        run(progressContainer, installManifest, new File(forgeFolder, "libraries"), forgeInstaller, config);
+        run(progressContainer, installManifest, new File(forgeFolder, "libraries"), installerJar, config);
         forgeInstaller.delete();
 
         // Update Forge Versions Manifest
@@ -212,15 +213,16 @@ public class ForgeInstallationTask implements IInstallationTask {
     }
 
 
-    private void run(ProgressContainer container, ForgeInstallManifest manifest, File libraryDir, File installerJar, ConfigurationManager config) {
+    private void run(ProgressContainer container, ForgeInstallManifest manifest, File libraryDir, Jar installerJar, ConfigurationManager config) {
         List<FileTask> downloads = new ArrayList<>();
         for (Library lib : manifest.getLibraries()) lib.getArtifact()
                 .map(d->{
                     if (d.getUrl() != null) return d.getDownload(libraryDir);
-                    else return new CopyTask(installerJar.getParentFile().toPath().resolve("maven").resolve(d.path).toFile(), libraryDir.toPath().resolve(d.path).toFile());
+                    else return new ExtractTask(installerJar, "maven/" + d.path, libraryDir.toPath().resolve(d.path).toFile());
                 }).ifPresent(downloads::add);
-        TaskExecutor.execute(downloads, container.bitrate);
+        TaskExecutor.execute(downloads, container.showBitrate());
         ForgePostProcess p = manifest.getPostProcess();
+        container.nextMajorStep("Applying post-processors");
         p.process(libraryDir, config.getVersionManifest().get(manifest.getMinecraft()).map(VersionManifest.Entry::getVersionJarFile).get(), installerJar);
     }
 

@@ -48,7 +48,7 @@ public class InstallCustomPackTask implements IInstallationTask {
         DownloadTask download = new DownloadTask(new URL(pack.getLink()), modpackZip);
 
         // Download the Pack
-        TaskExecutor.execute(Collections.singletonList(download), progressContainer.bitrate, "Downloading ModPack");
+        TaskExecutor.execute(Collections.singletonList(download), progressContainer.showBitrate(), "Downloading ModPack");
 
         progressContainer.setNumMinorSteps(2);
         progressContainer.nextMajorStep();

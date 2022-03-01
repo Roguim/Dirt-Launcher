@@ -49,7 +49,7 @@ public class UpdateCustomPackTask implements IUpdateTask {
 
         //Download update
         DownloadTask download = new DownloadTask(new URL(pack.getLink()), modpackZip);
-        TaskExecutor.execute(Collections.singleton(download), progressContainer.bitrate, "Downloading ModPack");
+        TaskExecutor.execute(Collections.singleton(download), progressContainer.showBitrate(), "Downloading ModPack");
         progressContainer.completeMinorStep();
 
         // Update Progress

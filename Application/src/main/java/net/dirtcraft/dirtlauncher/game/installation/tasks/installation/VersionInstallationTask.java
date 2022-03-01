@@ -62,7 +62,7 @@ public class VersionInstallationTask implements IInstallationTask {
         List<ExtractTask> extractionTasks = natives.stream()
                 .flatMap(x-> ExtractTask.from(x.getResult(), nativesDir).stream())
                 .collect(Collectors.toList());
-        TaskExecutor.execute(extractionTasks, progressContainer.bitrate, "Extracting Natives");
+        TaskExecutor.execute(extractionTasks, progressContainer.showBitrate(), "Extracting Natives");
 
         progressContainer.setProgressText("Updating Versions Manifest");
 
@@ -75,7 +75,7 @@ public class VersionInstallationTask implements IInstallationTask {
 
     private void downloadMinecraft(ProgressContainer progressContainer, VersionManifest.Entry versionEntry) throws PackInstallException {
         DownloadTask jar = versionManifest.getDownload("client", versionEntry.getVersionJarFile());
-        TaskExecutor.execute(Collections.singleton(jar), progressContainer.bitrate, "Minecraft Version JAR");
+        TaskExecutor.execute(Collections.singleton(jar), progressContainer.showBitrate(), "Minecraft Version JAR");
     }
 
     private Collection<DownloadTask> downloadNatives(List<Library> libs, Path downloadFolder, ProgressContainer progressContainer) {
@@ -85,7 +85,7 @@ public class VersionInstallationTask implements IInstallationTask {
                 .map(Optional::get)
                 .map(dl -> dl.getDownload(downloadFolder.toFile()))
                 .collect(Collectors.toList());
-        return TaskExecutor.execute(natives, progressContainer.bitrate, "Natives");
+        return TaskExecutor.execute(natives, progressContainer.showBitrate(), "Natives");
     }
 
     private Collection<DownloadTask> downloadLibraries(List<Library> libs, Path downloadFolder, ProgressContainer progressContainer) {
@@ -96,7 +96,7 @@ public class VersionInstallationTask implements IInstallationTask {
                 .map(dl -> dl.getDownload(downloadFolder.toFile()))
                 .collect(Collectors.toList());
 
-        return TaskExecutor.execute(libraries, progressContainer.bitrate, "Libraries");
+        return TaskExecutor.execute(libraries, progressContainer.showBitrate(), "Libraries");
     }
 
 

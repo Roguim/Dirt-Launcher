@@ -117,7 +117,7 @@ public class MiscUtils {
         ){
             bootstrapper.delete();
             DownloadTask meta = new DownloadTask(new URL(net.dirtcraft.dirtlauncher.lib.config.Constants.UPDATE_URL), temp);
-            TaskExecutor.execute(Collections.singleton(meta), container.bitrate, "Downloading Launcher Update");
+            TaskExecutor.execute(Collections.singleton(meta), container.showBitrate(), "Downloading Launcher Update");
             Files.copy(bis, bootstrapper.toPath());
             List<String> args = Arrays.asList(getRuntime(), "-jar", bootstrapper.toString(), getRuntime(), currentJar.toString(), temp.toString());
             args = new ArrayList<>(args);

@@ -47,7 +47,7 @@ public class InstallCursePackTask implements IInstallationTask {
 
         // Download Modpack Zip
         DownloadTask manifestDownload = new DownloadTask(new URL(new URL(pack.getLink()).toString().replace("%2B", "+")), modpackZip);
-        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.bitrate, "Downloading Manifest");
+        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.showBitrate(), "Downloading Manifest");
 
         // Extract Modpack Zip
         progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 4);
@@ -88,11 +88,11 @@ public class InstallCursePackTask implements IInstallationTask {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(x->new JsonTask<>(x, CurseFile.class))
-                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching downloads"))
+                .collect(TaskExecutor.collector(progressContainer.showProgress(), "Fetching downloads"))
                 .stream()
                 .map(JsonTask::getResult)
                 .map(x->x.getDownload(modsFolder.toFile()))
-                .collect(TaskExecutor.collector(progressContainer.bitrate, "Downloading Mods"))
+                .collect(TaskExecutor.collector(progressContainer.showBitrate(), "Downloading Mods"))
                 .stream()
                 .filter(Task::completedExceptionally)
                 .findFirst().orElse(null);

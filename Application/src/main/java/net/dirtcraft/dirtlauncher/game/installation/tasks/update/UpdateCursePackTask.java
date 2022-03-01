@@ -48,7 +48,7 @@ public class UpdateCursePackTask implements IUpdateTask {
 
         // Download Modpack Zip
         DownloadTask manifestDownload = new DownloadTask(new URL(new URL(pack.getLink()).toString().replace("%2B", "+")), modpackZip);
-        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.bitrate, "Downloading Manifest");
+        TaskExecutor.execute(Collections.singleton(manifestDownload), progressContainer.showBitrate(), "Downloading Manifest");
 
         // Extract Modpack Zip
         progressContainer.nextMajorStep(String.format("Extracting %s Files", pack.getName()), 3);
@@ -76,7 +76,7 @@ public class UpdateCursePackTask implements IUpdateTask {
                 .filter(file->newManifest.files.stream().noneMatch(file::equals))
                 .peek(e->progressContainer.completeMinorStep())
                 .map(CurseMetaFileReference::getManifest)
-                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching File MetaData"))
+                .collect(TaskExecutor.collector(progressContainer.showProgress(), "Fetching File MetaData"))
                 .stream()
                 .map(JsonTask::getResult)
                 .map(x->x.getDownload(modsFolder))
@@ -88,11 +88,11 @@ public class UpdateCursePackTask implements IUpdateTask {
                 .filter(file->oldManifest.files.stream().noneMatch(file::equals))
                 .peek(e->progressContainer.completeMinorStep())
                 .map(CurseMetaFileReference::getManifest)
-                .collect(TaskExecutor.collector(progressContainer.progress, "Fetching File MetaData"))
+                .collect(TaskExecutor.collector(progressContainer.showProgress(), "Fetching File MetaData"))
                 .stream()
                 .map(JsonTask::getResult)
                 .map(x->x.getDownload(modsFolder))
-                .collect(TaskExecutor.collector(progressContainer.progress, "Downloading new mods"));
+                .collect(TaskExecutor.collector(progressContainer.showBitrate(), "Downloading new mods"));
 
         // Delete the temporary files
         progressContainer.nextMajorStep("Cleaning Up", 1);
