@@ -1,5 +1,8 @@
 package net.dirtcraft.dirtlauncher.lib.data.json.mojang;
 
+import net.dirtcraft.dirtlauncher.lib.data.tasks.DownloadTask;
+
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -17,5 +20,9 @@ public class FileDownload {
         } catch (MalformedURLException e) {
             return null;
         }
+    }
+
+    public DownloadTask getDownload(File file) {
+        return new DownloadTask(getUrl(), file, size, sha1);
     }
 }

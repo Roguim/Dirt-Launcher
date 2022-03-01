@@ -42,8 +42,12 @@ public class FileUtils {
     }
 
     // Mirrors just in case the file imports this instead of the commons-io FileUtils. Makes things easier than using paths every declaration...
-    public static void deleteDirectory(File file) throws IOException {
-        org.apache.commons.io.FileUtils.deleteDirectory(file);
+    public static void deleteDirectory(File file) {
+        try {
+            org.apache.commons.io.FileUtils.deleteDirectory(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Mirrors just in case the file imports this instead of the commons-io FileUtils. Makes things easier than using paths every declaration...

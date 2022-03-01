@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -63,8 +64,8 @@ public class JsonTask<T> extends Task<T> {
     }
 
     @Override
-    public T run() {
-        if (result != null) this.execute().join();
+    public T run() throws ExecutionException, InterruptedException {
+        if (result == null) this.execute().get();
         return result;
     }
 

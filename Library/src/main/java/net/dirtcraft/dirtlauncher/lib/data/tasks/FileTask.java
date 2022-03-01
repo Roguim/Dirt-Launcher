@@ -6,6 +6,7 @@ import net.dirtcraft.dirtlauncher.lib.util.Util;
 import java.io.*;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public abstract class FileTask extends Task<File> {
     private boolean completed = false;
@@ -53,9 +54,9 @@ public abstract class FileTask extends Task<File> {
     }
 
     @Override
-    public File run() {
+    public File run() throws ExecutionException, InterruptedException {
         if (!completed) {
-            this.execute().join();
+            this.execute().get();
             completed = true;
         }
         return destination;

@@ -74,11 +74,7 @@ public class UpdateFTBPackTask implements IUpdateTask {
         if (currentJson != null) {
             if (currentJson.has("projectID") || currentJson.has("overrides")) {
                 config.getInstanceManifest().remove(pack);
-                try {
-                    FileUtils.deleteDirectory(pack.getInstanceDirectory());
-                } catch (IOException exception){
-                    exception.printStackTrace();
-                }
+                FileUtils.deleteDirectory(pack.getInstanceDirectory());
                 if (pack.isFavourite()) pack.toggleFavourite();
                 Platform.runLater(() -> {
                             LoginBar loginBar = DirtLauncher.getHome().getLoginBar();

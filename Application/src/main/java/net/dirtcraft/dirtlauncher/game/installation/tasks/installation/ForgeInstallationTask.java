@@ -74,13 +74,13 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         JarFile installerJar = new JarFile(forgeInstaller);
         JsonTask<ForgeInstallManifest> profileTask = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class);
-        ForgeInstallManifest installManifest = profileTask.run();
+        ForgeInstallManifest installManifest = profileTask.runUnchecked();
         progressContainer.setNumMinorSteps(1);
 
         // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
 
         ExtractTask versionTask = new ExtractTask(installerJar, "version.json", entry.getForgeManifestFile());
-        versionTask.run();
+        versionTask.runUnchecked();
         JsonObject forgeVersionManifest = JsonUtils.readJsonFromFile(entry.getForgeManifestFile());
         JsonUtils.writeJsonToFile(entry.getForgeManifestFile(), forgeVersionManifest);
         progressContainer.completeMinorStep();

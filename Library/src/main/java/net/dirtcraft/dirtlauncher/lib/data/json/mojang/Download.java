@@ -10,6 +10,7 @@ public class Download extends FileDownload{
         throw new InstantiationException("Gson data class. Not to be manually created.");
     }
 
+    @Override
     public DownloadTask getDownload(File destination) {
         return new DownloadTask(getUrl(), new File(destination, path), size, sha1);
     }

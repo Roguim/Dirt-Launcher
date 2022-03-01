@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class Task<T> {
@@ -31,7 +32,16 @@ public abstract class Task<T> {
 
     public abstract String getType();
 
-    public abstract T run();
+    public abstract T run() throws ExecutionException, InterruptedException;
+
+    public T runUnchecked() {
+        try {
+            return run();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public abstract T getResult();
 

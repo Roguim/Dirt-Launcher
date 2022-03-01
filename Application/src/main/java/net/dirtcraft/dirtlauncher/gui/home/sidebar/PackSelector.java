@@ -135,11 +135,8 @@ public final class PackSelector extends Button implements Comparable<PackSelecto
 
             uninstall.setOnAction(e->{
                 DirtLauncher.getConfig().getInstanceManifest().remove(this.modpack);
-                try {
-                    FileUtils.deleteDirectory(modpack.getInstanceDirectory());
-                } catch (IOException exception){
-                    exception.printStackTrace();
-                }
+                FileUtils.deleteDirectory(modpack.getInstanceDirectory());
+
                 if (isFavourite()) modpack.toggleFavourite();
                 DirtLauncher.getHome().update();
                 initContextMenu();

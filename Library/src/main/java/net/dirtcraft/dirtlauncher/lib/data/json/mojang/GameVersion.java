@@ -10,7 +10,7 @@ import java.util.Map;
 public class GameVersion {
     private Download assetIndex;
     private String assets;
-    private Map<String, Download> downloads;
+    private Map<String, FileDownload> downloads;
     private JavaVersion javaVersion;
     private String id;
     private List<Library> libraries;
@@ -36,10 +36,6 @@ public class GameVersion {
         return assets;
     }
 
-    public Map<String, Download> getDownloads() {
-        return downloads;
-    }
-
     public String getId() {
         return id;
     }
@@ -61,7 +57,7 @@ public class GameVersion {
     }
 
     public DownloadTask getDownload(String key, File folder) {
-        Download download = downloads.get(key);
+        FileDownload download = downloads.get(key);
         if (download == null) return null;
         else return download.getDownload(folder);
     }
