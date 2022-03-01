@@ -88,6 +88,7 @@ public abstract class Task<T> {
             }
             return Optional.empty();
         } catch (IOException e) {
+            e.printStackTrace();
             return Optional.of(e);
         }
     }

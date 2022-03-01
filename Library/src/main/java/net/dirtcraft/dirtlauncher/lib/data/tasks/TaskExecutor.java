@@ -50,20 +50,24 @@ public class TaskExecutor {
     }
 
     public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick) {
-        return prepare(tasks, onTick, 50);
+        return prepare(tasks, onTick, 50, "Preparing");
     }
 
-    public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick, long tickMs) {
+    public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick, String title) {
+        return prepare(tasks, onTick, 50, title);
+    }
+
+    public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick, long tickMs, String title) {
         List<CompletableFuture<?>> futures = tasks.stream()
                 .map(Task::prepare)
                 .collect(Collectors.toList());
         long tasksTotal = tasks.size();
         TimerTask render = Util.timerTask(()->{
             long tasksCompleted = futures.stream().filter(CompletableFuture::isDone).count();
-            if (onTick != null) onTick.apply("Preparing", tasksCompleted, tasksTotal, 0, 0, 0);
+            if (onTick != null) onTick.apply(title, tasksCompleted, tasksTotal, 0, 0, 0);
         });
         scheduler.scheduleAtFixedRate(render, 0, tickMs);
-        while (futures.stream().allMatch(CompletableFuture::isDone)) Util.spin(500);
+        while (!futures.stream().allMatch(CompletableFuture::isDone)) Util.spin(500);
         render.cancel();
         Util.spin(tickMs + 5);
         return tasks;
@@ -78,8 +82,8 @@ public class TaskExecutor {
         return execute(tasks, onTick, 50, title);
     }
 
-    public static <T extends Task<?>> Collection<T> execute(Collection<T> tasks, Renderer onTick, int tickMs, String title) {
-        prepare(tasks, null, tickMs);
+    public static <T extends Task<?>> Collection<T> execute(Collection<T> tasks, Renderer onTick, long tickMs, String title) {
+        prepare(tasks, null);
         BitRateSmoother smoother = new BitRateSmoother(20);
         long bytesTotal = tasks.stream().mapToLong(Task::getCompletion).sum();
         long tasksTotal = tasks.size();

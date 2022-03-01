@@ -30,7 +30,6 @@ public class Main extends DirtLib{
         checkRelease();
         launchApp(getJavaPath(),
                 "-Dprism.verbose=true",
-                "--illegal-access=permit",
                 "--module-path",
                 getJfxPath(),
                 "--add-modules",
@@ -44,6 +43,7 @@ public class Main extends DirtLib{
     }
 
     public static void launchApp(String... args) throws IOException {
+        for (String arg : args) System.out.println(arg);
         new ProcessBuilder(args).directory(DirtLib.LAUNCHER_DIR.toFile()).inheritIO().start();
     }
 

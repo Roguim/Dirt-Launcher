@@ -13,9 +13,9 @@ public class JavaVersion {
     public static final JavaVersion LEGACY = new JavaVersion("jre-legacy", 8);
     public final String component;
     public final int majorVersion;
-    public Path folder;
-    public File javaw;
-    public File java;
+    public transient Path folder;
+    public transient File javaw;
+    public transient File java;
 
     public JavaVersion(String component, int majorVersion){
         this.component = component;

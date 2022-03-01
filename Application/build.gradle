@@ -30,7 +30,7 @@ configurations {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 def bootstrapJar = "Dirt-Bootstrap-Updater:$bootstrapVersion"
-def outputJar = "${project.name}.jar"
+def outputJar = "Dirt-Launcher.jar"
 
 repositories {
     mavenLocal()
@@ -59,7 +59,7 @@ jar {
     manifest {
         attributes(
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'net.dirtcraft.dirtlauncher.Main'
+                'Main-Class': 'net.dirtcraft.dirtlauncher.launcher.Main'
         )
     }
     from configurations.provided.asFileTree.files.collect {zipTree(it)}
@@ -74,7 +74,7 @@ shadowJar {
 
 jfx {
     // minimal requirement for jfxJar-task
-    mainClass = 'net.dirtcraft.dirtlauncher.Main'
+    mainClass = 'net.dirtcraft.dirtlauncher.launcher.Main'
     css2bin = true
 
     // minimal requirement for jfxNative-task
