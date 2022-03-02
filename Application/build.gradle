@@ -23,7 +23,7 @@ configurations {
     packaged
     provided
     shaded
-    compile.extendsFrom(provided)
+    runOnly.extendsFrom(provided)
     compile.extendsFrom(shaded)
 }
 
@@ -42,15 +42,16 @@ repositories {
 dependencies {
     packaged "com.github.Dirt-Craft:$bootstrapJar"
 
-    provided fileTree(dir: 'src/main/libraries', include: '*.jar')
-    provided project(":Library")
-    provided 'com.squareup.okhttp3:okhttp-tls:4.9.2'
-    provided 'com.squareup.okhttp3:okhttp:4.9.2'
-    provided 'commons-io:commons-io:2.6'
-    provided 'com.github.Vatuu:discord-rpc:6233ef5'
-    provided 'org.apache.commons:commons-compress:1.18'
-    provided 'net.lingala.zip4j:zip4j:2.1.0'
-    provided "org.tukaani:xz:1.8"
+    shaded fileTree(dir: 'src/main/libraries', include: '*.jar')
+    provided project(":Launcher")
+    shaded project(":Library")
+    shaded 'com.squareup.okhttp3:okhttp-tls:4.9.2'
+    shaded 'com.squareup.okhttp3:okhttp:4.9.2'
+    shaded 'commons-io:commons-io:2.6'
+    shaded 'com.github.Vatuu:discord-rpc:6233ef5'
+    shaded 'org.apache.commons:commons-compress:1.18'
+    shaded 'net.lingala.zip4j:zip4j:2.1.0'
+    shaded "org.tukaani:xz:1.8"
 }
 
 
@@ -62,12 +63,13 @@ jar {
                 'Main-Class': 'net.dirtcraft.dirtlauncher.launcher.Main'
         )
     }
-    from configurations.provided.asFileTree.files.collect {zipTree(it)}
+    //from configurations.provided.asFileTree.files.collect {zipTree(it)}
+    //from configurations.shaded.asFileTree.files.collect {zipTree(it)}
     from configurations.packaged.copy()
 }
 
 shadowJar {
-    configurations = [project.configurations.shaded]
+    configurations = [project.configurations.shaded, project.configurations.provided]
     archiveFileName = outputJar
     //minimize() todo: not break shit
 }
@@ -104,6 +106,6 @@ sourceSets.main {
     }
 }
 
-//jfxJar.dependsOn(shadowJar)
-//build.dependsOn(shadowJar)
+jfxJar.dependsOn(shadowJar)
+build.dependsOn(shadowJar)
 compileJava.options.encoding = 'UTF-8'

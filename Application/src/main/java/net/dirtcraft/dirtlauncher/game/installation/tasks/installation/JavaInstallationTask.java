@@ -31,7 +31,7 @@ public class JavaInstallationTask implements IInstallationTask {
 
     @Override
     public void executeTask(ProgressContainer progressContainer, ConfigurationManager config) throws IOException, PackInstallException {
-        TaskExecutor.execute(javaVersion.getDownloads(), TextRenderers.BITRATE);
+        TaskExecutor.execute(javaVersion.getDownloads(), progressContainer.showBitrate());
     }
 
     @Override

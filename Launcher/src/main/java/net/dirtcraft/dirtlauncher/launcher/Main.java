@@ -51,18 +51,7 @@ public class Main extends DirtLib{
         try(InputStream current = Main.class.getResourceAsStream("/release.json")){
             File installed = LAUNCHER_DIR.resolve("Dirt-Launcher.jar").toFile();
             File executing = new File(Constants.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            if (executing.isDirectory() || (installed.exists() && installed.equals(executing))) return; //for now do not support updates here as the jar could be being ran here.
-            Version installedRelease = JsonUtils.parseJson(new JarFile(installed), "release.json", Version.class);
-            String installedVersion = installedRelease == null? "null" : installedRelease.version;
-            Version executingRelease = JsonUtils.parseJson(current, Version.class);
-            String executingVersion = executingRelease == null? "null" : executingRelease.version;
-            Version remoteRelease = JsonUtils.parseJson(new URL("http://164.132.201.67/launcher/version.json"), Version.class);
-            String remoteVersion = remoteRelease == null? "null" : remoteRelease.version;
-            if (isLeftGreater(executingVersion, remoteVersion)){
-                if (isLeftGreater(executingVersion, installedVersion)) performJarUpdate(executing,installed);
-            } else {
-                if (isLeftGreater(remoteVersion, installedVersion)) performWebUpdate(installed);
-            }
+            if (!installed.exists() && !executing.isDirectory()) performJarUpdate(executing, installed);
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
@@ -100,31 +89,11 @@ public class Main extends DirtLib{
         return JavaVersion.DEFAULT.getJavaExec().getPath();
     }
 
-    private static void performWebUpdate(File destJar) throws IOException{
-        System.out.print("Fetching Update!\n");
-        DownloadTask task = new DownloadTask(new URL("http://164.132.201.67/launcher/Dirt-Launcher.jar"), destJar);
-        TaskExecutor.execute(Collections.singleton(task), TextRenderers.BITRATE);
-        System.out.print("\r\nUpdate Complete!\n");
-
-    }
-
     private static void performJarUpdate(File srcJar, File destJar) throws IOException {
             if (!srcJar.exists() || srcJar.isDirectory()) return;
-            System.out.print("Executed jar contains new version! Applying update!!\n");
-            CopyTask task = new CopyTask(srcJar, destJar);
+            DownloadTask task = new DownloadTask(new URL("http://164.132.201.67/launcher/Dirt-Launcher.jar"), destJar);
+            System.out.print("Downloading Latest JAR.\n");
             TaskExecutor.execute(Collections.singleton(task), TextRenderers.BITRATE);
-            System.out.print("\r\nUpdate Complete!\n");
-    }
-
-    private static boolean isLeftGreater(String a, String b) {
-        String[] specA = a.split("\\.");
-        String[] specB = b.split("\\.");
-        int len = Math.min(specA.length, specB.length);
-        for (int i = 0; i < len; i++) {
-            int partA = specA[i].matches("\\d+")? Integer.parseInt(specA[i]) : -1;
-            int partB = specB[i].matches("\\d+")? Integer.parseInt(specB[i]) : -1;
-            if (partA != partB) return partA > partB;
-        }
-        return false;
+            System.out.print("\r\nDownload Complete!\n");
     }
 }
