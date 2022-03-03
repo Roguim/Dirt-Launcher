@@ -41,9 +41,9 @@ public class ForgeRunProfile implements ForgeVersion{
     }
 
     @Override
-    public Optional<String> getPostProcess(ZipFile jar) {
-        if (manifest == null) manifest = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class).run();
-        return Optional.of("install_profile.json");
+    public Optional<ForgeInstallManifest> getPostProcess(ZipFile jar) {
+        if (manifest == null) manifest = new JsonTask<>(jar, "install_profile.json", ForgeInstallManifest.class).run();
+        return Optional.of(manifest);
     }
 
     @Override
