@@ -1,10 +1,14 @@
 package net.dirtcraft.dirtlauncher.lib.data.tasks;
 
 import net.dirtcraft.dirtlauncher.lib.DirtLib;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.renderers.Renderer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -32,15 +36,19 @@ public abstract class Task<T> {
 
     public abstract String getType();
 
-    public abstract T run() throws ExecutionException, InterruptedException;
+    public abstract T runOrThrow() throws ExecutionException, InterruptedException;
 
-    public T runUnchecked() {
+    public T run() {
         try {
-            return run();
+            return runOrThrow();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Task<?> run(Renderer renderer, String title) {
+        return TaskExecutor.execute(this, renderer, title);
     }
 
     public abstract T getResult();

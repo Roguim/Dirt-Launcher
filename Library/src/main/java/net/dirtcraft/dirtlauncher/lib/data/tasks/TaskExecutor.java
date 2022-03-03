@@ -14,20 +14,17 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class TaskExecutor {
+    private static final long tickMs = 200;
     private static final Timer scheduler = new Timer();
     public static  <T extends Task<?>> Collector<T, List<T>, List<T>> collector(Renderer onTick, String title){
         return new ExecuteCollector<>(onTick, title);
     }
 
     public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick) {
-        return prepare(tasks, onTick, 50, "Preparing");
+        return prepare(tasks, onTick, "Preparing");
     }
 
     public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick, String title) {
-        return prepare(tasks, onTick, 50, title);
-    }
-
-    public static Collection<? extends Task<?>> prepare(Collection<? extends Task<?>> tasks, Renderer.ProgressRenderer onTick, long tickMs, String title) {
         List<CompletableFuture<?>> futures = tasks.stream()
                 .map(Task::prepare)
                 .collect(Collectors.toList());
@@ -45,14 +42,10 @@ public class TaskExecutor {
 
     public static <T extends Task<?>> Collection<T> execute(Collection<T> tasks, Renderer onTick) {
         String title = tasks.stream().findFirst().map(Task::getType).orElse("");
-        return execute(tasks, onTick, 50, title);
+        return execute(tasks, onTick, title);
     }
 
     public static <T extends Task<?>> Collection<T> execute(Collection<T> tasks, Renderer onTick, String title) {
-        return execute(tasks, onTick, 50, title);
-    }
-
-    public static <T extends Task<?>> Collection<T> execute(Collection<T> tasks, Renderer onTick, long tickMs, String title) {
         prepare(tasks, null);
         BitRateSmoother smoother = new BitRateSmoother(20);
         long bytesTotal = tasks.stream().mapToLong(Task::getCompletion).sum();
@@ -71,6 +64,22 @@ public class TaskExecutor {
         render.cancel();
         Util.spin(tickMs + 5);
         return tasks;
+    }
+
+    public static <T extends Task<?>> T execute(T task, Renderer onTick, String title) {
+        try {
+            task.prepare().wait(); //prepare(tasks, null);
+        } catch (Exception ignored) {}
+        BitRateSmoother smoother = new BitRateSmoother(20);
+        CompletableFuture<?> future = task.execute();
+        TimerTask render = Util.timerTask(()->{
+            if (onTick != null) onTick.apply(title, 0, 1, task.getProgress(), task.completion, smoother.getAveraged(task.pollProgress()));
+        });
+        scheduler.scheduleAtFixedRate(render, 0, tickMs);
+        while (!future.isDone()) Util.spin(500);
+        render.cancel();
+        Util.spin(tickMs + 5);
+        return task;
     }
 
     private static class ExecuteCollector<T extends Task<?>> implements Collector<T, List<T>, List<T>>  {

@@ -64,7 +64,7 @@ public class JsonTask<T> extends Task<T> {
     }
 
     @Override
-    public T run() throws ExecutionException, InterruptedException {
+    public T runOrThrow() throws ExecutionException, InterruptedException {
         if (result == null) this.execute().get();
         return result;
     }

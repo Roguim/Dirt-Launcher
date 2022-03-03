@@ -32,9 +32,9 @@ public class Artifact {
     private String ext = "jar";
 
     //Caches so we don't rebuild every time we're asked.
-    private String path;
-    private String file;
-    private String descriptor;
+    private transient String path;
+    private transient String file;
+    private transient String descriptor;
 
     public static Artifact from(String descriptor)
     {

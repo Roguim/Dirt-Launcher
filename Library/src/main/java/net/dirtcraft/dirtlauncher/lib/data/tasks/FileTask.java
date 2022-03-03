@@ -54,7 +54,7 @@ public abstract class FileTask extends Task<File> {
     }
 
     @Override
-    public File run() throws ExecutionException, InterruptedException {
+    public File runOrThrow() throws ExecutionException, InterruptedException {
         if (!completed) {
             this.execute().get();
             completed = true;
