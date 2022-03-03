@@ -4,6 +4,7 @@ import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Download;
 import net.dirtcraft.dirtlauncher.lib.data.json.mojang.Library;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.ExtractTask;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.FileTask;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.JsonTask;
 
 import java.io.File;
 import java.util.Optional;
@@ -17,6 +18,12 @@ public class ForgeRunProfile implements ForgeVersion{
     String inheritsFrom;
     Arguments arguments;
     Library[] libraries;
+    transient ForgeInstallManifest manifest;
+
+    @Override
+    public String getFileName() {
+        return "version.json";
+    }
 
     @Override
     public Stream<FileTask> getClientLibraries(File folder, ZipFile jar) {
@@ -34,7 +41,8 @@ public class ForgeRunProfile implements ForgeVersion{
     }
 
     @Override
-    public Optional<String> getPostProcess() {
+    public Optional<String> getPostProcess(ZipFile jar) {
+        if (manifest == null) manifest = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class).run();
         return Optional.of("install_profile.json");
     }
 

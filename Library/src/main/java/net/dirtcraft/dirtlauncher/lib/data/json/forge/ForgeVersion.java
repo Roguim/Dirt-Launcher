@@ -9,8 +9,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
 public interface ForgeVersion {
+    String getFileName();
     Stream<FileTask> getClientLibraries(File folder, ZipFile jar);
-    Optional<String> getPostProcess();
+    Optional<ForgeInstallManifest> getPostProcess(ZipFile jar);
     String getMainClass();
     String getReleaseType();
     String getForgeVersion();

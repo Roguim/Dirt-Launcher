@@ -17,6 +17,11 @@ public class LegacyForgeManifest implements ForgeVersion {
     public VersionInfo versionInfo;
 
     @Override
+    public String getFileName() {
+        return "install_profile.json";
+    }
+
+    @Override
     public Stream<FileTask> getClientLibraries(File folder, ZipFile installer) {
         if (versionInfo == null) return null;
         Stream<FileTask> jar = install == null? Stream.empty() : install.getJar(folder);
@@ -24,7 +29,7 @@ public class LegacyForgeManifest implements ForgeVersion {
     }
 
     @Override
-    public Optional<String> getPostProcess() {
+    public Optional<ForgeInstallManifest> getPostProcess(ZipFile jar) {
         return Optional.empty();
     }
 
@@ -65,7 +70,9 @@ public class LegacyForgeManifest implements ForgeVersion {
         public Stream<FileTask> getJar(File folder) {
             try {
                 String maven = "https://maven.minecraftforge.net/";
-                String qualified = path.replace('.', '/').replace(':', '/') + '/' + filePath;
+                String[] artifact = path.split(":");
+                artifact[0] = artifact[0].replace('.', '/');
+                String qualified = String.join("/", artifact) + '/' + filePath;
                 return Stream.of(new DownloadTask(new URL(maven + qualified), new File(folder, qualified)));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -73,6 +80,9 @@ public class LegacyForgeManifest implements ForgeVersion {
             return null;
         }
     }
+
+    //https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar
+    //https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10.jar
 
     public static class VersionInfo{
         String mainClass;
@@ -83,7 +93,9 @@ public class LegacyForgeManifest implements ForgeVersion {
         List<Download> libraries;
 
         public Stream<FileTask> getDownloads(File folder) {
-            return libraries.stream().map(d->d.getTask(folder));
+            return libraries.stream()
+                    .filter(s->!s.name.startsWith("net.minecraftforge:forge:"))
+                    .map(d->d.getTask(folder));
         }
 
         public String[] getArgs() {
@@ -112,7 +124,9 @@ public class LegacyForgeManifest implements ForgeVersion {
         public FileTask getTask(File folder) {
             try {
                 String maven = url == null ? "https://libraries.minecraft.net/" : url;
-                String qualified = String.format("1$%s/%2$s/%3$s/%2$s-%3$s.jar", (Object[]) name.replace('.', '/').split(":"));
+                String[] artifact = name.split(":");
+                artifact[0] = artifact[0].replace('.', '/');
+                String qualified = String.format("%1$s/%2$s/%3$s/%2$s-%3$s.jar", (Object[]) artifact);
                 URL url = new URL(maven + qualified);
                 return new DownloadTask(url, new File(folder, qualified));
             } catch (MalformedURLException e) {

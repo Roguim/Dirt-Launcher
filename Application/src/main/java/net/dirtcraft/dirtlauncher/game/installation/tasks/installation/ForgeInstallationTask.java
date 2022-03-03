@@ -65,15 +65,8 @@ public class ForgeInstallationTask implements IInstallationTask {
 
         ForgeVersion version = ForgeVersion.fromInstaller(pack.getGameVersion(), installerJar).run();
 
-        JsonTask<ForgeInstallManifest> profileTask = new JsonTask<>(installerJar, "install_profile.json", ForgeInstallManifest.class);
-        ForgeInstallManifest installManifest = profileTask.run();
+        new ExtractTask(installerJar, version.getFileName(), entry.getForgeManifestFile()).run();
 
-        // Install Forge universal jar on newer versions of Forge because it does not become packed in the installer jar
-
-        ExtractTask versionTask = new ExtractTask(installerJar, "version.json", entry.getForgeManifestFile());
-        versionTask.run();
-        JsonObject forgeVersionManifest = JsonUtils.readJsonFromFile(entry.getForgeManifestFile());
-        JsonUtils.writeJsonToFile(entry.getForgeManifestFile(), forgeVersionManifest);
 
         // Download the Forge Libraries
 
@@ -98,7 +91,7 @@ public class ForgeInstallationTask implements IInstallationTask {
             addToLaunchCode(lib, libraries);
         });
 
-        run(progressContainer, installManifest, new File(forgeFolder, "libraries"), installerJar, config);
+        if (version.getPostProcess(installerJar).isPresent()) run(progressContainer, version.getPostProcess(installerJar).get(), new File(forgeFolder, "libraries"), installerJar, config);
         forgeInstaller.delete();
 
         // Update Forge Versions Manifest
