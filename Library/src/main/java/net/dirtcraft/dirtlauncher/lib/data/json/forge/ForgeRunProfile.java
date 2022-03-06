@@ -7,6 +7,7 @@ import net.dirtcraft.dirtlauncher.lib.data.tasks.FileTask;
 import net.dirtcraft.dirtlauncher.lib.data.tasks.JsonTask;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.ZipFile;
@@ -17,6 +18,7 @@ public class ForgeRunProfile implements ForgeVersion{
     String mainClass;
     String inheritsFrom;
     Arguments arguments;
+    String minecraftArguments;
     Library[] libraries;
     transient ForgeInstallManifest manifest;
 
@@ -48,12 +50,30 @@ public class ForgeRunProfile implements ForgeVersion{
 
     @Override
     public String[] getMinecraftArgs() {
-        return arguments == null || arguments.game == null ? new String[0] : arguments.game;
+        return arguments == null || arguments.game == null ? minecraftArguments == null? new String[0] : processArgs() : arguments.game;
     }
 
     @Override
     public String[] getRuntimeArgs() {
         return arguments == null || arguments.jvm == null ? new String[0] : arguments.jvm;
+    }
+
+    public String[] processArgs() {
+        String[] complete = minecraftArguments.split(" ");
+        String[] arr = new String[complete.length];
+        int j = 0;
+        for (int i = 0; i < complete.length; i++) {
+            String key = complete[i];
+            String val = i+1 < complete.length? complete[++i] : null;
+            if (val == null) {
+                arr[j++] = key;
+            } else if (!val.matches("\\$\\{.+}")) {
+                arr[j] = key;
+                arr[j + 1] = val;
+                j += 2;
+            }
+        }
+        return Arrays.copyOf(arr, j);
     }
 
     @Override

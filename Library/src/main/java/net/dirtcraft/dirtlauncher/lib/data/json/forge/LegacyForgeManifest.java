@@ -81,9 +81,6 @@ public class LegacyForgeManifest implements ForgeVersion {
         }
     }
 
-    //https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar
-    //https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10.jar
-
     public static class VersionInfo{
         String mainClass;
         String id;

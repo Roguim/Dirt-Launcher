@@ -4,6 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dirtcraft.dirtlauncher.configuration.ManifestBase;
+import net.dirtcraft.dirtlauncher.lib.data.json.forge.ForgeVersion;
+import net.dirtcraft.dirtlauncher.lib.data.tasks.JsonTask;
 import net.dirtcraft.dirtlauncher.logging.Logger;
 import net.dirtcraft.dirtlauncher.utils.FileUtils;
 
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -127,6 +130,14 @@ public class ForgeManifest extends ManifestBase<Map<String, ForgeManifest.Entry>
 
         public File getForgeManifestFile(){
             return new File(getForgeFolder().toFile(), forgeVersion + ".json");
+        }
+
+        public ForgeVersion getForgeManifest() throws IOException {
+            try {
+                return ForgeVersion.fromFile(minecraftVersion, getForgeManifestFile()).runOrThrow();
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
         }
 
         public File getForgeJarFile(){

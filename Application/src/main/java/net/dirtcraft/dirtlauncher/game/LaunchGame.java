@@ -48,16 +48,17 @@ public class LaunchGame {
         if (session == null) return;
         ConfigurationManager configManager = DirtLauncher.getConfig();
         Settings settings = configManager.getSettings();
-        VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(pack.getGameVersion()).orElseThrow(()->new LaunchException("Version manifest entry not present."));
-        ForgeManifest.Entry forgeManifest = configManager.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(()->new LaunchException("Forge manifest entry not present."));
-        JavaVersion version = versionManifest.getJavaVersion() == null? JavaVersion.LEGACY : versionManifest.getJavaVersion();
+        VersionManifest.Entry versionManifest = configManager.getVersionManifest().get(pack.getGameVersion()).orElseThrow(() -> new LaunchException("Version manifest entry not present."));
+        ForgeManifest.Entry forgeManifest = configManager.getForgeManifest().get(pack.getForgeVersion()).orElseThrow(() -> new LaunchException("Forge manifest entry not present."));
+        JavaVersion version = versionManifest.getJavaVersion() == null ? JavaVersion.LEGACY : versionManifest.getJavaVersion();
         Thread gameThread = new Thread(() -> {
             try {
                 Process minecraft;
                 if (pack.getGameVersion().equals("1.16.5")) minecraft = new Launcher(pack, version)
-                            .applyClasspath(forgeManifest.getLibs().split(";"))
-                            .applyClasspath(versionManifest.getLibs().split(";"))
-                            .launch(settings, session);
+                        .applyClasspath(forgeManifest.getLibs().split(";"))
+                        .applyClasspath(versionManifest.getLibs().split(";"))
+                        .applyForgeProfile(forgeManifest.getForgeManifest())
+                        .launch(settings, session);
                 else minecraft = new LegacyLauncher(pack, version)
                         .launchPack(settings, session);
                 Platform.runLater(() -> {

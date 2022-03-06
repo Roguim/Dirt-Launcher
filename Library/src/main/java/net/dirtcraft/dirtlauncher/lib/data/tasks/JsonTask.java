@@ -3,9 +3,7 @@ package net.dirtcraft.dirtlauncher.lib.data.tasks;
 import net.dirtcraft.dirtlauncher.lib.config.Constants;
 import net.dirtcraft.dirtlauncher.lib.parsing.JsonUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -17,6 +15,11 @@ public class JsonTask<T> extends Task<T> {
     private T result = null;
     private StreamSupplier src;
     private Class<T> type;
+
+    public JsonTask(File src, Class<T> clazz) {
+        this.src = ()->new FileInputStream(src);
+        this.type = clazz;
+    }
 
     public JsonTask(URL src, Class<T> clazz) {
         this.src = src::openStream;

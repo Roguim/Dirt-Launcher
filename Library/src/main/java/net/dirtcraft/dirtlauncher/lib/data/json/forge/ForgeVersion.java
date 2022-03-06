@@ -23,4 +23,9 @@ public interface ForgeVersion {
         if ("1.7.10".equals(version)) return new JsonTask<>(jar, "install_profile.json", LegacyForgeManifest.class);
         else return new JsonTask<>(jar, "version.json", ForgeRunProfile.class);
     }
+
+    static JsonTask<? extends ForgeVersion> fromFile(String version, File file) {
+        if ("1.7.10".equals(version)) return new JsonTask<>(file, LegacyForgeManifest.class);
+        else return new JsonTask<>(file, ForgeRunProfile.class);
+    }
 }
