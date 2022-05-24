@@ -69,6 +69,7 @@ public class CurseMetaFileReference implements IDownload {
         } catch (MalformedURLException e) {
             logger.error(e);
         }
+        return null;
     }
 
     public CompletableFuture<CurseFile> getManifestAsync(Executor executor){
